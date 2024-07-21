@@ -1,8 +1,8 @@
-import { Schema ,model} from "mongoose";
+import { Schema ,model,Document} from "mongoose";
 import { IOtp } from "../entities/OtpEntity";
 const OtpSchema:Schema=new Schema({
     email: { type: String, required: true },
-    createdAt: { type: Date, expires: '2m', default: Date.now, required: true },
+    createdAt: { type: Date, expires: '10m', default: Date.now, required: true },
     context: { type: String, required: true },
     otp: { type: String, required: true }
  })
@@ -23,6 +23,6 @@ OtpSchema.pre('findOneAndUpdate', function(next) {
 })
 
 
-const Otp = model<IOtp>('Otp',OtpSchema)
+const Otp = model<IOtp & Document>('Otp',OtpSchema)
 
 export {Otp}

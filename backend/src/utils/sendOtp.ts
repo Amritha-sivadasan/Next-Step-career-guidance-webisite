@@ -10,7 +10,7 @@ export async function sendOtpToUser(email: string, otp: String): Promise<void> {
   const mailOptions = {
     from: process.env.NODE_MAILER_EMAIL,
     to: email,
-    subject: 'Your OTP Code',
+    subject:"Otp created for your nextstep application",
     text: `Your OTP code is ${otp}`,
 };
 await transporter.sendMail(mailOptions);

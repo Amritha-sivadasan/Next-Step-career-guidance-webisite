@@ -1,0 +1,40 @@
+import { Request , Response, NextFunction } from "express";
+import { verifyToken } from "../utils/jwt";
+import { CustomRequest } from "../entities/jwtEntity";
+const accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET!;
+const refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET!;
+
+
+
+export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const token = req.cookies.accessToken || req.headers.authorization?.split(' ')[1];
+  
+    if (!token) {
+      return res.status(401).json({ message: 'Access token is missing' });
+    }
+  
+    try {
+      const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
+      req.user = decoded;
+      next();
+    } catch (err) {
+      return res.status(403).json({ message: 'Invalid or expired access token' });
+    }
+  };
+
+
+  
+  export const verifyRefreshToken = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const token = req.cookies.refreshToken;
+ 
+    if (!token) {
+      return res.status(401).json({ message: 'Refresh token is missing' });
+    }
+    try {  
+      const decoded = verifyToken(token,process.env.JWT_REFRESH_TOKEN_SECRET! );
+          req.user = decoded;
+      next();
+    } catch (err) {
+      return res.status(403).json({ message: 'Invalid or expired refresh token' });
+    }
+  };

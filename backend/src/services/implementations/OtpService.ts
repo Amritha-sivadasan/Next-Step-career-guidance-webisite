@@ -17,22 +17,26 @@ export default class OtpService implements IOtpService {
       email,
       context,
       otp: otpCode,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     await this.otpRepository.create(otpObj, email);
     await sendOtpToUser(email, otpCode);
   }
 
-  async verifyOtp(email: string, otp: string): Promise<boolean>{
-     const otpRecord = await this.otpRepository.fetchOtp(email);
-      if(  otp===otpRecord?.otp){
-        await this.otpRepository.deleteOtp(email);
-        return true;
-      }
-      return false
+  async verifyOtp(email: string, otp: string): Promise<boolean> {
+    const otpRecord = await this.otpRepository.fetchOtp(email);
+    if (otp === otpRecord?.otp) {
+      await this.otpRepository.deleteOtp(email);
+      return true;
+    }
+    return false;
   }
   async deleteOtp(email: string): Promise<void> {
-
     await this.otpRepository.deleteOtp(email);
   }
+  async resendOtp(email: string, context: string): Promise<void> {
+    await this.generateOtp(email, context);
+  }
+
+
 }

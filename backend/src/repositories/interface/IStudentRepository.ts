@@ -5,4 +5,5 @@ export interface IStudentRepository {
   findById(id: string): Promise<IStudent | null>;
   create(student: IStudent): Promise<IStudent>;
   update(id: string, student: Partial<IStudent>): Promise<IStudent | null>;
+  findOne(email:string):Promise<IStudent|null>;
 }
