@@ -62,7 +62,6 @@ import OtpService from "../services/implementations/OtpService";
           await this.otpService.generateOtp(email, context);
           res.status(200).json({ message: "OTP generated and sent successfully" })
         }
-      
         
        } catch (error) 
        {

@@ -16,11 +16,18 @@ async  findById(id: string): Promise<IStudent | null> {
  async findOne(email:string):Promise<IStudent|null>{
      return Student.findOne({email})
   }
-  async create(student: IStudent): Promise<IStudent> {
   
+  async create(student: IStudent): Promise<IStudent> {
+  try {
     const newStudent = new Student(student);
-
     return newStudent.save();
+    
+  } catch (error) {
+    console.log('Error occur in create repository');
+    throw error
+    
+  }
+   
   }
   }
 

@@ -1,9 +1,6 @@
 import { Request , Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
 import { CustomRequest } from "../entities/jwtEntity";
-const accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET!;
-const refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET!;
-
 
 
 export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -12,7 +9,6 @@ export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextF
     if (!token) {
       return res.status(401).json({ message: 'Access token is missing' });
     }
-  
     try {
       const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
       req.user = decoded;
@@ -21,7 +17,6 @@ export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextF
       return res.status(403).json({ message: 'Invalid or expired access token' });
     }
   };
-
 
   
   export const verifyRefreshToken = (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -37,4 +32,14 @@ export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextF
     } catch (err) {
       return res.status(403).json({ message: 'Invalid or expired refresh token' });
     }
+  };
+
+
+  export const verifyRole = (requiredRole: string) => {
+    return (req: CustomRequest, res: Response, next: NextFunction) => {
+      if (!req.user || req.user.role !== requiredRole) {
+        return res.status(403).json({ message: `Access denied. Required role: ${requiredRole}` });
+      }
+      next();
+    };
   };

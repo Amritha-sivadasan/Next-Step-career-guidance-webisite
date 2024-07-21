@@ -1,6 +1,6 @@
-import { ObjectId,Document } from "mongoose";
+import { ObjectId } from "mongoose";
 
-export interface IExpert extends Document {
+export interface IExpert  {
     _id: ObjectId;
     user_name: string;
     email: string;
@@ -13,7 +13,6 @@ export interface IExpert extends Document {
     education_background: string;
     sub_category_id: ObjectId;
     area_of_expertise: string;
-    is_verified: boolean;
     is_active: boolean;
     role: string;
   }

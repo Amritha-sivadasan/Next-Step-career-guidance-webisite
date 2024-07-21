@@ -22,7 +22,8 @@ export default class StudentService implements IStudentService {
   async createStudent(
     student: IStudent
   ): Promise<{ student: IStudent; accessToken: string; refreshToken: string }> {
-    const hashedPassword = hashPassword(student.password);
+    try {
+      const hashedPassword = hashPassword(student.password);
     const studentWithHashedPassword = { ...student, password: hashedPassword };
     const newStudent = await this.studentRepository.create(
       studentWithHashedPassword
@@ -32,6 +33,13 @@ export default class StudentService implements IStudentService {
     const refreshToken = generateRefreshToken(userId, "student");
 
     return { student: newStudent, accessToken, refreshToken };
+      
+    } catch (error) {
+      console.log('error occur in student repository while creating a student');
+      
+           throw error
+    }
+    
   }
 
   async exitStudent(email: string): Promise<IStudent | null> {
@@ -69,7 +77,6 @@ export default class StudentService implements IStudentService {
 
     await this.studentRepository.update(userId, user);
   }
-
   
   async updateStudent(
     id: string,

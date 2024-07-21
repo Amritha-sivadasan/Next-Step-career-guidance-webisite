@@ -20,9 +20,7 @@ interface TokenPayload {
   };
   
   const verifyToken = (token: string, secret: string): TokenPayload => {
-    try {
-  
-      
+    try {      
       const decoded = jwt.verify(token, secret) as TokenPayload;
       return decoded;
     } catch (error) {

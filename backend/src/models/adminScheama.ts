@@ -1,8 +1,10 @@
-import { Schema } from "mongoose";
+import { Schema, model, Document } from "mongoose";
+import { IAdmin } from "../entities/AdminEntity";
 
 const AdminSchema: Schema = new Schema({
-  user_name: { type: String, required: true },
+  user_name: { type: String, required: true, unique: true },
   password: { type: String, require: true },
 });
 
-export default  AdminSchema
+const Admin = model<IAdmin & Document>("Admin", AdminSchema);
+export { Admin };

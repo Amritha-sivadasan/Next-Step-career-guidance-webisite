@@ -6,5 +6,10 @@ export interface IStudentService {
     createStudent(student: IStudent):Promise<{ student: IStudent; accessToken: string; refreshToken: string }>;
     updateStudent(id: string, student: Partial<IStudent>): Promise<IStudent | null>;
     exitStudent(email:string): Promise<IStudent|null>;
+    login(
+      email: string,
+      password: string
+    ): Promise<{ student: IStudent; accessToken: string; refreshToken: string }>
+    
 
   }

@@ -12,24 +12,38 @@ export default class OtpService implements IOtpService {
   }
 
   async generateOtp(email: string, context: string): Promise<void> {
-    const otpCode = await generateOtp(4);
-    const otpObj: IOtp = {
-      email,
-      context,
-      otp: otpCode,
-      createdAt: new Date(),
-    };
-    await this.otpRepository.create(otpObj, email);
-    await sendOtpToUser(email, otpCode);
+    try {
+      const otpCode = await generateOtp(4);
+      const otpObj: IOtp = {
+        email,
+        context,
+        otp: otpCode,
+        createdAt: new Date(),
+      };
+      await this.otpRepository.create(otpObj, email);
+      await sendOtpToUser(email, otpCode);
+      
+    } catch (error) {
+      console.log('error occur in while generating otp',error);
+      throw error
+    }
+   
   }
 
   async verifyOtp(email: string, otp: string): Promise<boolean> {
-    const otpRecord = await this.otpRepository.fetchOtp(email);
-    if (otp === otpRecord?.otp) {
-      await this.otpRepository.deleteOtp(email);
-      return true;
+    try {
+      const otpRecord = await this.otpRepository.fetchOtp(email);
+      if (otp === otpRecord?.otp) {
+        await this.deleteOtp(email);
+        return true;
+      }
+      return false;
+      
+    } catch (error) {
+      console.log('error occur in while  verifying otp',error);
+      
+      throw error
     }
-    return false;
   }
   async deleteOtp(email: string): Promise<void> {
     await this.otpRepository.deleteOtp(email);

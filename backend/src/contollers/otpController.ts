@@ -7,7 +7,7 @@ class OtpController {
     this.otpservice = new OtpService();
   }
 
-  public creatOtp = async (req: Request, res: Response): Promise<void> => {
+  public createOtp = async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body;
     if (!email) {
       res.status(400).json({ message: "Email is required" });
