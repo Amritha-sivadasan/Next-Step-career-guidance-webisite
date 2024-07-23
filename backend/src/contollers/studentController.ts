@@ -13,14 +13,19 @@ import OtpService from "../services/implementations/OtpService";
   
     public createStudent = async (req: Request, res: Response): Promise<void> => {
         try {
+       console.log(req.body);
+       
+          
           let exitStudent=await this.studentService.exitStudent(req.body.email)
           if(exitStudent){
             res.status(409 ).json({success:false,Message:"user already exist",})
           }else{
             const { student, accessToken, refreshToken } = await this.studentService.createStudent(req.body);
+            const studentObject = student.toObject();
+            delete studentObject.password;
             res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
             res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-            res.status(201).json({success:true,Message:"student created successfully"});
+            res.status(201).json({success:true,Message:"student created successfully",data:studentObject});
           }
         } catch (error) {
           res.status(500).json({ message:"",error,success:false });

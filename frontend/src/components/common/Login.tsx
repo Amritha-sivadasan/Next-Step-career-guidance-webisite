@@ -9,15 +9,15 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
-      {/* Form Section */}
+   
       <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
-        {/* Logo */}
+      
         <div className="absolute top-6 left-8 flex items-center">
           <img src="/image.png" alt="Website Logo" className="h-6" />
           <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
         </div>
 
-        {/* Form Container */}
+       
         <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
           <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
             Log In
@@ -40,7 +40,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               Log In
             </button>
 
-            {/* No account text */}
+           
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
@@ -71,7 +71,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         </div>
       </div>
 
-      {/* Image Section */}
+     
       <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
         <img
           src={isExpert ? "/experts.png" : "/home-image.png"}

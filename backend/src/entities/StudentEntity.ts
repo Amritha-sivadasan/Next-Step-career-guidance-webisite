@@ -1,6 +1,7 @@
 import { ObjectId ,Document} from "mongoose";
 
 export interface IStudent  {
+  [x: string]: any;
   _id: ObjectId;
   user_name: string;
   email: string;

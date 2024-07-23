@@ -36,7 +36,7 @@ export default class ExpertService implements IExpertSevice{
     return { expert: newExpert, accessToken, refreshToken };
       
     } catch (error) {
-      console.log('error occur in student repository while creating a student');
+      console.log('error occur in student repository while creating a student',error);
       
            throw error
     }

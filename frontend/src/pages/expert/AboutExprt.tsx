@@ -2,135 +2,135 @@ import React from "react";
 
 const AboutExpert: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen  text-white">
       {/* Header */}
-      <header className="p-4 flex items-center bg-white">
+      <header className="p-4 flex items-center bg-white text-[#0B2149]">
         <img src="/image.png" alt="Website Logo" className="h-6" />
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-3xl border p-3 rounded-lg shadow-md">
-          <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
+        <div className="w-full max-w-3xl bg-white text-[#0B2149] p-8 rounded-lg">
+          <h1 className="text-3xl font-bold mb-6 text-center">
             Tell us more about yourself
           </h1>
 
-          {/* Profile Picture Section */}
-          <div className="mb-6 flex flex-col items-center space-y-4">
-            {/* Profile Picture */}
-            <div className="relative w-32 h-32 rounded-full border border-gray-300 overflow-hidden bg-white flex items-center justify-center">
-              <input
-                type="file"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                name="profilePicture"
-                accept="image/*"
-              />
-              <span className="text-[#0B2149] text-sm font-semibold">
-                Upload Profile Picture
-              </span>
-            </div>
-            <button
-              type="button"
-              className="bg-[#0B2149] text-white p-2 rounded-full font-semibold text-sm"
-            >
-              Add Profile
-            </button>
-          </div>
-
           {/* Form */}
-          <form className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6  p-8 ">
-            {/* Education Background */}
+          <form className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+            {/* Professional Bio */}
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Education Background
+              <label className="text-sm font-semibold">Professional Bio</label>
+              <input
+                type="text"
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Summarize career achievements and expertise"
+                name="professionalBio"
+              />
+            </div>
+            {/* Professional Bio */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-semibold">Professional Bio</label>
+              <input
+                type="text"
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Summarize career achievements and expertise"
+                name="professionalBio"
+              />
+            </div>
+
+            {/* Areas of Expertise */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-semibold">
+                Areas of Expertise
+              </label>
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF] flex-1"
+                  placeholder="List your specialized skills and industries"
+                  name="areaOfExpertise"
+                />
+                <button
+                  type="button"
+                  className="bg-[#0B2149] text-white p-2 rounded-lg font-semibold text-sm"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            {/* Fee Structure */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-semibold">Fee Structure</label>
+              <input
+                type="text"
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Specify your consultation fees range"
+                name="feeStructure"
+              />
+            </div>
+
+            {/* Educational Background */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-semibold">
+                Educational Background
               </label>
               <input
                 type="text"
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-                placeholder="Enter your education background"
+                placeholder="Provide details of your academic qualifications"
                 name="educationBackground"
               />
             </div>
 
-            {/* Area of Expertise */}
+            {/* Credential and Experience */}
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Area of Expertise
+              <label className="text-sm font-semibold">
+                Credentials and Experience
               </label>
               <input
                 type="text"
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-                placeholder="Enter your area of expertise"
-                name="areaOfExpertise"
-              />
-            </div>
-
-            {/* Personal Bio */}
-            <div className="flex flex-col space-y-2 md:col-span-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Personal Bio
-              </label>
-              <textarea
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-                placeholder="Enter a brief personal bio"
-                name="personalBio"
-                rows={4}
-              />
-            </div>
-
-            {/* Consultation Fee */}
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Consultation Fee
-              </label>
-              <input
-                type="number"
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-                placeholder="Enter your consultation fee"
-                name="consultationFee"
-              />
-            </div>
-
-            {/* Credentials */}
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Credentials
-              </label>
-              <input
-                type="text"
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-                placeholder="Enter your credentials"
+                placeholder="Upload your verified certificates"
                 name="credentials"
               />
             </div>
 
-            {/* Sub-Category */}
+            {/* Choose Your Category */}
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">
-                Sub-Category
+              <label className="text-sm font-semibold">
+                Choose your category
               </label>
               <select
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
-                name="subCategoryId"
+                name="category"
               >
-                <option value="">Select...</option>
+                <option value="">Select one</option>
                 <option value="1">Category 1</option>
                 <option value="2">Category 2</option>
                 <option value="3">Category 3</option>
-                {/* Add more options as needed */}
               </select>
             </div>
-          </form>
-          <div className="flex justify-center items-center">
-            {" "}
+
+            {/* Profile Picture */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-semibold">Profile Picture</label>
+              <input
+                type="file"
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                name="profilePicture"
+                accept="image/*"
+              />
+            </div>
+
             <button
               type="submit"
-              className="bg-[#0B2149] text-white p-2 rounded-md font-semibold text-base mt-6 w-24"
+              className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg mt-6 md:col-span-2 w-full"
             >
-              Submit
+              Take me to Dashboard
             </button>
-          </div>
+          </form>
         </div>
       </main>
     </div>

@@ -17,6 +17,7 @@ app.use(cors())
 app.use(express.json())
 app.use(cookieParser());
 
+
 app.get("/", (req: Request, res: Response) => {
   res.send("This is new project from Amritha  ");
 });

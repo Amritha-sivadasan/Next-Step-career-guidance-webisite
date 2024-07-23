@@ -19,11 +19,13 @@ async  findById(id: string): Promise<IStudent | null> {
   
   async create(student: IStudent): Promise<IStudent> {
   try {
+    console.log(student);
+    
     const newStudent = new Student(student);
     return newStudent.save();
     
   } catch (error) {
-    console.log('Error occur in create repository');
+    console.log('Error occur in create repository',error);
     throw error
     
   }
