@@ -1,11 +1,15 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { setBasicDetails } from "../../features/student/studentSlice";
+import { setBasicDetails,setGoogleAuth } from "../../features/student/studentSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../utils/api/studentApi";
+import { app } from "../../config/firebase";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { firebaseLogin } from "../../utils/api/studentApi";
+
 
 interface SignupFormInputs {
   user_name: string;
@@ -14,24 +18,10 @@ interface SignupFormInputs {
   password: string;
   confirmPassword: string;
 }
-const validatePassword = (value: string) => {
-  const strongPasswordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  return (
-    strongPasswordPattern.test(value) ||
-    "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
-  );
-};
-
-const validatePhoneNumber = (value: string) => {
-  const phoneNumberPattern = /^[0-9]{10}$/;
-  return (
-    phoneNumberPattern.test(value) || "Phone number must be exactly 10 digits"
-  );
-};
 
 const Signup: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+
   const { basicDetails, status } = useSelector(
     (state: RootState) => state.student
   );
@@ -52,6 +42,34 @@ const Signup: React.FC = () => {
     },
   });
 
+  const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
+    if (data.password !== data.confirmPassword) {
+      Errornotify("Password and confirm password do not match");
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...userData } = data;
+    dispatch(setBasicDetails({ ...basicDetails, ...userData }));
+    sendOtp(data.email);
+    navigate("/otp-verify");
+  };
+
+  const validatePassword = (value: string) => {
+    const strongPasswordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return (
+      strongPasswordPattern.test(value) ||
+      "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+    );
+  };
+
+  const validatePhoneNumber = (value: string) => {
+    const phoneNumberPattern = /^[0-9]{10}$/;
+    return (
+      phoneNumberPattern.test(value) || "Phone number must be exactly 10 digits"
+    );
+  };
+
   const Errornotify = (msg: string) => {
     toast.error(msg, {
       position: "top-center",
@@ -64,15 +82,27 @@ const Signup: React.FC = () => {
     });
   };
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
-    if (data.password !== data.confirmPassword) {
-      Errornotify("Password and confirm password do not match");
-      return;
+  //Google sign up
+
+  const handleGoogleSignup = async () => {
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      console.log(credential);
+      const token = await auth.currentUser?.getIdToken();
+      if (token) {
+        const data = await firebaseLogin(token);
+         console.log('data',data);
+        await localStorage.setItem('user_id',data.student._id)
+         dispatch(setGoogleAuth())
+         navigate('/about-student')
+        
+      }
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
     }
-     const {confirmPassword,...userData}=data
-    dispatch(setBasicDetails({ ...basicDetails, ...userData }));
-    sendOtp(data.email);
-    navigate("/otp-verify");
   };
 
   return (
@@ -191,6 +221,7 @@ const Signup: React.FC = () => {
               <h2 className="text-lg mb-2">Or sign up with</h2>
               <button
                 type="button"
+                onClick={handleGoogleSignup}
                 className="flex items-center justify-center w-full max-w-xs mx-auto p-2 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
               >
                 <img

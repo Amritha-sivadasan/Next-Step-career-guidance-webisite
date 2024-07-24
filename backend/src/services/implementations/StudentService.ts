@@ -32,11 +32,14 @@ export default class StudentService implements IStudentService {
         studentWithHashedPassword
       );
 
-      const userId = newStudent._id.toString();
-      const accessToken = generateAccessToken(userId, "student");
-      const refreshToken = generateRefreshToken(userId, "student");
+      let  userId = newStudent._id.toString()
+    
+        
+        const accessToken = generateAccessToken(userId, "student");
+        const refreshToken = generateRefreshToken(userId, "student");
+        return { student: newStudent, accessToken, refreshToken };
+      
 
-      return { student: newStudent, accessToken, refreshToken };
     } catch (error) {
       console.log("error occur in student repository while creating a student",error);
 

@@ -12,8 +12,10 @@ const StudentSchema: Schema = new Schema(
     user_type: { type: String,},
     profile_picture: { type: String, default: "" },
     is_active: { type: Boolean, default: true },
-    is_credential_validate: { type: Boolean, default: false },
+  
     role: { type: String, default: "student" },
+    authentication_id: { type: String},
+    authentication_provider: { type: String },
   },
   { timestamps: true }
 );

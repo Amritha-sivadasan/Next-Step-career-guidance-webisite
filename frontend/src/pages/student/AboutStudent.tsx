@@ -2,8 +2,8 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store/store";
-import { setAdditionalInfo } from "../../features/student/studentSlice";
-import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
+import { setAdditionalInfo,setAuthenticated } from "../../features/student/studentSlice";
+import { registerStudent,registerWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
 import { useNavigate } from "react-router-dom";
 
 interface FormlInputs {
@@ -13,9 +13,8 @@ interface FormlInputs {
 }
 
 
-
 const AboutUser: React.FC = () => {
-  const { additionalInfo,basicDetails } = useSelector((state: RootState) => state.student);
+  const { additionalInfo,basicDetails,isGoogleUser } = useSelector((state: RootState) => state.student);
   const dispatch: AppDispatch = useDispatch();
   const navigate=useNavigate()
 
@@ -27,17 +26,32 @@ const AboutUser: React.FC = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<FormlInputs> = (data) => {
-    dispatch(setAdditionalInfo(data));
-    const userData={
-        ...basicDetails,
-        ...data
-    }
-    dispatch(registerStudent(userData)).then(result=>{
-      if(result.payload?.success){
-        navigate('/')
+  const onSubmit: SubmitHandler<FormlInputs> = async (data) => {
+    if(isGoogleUser){
+      const userId = localStorage.getItem('user_id');
+      if (userId) {
+        const resultAction = await dispatch(registerWithGoogle({ userId, partialData: data }));
+        if (registerWithGoogle.fulfilled.match(resultAction) && resultAction.payload.success) {
+          dispatch(setAuthenticated(resultAction.payload.success));
+          navigate('/');
+        }
       }
-    })
+    }else{
+      dispatch(setAdditionalInfo(data));
+      const userData={
+          ...basicDetails,
+          ...data
+      }
+      dispatch(registerStudent(userData)).then(result=>{
+        if(result.payload?.success){
+          dispatch(setAuthenticated(result.payload.success))
+          navigate('/')
+        }
+      })
+    }
+      
+  
+    
   };
 
   return (

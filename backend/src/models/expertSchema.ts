@@ -16,6 +16,7 @@ const ExpertSchema: Schema = new Schema(
     area_of_expertise: { type: String,  },
     is_active: { type: Boolean, default: false }, 
     role: { type: String, default: "expert" },
+    is_credential_validate: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

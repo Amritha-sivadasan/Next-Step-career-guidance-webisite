@@ -1,7 +1,7 @@
 import { ObjectId ,Document} from "mongoose";
 
 export interface IStudent  {
-  [x: string]: any;
+
   _id: ObjectId;
   user_name: string;
   email: string;
@@ -12,6 +12,9 @@ export interface IStudent  {
   user_type: string;
   profile_picture: string;
   is_active: Boolean;
-  is_credential_validate: Boolean;
+
+  authentication_id:string,
+  authentication_provider:string
   role: string;
+  
 }

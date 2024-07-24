@@ -32,7 +32,45 @@ interface VerifyOtpPayload {
   otp: string;
 }
 
-//register middleware
+interface PartialData {
+  education_level?: string;
+  education_background?: string;
+  user_type?: string;
+}
+interface RegisterWithGooglePayload {
+  userId: string; 
+  partialData: PartialData; 
+}
+
+export const registerWithGoogle = createAsyncThunk<
+  RegisterUserResponse, 
+  RegisterWithGooglePayload,       
+  { rejectValue: ThunkError } 
+>("google/register", async (payload: RegisterWithGooglePayload, thunkAPI) => {
+  const { userId, partialData } = payload;
+  try {
+   
+    const response = await axios.post(`${apiUrl}/student/register/google`, {userId,partialData});
+    console.log("Google Registration Response:", response.data);
+    return response.data; 
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkAPI.rejectWithValue({
+        message: error.response?.data?.message || "An error occurred",
+        success: error.response?.data?.success || false
+      });
+    } else {
+      return thunkAPI.rejectWithValue({
+        message: "An unexpected error occurred",
+        success: false
+      });
+    }
+  }
+})
+
+
+
+
 export const registerStudent = createAsyncThunk<
   RegisterUserResponse,
   IStudent,

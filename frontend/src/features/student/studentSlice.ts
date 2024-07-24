@@ -22,6 +22,7 @@ export interface UserState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: null | string;
   isAuthenticated: boolean;
+  isGoogleUser:boolean
 }
 
 const initialState: UserState = {
@@ -40,6 +41,7 @@ const initialState: UserState = {
   status: "idle",
   error: null,
   isAuthenticated: false,
+  isGoogleUser:false
 };
 
 const studentSlice = createSlice({
@@ -59,6 +61,9 @@ const studentSlice = createSlice({
     setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
+    setGoogleAuth :(state)=>{
+       state.isGoogleUser=true
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -99,5 +104,6 @@ export const {
   verifyOtp,
   resetUserState,
   setAuthenticated,
+  setGoogleAuth
 } = studentSlice.actions;
 export default studentSlice.reducer;

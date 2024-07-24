@@ -10,6 +10,7 @@ import {
 } from "../middlewares/authMiddleware";
 import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
+import firebaseController from "../contollers/firebaseController";
 
 const router = Router();
 
@@ -25,4 +26,7 @@ router.post("/refresh-token", verifyRefreshToken, refreshTokens);
 router.post("/login", validateStudentLogin, studentController.loginUser);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
+
+router.post('/firebase-login',firebaseController)
+router.post('/register/google',studentController.updateStudent)
 export default router;

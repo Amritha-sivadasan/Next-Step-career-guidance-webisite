@@ -5,6 +5,7 @@ import { RootState, AppDispatch } from "../../store/store";
 import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
 import { verifyOtp } from "../../features/student/studentSlice";
 import { useNavigate } from "react-router-dom";
+import { sendOtp } from "../../utils/api/studentApi";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -32,14 +33,17 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
     console.log("OTP submitted:", data.otp);
     if (userType == "student") {
       dispatch(VerifyOtp({ email, otp: data.otp })).then((result) => {
-        console.log('response',result);
-        
-        if (result.payload?.success==true) {
+        console.log("response", result);
+
+        if (result.payload?.success == true) {
           dispatch(verifyOtp());
           navigate("/about-student");
         }
       });
     }
+  };
+  const resendOtp = () => { 
+    sendOtp(email)
   };
 
   return (
@@ -92,12 +96,13 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
                 Didn't receive the code?{" "}
-                <a
-                  href="#"
+                <button
+                  type="button"
+                  onClick={resendOtp}
                   className="text-[#0B2149] font-medium hover:underline"
                 >
                   Resend OTP
-                </a>
+                </button>
               </p>
             </div>
           </form>

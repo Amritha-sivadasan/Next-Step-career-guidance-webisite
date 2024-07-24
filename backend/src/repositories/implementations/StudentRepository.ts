@@ -7,8 +7,24 @@ export default class StudentRepository implements IStudentRepository {
 async  findById(id: string): Promise<IStudent | null> {
       throw new Error("Method not implemented.");
   }
- async update(id: string, student: Partial<IStudent>): Promise<IStudent | null> {
-    throw new Error("Method not implemented.");
+  async update(id: string, student: Partial<IStudent>): Promise<IStudent | null> {
+    try {
+
+      const existingStudent = await Student.findById(id);
+      
+      if (!existingStudent) {
+       
+        throw new Error("Student not found");
+      }
+      existingStudent.set(student);
+      
+      const updatedStudent = await existingStudent.save();
+      
+      return updatedStudent;
+    } catch (error) {
+      console.log('Error occurred in update repository', error);
+      throw error;
+    }
   }
   async findAll(): Promise<IStudent[]> {
     return Student.find();
@@ -16,8 +32,11 @@ async  findById(id: string): Promise<IStudent | null> {
  async findOne(email:string):Promise<IStudent|null>{
      return Student.findOne({email})
   }
+  async findUsetById( authentication_id:string,):Promise<IStudent|null>{
+    return Student.findOne({ authentication_id})
+  }
   
-  async create(student: IStudent): Promise<IStudent> {
+  async create(student: Partial< IStudent>): Promise<IStudent> {
   try {
     console.log(student);
     
