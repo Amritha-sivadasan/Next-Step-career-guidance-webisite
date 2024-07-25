@@ -1,12 +1,83 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  LoginResponse,
+  loginUser,
+} from "../../features/student/middleware/StudentLoginThunk";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { setUser, setAuthenticated } from "../../features/student/authSlice";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { app } from "../../config/firebase";
+import { IStudent } from "../../@types/user";
+import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
 
 interface LoginPageProps {
   userType: "student" | "expert";
 }
 
+interface LoginFormInput {
+  email: string;
+  password: string;
+}
+
 const Login: React.FC<LoginPageProps> = ({ userType }) => {
   const isExpert = userType === "expert";
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInput>();
+
+  const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
+    if (userType === "student") {
+      const result = await dispatch(loginUser(data));
+      console.log("result", result.payload);
+      const loginResponse = result.payload as LoginResponse;
+      if (loginResponse.success && loginResponse.data) {
+        const userData = loginResponse.data;
+        dispatch(setUser(userData));
+        dispatch(setAuthenticated(true));
+        localStorage.setItem("userAccess", loginResponse.accessToken);
+        navigate("/");
+      } else {
+        console.log("Login failed or data is missing");
+      }
+    } else {
+      // Implement expert login logic here
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      console.log("credential", credential);
+      const token = await auth.currentUser?.getIdToken();
+
+      if (token) {
+        const registerStudentResult = await dispatch(
+          registerStudentWithGoogle(token.toString())
+        ).unwrap();
+
+        if (registerStudentResult.success) {
+          const userData = registerStudentResult.data as IStudent;
+          dispatch(setUser(userData));
+
+          localStorage.setItem("userId", userData._id);
+          localStorage.setItem("userAccess", registerStudentResult.accessToken);
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
@@ -20,17 +91,28 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
           <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
             Log In
           </h1>
-          <form className="flex flex-col space-y-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col space-y-4"
+          >
             <input
               type="email"
+              {...register("email", { required: "Email is required" })}
               className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
               placeholder="Enter email"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
             <input
               type="password"
+              {...register("password", { required: "Password is required" })}
               className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
               placeholder="Password"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
             <button
               type="submit"
               className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
@@ -64,6 +146,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             <h2 className="text-lg mb-2">Or log in with</h2>
             <button
               type="button"
+              onClick={handleGoogleSignup}
               className="flex items-center justify-center w-full max-w-xs mx-auto p-2 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
             >
               <img

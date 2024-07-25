@@ -4,7 +4,16 @@ import { Student } from "../../models/studentSchema";
 
 export default class StudentRepository implements IStudentRepository {
   async findById(id: string): Promise<IStudent | null> {
-    throw new Error("Method not implemented.");
+    try {
+      const existingStudent = await Student.findById(id);
+      if (!existingStudent) {
+        throw new Error("Student not found");
+      }
+      return existingStudent;
+    } catch (error) {
+      console.log("Error occurred in find byid repository", error);
+      throw error;
+    }
   }
   async update(
     id: string,
@@ -12,15 +21,14 @@ export default class StudentRepository implements IStudentRepository {
   ): Promise<IStudent | null> {
     try {
       const existingStudent = await Student.findById(id);
-      console.log("existing student", existingStudent);
-      console.log('student',student);
-      
-
       if (!existingStudent) {
         throw new Error("Student not found");
       }
-      existingStudent.set(student);
-
+      const updatedData = {
+        ...student,
+        is_data_entered: true,
+      };
+      existingStudent.set(updatedData);
       const updatedStudent = await existingStudent.save();
 
       return updatedStudent;

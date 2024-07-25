@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import StudentService from "../services/implementations/StudentService";
 import OtpService from "../services/implementations/OtpService";
+import { CustomRequest } from "../entities/jwtEntity";
+import { errorMonitor } from "events";
 
 class StudentController {
   private studentService: StudentService;
@@ -68,15 +70,11 @@ class StudentController {
   public loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     try {
-      const { accessToken, refreshToken } = await this.studentService.login(
+      const {student, accessToken, refreshToken } = await this.studentService.login(
         email,
         password
       );
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-      });
+    
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false,
@@ -84,9 +82,9 @@ class StudentController {
       });
       res
         .status(200)
-        .json({ success: true, Message: "User logged successfully" });
+        .json({ success: true,data:student,accessToken, message: "User logged successfully" });
     } catch (error) {
-      res.status(500).json({ message: "", error, success: false });
+      res.status(500).json({ message: "User not found", success: false });
     }
   };
   public resetPassword = async (req: Request, res: Response): Promise<void> => {
@@ -127,6 +125,26 @@ class StudentController {
       });
     }
   };
+
+  public fetchUser=async(req:CustomRequest,res:Response):Promise<void>=>{
+      const userId=req.user?.userId
+      try {
+        if(userId){
+          const result= await this.studentService.getStudentById(userId)
+          res.status(200).json({success:true,data:result})
+        }else{
+          res.status(500).json({message:"Error occur in fetchdata",success:false})
+        }
+    
+      } catch (error) {
+        console.log('Error occur on the fetch user',error);
+         res.status(500).json({message:"Error occur in fetchdata",success:false})
+      }
+  }
+
+
 }
+
+
 
 export default new StudentController();

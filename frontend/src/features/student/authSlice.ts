@@ -1,49 +1,56 @@
+// authSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+import { loginUser } from "./middleware/StudentLoginThunk";
 import { registerStudent, VerifyOtp } from "./middleware/StudentRegisterThunk";
 import { toast } from "react-toastify";
+import { IStudent } from "../../@types/user";
 
-// Define the shape of the user data
-export interface UserData {
-  _id: string;
-  user_name: string;
-  email: string;
-  password?: string;
-  education_level: string;
-  phonenumber: string;
-  education_background: string;
-  user_type: string;
-  profile_picture: string;
-  is_active: boolean;
-  authentication_id: string;
-  authentication_provider: string;
-  role: string;
-}
+// export interface UserData {
+//   _id: string;
+//   user_name: string;
+//   email: string;
+//   password?: string;
+//   education_level: string;
+//   phonenumber: string;
+//   education_background: string;
+//   user_type: string;
+//   profile_picture: string;
+//   is_active: boolean;
+//   authentication_id: string;
+//   authentication_provider: string;
+//   role: string;
+// }
 
-// Define the initial state for the slice
-interface UserState {
-  user: UserData | null;
+export interface AuthState {
+  user: IStudent | null;
+  isAuthenticated: boolean;
   otpVerified: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
-  isAuthenticated: boolean;
 }
 
-const initialState: UserState = {
+const initialState: AuthState = {
   user: null,
+  isAuthenticated: false,
   otpVerified: false,
   status: "idle",
   error: null,
-  isAuthenticated: false,
 };
 
-const studentSlice = createSlice({
-  name: "student",
+const authSlice = createSlice({
+  name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserData>) => {
+    setUser: (state, action: PayloadAction<IStudent>) => {
       state.user = action.payload;
+      state.isAuthenticated = true;
     },
-    resetUserState: () => initialState,
+    logout: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.otpVerified = false;
+    },
     setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
@@ -53,14 +60,29 @@ const studentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(loginUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.data ?? null;
+        state.isAuthenticated = true;
+        state.error = null;
+        toast.success("Login successful!");
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message || "Login failed";
+        toast.error(state.error);
+      })
       .addCase(registerStudent.pending, (state) => {
         state.status = "loading";
       })
       .addCase(registerStudent.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.error = null;
         state.user = action.payload.data ?? null;
         state.isAuthenticated = true;
+        state.error = null;
         toast.success("Registration successful!");
       })
       .addCase(registerStudent.rejected, (state, action) => {
@@ -81,12 +103,10 @@ const studentSlice = createSlice({
         state.status = "failed";
         state.error = action.payload?.message || "OTP verification failed";
         toast.error(state.error);
-      })
-    
-
+      });
   },
 });
 
-export const { setUser, resetUserState, setAuthenticated, verifyOtp } = studentSlice.actions;
-
-export default studentSlice.reducer;
+export const { setUser, logout, setAuthenticated, verifyOtp } =
+  authSlice.actions;
+export default authSlice.reducer;

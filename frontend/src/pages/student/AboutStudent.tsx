@@ -17,7 +17,6 @@ const AboutUser: React.FC = () => {
   
   const dispatch: AppDispatch = useDispatch();
   const navigate=useNavigate()
-
   const { register, handleSubmit, formState: { errors } } = useForm<FormlInputs>({
     defaultValues: {
       education_level: "",
@@ -25,6 +24,7 @@ const AboutUser: React.FC = () => {
       user_type: ""
     }
   });
+ 
 
   const onSubmit: SubmitHandler<FormlInputs> = async (updateData) => {
     const userId=localStorage.getItem('userId')

@@ -8,7 +8,8 @@ import { sendOtp } from "../../services/api/studentApi";
 import { app } from "../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
-import { setUser, UserData } from "../../features/student/studentSlice";
+import { setUser, } from "../../features/student/authSlice";
+import { IStudent } from "../../@types/user";
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
 interface SignupFormInputs {
@@ -22,8 +23,19 @@ interface SignupFormInputs {
 const Signup: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { register, handleSubmit,formState: { errors },watch,
-  } = useForm<SignupFormInputs>({defaultValues: { user_name: "",email: "",phoneNumber: "", password: "",confirmPassword: "", },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignupFormInputs>({
+    defaultValues: {
+      user_name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
@@ -67,11 +79,11 @@ const Signup: React.FC = () => {
         ).unwrap();
 
         if (registerStudentResult.success) {
-          const userData = registerStudentResult.data as UserData;
+          const userData = registerStudentResult.data as IStudent;
           dispatch(setUser(userData));
 
           localStorage.setItem("userId", userData._id);
-          localStorage.setItem('userAccess',registerStudentResult.accessToken)
+          localStorage.setItem("userAccess", registerStudentResult.accessToken);
           navigate("/about-student");
         }
       }

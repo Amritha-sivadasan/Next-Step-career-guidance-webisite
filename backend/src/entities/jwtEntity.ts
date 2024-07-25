@@ -1,6 +1,6 @@
 import { Request as ExpressRequest } from "express";
 
-interface TokenPayload {
+ export interface TokenPayload {
   userId: string;
   role: string;
 }

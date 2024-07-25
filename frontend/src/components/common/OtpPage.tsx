@@ -7,11 +7,11 @@ import {
   verifyOtp,
   setUser,
   setAuthenticated,
-} from "../../features/student/studentSlice";
+} from "../../features/student/authSlice";
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../services/api/studentApi";
 import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
-import { UserData } from "../../features/student/studentSlice";
+import { UserData } from "../../features/student/authSlice";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -53,7 +53,10 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
               dispatch(setAuthenticated(true));
               sessionStorage.removeItem("userdata");
               localStorage.setItem("userId", userData._id);
-              localStorage.setItem('userAccess',registerStudentResult.accessToken)
+              localStorage.setItem(
+                "userAccess",
+                registerStudentResult.accessToken
+              );
               navigate("/about-student");
             } else {
               console.error("User data is missing or malformed.");

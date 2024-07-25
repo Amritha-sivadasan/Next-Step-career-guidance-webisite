@@ -1,7 +1,6 @@
-import { Request , Response, NextFunction } from "express";
+import {   Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
-import { CustomRequest } from "../entities/jwtEntity";
-
+import { CustomRequest, TokenPayload } from "../entities/jwtEntity";
 
 export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextFunction) => {
     const token =  req.headers.authorization?.split(' ')[1];
@@ -11,7 +10,7 @@ export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextF
     }
     try {
       const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
-      req.user = decoded;
+      req.user = decoded as TokenPayload;
       next();
     } catch (err) {
       return res.status(403).json({ message: 'Invalid or expired access token' });

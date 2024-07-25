@@ -4,6 +4,7 @@ import { getAuth } from "firebase-admin/auth";
 import StudentService from "../services/implementations/StudentService";
 import { IStudentService } from "../services/interface/IStudentService";
 import { IStudent } from "../entities/StudentEntity";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -54,7 +55,22 @@ export default async (req: Request, res: Response) => {
         accessToken
       });
     } else {
-      res.status(409).json({ success: false, message: "user already exist" });
+     const userId=studentExist._id.toString()
+     const accessToken=generateAccessToken(userId,studentExist.role)
+     const refreshToken=generateRefreshToken(userId,studentExist.role)
+   
+     res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    res.status(201).json({
+      success: true,
+      Message: "student created successfully",
+      data: studentExist,
+      accessToken
+    })
+      
     }
   } catch (error) {
     console.error("Error occurred during Google authentication:", error);

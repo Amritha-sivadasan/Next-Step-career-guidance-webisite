@@ -45,9 +45,12 @@ export default class StudentService implements IStudentService {
     }
   }
 
+
+
   async exitStudent(email: string): Promise<IStudent | null> {
     return this.studentRepository.findOne(email);
   }
+
 
   async login(
     email: string,

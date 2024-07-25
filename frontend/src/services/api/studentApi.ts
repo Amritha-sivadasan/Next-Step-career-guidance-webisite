@@ -88,3 +88,25 @@ export const updatestudent=async(userId:string,updateData:Partial<IStudent>)=>{
     throw error;
   }
 }
+
+
+ export const fetchUserData = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/student`, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user data:", error);
+    throw error;
+  }
+};
+
+
+export const loginStudent =async(email:string,password:string)=>{
+  try {
+    const response = await axios.post(`${API_URL}/student/login`,{email,password},{withCredentials:true})
+    return response  
+  } catch (error) {
+    console.log('error in login student');
+    throw error
+  }
+}

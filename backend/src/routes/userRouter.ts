@@ -12,6 +12,8 @@ import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
 import firebaseController from "../contollers/firebaseController";
 
+const role='student'
+
 const router = Router();
 
 router.post("/register", studentController.createStudent);
@@ -19,11 +21,13 @@ router.post("/otp-send", otpController.createOtp);
 router.post("/verify-otp", otpController.verifyOtp);
 router.post("/resend-otp", otpController.createOtp);
 
+
+router.get('/',verifyAccessToken,verifyRole(role), studentController.fetchUser)
 router.post("/refresh-token", verifyRefreshToken, refreshTokens);
-router.post("/login", validateStudentLogin, studentController.loginUser);
+router.post("/login",  studentController.loginUser);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
 
 router.post("/google-login", firebaseController);
-router.put("/update/:id", verifyAccessToken,verifyRole("student"),studentController.updateStudent);
+router.put("/update/:id", verifyAccessToken,verifyRole(role),studentController.updateStudent);
 export default router;
