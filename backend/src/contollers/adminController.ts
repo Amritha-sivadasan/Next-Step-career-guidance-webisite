@@ -12,9 +12,9 @@ class AdminController {
     const { user_name, password } = req.body;
     try {
       const { admin, accessToken, refreshToken } = await this.adminService.login(user_name, password);
-      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+     
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-      res.status(200).json({ success: true, message: "Admin logged in successfully" });
+      res.status(200).json({ success: true, message: "Admin logged in successfully",data:admin,accessToken });
     } catch (error) {
       res.status(500).json({ message: "Error occurred during admin login", error, success: false });
     }

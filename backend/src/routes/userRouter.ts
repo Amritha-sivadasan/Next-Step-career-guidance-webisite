@@ -14,15 +14,16 @@ import firebaseController from "../contollers/firebaseController";
 
 const router = Router();
 
+router.post("/register", studentController.createStudent);
 router.post("/otp-send", otpController.createOtp);
 router.post("/verify-otp", otpController.verifyOtp);
 router.post("/resend-otp", otpController.createOtp);
-router.post("/register", studentController.createStudent);
+
 router.post("/refresh-token", verifyRefreshToken, refreshTokens);
 router.post("/login", validateStudentLogin, studentController.loginUser);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
 
 router.post("/google-login", firebaseController);
-router.put("/update/:id", verifyRefreshToken, studentController.updateStudent);
+router.put("/update/:id", verifyAccessToken,verifyRole("student"),studentController.updateStudent);
 export default router;

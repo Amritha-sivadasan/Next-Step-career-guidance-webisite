@@ -3,12 +3,15 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
-import { verifyOtp, setUser,setAuthenticated } from "../../features/student/studentSlice";
+import {
+  verifyOtp,
+  setUser,
+  setAuthenticated,
+} from "../../features/student/studentSlice";
 import { useNavigate } from "react-router-dom";
-import { sendOtp } from "../../utils/api/studentApi";
+import { sendOtp } from "../../services/api/studentApi";
 import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
 import { UserData } from "../../features/student/studentSlice";
-
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -30,17 +33,15 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
     if (userType == "student") {
-    const storageData = localStorage.getItem("userdata");
-    if (storageData) {
-      const parsedData = JSON.parse(storageData);
-      const email: string = parsedData.email;   
+      const storageData = sessionStorage.getItem("userdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
         const verifyOtpResult = await dispatch(
           VerifyOtp({ email, otp: data.otp })
         ).unwrap();
-       
-        
+
         if (verifyOtpResult.success) {
-        
           dispatch(verifyOtp());
           const registerStudentResult = await dispatch(
             registerStudent(parsedData)
@@ -49,21 +50,22 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
             const userData = registerStudentResult.data as UserData;
             if (userData && userData._id) {
               dispatch(setUser(userData));
-              dispatch(setAuthenticated(true))
-              localStorage.removeItem('userdata')
-              localStorage.setItem("userId",userData._id)
+              dispatch(setAuthenticated(true));
+              sessionStorage.removeItem("userdata");
+              localStorage.setItem("userId", userData._id);
+              localStorage.setItem('userAccess',registerStudentResult.accessToken)
               navigate("/about-student");
             } else {
               console.error("User data is missing or malformed.");
             }
-          } 
-        } 
+          }
+        }
       }
     }
   };
 
   const resendOtp = () => {
-    const storageData = localStorage.getItem("userdata");
+    const storageData = sessionStorage.getItem("userdata");
     if (storageData) {
       const parsedData = JSON.parse(storageData);
       const email: string = parsedData.email;

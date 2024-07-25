@@ -1,13 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IStudent } from "../../../@types/user";
+import { googleSignup,updatestudent,userRegister } from "../../../services/api/studentApi";
+import { verifyOtp } from "../../../services/api/studentApi";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+
+
 
 interface RegisterUserResponse {
   success: boolean;
   Message: string;
   data?: IStudent;  
+  accessToken:string
 }
 
 interface ThunkError {
@@ -37,8 +41,8 @@ export const registerStudent = createAsyncThunk<
   { rejectValue: ThunkError }
 >("student/register", async (userData: IStudent, thunkAPI) => {
   try {
-    const response = await axios.post(`${apiUrl}/student/register`, userData, { withCredentials: true });
-    return response.data;
+    const response = userRegister(userData)
+    return (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue({
@@ -62,8 +66,8 @@ export const registerStudentWithGoogle = createAsyncThunk<
   { rejectValue: ThunkError }
 >("student/register", async (token:string, thunkAPI) => {
   try {
-    const response = await axios.post(`${apiUrl}/student/google-login`, {token}, { withCredentials: true });
-    return response.data;
+    const response = googleSignup(token)
+    return (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue({
@@ -84,11 +88,6 @@ export const registerStudentWithGoogle = createAsyncThunk<
 
 
 
-
-
-
-
-
 export const VerifyOtp = createAsyncThunk<
   OtpResponse,
   VerifyOtpPayload,
@@ -96,14 +95,14 @@ export const VerifyOtp = createAsyncThunk<
 >("student/verifyOtp", async (payload: VerifyOtpPayload, thunkAPI) => {
   const { email, otp } = payload;
   try {
-    const response = await axios.post(`${apiUrl}/student/verify-otp`, { email, otp }, { withCredentials: true });
-    if (response.data.success) {
-      return response.data;
+    const response = verifyOtp(email,otp)
+    if ((await response).data.success) {
+      return (await response).data;
     } else {
       return thunkAPI.rejectWithValue({
-        message: response.data.message || "Verification failed",
-        success: response.data.success,
-        data: response.data
+        message: (await response).data.message || "Verification failed",
+        success: (await response).data.success,
+        data: (await response).data.data
       });
     }
   } catch (error) {
@@ -131,8 +130,8 @@ export const updateUser = createAsyncThunk<
 >("student/register", async (payload: UpdateUserPayload, thunkAPI) => {
   const { userId, updateData } = payload;
   try {
-    const response = await axios.put(`${apiUrl}/student/update/${userId}`, {updateData}, { withCredentials: true });
-    return response.data;
+    const response = updatestudent(userId,updateData)
+    return  (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue({

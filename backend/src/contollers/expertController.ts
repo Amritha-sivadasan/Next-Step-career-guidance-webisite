@@ -18,9 +18,9 @@ import OtpService from "../services/implementations/OtpService";
             res.status(409 ).json({success:false,Message:"user already exist",})
           }else{
             const { expert, accessToken, refreshToken } = await this.expertService.createdExpert(req.body);
-            res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+            
             res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-            res.status(201).json({success:true,Message:"Expert created successfully"});
+            res.status(201).json({success:true,Message:"Expert created successfully",accessToken,data:expert});
           }
         } catch (error) {
           res.status(500).json({ message:"",error,success:false });
@@ -30,10 +30,10 @@ import OtpService from "../services/implementations/OtpService";
    public loginUser=async (req:Request,res:Response):Promise<void>=>{
     const {email,password}=req.body
     try {    
-      const {  accessToken, refreshToken } =await this.expertService.login(email,password)
-      res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+      const { expert, accessToken, refreshToken } =await this.expertService.login(email,password)
+     
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-      res.status(200).json({success:true,Message:"User logged successfully"});
+      res.status(200).json({success:true,Message:"User logged successfully",accessToken,data:expert});
       
     } catch (error) {
       res.status(500).json({ message:"",error,success:false });

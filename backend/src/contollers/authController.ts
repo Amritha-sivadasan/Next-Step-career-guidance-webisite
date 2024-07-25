@@ -20,16 +20,13 @@ export const refreshTokens = async (req: Request, res: Response) => {
     const newAccessToken = generateAccessToken(userId, role);
     const newRefreshToken = generateRefreshToken(userId, role);
 
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      maxAge: 15 * 60 * 1000,
-    });
+   
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+    res.json({ accessToken: newAccessToken });
   } catch (error) {
     res
       .status(403)

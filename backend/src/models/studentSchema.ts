@@ -1,5 +1,6 @@
 import { Schema, model,Document } from "mongoose";
 import { IStudent } from "../entities/StudentEntity";
+import { boolean } from "joi";
 
 const StudentSchema: Schema = new Schema(
   {
@@ -15,7 +16,7 @@ const StudentSchema: Schema = new Schema(
     role: { type: String, default: "student" },
     authentication_id: { type: String},
     authentication_provider: { type: String },
-    is_data_entered:{type:String}
+    is_data_entered:{type:Boolean,default:false}
   },
   { timestamps: true }
 );

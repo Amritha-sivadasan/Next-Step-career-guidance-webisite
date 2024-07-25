@@ -4,11 +4,12 @@ import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { NavLink, useNavigate } from "react-router-dom";
-import { sendOtp } from "../../utils/api/studentApi";
+import { sendOtp } from "../../services/api/studentApi";
 import { app } from "../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
 import { setUser, UserData } from "../../features/student/studentSlice";
+// import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
 interface SignupFormInputs {
   user_name: string;
@@ -20,22 +21,9 @@ interface SignupFormInputs {
 
 const Signup: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<SignupFormInputs>({
-    defaultValues: {
-      user_name: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-      confirmPassword: "",
-    },
+  const { register, handleSubmit,formState: { errors },watch,
+  } = useForm<SignupFormInputs>({defaultValues: { user_name: "",email: "",phoneNumber: "", password: "",confirmPassword: "", },
   });
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
@@ -45,27 +33,10 @@ const Signup: React.FC = () => {
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...userData } = data;
-
     sendOtp(data.email);
-    localStorage.setItem("userdata", JSON.stringify(userData));
+    sessionStorage.setItem("userdata", JSON.stringify(userData));
     navigate("/otp-verify");
   };
-
-  // const validatePassword = (value: string) => {
-  //   const strongPasswordPattern =
-  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  //   return (
-  //     strongPasswordPattern.test(value) ||
-  //     "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
-  //   );
-  // };
-
-  // const validatePhoneNumber = (value: string) => {
-  //   const phoneNumberPattern = /^[0-9]{10}$/;
-  //   return (
-  //     phoneNumberPattern.test(value) || "Phone number must be exactly 10 digits"
-  //   );
-  // };
 
   const Errornotify = (msg: string) => {
     toast.error(msg, {
@@ -89,7 +60,6 @@ const Signup: React.FC = () => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       console.log("credential", credential);
       const token = await auth.currentUser?.getIdToken();
-  
 
       if (token) {
         const registerStudentResult = await dispatch(
@@ -101,6 +71,7 @@ const Signup: React.FC = () => {
           dispatch(setUser(userData));
 
           localStorage.setItem("userId", userData._id);
+          localStorage.setItem('userAccess',registerStudentResult.accessToken)
           navigate("/about-student");
         }
       }

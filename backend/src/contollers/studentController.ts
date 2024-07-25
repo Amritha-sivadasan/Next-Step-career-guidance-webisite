@@ -12,32 +12,23 @@ class StudentController {
 
   public createStudent = async (req: Request, res: Response): Promise<void> => {
     try {
-     
       let exitStudent = await this.studentService.exitStudent(req.body.email);
       if (exitStudent) {
         res.status(409).json({ success: false, Message: "user already exist" });
       } else {
-        const { student, accessToken, refreshToken } =
-          await this.studentService.createStudent(req.body);
+        const { student, accessToken, refreshToken } = await this.studentService.createStudent(req.body); 
         const studentObject = student;
-        // delete studentObject.password;
-        res.cookie("accessToken", accessToken, {
-          httpOnly: true,
-          secure: false,
-          sameSite: "lax",
-        });
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
           secure: false,
           sameSite: "lax",
         });
-        res
-          .status(201)
-          .json({
-            success: true,
-            Message: "student created successfully",
-            data: studentObject,
-          });
+        res.status(201).json({
+          success: true,
+          Message: "student created successfully",
+          data: studentObject,
+          accessToken,
+        });
       }
     } catch (error) {
       res.status(500).json({ message: "", error, success: false });
@@ -45,21 +36,34 @@ class StudentController {
   };
 
   public updateStudent = async (req: Request, res: Response): Promise<void> => {
-   
-    const {id}=req.params
+    const { id } = req.params;
     const { updateData } = req.body;
     try {
-      const updatedStudent = await this.studentService.updateStudent(id, updateData);
+      const updatedStudent = await this.studentService.updateStudent(
+        id,
+        updateData
+      );
       if (updatedStudent) {
-        res.status(200).json({ success: true, Message: "User updated successfully", data: updatedStudent });
+        res
+          .status(200)
+          .json({
+            success: true,
+            Message: "User updated successfully",
+            data: updatedStudent,
+          });
       } else {
         res.status(404).json({ success: false, Message: "User not found" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Error occurred while updating user", error, success: false });
+      res
+        .status(500)
+        .json({
+          message: "Error occurred while updating user",
+          error,
+          success: false,
+        });
     }
   };
-  
 
   public loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
@@ -116,13 +120,11 @@ class StudentController {
           .json({ message: "OTP generated and sent successfully" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "error occur on forgot password",
-          error,
-          success: false,
-        });
+      res.status(500).json({
+        message: "error occur on forgot password",
+        error,
+        success: false,
+      });
     }
   };
 }

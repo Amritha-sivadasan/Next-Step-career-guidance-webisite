@@ -4,7 +4,7 @@ import { CustomRequest } from "../entities/jwtEntity";
 
 
 export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextFunction) => {
-    const token = req.cookies.accessToken || req.headers.authorization?.split(' ')[1];
+    const token =  req.headers.authorization?.split(' ')[1];
   
     if (!token) {
       return res.status(401).json({ message: 'Access token is missing' });
@@ -20,8 +20,6 @@ export const verifyAccessToken = (req: CustomRequest, res: Response, next: NextF
 
   
   export const verifyRefreshToken = (req: CustomRequest, res: Response, next: NextFunction) => {
- 
-    
     const token = req.cookies.refreshToken;
 
  

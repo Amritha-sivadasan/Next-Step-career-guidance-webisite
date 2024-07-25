@@ -31,7 +31,6 @@ export default class StudentService implements IStudentService {
       const newStudent = await this.studentRepository.create(
         studentWithHashedPassword
       );
-
       let userId = newStudent._id.toString();
       const accessToken = generateAccessToken(userId, "student");
       const refreshToken = generateRefreshToken(userId, "student");

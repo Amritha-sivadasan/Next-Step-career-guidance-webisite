@@ -19,51 +19,45 @@ const app = initializeApp(firebaseConfig);
 const studentService: IStudentService = new StudentService();
 
 export default async (req: Request, res: Response) => {
-  
   try {
-   
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(req.body.token);
-    
-    let studentExist = await studentService.exitStudent(decodedToken.email as string); 
-       
-      if (!studentExist) {
-        const newStudent:Partial< IStudent >= {
-          user_name: decodedToken.name || "",
-          email: decodedToken.email || "",
-          password: "",
-          authentication_id: decodedToken.uid,
-          authentication_provider: decodedToken.firebase.sign_in_provider || "",
-          profile_picture: decodedToken.picture || "",
-          phonenumber: "",
-          role: "student",
-        };
 
-        const { student, accessToken, refreshToken } = await studentService.createStudent(newStudent);
-        res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
-    res
-      .status(201)
-      .json({
+    let studentExist = await studentService.exitStudent(
+      decodedToken.email as string
+    );
+
+    if (!studentExist) {
+      const newStudent: Partial<IStudent> = {
+        user_name: decodedToken.name || "",
+        email: decodedToken.email || "",
+        password: "",
+        authentication_id: decodedToken.uid,
+        authentication_provider: decodedToken.firebase.sign_in_provider || "",
+        profile_picture: decodedToken.picture || "",
+        phonenumber: "",
+        role: "student",
+      };
+
+      const { student, accessToken, refreshToken } =
+        await studentService.createStudent(newStudent);
+    
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+      res.status(201).json({
         success: true,
         Message: "student created successfully",
         data: student,
+        accessToken
       });
-     
-    }else{
-        res.status(409).json({ success: false, Message: "user already exist" });
+    } else {
+      res.status(409).json({ success: false, message: "user already exist" });
     }
-    
   } catch (error) {
     console.error("Error occurred during Google authentication:", error);
-    res.status(500).json({message:"Internal server error" ,success:false, });
+    res.status(500).json({ message: "Internal server error", success: false });
   }
 };
