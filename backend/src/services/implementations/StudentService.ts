@@ -32,16 +32,15 @@ export default class StudentService implements IStudentService {
         studentWithHashedPassword
       );
 
-      let  userId = newStudent._id.toString()
-    
-        
-        const accessToken = generateAccessToken(userId, "student");
-        const refreshToken = generateRefreshToken(userId, "student");
-        return { student: newStudent, accessToken, refreshToken };
-      
-
+      let userId = newStudent._id.toString();
+      const accessToken = generateAccessToken(userId, "student");
+      const refreshToken = generateRefreshToken(userId, "student");
+      return { student: newStudent, accessToken, refreshToken };
     } catch (error) {
-      console.log("error occur in student repository while creating a student",error);
+      console.log(
+        "error occur in student repository while creating a student",
+        error
+      );
 
       throw error;
     }
@@ -88,5 +87,9 @@ export default class StudentService implements IStudentService {
     student: Partial<IStudent>
   ): Promise<IStudent | null> {
     return this.studentRepository.update(id, student);
+  }
+
+  async findUsertById(id: string): Promise<IStudent | null> {
+    return this.studentRepository.findUsertById(id);
   }
 }

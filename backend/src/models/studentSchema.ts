@@ -11,11 +11,11 @@ const StudentSchema: Schema = new Schema(
     education_background: { type: String, },
     user_type: { type: String,},
     profile_picture: { type: String, default: "" },
-    is_active: { type: Boolean, default: true },
-  
+    is_active: { type: Boolean, default: true },  
     role: { type: String, default: "student" },
     authentication_id: { type: String},
     authentication_provider: { type: String },
+    is_data_entered:{type:String}
   },
   { timestamps: true }
 );

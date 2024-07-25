@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import StudentRepository from "../repositories/implementations/StudentRepository";
-import { IStudentRepository } from "../repositories/interface/IStudentRepository";
+import StudentService from "../services/implementations/StudentService";
+import { IStudentService } from "../services/interface/IStudentService";
 import { IStudent } from "../entities/StudentEntity";
-import { generateAccessToken,generateRefreshToken } from "../utils/jwt"; 
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -17,55 +16,54 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const studentRepository: IStudentRepository = new StudentRepository();
+const studentService: IStudentService = new StudentService();
 
 export default async (req: Request, res: Response) => {
+  
   try {
-    console.log(req.body);
-
+   
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(req.body.token);
-    console.log("decoded", decodedToken);
-
-    let studentExist = await studentRepository.findUsetById(decodedToken.uid);
-    if (!studentExist) {
-      if (decodedToken.firebase.sign_in_provider === 'google.com') {
-        studentExist = await studentRepository.findOne(decodedToken.email as string);
-      }
+    
+    let studentExist = await studentService.exitStudent(decodedToken.email as string); 
+       
       if (!studentExist) {
-        const newStudent: Partial<IStudent> = {
-          user_name: decodedToken.name || '',
-          email: decodedToken.email || '',
-          password: '',
+        const newStudent:Partial< IStudent >= {
+          user_name: decodedToken.name || "",
+          email: decodedToken.email || "",
+          password: "",
           authentication_id: decodedToken.uid,
-          authentication_provider: decodedToken.firebase.sign_in_provider || '',
-          profile_picture: decodedToken.picture || '',
-          user_type: '',
-          phonenumber: '',
-          education_level: '',
-          education_background: '',
-          is_active: true,
-          role: 'student',
+          authentication_provider: decodedToken.firebase.sign_in_provider || "",
+          profile_picture: decodedToken.picture || "",
+          phonenumber: "",
+          role: "student",
         };
 
-        studentExist = await studentRepository.create(newStudent);
-      }
-    }
-
-   
-    const userId = studentExist._id.toString();
-    const accessToken = generateAccessToken(userId, "student");
-    const refreshToken = generateRefreshToken(userId, "student");
-
-    
-    res.json({
-      student: studentExist,
-      accessToken,
-      refreshToken
+        const { student, accessToken, refreshToken } = await studentService.createStudent(newStudent);
+        res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
     });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    res
+      .status(201)
+      .json({
+        success: true,
+        Message: "student created successfully",
+        data: student,
+      });
+     
+    }else{
+        res.status(409).json({ success: false, Message: "user already exist" });
+    }
     
   } catch (error) {
     console.error("Error occurred during Google authentication:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({message:"Internal server error" ,success:false, });
   }
 };

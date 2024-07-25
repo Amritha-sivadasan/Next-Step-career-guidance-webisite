@@ -13,7 +13,6 @@ class StudentController {
   public createStudent = async (req: Request, res: Response): Promise<void> => {
     try {
      
-
       let exitStudent = await this.studentService.exitStudent(req.body.email);
       if (exitStudent) {
         res.status(409).json({ success: false, Message: "user already exist" });
@@ -24,13 +23,13 @@ class StudentController {
         // delete studentObject.password;
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
-          secure: true,
-          sameSite: "strict",
+          secure: false,
+          sameSite: "lax",
         });
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
-          secure: true,
-          sameSite: "strict",
+          secure: false,
+          sameSite: "lax",
         });
         res
           .status(201)
@@ -46,11 +45,11 @@ class StudentController {
   };
 
   public updateStudent = async (req: Request, res: Response): Promise<void> => {
-    console.log('req body from update student');
-    
-    const { userId, partialData } = req.body;
+   
+    const {id}=req.params
+    const { updateData } = req.body;
     try {
-      const updatedStudent = await this.studentService.updateStudent(userId, partialData);
+      const updatedStudent = await this.studentService.updateStudent(id, updateData);
       if (updatedStudent) {
         res.status(200).json({ success: true, Message: "User updated successfully", data: updatedStudent });
       } else {
@@ -71,12 +70,12 @@ class StudentController {
       );
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
       });
       res

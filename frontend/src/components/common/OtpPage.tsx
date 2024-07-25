@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../store/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
-import { verifyOtp } from "../../features/student/studentSlice";
+import { verifyOtp, setUser,setAuthenticated } from "../../features/student/studentSlice";
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../utils/api/studentApi";
+import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
+import { UserData } from "../../features/student/studentSlice";
+
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -25,25 +28,47 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   } = useForm<OtpFormInputs>();
   const [otp, setOtp] = useState("");
 
-  const email: string = useSelector(
-    (state: RootState) => state.student.basicDetails.email
-  );
-
-  const onSubmit: SubmitHandler<OtpFormInputs> = (data) => {
-    console.log("OTP submitted:", data.otp);
+  const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
     if (userType == "student") {
-      dispatch(VerifyOtp({ email, otp: data.otp })).then((result) => {
-        console.log("response", result);
-
-        if (result.payload?.success == true) {
+    const storageData = localStorage.getItem("userdata");
+    if (storageData) {
+      const parsedData = JSON.parse(storageData);
+      const email: string = parsedData.email;   
+        const verifyOtpResult = await dispatch(
+          VerifyOtp({ email, otp: data.otp })
+        ).unwrap();
+       
+        
+        if (verifyOtpResult.success) {
+        
           dispatch(verifyOtp());
-          navigate("/about-student");
-        }
-      });
+          const registerStudentResult = await dispatch(
+            registerStudent(parsedData)
+          ).unwrap();
+          if (registerStudentResult.success) {
+            const userData = registerStudentResult.data as UserData;
+            if (userData && userData._id) {
+              dispatch(setUser(userData));
+              dispatch(setAuthenticated(true))
+              localStorage.removeItem('userdata')
+              localStorage.setItem("userId",userData._id)
+              navigate("/about-student");
+            } else {
+              console.error("User data is missing or malformed.");
+            }
+          } 
+        } 
+      }
     }
   };
-  const resendOtp = () => { 
-    sendOtp(email)
+
+  const resendOtp = () => {
+    const storageData = localStorage.getItem("userdata");
+    if (storageData) {
+      const parsedData = JSON.parse(storageData);
+      const email: string = parsedData.email;
+      sendOtp(email);
+    }
   };
 
   return (

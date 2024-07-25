@@ -1,15 +1,14 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { setBasicDetails,setGoogleAuth } from "../../features/student/studentSlice";
-import { AppDispatch, RootState } from "../../store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { sendOtp } from "../../utils/api/studentApi";
 import { app } from "../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { firebaseLogin } from "../../utils/api/studentApi";
-
+import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
+import { setUser, UserData } from "../../features/student/studentSlice";
 
 interface SignupFormInputs {
   user_name: string;
@@ -22,9 +21,6 @@ interface SignupFormInputs {
 const Signup: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
-  const { basicDetails, status } = useSelector(
-    (state: RootState) => state.student
-  );
   const navigate = useNavigate();
 
   const {
@@ -34,10 +30,10 @@ const Signup: React.FC = () => {
     watch,
   } = useForm<SignupFormInputs>({
     defaultValues: {
-      user_name: basicDetails.user_name || "",
-      email: basicDetails.email || "",
-      phoneNumber: basicDetails.phonenumber || "",
-      password: basicDetails.password || "",
+      user_name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
       confirmPassword: "",
     },
   });
@@ -49,26 +45,27 @@ const Signup: React.FC = () => {
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...userData } = data;
-    dispatch(setBasicDetails({ ...basicDetails, ...userData }));
+
     sendOtp(data.email);
+    localStorage.setItem("userdata", JSON.stringify(userData));
     navigate("/otp-verify");
   };
 
-  const validatePassword = (value: string) => {
-    const strongPasswordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return (
-      strongPasswordPattern.test(value) ||
-      "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
-    );
-  };
+  // const validatePassword = (value: string) => {
+  //   const strongPasswordPattern =
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  //   return (
+  //     strongPasswordPattern.test(value) ||
+  //     "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+  //   );
+  // };
 
-  const validatePhoneNumber = (value: string) => {
-    const phoneNumberPattern = /^[0-9]{10}$/;
-    return (
-      phoneNumberPattern.test(value) || "Phone number must be exactly 10 digits"
-    );
-  };
+  // const validatePhoneNumber = (value: string) => {
+  //   const phoneNumberPattern = /^[0-9]{10}$/;
+  //   return (
+  //     phoneNumberPattern.test(value) || "Phone number must be exactly 10 digits"
+  //   );
+  // };
 
   const Errornotify = (msg: string) => {
     toast.error(msg, {
@@ -90,15 +87,22 @@ const Signup: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      console.log(credential);
+      console.log("credential", credential);
       const token = await auth.currentUser?.getIdToken();
+  
+
       if (token) {
-        const data = await firebaseLogin(token);
-         console.log('data',data);
-        await localStorage.setItem('user_id',data.student._id)
-         dispatch(setGoogleAuth())
-         navigate('/about-student')
-        
+        const registerStudentResult = await dispatch(
+          registerStudentWithGoogle(token.toString())
+        ).unwrap();
+
+        if (registerStudentResult.success) {
+          const userData = registerStudentResult.data as UserData;
+          dispatch(setUser(userData));
+
+          localStorage.setItem("userId", userData._id);
+          navigate("/about-student");
+        }
       }
     } catch (error) {
       console.error("Error during Google sign-in:", error);
@@ -155,7 +159,7 @@ const Signup: React.FC = () => {
                 type="text"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
-                  validate: validatePhoneNumber,
+                  // validate: validatePhoneNumber,
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Phone number"
@@ -170,7 +174,7 @@ const Signup: React.FC = () => {
                 type="password"
                 {...register("password", {
                   required: "Password is required",
-                  validate: validatePassword,
+                  // validate: validatePassword,
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Password"
@@ -207,12 +211,12 @@ const Signup: React.FC = () => {
               <div className="text-center mt-4">
                 <p className="text-sm text-gray-600">
                   Already have an account?{" "}
-                  <a
-                    href="/login"
+                  <NavLink
+                    to="/login"
                     className="text-[#0B2149] font-medium hover:underline"
                   >
                     LogIn
-                  </a>
+                  </NavLink>
                 </p>
               </div>
             </form>

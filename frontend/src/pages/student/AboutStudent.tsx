@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store";
-import { setAdditionalInfo,setAuthenticated } from "../../features/student/studentSlice";
-import { registerStudent,registerWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
+import { updateUser } from "../../features/student/middleware/StudentRegisterThunk";
+
 
 interface FormlInputs {
   education_level: string;
@@ -14,43 +14,24 @@ interface FormlInputs {
 
 
 const AboutUser: React.FC = () => {
-  const { additionalInfo,basicDetails,isGoogleUser } = useSelector((state: RootState) => state.student);
+  
   const dispatch: AppDispatch = useDispatch();
   const navigate=useNavigate()
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormlInputs>({
     defaultValues: {
-      education_level: additionalInfo.education_level,
-      education_background: additionalInfo.education_background,
-      user_type: additionalInfo.user_type,
+      education_level: "",
+      education_background: "",
+      user_type: ""
     }
   });
 
-  const onSubmit: SubmitHandler<FormlInputs> = async (data) => {
-    if(isGoogleUser){
-      const userId = localStorage.getItem('user_id');
-      if (userId) {
-        const resultAction = await dispatch(registerWithGoogle({ userId, partialData: data }));
-        if (registerWithGoogle.fulfilled.match(resultAction) && resultAction.payload.success) {
-          dispatch(setAuthenticated(resultAction.payload.success));
-          navigate('/');
-        }
-      }
-    }else{
-      dispatch(setAdditionalInfo(data));
-      const userData={
-          ...basicDetails,
-          ...data
-      }
-      dispatch(registerStudent(userData)).then(result=>{
-        if(result.payload?.success){
-          dispatch(setAuthenticated(result.payload.success))
-          navigate('/')
-        }
-      })
+  const onSubmit: SubmitHandler<FormlInputs> = async (updateData) => {
+    const userId=localStorage.getItem('userId')
+    if(userId){
+      dispatch(updateUser({userId,updateData}))
+      navigate('/')
     }
-      
-  
     
   };
 

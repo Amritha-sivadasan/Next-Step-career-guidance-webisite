@@ -5,21 +5,15 @@ import { IStudent } from "../../../@types/user";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 interface RegisterUserResponse {
-  userId: string;
-  user_name: string;
-  email: string;
-  phonenumber: string;
-  education_level: string;
-  education_background: string;
-  user_type: string;
-  profile_picture?: string;
-  message: string;
   success: boolean;
+  Message: string;
+  data?: IStudent;  
 }
 
 interface ThunkError {
   message: string;
   success: boolean;
+  data: object;
 }
 
 interface OtpResponse {
@@ -32,44 +26,10 @@ interface VerifyOtpPayload {
   otp: string;
 }
 
-interface PartialData {
-  education_level?: string;
-  education_background?: string;
-  user_type?: string;
+interface UpdateUserPayload {
+  userId: string;
+  updateData: Partial<IStudent>;
 }
-interface RegisterWithGooglePayload {
-  userId: string; 
-  partialData: PartialData; 
-}
-
-export const registerWithGoogle = createAsyncThunk<
-  RegisterUserResponse, 
-  RegisterWithGooglePayload,       
-  { rejectValue: ThunkError } 
->("google/register", async (payload: RegisterWithGooglePayload, thunkAPI) => {
-  const { userId, partialData } = payload;
-  try {
-   
-    const response = await axios.post(`${apiUrl}/student/register/google`, {userId,partialData});
-    console.log("Google Registration Response:", response.data);
-    return response.data; 
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue({
-        message: error.response?.data?.message || "An error occurred",
-        success: error.response?.data?.success || false
-      });
-    } else {
-      return thunkAPI.rejectWithValue({
-        message: "An unexpected error occurred",
-        success: false
-      });
-    }
-  }
-})
-
-
-
 
 export const registerStudent = createAsyncThunk<
   RegisterUserResponse,
@@ -77,56 +37,114 @@ export const registerStudent = createAsyncThunk<
   { rejectValue: ThunkError }
 >("student/register", async (userData: IStudent, thunkAPI) => {
   try {
-    const response = await axios.post(`${apiUrl}/student/register`, userData);
-    console.log(response.data);
-
+    const response = await axios.post(`${apiUrl}/student/register`, userData, { withCredentials: true });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue({
         message: error.response?.data?.message || "An error occurred",
-        success:error.response?.data?.success
+        success: error.response?.data?.success || false,
+        data: error.response?.data || {}
       });
     } else {
       return thunkAPI.rejectWithValue({
         message: "An unexpected error occurred",
-        success:false
+        success: false,
+        data: {}
       });
     }
   }
 });
 
-//verify otp middleware
+export const registerStudentWithGoogle = createAsyncThunk<
+  RegisterUserResponse,
+   string,
+  { rejectValue: ThunkError }
+>("student/register", async (token:string, thunkAPI) => {
+  try {
+    const response = await axios.post(`${apiUrl}/student/google-login`, {token}, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkAPI.rejectWithValue({
+        message: error.response?.data?.message || "An error occurred",
+        success: error.response?.data?.success || false,
+        data: error.response?.data || {}
+      });
+    } else {
+      return thunkAPI.rejectWithValue({
+        message: "An unexpected error occurred",
+        success: false,
+        data: {}
+      });
+    }
+  }
+});
+
+
+
+
+
+
+
+
 
 export const VerifyOtp = createAsyncThunk<
   OtpResponse,
   VerifyOtpPayload,
   { rejectValue: ThunkError }
->("student/verifyOtp", async (payload, thunkAPI) => {
+>("student/verifyOtp", async (payload: VerifyOtpPayload, thunkAPI) => {
   const { email, otp } = payload;
   try {
-    const response = await axios.post(`${apiUrl}/student/verify-otp`, {
-      email,
-      otp,
-    });
-    if(response.data.success==true){
-      console.log(response.data);
-      
+    const response = await axios.post(`${apiUrl}/student/verify-otp`, { email, otp }, { withCredentials: true });
+    if (response.data.success) {
       return response.data;
+    } else {
+      return thunkAPI.rejectWithValue({
+        message: response.data.message || "Verification failed",
+        success: response.data.success,
+        data: response.data
+      });
     }
-    
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      
       return thunkAPI.rejectWithValue({
-        
         message: error.response?.data?.message || "An error occurred",
-        success:error.response?.data?.success
+        success: error.response?.data?.success || false,
+        data: error.response?.data || {}
       });
     } else {
       return thunkAPI.rejectWithValue({
         message: "An unexpected error occurred",
-        success:false
+        success: false,
+        data: {}
+      });
+    }
+  }
+});
+
+
+export const updateUser = createAsyncThunk<
+  RegisterUserResponse,
+  UpdateUserPayload,
+  { rejectValue: ThunkError }
+>("student/register", async (payload: UpdateUserPayload, thunkAPI) => {
+  const { userId, updateData } = payload;
+  try {
+    const response = await axios.put(`${apiUrl}/student/update/${userId}`, {updateData}, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkAPI.rejectWithValue({
+        message: error.response?.data?.message || "An error occurred",
+        success: error.response?.data?.success || false,
+        data: error.response?.data || {}
+      });
+    } else {
+      return thunkAPI.rejectWithValue({
+        message: "An unexpected error occurred",
+        success: false,
+        data: {}
       });
     }
   }

@@ -12,7 +12,7 @@ export interface IStudent  {
   user_type: string;
   profile_picture: string;
   is_active: Boolean;
-
+  is_data_entered:Boolean
   authentication_id:string,
   authentication_provider:string
   role: string;

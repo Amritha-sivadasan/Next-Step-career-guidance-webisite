@@ -8,7 +8,6 @@ export const sendOtp = async (email: string) => {
 
 export const firebaseLogin = async(token:string)=>{
   try {
-    
     const response= await  axios.post(`${apiUrl}/student/firebase-login`,{token})
     return response.data
   } catch (error) {

@@ -63,7 +63,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
       {/* Image Section */}
       <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
         <img
-          src={isExpert ? "/experts-image.png" : "/home-image.png"} // Conditional image source
+          src={isExpert ? "/experts.png" : "/home-image.png"} // Conditional image source
           alt={isExpert ? "Expert Image" : "Home Image"}
           className="w-full h-full object-cover"
         />

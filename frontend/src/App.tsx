@@ -1,11 +1,11 @@
-import { Routes } from "react-router-dom";
-import { Route } from "react-router-dom";
-
+import { Route, Routes } from "react-router-dom";
 import StudentRouter from "./routes/StudentRouter";
 import ExpertRouter from "./routes/ExpertRouter";
 import AdminRouter from "./routes/AdminRouter";
 
+
 function App() {
+
   return (
     <>
       <Routes>
