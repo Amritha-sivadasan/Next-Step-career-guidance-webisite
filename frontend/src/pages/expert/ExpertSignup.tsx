@@ -1,93 +1,192 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
+import { sendOtpExpert } from "../../services/api/ExpertApi";
+
+interface SignupFormInputs {
+  user_name: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const ExpertSignup: React.FC = () => {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignupFormInputs>({
+    defaultValues: {
+      user_name: "",
+      email: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const Errornotify = (msg: string) => {
+    toast.error(msg, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
+  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+    if (data.password !== data.confirmPassword) {
+      Errornotify("Password and confirm password do not match");
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...userData } = data;
+    const response = await sendOtpExpert(data.email);
+    if (response.success) {
+      sessionStorage.setItem("expertdata", JSON.stringify(userData));
+      navigate("/expert/otp-verify");
+    } else {
+      Errornotify(response.message);
+    }
+  };
   return (
-    <div className="flex flex-col md:flex-row w-full h-screen">
-      <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
-        <div className="absolute top-6 left-8 flex items-center">
-          <img src="/image.png" alt="Website Logo" className="h-6" />
-          <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
-        </div>
+    <div className="h-screen">
+      <header className="p-4 flex items-center bg-white text-[#0B2149]">
+        <img src="/image.png" alt="Website Logo" className="h-6" />
+        <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
+      </header>
 
-        <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
-          <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
-            Sign up
-          </h1>
-          <form className="flex flex-col space-y-4">
-            <input
-              type="text"
-              name="userName"
-              className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-              placeholder="Username"
-            />
-            <input
-              type="email"
-              name="email"
-              className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-              placeholder="Enter email"
-            />
-            <input
-              type="text"
-              name="phoneNumber"
-              className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-              placeholder="Phone number"
-            />
-            <input
-              type="password"
-              name="password"
-              className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-              placeholder="Password"
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
-              placeholder="Confirm password"
-            />
-            <button
-              type="submit"
-              className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
-            >
-              {status === "loading" ? "Signing Up..." : "Sign Up"}
-            </button>
-
-            <div className="text-center mt-4">
-              <p className="text-sm text-gray-600">
-                Already have an account?{" "}
-                <NavLink
-                  to="/expert/login"
-                  className="text-[#0B2149] font-medium hover:underline"
-                >
-                  LogIn
-                </NavLink>
-              </p>
-            </div>
-          </form>
-
-          <div className="mt-6 text-center">
-            <h2 className="text-lg mb-2">Or sign up with</h2>
-            <button
-              type="button"
-              className="flex items-center justify-center w-full max-w-xs mx-auto p-2 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
-            >
-              <img
-                src="/google-logo.svg"
-                alt="Google Logo"
-                className="h-6 mr-2"
+      <div className="flex flex-col md:flex-row w-full max-h-screen">
+        <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
+          <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
+            <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
+              Sign up
+            </h1>
+            <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
+              <input
+                type="text"
+                {...register("user_name", {
+                  required: "Username is required",
+                })}
+               
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Username"
               />
-              <span className="text-[#0B2149] font-medium">Google</span>
-            </button>
+               {errors.user_name && (
+                <p className="text-red-500 text-sm">
+                  {errors.user_name.message}
+                </p>
+              )}
+              <input
+                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                    message: "Invalid email address",
+                  },
+                })}
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Enter email"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+              <input
+                type="text"
+                {...register("phoneNumber", {
+                  required: "Phone number is required",
+                  // validate: validatePhoneNumber,
+                })}
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Phone number"
+              />
+                 {errors.phoneNumber && (
+                <p className="text-red-500 text-sm">
+                  {errors.phoneNumber.message}
+                </p>
+              )}
+              <input
+                type="password"
+              
+                {...register("password", {
+                  required: "Password is required",
+                  // validate: validatePassword,
+                })}
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Password"
+              />
+               {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
+              <input
+                type="password"
+                {...register("confirmPassword", {
+                  required: "Confirm Password is required",
+                  validate: (value) =>
+                    value === watch("password") || "Passwords do not match",
+                })}
+                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                placeholder="Confirm password"
+              />
+                {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+              <button
+                type="submit"
+                className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
+              >
+                {status === "loading" ? "Signing Up..." : "Sign Up"}
+              </button>
+
+              <div className="text-center mt-4">
+                <p className="text-sm text-gray-600">
+                  Already have an account?{" "}
+                  <NavLink
+                    to="/expert/login"
+                    className="text-[#0B2149] font-medium hover:underline"
+                  >
+                    LogIn
+                  </NavLink>
+                </p>
+              </div>
+            </form>
+
+            <div className="mt-6 text-center">
+              <h2 className="text-lg mb-2">Or sign up with</h2>
+              <button
+                type="button"
+                className="flex items-center justify-center w-full max-w-xs mx-auto p-2 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
+              >
+                <img
+                  src="/google-logo.svg"
+                  alt="Google Logo"
+                  className="h-6 mr-2"
+                />
+                <span className="text-[#0B2149] font-medium">Google</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
-        <img
-          src="/experts.png"
-          alt="Description of Image"
-          className="w-full h-full object-cover"
-        />
+        <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
+          <img
+            src="/experts.png"
+            alt="Description of Image"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );

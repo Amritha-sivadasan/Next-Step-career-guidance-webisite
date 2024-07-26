@@ -28,7 +28,7 @@ export async function checkIfUserIsBlocked() {
   }
 }
 
-export const sendOtp = async (email: string) => {
+export const sendOtpExpert = async (email: string) => {
   try {
     const response = await axios.post(`${API_URL}/expert/otp-send`, { email });
     return response.data;

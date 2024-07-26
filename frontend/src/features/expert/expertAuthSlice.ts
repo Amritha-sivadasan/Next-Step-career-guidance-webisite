@@ -6,7 +6,7 @@ import { registerExpert, VerifyOtpExpert} from "./middleware/ExpertRegisterThunk
 import { Expertlogin } from "./middleware/ExpertLoginThunk";
 
 export interface AuthState {
-  user: IExpert | null;
+  Expert: IExpert | null;
   isAuthenticated: boolean;
   otpVerified: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -14,7 +14,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
+  Expert: null,
   isAuthenticated: false,
   otpVerified: false,
   status: "idle",
@@ -25,19 +25,19 @@ const authSlice = createSlice({
   name: "expert",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<IExpert>) => {
-      state.user = action.payload;
+    setExpert: (state, action: PayloadAction<IExpert>) => {
+      state.Expert = action.payload;
       state.isAuthenticated = true;
     },
-    logout: (state) => {
-      state.user = null;
+    expertLogout: (state) => {
+      state.Expert = null;
       state.isAuthenticated = false;
       state.otpVerified = false;
     },
-    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+    setExpertAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
-    verifyOtp: (state) => {
+    verifyOtpExpert: (state) => {
       state.otpVerified = true;
     },
   },
@@ -48,7 +48,7 @@ const authSlice = createSlice({
       })
       .addCase(Expertlogin.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.data ?? null;
+        state.Expert = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         toast.success("Login successful!");
@@ -63,7 +63,7 @@ const authSlice = createSlice({
       })
       .addCase(registerExpert.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.data ?? null;
+        state.Expert = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         toast.success("Registration successful!");
@@ -90,6 +90,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout, setAuthenticated, verifyOtp } =
+export const { setExpert, expertLogout, setExpertAuthenticated, verifyOtpExpert } =
   authSlice.actions;
 export default authSlice.reducer;

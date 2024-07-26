@@ -106,7 +106,7 @@ import OtpService from "../services/implementations/OtpService";
     const { email } = req.body;
     const existUser= await this.expertService.exitExpert(email)
     if(existUser){
-      res.status(409).json({message:'User already exist',succss:false})
+      res.status(409).json({message:'Expert already exist',succss:false})
       return
     }
     if (!email) {

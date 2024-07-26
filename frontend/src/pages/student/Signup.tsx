@@ -98,12 +98,12 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div className="h-screen ">
       <header className="p-4 flex items-center bg-white text-[#0B2149]">
         <img src="/image.png" alt="Website Logo" className="h-6" />
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
       </header>
-      <div className="flex flex-col md:flex-row w-full h-screen">
+      <div className="flex flex-col md:flex-row w-full max-h-screen">
         <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
           <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
             <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">

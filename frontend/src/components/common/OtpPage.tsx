@@ -4,6 +4,10 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
 import {
+  registerExpert,
+  VerifyOtpExpert,
+} from "../../features/expert/middleware/ExpertRegisterThunk";
+import {
   verifyOtp,
   setUser,
   setAuthenticated,
@@ -12,6 +16,12 @@ import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../services/api/studentApi";
 import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
 import { IStudent } from "../../@types/user";
+import {
+  setExpert,
+  verifyOtpExpert,
+  setExpertAuthenticated,
+} from "../../features/expert/expertAuthSlice";
+import { IExpert } from "../../@types/expert";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -79,17 +89,59 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           }
         }
       }
+    } else {
+      const storageData = sessionStorage.getItem("expertdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
+        const verifyOtpResult = await dispatch(
+          VerifyOtpExpert({ email, otp: data.otp })
+        ).unwrap();
+        if (verifyOtpResult.success) {
+          dispatch(verifyOtpExpert());
+          const registerExpertResult = await dispatch(
+            registerExpert(parsedData)
+          ).unwrap();
+          if (registerExpertResult.success) {
+            const expetData = registerExpertResult.data as IExpert;
+            if (expetData && expetData._id) {
+              dispatch(setExpert(expetData));
+              dispatch(setExpertAuthenticated(true));
+              sessionStorage.removeItem("expertdata");
+              localStorage.setItem("ExpertId", expetData._id);
+              localStorage.setItem(
+                "expertAccess",
+                registerExpertResult.accessToken
+              );
+              navigate("/expert/about-expert");
+            } else {
+              console.log("Expert data is missing or malformed.");
+            }
+          }
+        }
+      }
     }
   };
 
   const resendOtp = () => {
-    const storageData = sessionStorage.getItem("userdata");
-    if (storageData) {
-      const parsedData = JSON.parse(storageData);
-      const email: string = parsedData.email;
-      sendOtp(email);
-      setTimer(10);
-      setCanResend(false);
+    if (userType == "student") {
+      const storageData = sessionStorage.getItem("userdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
+        sendOtp(email);
+        setTimer(10);
+        setCanResend(false);
+      }
+    } else {
+      const storageData = sessionStorage.getItem("expertdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
+        sendOtp(email);
+        setTimer(10);
+        setCanResend(false);
+      }
     }
   };
 
