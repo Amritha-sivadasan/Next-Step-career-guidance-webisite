@@ -44,9 +44,9 @@ export default async (req: Request, res: Response) => {
         await studentService.createStudent(newStudent);
     
       res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
-        sameSite: "lax",
+        sameSite:"none",
       });
       res.status(201).json({
         success: true,
@@ -60,7 +60,7 @@ export default async (req: Request, res: Response) => {
      const refreshToken=generateRefreshToken(userId,studentExist.role)
    
      res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       sameSite: "lax",
     });

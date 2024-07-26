@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../services/api/studentApi";
 import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
-import { UserData } from "../../features/student/authSlice";
+import { IStudent } from "../../@types/user";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -22,6 +22,22 @@ interface OtpFormInputs {
 }
 
 const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
+  const [otp, setOtp] = useState("");
+  const [timer, setTimer] = useState(10);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    } else {
+      setCanResend(true);
+    }
+  }, [timer]);
+
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -29,7 +45,6 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<OtpFormInputs>();
-  const [otp, setOtp] = useState("");
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
     if (userType == "student") {
@@ -47,7 +62,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
             registerStudent(parsedData)
           ).unwrap();
           if (registerStudentResult.success) {
-            const userData = registerStudentResult.data as UserData;
+            const userData = registerStudentResult.data as IStudent;
             if (userData && userData._id) {
               dispatch(setUser(userData));
               dispatch(setAuthenticated(true));
@@ -73,6 +88,8 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
       const parsedData = JSON.parse(storageData);
       const email: string = parsedData.email;
       sendOtp(email);
+      setTimer(10);
+      setCanResend(false);
     }
   };
 
@@ -107,7 +124,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                   },
                 })}
                 className="border h-12 ms-5 rounded-lg w-9/12"
-                placeholder="Enter OTP"
+                placeholder="  Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
               />
@@ -124,8 +141,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
             </button>
 
             <div className="text-center mt-4">
-              <p className="text-sm text-gray-600">
-                Didn't receive the code?{" "}
+              {canResend ? (
                 <button
                   type="button"
                   onClick={resendOtp}
@@ -133,7 +149,11 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                 >
                   Resend OTP
                 </button>
-              </p>
+              ) : (
+                <p className="text-sm text-rose-800">
+                  Resend OTP in {timer} seconds
+                </p>
+              )}
             </div>
           </form>
         </div>

@@ -24,7 +24,7 @@ interface TokenPayload {
       const decoded = jwt.verify(token, secret) as TokenPayload;
       return decoded;
     } catch (error) {
-  
+
       console.error('Token Verification Error:', error);
       throw new Error('Invalid or expired token');
     }

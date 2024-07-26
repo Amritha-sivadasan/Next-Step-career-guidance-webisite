@@ -16,12 +16,12 @@ class StudentController {
     try {
       let exitStudent = await this.studentService.exitStudent(req.body.email);
       if (exitStudent) {
-        res.status(409).json({ success: false, Message: "user already exist" });
+        res.status(409).json({ success: false, message: "user already exist" });
       } else {
         const { student, accessToken, refreshToken } = await this.studentService.createStudent(req.body); 
         const studentObject = student;
         res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
+          httpOnly: false,
           secure: false,
           sameSite: "lax",
         });
@@ -76,9 +76,9 @@ class StudentController {
       );
     
       res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
-        sameSite: "strict",
+        sameSite: "none",
       });
       res
         .status(200)
@@ -127,7 +127,7 @@ class StudentController {
   };
 
   public fetchUser=async(req:CustomRequest,res:Response):Promise<void>=>{
-      const userId=req.user?.userId
+      const userId=req.user?.userId 
       try {
         if(userId){
           const result= await this.studentService.getStudentById(userId)

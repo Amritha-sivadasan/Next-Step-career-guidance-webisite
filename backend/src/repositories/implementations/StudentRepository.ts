@@ -49,8 +49,7 @@ export default class StudentRepository implements IStudentRepository {
 
   async create(student: Partial<IStudent>): Promise<IStudent> {
     try {
-      console.log(student);
-
+  
       const newStudent = new Student(student);
       return newStudent.save();
     } catch (error) {

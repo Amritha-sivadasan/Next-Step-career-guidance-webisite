@@ -10,6 +10,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
 import { setUser, } from "../../features/student/authSlice";
 import { IStudent } from "../../@types/user";
+
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
 interface SignupFormInputs {
@@ -38,17 +39,23 @@ const Signup: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<SignupFormInputs> = async(data) => {
     if (data.password !== data.confirmPassword) {
       Errornotify("Password and confirm password do not match");
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...userData } = data;
-    sendOtp(data.email);
-    sessionStorage.setItem("userdata", JSON.stringify(userData));
-    navigate("/otp-verify");
+    const response= await  sendOtp(data.email);
+    if(response.success){
+      sessionStorage.setItem("userdata", JSON.stringify(userData));
+      navigate("/otp-verify");
+    }else{
+      Errornotify(response.message)
+    }
+    
   };
+
 
   const Errornotify = (msg: string) => {
     toast.error(msg, {

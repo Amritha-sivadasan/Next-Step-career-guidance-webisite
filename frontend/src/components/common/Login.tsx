@@ -68,7 +68,6 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         if (registerStudentResult.success) {
           const userData = registerStudentResult.data as IStudent;
           dispatch(setUser(userData));
-
           localStorage.setItem("userId", userData._id);
           localStorage.setItem("userAccess", registerStudentResult.accessToken);
           navigate("/");

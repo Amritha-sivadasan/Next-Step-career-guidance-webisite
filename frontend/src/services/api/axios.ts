@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    const refreshToken = localStorage.getItem("userRefresh");
+
     // console.log(error.response.status, "----------", originalRequest, "--------", refreshToken);
 
     if (error.response.data.error === "User is blocked") {
@@ -46,14 +46,14 @@ axiosInstance.interceptors.response.use(
 
     if (
       error.response.status === 401 &&
-      !originalRequest._retry &&
-      refreshToken
+      !originalRequest._retry 
+      
     ) {
       // console.log("from user axios.........");
 
       originalRequest._retry = true;
       try {
-        const newAccessToken = await getNewAccessToken(refreshToken);
+        const newAccessToken = await getNewAccessToken();
         // console.log(newAccessToken, "new access token from user axios");
 
         localStorage.setItem("userAccess", newAccessToken);
@@ -68,11 +68,10 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-async function getNewAccessToken(refreshToken: string) {
+async function getNewAccessToken() {
   // send a POST request to your backend API with the refresh token
-  const response = await axiosInstance.post(
-    `${API_URL}/refresh-token`,
-    { refreshToken },
+  const response = await axios.post(
+    `${API_URL}/student/refresh-token`,{},
     { withCredentials: true }
   );
   // console.log("response from refresh token route--------------------", response);

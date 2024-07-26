@@ -17,6 +17,9 @@ const ExpertSchema: Schema = new Schema(
     is_active: { type: Boolean, default: false }, 
     role: { type: String, default: "expert" },
     is_credential_validate: { type: Boolean, default: false },
+    is_data_entered:{type:Boolean,default:false},
+    authentication_id: { type: String},
+    authentication_provider: { type: String },
   },
   { timestamps: true }
 );

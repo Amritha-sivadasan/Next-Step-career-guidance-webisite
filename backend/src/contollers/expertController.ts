@@ -19,20 +19,20 @@ import OtpService from "../services/implementations/OtpService";
           }else{
             const { expert, accessToken, refreshToken } = await this.expertService.createdExpert(req.body);
             
-            res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('ExpertRefreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'lax' });
             res.status(201).json({success:true,Message:"Expert created successfully",accessToken,data:expert});
           }
         } catch (error) {
-          res.status(500).json({ message:"",error,success:false });
+          res.status(500).json({ message:"Something wrong while creating",success:false });
         }
       };
 
-   public loginUser=async (req:Request,res:Response):Promise<void>=>{
+   public loginExpert=async (req:Request,res:Response):Promise<void>=>{
     const {email,password}=req.body
     try {    
       const { expert, accessToken, refreshToken } =await this.expertService.login(email,password)
      
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.cookie('ExpertRefreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
       res.status(200).json({success:true,Message:"User logged successfully",accessToken,data:expert});
       
     } catch (error) {
@@ -40,6 +40,21 @@ import OtpService from "../services/implementations/OtpService";
     }
     
    }
+
+   public updateExpert=async(req:Request,res:Response):Promise<void>=>{
+    const {id}=req.params
+    const {updatedDate}=req.body
+    try {
+      // const updatedExpert= await 
+      
+    } catch (error) {
+      
+    }
+   }
+
+
+
+
    public resetPassword=async(req:Request,res:Response):Promise<void>=>{
     const{email,password}=req.body
     try {
