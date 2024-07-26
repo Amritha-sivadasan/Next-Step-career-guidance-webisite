@@ -21,7 +21,7 @@ class StudentController {
         const { student, accessToken, refreshToken } = await this.studentService.createStudent(req.body); 
         const studentObject = student;
         res.cookie("refreshToken", refreshToken, {
-          httpOnly: false,
+          httpOnly: true,
           secure: false,
           sameSite: "lax",
         });

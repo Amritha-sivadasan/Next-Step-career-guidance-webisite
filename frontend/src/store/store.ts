@@ -1,10 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import studentReducer from "../features/student/authSlice";
+import expertReducer from '../features/expert/expertAuthSlice'
 
 
 const store = configureStore({
   reducer: {
     student: studentReducer,
+    expert:expertReducer
+
   },
 });
 

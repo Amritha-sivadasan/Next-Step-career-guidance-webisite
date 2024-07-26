@@ -49,11 +49,11 @@ export const  studentGoogleAuth =async (req: Request, res: Response) => {
       const { student, accessToken, refreshToken } =
         await studentService.createStudent(newStudent);
     
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: false,
-        secure: false,
-        sameSite:"none",
-      });
+       res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
       res.status(201).json({
         success: true,
         Message: "student created successfully",
@@ -66,7 +66,7 @@ export const  studentGoogleAuth =async (req: Request, res: Response) => {
      const refreshToken=generateRefreshToken(userId,studentExist.role)
    
      res.cookie("refreshToken", refreshToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: false,
       sameSite: "lax",
     });

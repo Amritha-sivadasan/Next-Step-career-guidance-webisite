@@ -1,10 +1,11 @@
-import React from "react";
+import React,{useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { useDispatch,useSelector  } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../features/student/middleware/StudentRegisterThunk";
-
+import { setUser } from "../../features/student/authSlice";
+import { IStudent } from "../../@types/user";
 
 interface FormlInputs {
   education_level: string;
@@ -12,27 +13,39 @@ interface FormlInputs {
   user_type: string;
 }
 
-
 const AboutUser: React.FC = () => {
-  
   const dispatch: AppDispatch = useDispatch();
-  const navigate=useNavigate()
-  const { register, handleSubmit, formState: { errors } } = useForm<FormlInputs>({
+  const user = useSelector((state: RootState) => state.student.user);
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormlInputs>({
     defaultValues: {
       education_level: "",
       education_background: "",
-      user_type: ""
-    }
+      user_type: "",
+    },
   });
- 
+  useEffect(() => {
+    if (user?.is_data_entered) {
+      navigate("/");
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<FormlInputs> = async (updateData) => {
-    const userId=localStorage.getItem('userId')
-    if(userId){
-      dispatch(updateUser({userId,updateData}))
-      navigate('/')
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const respose = await dispatch(updateUser({ userId, updateData }));
+      if (respose.payload?.data) {
+        console.log(respose.payload.data);
+        const data = respose.payload.data as IStudent;
+        dispatch(setUser(data));
+        navigate("/");
+      }
     }
-    
   };
 
   return (
@@ -51,47 +64,71 @@ const AboutUser: React.FC = () => {
             Tell us more about yourself
           </h1>
 
-          <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        
+          <form
+            className="flex flex-col space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">I'm</label>
+              <label className="text-sm text-[#0B2149] font-semibold">
+                I'm
+              </label>
               <select
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
-                {...register("user_type", { required: "User type is required" })}
+                {...register("user_type", {
+                  required: "User type is required",
+                })}
               >
                 <option value="">Select...</option>
                 <option value="Student">Student</option>
                 <option value="Working">Working</option>
                 <option value="Other">Other</option>
               </select>
-              {errors.user_type && <p className="text-red-500 text-sm">{errors.user_type.message}</p>}
+              {errors.user_type && (
+                <p className="text-red-500 text-sm">
+                  {errors.user_type.message}
+                </p>
+              )}
             </div>
 
-        
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">Highest Level of Education</label>
+              <label className="text-sm text-[#0B2149] font-semibold">
+                Highest Level of Education
+              </label>
               <select
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
-                {...register("education_level", { required: "Education level is required" })}
+                {...register("education_level", {
+                  required: "Education level is required",
+                })}
               >
                 <option value="">Select...</option>
                 <option value="High School">High School</option>
                 <option value="Undergraduate">Undergraduate</option>
                 <option value="Postgraduate">Postgraduate</option>
               </select>
-              {errors.education_level && <p className="text-red-500 text-sm">{errors.education_level.message}</p>}
+              {errors.education_level && (
+                <p className="text-red-500 text-sm">
+                  {errors.education_level.message}
+                </p>
+              )}
             </div>
 
-        
             <div className="flex flex-col space-y-2">
-              <label className="text-sm text-[#0B2149] font-semibold">Preferred Subject</label>
+              <label className="text-sm text-[#0B2149] font-semibold">
+                Preferred Subject
+              </label>
               <input
                 type="text"
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Enter your preferred subject"
-                {...register("education_background", { required: "Preferred subject is required" })}
+                {...register("education_background", {
+                  required: "Preferred subject is required",
+                })}
               />
-              {errors.education_background && <p className="text-red-500 text-sm">{errors.education_background.message}</p>}
+              {errors.education_background && (
+                <p className="text-red-500 text-sm">
+                  {errors.education_background.message}
+                </p>
+              )}
             </div>
 
             <button
@@ -107,7 +144,7 @@ const AboutUser: React.FC = () => {
       {/* Image Section */}
       <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
         <img
-          src="/home-image.png" 
+          src="/home-image.png"
           alt="Description of Image"
           className="w-full h-full object-cover"
         />

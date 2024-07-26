@@ -7,14 +7,23 @@ import ForgotPassword from "../components/common/ForgotPassword";
 import ResetPassword from "../components/common/ResetPassword";
 import Home from "../pages/student/Home";
 import StudentPrivateRoute from "./Privateroutes/StudentPrivateRoute";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-
+import { useDispatch } from "react-redux";
+import useFetchUserData from "../hooks/UseFetchUser";
+import { useEffect } from "react";
+import { setAuthenticated, setUser } from "../features/student/authSlice";
 const StudentRouter = () => {
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.student
-  );
-  
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useFetchUserData();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(setUser(user));
+      dispatch(setAuthenticated(isAuthenticated));
+    } else {
+      dispatch(setAuthenticated(false));
+    }
+  }, [dispatch, user, isAuthenticated]);
+
   return (
     <Routes>
       <Route
@@ -55,7 +64,12 @@ const StudentRouter = () => {
       />
 
       <Route element={<StudentPrivateRoute />}>
-      <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+             <Home />
+          }
+        />
       </Route>
       <Route
         path="/about-student"

@@ -32,6 +32,7 @@ export default class StudentService implements IStudentService {
         studentWithHashedPassword
       );
       let userId = newStudent._id.toString();
+      
       const accessToken = generateAccessToken(userId, "student");
       const refreshToken = generateRefreshToken(userId, "student");
       return { student: newStudent, accessToken, refreshToken };

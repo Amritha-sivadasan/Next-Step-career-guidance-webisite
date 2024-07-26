@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { IStudent } from "../../@types/user";
+import { IExpert } from "../../@types/expert";
 import { axiosInstance } from "./instance/userInstance";
 
 const API_URL = process.env.VITE_API_URL;
@@ -30,17 +30,17 @@ export async function checkIfUserIsBlocked() {
 
 export const sendOtp = async (email: string) => {
   try {
-    const response = await axios.post(`${API_URL}/student/otp-send`, { email });
+    const response = await axios.post(`${API_URL}/expert/otp-send`, { email });
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
 };
 
-export const googleSignup = async (token: string) => {
+export const googleSignupExpert = async (token: string) => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${API_URL}/student/google-login`,
+      `${API_URL}/expert/google-login`,
       { token },
       { withCredentials: true }
     );
@@ -51,10 +51,10 @@ export const googleSignup = async (token: string) => {
   }
 };
 
-export const userRegister = async (userData: IStudent) => {
+export const expertRegister = async (userData: IExpert) => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${API_URL}/student/register`,
+      `${API_URL}/expert/register`,
       userData,
       { withCredentials: true }
     );
@@ -65,10 +65,10 @@ export const userRegister = async (userData: IStudent) => {
   }
 };
 
-export const verifyOtp = async (email: string, otp: string) => {
+export const verifyOtpExpert = async (email: string, otp: string) => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${API_URL}/student/verify-otp`,
+      `${API_URL}/expert/verify-otp`,
       { email, otp },
       { withCredentials: true }
     );
@@ -79,13 +79,13 @@ export const verifyOtp = async (email: string, otp: string) => {
   }
 };
 
-export const updatestudent = async (
+export const updateExpert = async (
   userId: string,
-  updateData: Partial<IStudent>
+  updateData: Partial<IExpert>
 ) => {
   try {
     const response = await axiosInstance.put(
-      `${API_URL}/student/update/${userId}`,
+      `${API_URL}/expert/update/${userId}`,
       { updateData },
       { withCredentials: true }
     );
@@ -96,9 +96,9 @@ export const updatestudent = async (
   }
 };
 
-export const fetchUserData = async () => {
+export const fetchExpertData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/student`, {
+    const response = await axios.get(`${API_URL}/expert`, {
       withCredentials: true,
     });
     return response.data;
@@ -108,10 +108,10 @@ export const fetchUserData = async () => {
   }
 };
 
-export const loginStudent = async (email: string, password: string) => {
+export const loginExpert = async (email: string, password: string) => {
   try {
     const response = await axios.post(
-      `${API_URL}/student/login`,
+      `${API_URL}/expert/login`,
       { email, password },
       { withCredentials: true }
     );

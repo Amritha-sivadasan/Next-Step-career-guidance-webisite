@@ -1,14 +1,12 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { loginUser } from "./middleware/StudentLoginThunk";
-import { registerStudent, VerifyOtp } from "./middleware/StudentRegisterThunk";
 import { toast } from "react-toastify";
-import { IStudent } from "../../@types/user";
-
+import { IExpert } from "../../@types/expert";
+import { registerExpert, VerifyOtpExpert} from "./middleware/ExpertRegisterThunk";
+import { Expertlogin } from "./middleware/ExpertLoginThunk";
 
 export interface AuthState {
-  user: IStudent | null;
+  user: IExpert | null;
   isAuthenticated: boolean;
   otpVerified: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -24,10 +22,10 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: "student",
+  name: "expert",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<IStudent>) => {
+    setUser: (state, action: PayloadAction<IExpert>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
     },
@@ -45,46 +43,46 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(Expertlogin.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(Expertlogin.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         toast.success("Login successful!");
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(Expertlogin.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "Login failed";
         toast.error(state.error);
       })
-      .addCase(registerStudent.pending, (state) => {
+      .addCase(registerExpert.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(registerStudent.fulfilled, (state, action) => {
+      .addCase(registerExpert.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.user = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         toast.success("Registration successful!");
       })
-      .addCase(registerStudent.rejected, (state, action) => {
+      .addCase(registerExpert.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "Registration failed";
         toast.error(state.error);
       })
-      .addCase(VerifyOtp.pending, (state) => {
+      .addCase(VerifyOtpExpert.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(VerifyOtp.fulfilled, (state) => {
+      .addCase(VerifyOtpExpert.fulfilled, (state) => {
         state.status = "succeeded";
         state.otpVerified = true;
         state.error = null;
         toast.success("OTP verified successfully!");
       })
-      .addCase(VerifyOtp.rejected, (state, action) => {
+      .addCase(VerifyOtpExpert.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "OTP verification failed";
         toast.error(state.error);

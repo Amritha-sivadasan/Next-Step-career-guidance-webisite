@@ -1,16 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { IStudent } from "../../../@types/user";
-import { googleSignup,updatestudent,userRegister,verifyOtp } from "../../../services/api/studentApi";
+import { IExpert } from "../../../@types/expert";
+import { expertRegister,googleSignupExpert,updateExpert,verifyOtpExpert } from "../../../services/api/ExpertApi";
 
 
 
 
-
-interface RegisterUserResponse {
+interface RegisterExpertResponse {
   success: boolean;
   Message: string;
-  data?: IStudent;  
+  data?: IExpert;  
   accessToken:string
 }
 
@@ -32,16 +31,16 @@ interface VerifyOtpPayload {
 
 interface UpdateUserPayload {
   userId: string;
-  updateData: Partial<IStudent>;
+  updateData: Partial<IExpert>;
 }
 
-export const registerStudent = createAsyncThunk<
-  RegisterUserResponse,
-  IStudent,
+export const registerExpert = createAsyncThunk<
+RegisterExpertResponse,
+  IExpert,
   { rejectValue: ThunkError }
->("student/register", async (userData: IStudent, thunkAPI) => {
+>("student/register", async (userData: IExpert, thunkAPI) => {
   try {
-    const response = userRegister(userData)
+    const response = expertRegister(userData)
     return (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -60,13 +59,13 @@ export const registerStudent = createAsyncThunk<
   }
 });
 
-export const registerStudentWithGoogle = createAsyncThunk<
-  RegisterUserResponse,
+export const registerExpertWithGoogle = createAsyncThunk<
+RegisterExpertResponse,
    string,
   { rejectValue: ThunkError }
 >("student/register", async (token:string, thunkAPI) => {
   try {
-    const response = googleSignup(token)
+    const response = googleSignupExpert(token)
     return (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -88,14 +87,14 @@ export const registerStudentWithGoogle = createAsyncThunk<
 
 
 
-export const VerifyOtp = createAsyncThunk<
+export const VerifyOtpExpert = createAsyncThunk<
   OtpResponse,
   VerifyOtpPayload,
   { rejectValue: ThunkError }
 >("student/verifyOtp", async (payload: VerifyOtpPayload, thunkAPI) => {
   const { email, otp } = payload;
   try {
-    const response = verifyOtp(email,otp)
+    const response = verifyOtpExpert(email,otp)
     if ((await response).data.success) {
       return (await response).data;
     } else {
@@ -123,14 +122,14 @@ export const VerifyOtp = createAsyncThunk<
 });
 
 
-export const updateUser = createAsyncThunk<
-  RegisterUserResponse,
+export const UpdateExpert = createAsyncThunk<
+RegisterExpertResponse,
   UpdateUserPayload,
   { rejectValue: ThunkError }
 >("student/register", async (payload: UpdateUserPayload, thunkAPI) => {
   const { userId, updateData } = payload;
   try {
-    const response = updatestudent(userId,updateData)
+    const response = updateExpert(userId,updateData)
     return  (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {
