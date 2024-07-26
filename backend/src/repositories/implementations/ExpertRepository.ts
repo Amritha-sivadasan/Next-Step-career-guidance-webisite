@@ -4,10 +4,26 @@ import { Expert } from "../../models/expertSchema";
 
 export default class ExpertRepository implements IExpertRepository {
   async findById(id: string): Promise<IExpert | null> {
-    throw new Error("Method not implemented.");
+    return Expert.findById(id);
   }
-  async update(id: string, student: Partial<IExpert>): Promise<IExpert | null> {
-    throw new Error("Method not implemented.");
+  async update(id: string, expert: Partial<IExpert>): Promise<IExpert | null> {
+    try {
+      const existingExpert = await Expert.findById(id);
+      if (!existingExpert) {
+        throw new Error("Student not found");
+      }
+      const updatedData = {
+        ...expert,
+        is_data_entered: true,
+      };
+      existingExpert.set(updatedData);
+      const updatedExpert = await existingExpert.save();
+
+      return updatedExpert;
+    } catch (error) {
+      console.log("Error occurred in update repository", error);
+      throw error;
+    }
   }
   async findAll(): Promise<IExpert[]> {
     return Expert.find();
@@ -25,4 +41,10 @@ export default class ExpertRepository implements IExpertRepository {
       throw error;
     }
   }
+
+
+  async findUserByAuthId(authentication_id: string): Promise<IExpert | null> {
+    return Expert.findOne({ authentication_id });
+  }
+
 }

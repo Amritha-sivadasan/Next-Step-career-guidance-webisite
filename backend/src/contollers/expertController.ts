@@ -45,14 +45,29 @@ import OtpService from "../services/implementations/OtpService";
     const {id}=req.params
     const {updatedDate}=req.body
     try {
-      // const updatedExpert= await 
+      const updatedExpert= await this.expertService.updateExpertData(id,updatedDate)
+      if(updatedExpert){
+        res
+          .status(200)
+          .json({
+            success: true,
+            Message: "User updated successfully",
+            data: updatedExpert,
+          });
+      }else{
+        res.status(404).json({ success: false, Message: "User not found" });
+      }
       
     } catch (error) {
-      
+      res
+        .status(500)
+        .json({
+          message: "Error occurred while updating Expert",
+          error,
+          success: false,
+        });
     }
    }
-
-
 
 
    public resetPassword=async(req:Request,res:Response):Promise<void>=>{
@@ -85,6 +100,44 @@ import OtpService from "../services/implementations/OtpService";
 
     
    }
+   
+
+   public createOtp = async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+    const existUser= await this.expertService.exitExpert(email)
+    if(existUser){
+      res.status(409).json({message:'User already exist',succss:false})
+      return
+    }
+    if (!email) {
+      res.status(400).json({ message: "Email is required" ,success:false});
+      return;
+    }
+    try {
+      const context = "otp is created for NextStep application ";
+      await this.otpService.generateOtp(email, context);
+      res.status(200).json({ message: "OTP generated and sent successfully",success:true });
+    } catch (error) {
+      console.error("Error generating OTP:", error);
+      res.status(500).json({ message: "Internal server error",success:false });
+    }
+  };
+
+  public verifyOtp = async (req: Request, res: Response): Promise<void> => {
+    const { email, otp } = req.body;
+    try {
+      let verify = await this.otpService.verifyOtp(email, otp);
+
+      if (verify) {
+        res.status(200).json({success:true, message: "otp verifcation successfull" });
+      } else {
+        res.status(400).json({success:false, message: "Invalid OTP or email" });
+      }
+    } catch (error) {
+      console.log('error in conroller verifyotp',error);
+      
+    }
+  };
 
 }
 

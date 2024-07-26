@@ -88,10 +88,28 @@ export default class StudentService implements IStudentService {
     id: string,
     student: Partial<IStudent>
   ): Promise<IStudent | null> {
-    return this.studentRepository.update(id, student);
+
+    try {
+      const userExist= await this.studentRepository.findById(id)
+      if(!userExist){
+        throw new Error("User not found");
+      }
+
+      const updatedData = {
+        ...student,
+        is_data_entered: true,
+      };
+      return this.studentRepository.update(id, updatedData);
+      
+    } catch (error) {
+      console.log('error during update student',error);
+      
+      throw error
+    }
+ 
   }
 
-  async findUsertById(id: string): Promise<IStudent | null> {
-    return this.studentRepository.findUsertById(id);
+  async findUserById(id: string): Promise<IStudent | null> {
+    return this.studentRepository.findUserById(id);
   }
 }

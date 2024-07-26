@@ -10,6 +10,6 @@ export interface IStudentService {
       email: string,
       password: string
     ): Promise<{ student: IStudent; accessToken: string; refreshToken: string }>
-    findUsertById(id:string):Promise<IStudent|null>
+    findUserById(id:string):Promise<IStudent|null>
 
   }

@@ -30,7 +30,6 @@ export default class OtpService implements IOtpService {
 
   async verifyOtp(email: string, otp: string): Promise<boolean> {
     try {
-   
       
       const otpRecord = await this.otpRepository.fetchOtp(email);
         if(!otp){

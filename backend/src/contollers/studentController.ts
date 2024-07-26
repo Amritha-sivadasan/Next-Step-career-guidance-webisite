@@ -41,6 +41,7 @@ class StudentController {
     const { id } = req.params;
     const { updateData } = req.body;
     try {
+        
       const updatedStudent = await this.studentService.updateStudent(
         id,
         updateData
@@ -144,6 +145,8 @@ class StudentController {
 
 
 }
+
+
 
 
 

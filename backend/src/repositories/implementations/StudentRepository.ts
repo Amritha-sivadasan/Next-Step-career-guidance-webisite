@@ -24,11 +24,7 @@ export default class StudentRepository implements IStudentRepository {
       if (!existingStudent) {
         throw new Error("Student not found");
       }
-      const updatedData = {
-        ...student,
-        is_data_entered: true,
-      };
-      existingStudent.set(updatedData);
+      existingStudent.set(student);
       const updatedStudent = await existingStudent.save();
 
       return updatedStudent;
@@ -43,7 +39,7 @@ export default class StudentRepository implements IStudentRepository {
   async findOne(email: string): Promise<IStudent | null> {
     return Student.findOne({ email });
   }
-  async findUsertById(authentication_id: string): Promise<IStudent | null> {
+  async findUserById(authentication_id: string): Promise<IStudent | null> {
     return Student.findOne({ authentication_id });
   }
 

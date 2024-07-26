@@ -9,20 +9,20 @@ import {
 } from "../middlewares/authMiddleware";
 import { refreshTokens } from "../contollers/authController";
 import validateExpert from "../validator/expertValidator";
-import firebaseController from "../contollers/firebaseController";
+import {expertGoogleAuth} from "../contollers/firebaseController";
 
 const expertRouter = Router();
 const role='expert'
-expertRouter.post("/otp-send", otpController.createOtp);
-expertRouter.post("/verify-otp", validateOtp, otpController.verifyOtp);
-expertRouter.post("/resend-otp", otpController.createOtp);
+expertRouter.post("/otp-send", expertController.createOtp);
+expertRouter.post("/verify-otp",  expertController.verifyOtp);
+expertRouter.post("/resend-otp", expertController.createOtp);
 expertRouter.post("/register", validateExpert,expertController.createExpert);
 expertRouter.post('/refresh-token',verifyRefreshToken,verifyRole(role),refreshTokens)
 expertRouter.post('/login', expertController.loginExpert);
 expertRouter.post('/forgot-password', expertController.forgotPassword);
 expertRouter.post('/reset-password', expertController.resetPassword);
 
-expertRouter.post("/google-login", firebaseController);
+expertRouter.post("/google-login",expertGoogleAuth );
 expertRouter.put("/update/:id", verifyAccessToken,verifyRole(role));
 
 

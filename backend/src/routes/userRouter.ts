@@ -10,7 +10,7 @@ import {
 } from "../middlewares/authMiddleware";
 import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
-import firebaseController from "../contollers/firebaseController";
+import {studentGoogleAuth} from "../contollers/firebaseController";
 
 const role='student'
 
@@ -28,6 +28,6 @@ router.post("/login",  studentController.loginUser);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
 
-router.post("/google-login", firebaseController);
+router.post("/google-login",studentGoogleAuth );
 router.put("/update/:id", verifyAccessToken,verifyRole(role),studentController.updateStudent);
 export default router;
