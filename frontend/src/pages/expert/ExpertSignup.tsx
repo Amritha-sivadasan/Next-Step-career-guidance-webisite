@@ -3,6 +3,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { sendOtpExpert } from "../../services/api/ExpertApi";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "../../config/firebase";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
+import { setExpert } from "../../features/expert/expertAuthSlice";
+import { IExpert } from "../../@types/expert";
 
 interface SignupFormInputs {
   user_name: string;
@@ -13,6 +20,7 @@ interface SignupFormInputs {
 }
 
 const ExpertSignup: React.FC = () => {
+  const dispatch:AppDispatch =useDispatch()
   const navigate = useNavigate();
   const {
     register,
@@ -47,15 +55,44 @@ const ExpertSignup: React.FC = () => {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...userData } = data;
+    const { confirmPassword, ...expertData } = data;
     const response = await sendOtpExpert(data.email);
     if (response.success) {
-      sessionStorage.setItem("expertdata", JSON.stringify(userData));
+      sessionStorage.setItem("expertdata", JSON.stringify(expertData));
       navigate("/expert/otp-verify");
     } else {
       Errornotify(response.message);
     }
   };
+
+  const handleGoogleSignup = async () => {
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      console.log("credential", credential);
+      const token = await auth.currentUser?.getIdToken();
+
+      if (token) {
+        const registerExpertResult = await dispatch(
+          registerExpertWithGoogle(token.toString())
+        ).unwrap();
+
+        if (registerExpertResult.success) {
+          const userData = registerExpertResult.data as IExpert;
+          dispatch(setExpert(userData));
+
+          localStorage.setItem("experId", userData._id);
+          localStorage.setItem("expertAccess", registerExpertResult.accessToken);
+          navigate("/expert");
+        }
+      }
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+    }
+  };
+
   return (
     <div className="h-screen">
       <header className="p-4 flex items-center bg-white text-[#0B2149]">
@@ -69,17 +106,19 @@ const ExpertSignup: React.FC = () => {
             <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
               Sign up
             </h1>
-            <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="flex flex-col space-y-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <input
                 type="text"
                 {...register("user_name", {
                   required: "Username is required",
                 })}
-               
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Username"
               />
-               {errors.user_name && (
+              {errors.user_name && (
                 <p className="text-red-500 text-sm">
                   {errors.user_name.message}
                 </p>
@@ -108,14 +147,13 @@ const ExpertSignup: React.FC = () => {
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Phone number"
               />
-                 {errors.phoneNumber && (
+              {errors.phoneNumber && (
                 <p className="text-red-500 text-sm">
                   {errors.phoneNumber.message}
                 </p>
               )}
               <input
                 type="password"
-              
                 {...register("password", {
                   required: "Password is required",
                   // validate: validatePassword,
@@ -123,7 +161,7 @@ const ExpertSignup: React.FC = () => {
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Password"
               />
-               {errors.password && (
+              {errors.password && (
                 <p className="text-red-500 text-sm">
                   {errors.password.message}
                 </p>
@@ -138,7 +176,7 @@ const ExpertSignup: React.FC = () => {
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Confirm password"
               />
-                {errors.confirmPassword && (
+              {errors.confirmPassword && (
                 <p className="text-red-500 text-sm">
                   {errors.confirmPassword.message}
                 </p>
@@ -167,6 +205,7 @@ const ExpertSignup: React.FC = () => {
               <h2 className="text-lg mb-2">Or sign up with</h2>
               <button
                 type="button"
+                onClick={handleGoogleSignup}
                 className="flex items-center justify-center w-full max-w-xs mx-auto p-2 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
               >
                 <img
