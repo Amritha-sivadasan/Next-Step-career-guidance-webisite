@@ -13,11 +13,17 @@ import {expertGoogleAuth} from "../contollers/firebaseController";
 
 const expertRouter = Router();
 const role='expert'
+const token = "ExpertRefreshToken";
+
+
+
 expertRouter.post("/otp-send", expertController.createOtp);
 expertRouter.post("/verify-otp",  expertController.verifyOtp);
 expertRouter.post("/resend-otp", expertController.createOtp);
-expertRouter.post("/register", validateExpert,expertController.createExpert);
-expertRouter.post('/refresh-token',verifyRefreshToken,verifyRole(role),refreshTokens)
+
+expertRouter.get('/',verifyAccessToken,verifyRole(role), expertController.fetchExpertById)
+expertRouter.post("/register", expertController.createExpert);
+expertRouter.post('/refresh-token',verifyRefreshToken(token),verifyRole(role),refreshTokens)
 expertRouter.post('/login', expertController.loginExpert);
 expertRouter.post('/forgot-password', expertController.forgotPassword);
 expertRouter.post('/reset-password', expertController.resetPassword);

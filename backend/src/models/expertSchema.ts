@@ -14,7 +14,7 @@ const ExpertSchema: Schema = new Schema(
     education_background: { type: String, },
     sub_category_id:{type:mongoose.Types.ObjectId,},
     area_of_expertise: { type: String,  },
-    is_active: { type: Boolean, default: false }, 
+    is_active: { type: Boolean, default: true }, 
     role: { type: String, default: "expert" },
     is_credential_validate: { type: Boolean, default: false },
     is_data_entered:{type:Boolean,default:false},

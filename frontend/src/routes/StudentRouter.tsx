@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import useFetchUserData from "../hooks/UseFetchUser";
 import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
+
+
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
@@ -70,11 +72,12 @@ const StudentRouter = () => {
              <Home />
           }
         />
-      </Route>
+
       <Route
         path="/about-student"
         element={user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
       />
+      </Route>
     </Routes>
   );
 };

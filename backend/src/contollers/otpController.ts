@@ -34,12 +34,13 @@ class OtpController {
   };
 
   public verifyOtp = async (req: Request, res: Response): Promise<void> => {
+
+    
     const { email, otp } = req.body;
     try {
       let verify = await this.otpservice.verifyOtp(email, otp);
-
       if (verify) {
-        res.status(200).json({success:true, message: "otp verifcation successfull" });
+        res.status(200).json({success:true, message: "otp verifcation successfull for student" });
       } else {
         res.status(400).json({success:false, message: "Invalid OTP or email" });
       }

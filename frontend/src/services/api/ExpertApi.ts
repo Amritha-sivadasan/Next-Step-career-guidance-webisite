@@ -98,7 +98,7 @@ export const updateExpert = async (
 
 export const fetchExpertData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/expert`, {
+    const response = await axiosInstance.get(`${API_URL}/expert`, {
       withCredentials: true,
     });
     return response.data;

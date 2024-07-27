@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ExpertService from "../services/implementations/ExpertService";
 import OtpService from "../services/implementations/OtpService";
+import { CustomRequest } from "../entities/jwtEntity";
 
  class ExpertController {
    
@@ -125,11 +126,12 @@ import OtpService from "../services/implementations/OtpService";
 
   public verifyOtp = async (req: Request, res: Response): Promise<void> => {
     const { email, otp } = req.body;
+
+    
     try {
       let verify = await this.otpService.verifyOtp(email, otp);
-
       if (verify) {
-        res.status(200).json({success:true, message: "otp verifcation successfull" });
+        res.status(200).json({success:true, message: "otp verification successfull " });
       } else {
         res.status(400).json({success:false, message: "Invalid OTP or email" });
       }
@@ -138,6 +140,25 @@ import OtpService from "../services/implementations/OtpService";
       
     }
   };
+
+
+
+  public fetchExpertById=async(req:CustomRequest,res:Response):Promise<void>=>{
+    const userId=req.user?.userId 
+    try {
+      if(userId){
+        const result= await this.expertService.getExpertById(userId)
+        
+        res.status(200).json({success:true,data:result})
+      }else{
+        res.status(500).json({message:"Error occur in fetchdata in expert",success:false})
+      }
+  
+    } catch (error) {
+      console.log('Error occur on the fetch user',error);
+       res.status(500).json({message:"Error occur in fetchdata",success:false})
+    }
+}
 
 }
 

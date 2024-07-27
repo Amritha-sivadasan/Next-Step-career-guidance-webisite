@@ -120,9 +120,9 @@ export const  expertGoogleAuth =async (req: Request, res: Response) => {
         accessToken
       });
     } else {
-     const userId=expertExist._id.toString()
-     const accessToken=generateAccessToken(userId,expertExist.role)
-     const refreshToken=generateRefreshToken(userId,expertExist.role)
+     const expertId=expertExist._id.toString()
+     const accessToken=generateAccessToken(expertId,expertExist.role)
+     const refreshToken=generateRefreshToken(expertId,expertExist.role)
    
      res.cookie("ExpertRefreshToken", refreshToken, {
       httpOnly: false,

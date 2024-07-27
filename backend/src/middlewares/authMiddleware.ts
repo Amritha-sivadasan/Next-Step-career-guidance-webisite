@@ -7,6 +7,7 @@ export const verifyAccessToken = (
   res: Response,
   next: NextFunction
 ) => {
+  
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "Access token is missing" });
@@ -14,40 +15,47 @@ export const verifyAccessToken = (
   try {
     const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
     req.user = decoded as TokenPayload;
+
+     
+
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired access token" });
   }
 };
 
-export const verifyRefreshToken = (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const token = req.cookies.refreshToken;
+export const verifyRefreshToken = (tokenName: string) => {
+  return (req: CustomRequest, res: Response, next: NextFunction) => {
+    const token = req.cookies[tokenName];
 
-  if (!token) {
-    return res.status(401).json({ message: "Refresh token is missing" });
-  }
-  try {
-    const decoded = verifyToken(token, process.env.JWT_REFRESH_TOKEN_SECRET!);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res
-      .status(403)
-      .json({ message: "Invalid or expired refresh token" });
-  }
+    if (!token) {
+      return res.status(401).json({ message: `${tokenName} is missing` });
+    }
+    try {
+      const secret =
+        tokenName === "expertRefreshToken"
+          ? process.env.JWT_EXPERT_REFRESH_TOKEN_SECRET!
+          : process.env.JWT_REFRESH_TOKEN_SECRET!;
+      const decoded = verifyToken(token, secret);
+      req.user = decoded;
+      next();
+    } catch (err) {
+      return res
+        .status(403)
+        .json({ message: "Invalid or expired refresh token" });
+    }
+  };
 };
 
 export const verifyRole = (requiredRole: string) => {
+  
   return (req: CustomRequest, res: Response, next: NextFunction) => {
     if (!req.user || req.user.role !== requiredRole) {
       return res
         .status(403)
         .json({ message: `Access denied. Required role: ${requiredRole}` });
     }
+
     next();
   };
 };

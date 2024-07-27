@@ -1,6 +1,4 @@
-import { Routes, Route } from "react-router-dom";
-
-import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
 import ForgotPassword from "../components/common/ForgotPassword";
@@ -8,14 +6,39 @@ import ResetPassword from "../components/common/ResetPassword";
 import AboutExpert from "../pages/expert/AboutExprt";
 import ExpertSignup from "../pages/expert/ExpertSignup";
 import ExpertHome from "../pages/expert/ExpertHome";
+import useFetchExpertData from "../hooks/useFetchExpert";
+import {
+  setExpert,
+  setExpertAuthenticated,
+} from "../features/expert/expertAuthSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 
 const ExpertRouter = () => {
+  const dispatch = useDispatch();
+  const { expert, isAuthenticated } = useFetchExpertData();
+  console.log("expert",expert);
+  
+
+  useEffect(() => {
+    if (expert) {
+      dispatch(setExpert(expert));
+      dispatch(setExpertAuthenticated(isAuthenticated));
+    } else {
+      dispatch(setExpertAuthenticated(false));
+    }
+  }, [dispatch, expert, isAuthenticated]);
   return (
     <Routes>
-      <Route path="/" element={<ExpertHome />} />
-      <Route path="/login" element={<Login userType="expert" />} />
-      <Route path="/signup" element={<ExpertSignup/>} />
-      <Route path="/otp-verify" element={<OtpPage userType="expert" />} />
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? <Navigate to="/expert/" /> : <Login userType="expert" />
+        }
+      />
+      <Route path="/signup" element={isAuthenticated ? <Navigate to="/expert/" /> :<ExpertSignup />} />
+      <Route path="/otp-verify" element={isAuthenticated ? <Navigate to="/expert/" /> :<OtpPage userType="expert" />} />
       <Route
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
@@ -25,6 +48,10 @@ const ExpertRouter = () => {
         element={<ResetPassword userType="expert" />}
       />
       <Route path="/about-expert" element={<AboutExpert />} />
+
+      <Route element={<ExpertPrivateRoute />}>
+        <Route path="/" element={expert?.is_data_entered?<Navigate to='/expert'/>: <ExpertHome />} />
+      </Route>
     </Routes>
   );
 };

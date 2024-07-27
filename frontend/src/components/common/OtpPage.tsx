@@ -8,7 +8,6 @@ import {
   VerifyOtpExpert,
 } from "../../features/expert/middleware/ExpertRegisterThunk";
 import {
-  verifyOtp,
   setUser,
   setAuthenticated,
 } from "../../features/student/authSlice";
@@ -18,7 +17,7 @@ import { registerStudent } from "../../features/student/middleware/StudentRegist
 import { IStudent } from "../../@types/user";
 import {
   setExpert,
-  verifyOtpExpert,
+ 
   setExpertAuthenticated,
 } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
@@ -67,7 +66,6 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         ).unwrap();
 
         if (verifyOtpResult.success) {
-          dispatch(verifyOtp());
           const registerStudentResult = await dispatch(
             registerStudent(parsedData)
           ).unwrap();
@@ -89,7 +87,8 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           }
         }
       }
-    } else {
+    } 
+    else if (userType=='expert'){
       const storageData = sessionStorage.getItem("expertdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
@@ -98,12 +97,13 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success) {
-          dispatch(verifyOtpExpert());
           const registerExpertResult = await dispatch(
             registerExpert(parsedData)
           ).unwrap();
-          if (registerExpertResult.success) {
+          if (registerExpertResult.success) {   
             const expetData = registerExpertResult.data as IExpert;
+            console.log('expertdata',expetData);
+            
             if (expetData && expetData._id) {
               dispatch(setExpert(expetData));
               dispatch(setExpertAuthenticated(true));

@@ -34,7 +34,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      state.otpVerified = false;
+     
     },
     setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
@@ -53,12 +53,16 @@ const authSlice = createSlice({
         state.user = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
-        toast.success("Login successful!");
+        if (state.status !== "succeeded") {
+          toast.success("Login successful!");
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "Login failed";
-        toast.error(state.error);
+        if (state.status !== "failed") {
+          toast.error(state.error);
+        }
       })
       .addCase(registerStudent.pending, (state) => {
         state.status = "loading";
@@ -68,12 +72,16 @@ const authSlice = createSlice({
         state.user = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
-        toast.success("Registration successful!");
+        if (state.status !== "succeeded") {
+          toast.success("Registration successful!");
+        }
       })
       .addCase(registerStudent.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "Registration failed";
-        toast.error(state.error);
+        if (state.status !== "failed") {
+          toast.error(state.error);
+        }
       })
       .addCase(VerifyOtp.pending, (state) => {
         state.status = "loading";
@@ -82,12 +90,16 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.otpVerified = true;
         state.error = null;
-        toast.success("OTP verified successfully!");
+        if (state.status !== "succeeded") {
+          toast.success("OTP verified successfully!");
+        }
       })
       .addCase(VerifyOtp.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload?.message || "OTP verification failed";
-        toast.error(state.error);
+        if (state.status !== "failed") {
+          toast.error(state.error);
+        }
       });
   },
 });

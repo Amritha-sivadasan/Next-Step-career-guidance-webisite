@@ -127,7 +127,7 @@ class StudentController {
     }
   };
 
-  public fetchUser=async(req:CustomRequest,res:Response):Promise<void>=>{
+  public fetchUserById=async(req:CustomRequest,res:Response):Promise<void>=>{
       const userId=req.user?.userId 
       try {
         if(userId){

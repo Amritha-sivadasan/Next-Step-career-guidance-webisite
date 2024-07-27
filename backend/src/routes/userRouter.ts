@@ -10,9 +10,10 @@ import {
 } from "../middlewares/authMiddleware";
 import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
-import {studentGoogleAuth} from "../contollers/firebaseController";
+import { studentGoogleAuth } from "../contollers/firebaseController";
 
-const role='student'
+const role = "student";
+const token = "refreshToken";
 
 const router = Router();
 
@@ -21,13 +22,22 @@ router.post("/otp-send", otpController.createOtp);
 router.post("/verify-otp", otpController.verifyOtp);
 router.post("/resend-otp", otpController.createOtp);
 
-
-router.get('/',verifyAccessToken,verifyRole(role), studentController.fetchUser)
-router.post("/refresh-token", verifyRefreshToken, refreshTokens);
-router.post("/login",  studentController.loginUser);
+router.get(
+  "/",
+  verifyAccessToken,
+  verifyRole(role),
+  studentController.fetchUserById
+);
+router.post("/refresh-token", verifyRefreshToken(token), refreshTokens);
+router.post("/login", studentController.loginUser);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
 
-router.post("/google-login",studentGoogleAuth );
-router.put("/update/:id", verifyAccessToken,verifyRole(role),studentController.updateStudent);
+router.post("/google-login", studentGoogleAuth);
+router.put(
+  "/update/:id",
+  verifyAccessToken,
+  verifyRole(role),
+  studentController.updateStudent
+);
 export default router;

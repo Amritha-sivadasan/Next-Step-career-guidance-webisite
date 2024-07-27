@@ -30,11 +30,10 @@ export default class OtpService implements IOtpService {
 
   async verifyOtp(email: string, otp: string): Promise<boolean> {
     try {
-      
       const otpRecord = await this.otpRepository.fetchOtp(email);
-        if(!otp){
-          return false
-        }
+      if (!otp) {
+        return false;
+      }
 
       if (otp === otpRecord?.otp) {
         await this.deleteOtp(email);
@@ -43,7 +42,6 @@ export default class OtpService implements IOtpService {
       return false;
     } catch (error) {
       console.log("error occur in while  verifying otp", error);
-
       throw error;
     }
   }

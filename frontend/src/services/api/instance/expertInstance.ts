@@ -5,9 +5,9 @@ const API_URL = process.env.VITE_API_URL;
 export const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json', 
-},
-withCredentials: true,
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
 });
 
 //request interceptor
@@ -43,11 +43,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(new Error("User is blocked"));
     }
 
-    if (
-      error.response.status === 401 &&
-      !originalRequest._retry 
-      
-    ) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       // console.log("from user axios.........");
 
       originalRequest._retry = true;
@@ -70,7 +66,8 @@ axiosInstance.interceptors.response.use(
 async function getNewAccessToken() {
   // send a POST request to your backend API with the refresh token
   const response = await axios.post(
-    `${API_URL}/expert/refresh-token`,{},
+    `${API_URL}/expert/refresh-token`,
+    {},
     { withCredentials: true }
   );
   // console.log("response from refresh token route--------------------", response);

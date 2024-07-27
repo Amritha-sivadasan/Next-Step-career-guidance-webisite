@@ -98,7 +98,7 @@ export const updatestudent = async (
 
 export const fetchUserData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/student`, {
+    const response = await axiosInstance.get(`${API_URL}/student`, {
       withCredentials: true,
     });
     return response.data;
