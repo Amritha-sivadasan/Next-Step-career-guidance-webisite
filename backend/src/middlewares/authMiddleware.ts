@@ -7,7 +7,6 @@ export const verifyAccessToken = (
   res: Response,
   next: NextFunction
 ) => {
-  
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "Access token is missing" });
@@ -15,8 +14,6 @@ export const verifyAccessToken = (
   try {
     const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
     req.user = decoded as TokenPayload;
-
-     
 
     next();
   } catch (err) {
@@ -32,11 +29,7 @@ export const verifyRefreshToken = (tokenName: string) => {
       return res.status(401).json({ message: `${tokenName} is missing` });
     }
     try {
-      const secret =
-        tokenName === "expertRefreshToken"
-          ? process.env.JWT_EXPERT_REFRESH_TOKEN_SECRET!
-          : process.env.JWT_REFRESH_TOKEN_SECRET!;
-      const decoded = verifyToken(token, secret);
+      const decoded = verifyToken(token, process.env.JWT_REFRESH_TOKEN_SECRET!);
       req.user = decoded;
       next();
     } catch (err) {
@@ -48,7 +41,6 @@ export const verifyRefreshToken = (tokenName: string) => {
 };
 
 export const verifyRole = (requiredRole: string) => {
-  
   return (req: CustomRequest, res: Response, next: NextFunction) => {
     if (!req.user || req.user.role !== requiredRole) {
       return res

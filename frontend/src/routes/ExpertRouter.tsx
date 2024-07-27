@@ -18,9 +18,6 @@ import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 const ExpertRouter = () => {
   const dispatch = useDispatch();
   const { expert, isAuthenticated } = useFetchExpertData();
-  console.log("expert",expert);
-  
-
   useEffect(() => {
     if (expert) {
       dispatch(setExpert(expert));
@@ -34,11 +31,29 @@ const ExpertRouter = () => {
       <Route
         path="/login"
         element={
-          isAuthenticated ? <Navigate to="/expert/" /> : <Login userType="expert" />
+          isAuthenticated ? (
+            <Navigate to="/expert/" />
+          ) : (
+            <Login userType="expert" />
+          )
         }
       />
-      <Route path="/signup" element={isAuthenticated ? <Navigate to="/expert/" /> :<ExpertSignup />} />
-      <Route path="/otp-verify" element={isAuthenticated ? <Navigate to="/expert/" /> :<OtpPage userType="expert" />} />
+      <Route
+        path="/signup"
+        element={
+          isAuthenticated ? <Navigate to="/expert/" /> : <ExpertSignup />
+        }
+      />
+      <Route
+        path="/otp-verify"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/expert/" />
+          ) : (
+            <OtpPage userType="expert" />
+          )
+        }
+      />
       <Route
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
@@ -47,10 +62,15 @@ const ExpertRouter = () => {
         path="/reset-password"
         element={<ResetPassword userType="expert" />}
       />
-      <Route path="/about-expert" element={<AboutExpert />} />
 
       <Route element={<ExpertPrivateRoute />}>
-        <Route path="/" element={expert?.is_data_entered?<Navigate to='/expert'/>: <ExpertHome />} />
+        <Route
+          path="/"
+          element={
+            expert?.is_data_entered ? <Navigate to="/expert" /> : <ExpertHome />
+          }
+        />
+        <Route path="/about-expert" element={<AboutExpert />} />
       </Route>
     </Routes>
   );

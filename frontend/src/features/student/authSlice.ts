@@ -73,7 +73,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.error = null;
         if (state.status !== "succeeded") {
-          toast.success("Registration successful!");
+          toast.success("Authentication successful!");
         }
       })
       .addCase(registerStudent.rejected, (state, action) => {

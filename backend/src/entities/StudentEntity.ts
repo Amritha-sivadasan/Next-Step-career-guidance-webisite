@@ -1,6 +1,6 @@
 import { ObjectId ,Document} from "mongoose";
 
-export interface IStudent  {
+export interface IStudent extends Document  {
 
   _id: ObjectId;
   user_name: string;

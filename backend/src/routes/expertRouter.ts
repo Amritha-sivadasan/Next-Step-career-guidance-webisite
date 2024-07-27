@@ -23,7 +23,7 @@ expertRouter.post("/resend-otp", expertController.createOtp);
 
 expertRouter.get('/',verifyAccessToken,verifyRole(role), expertController.fetchExpertById)
 expertRouter.post("/register", expertController.createExpert);
-expertRouter.post('/refresh-token',verifyRefreshToken(token),verifyRole(role),refreshTokens)
+expertRouter.post('/refresh-token',verifyRefreshToken(token),verifyRole(role),refreshTokens(token))
 expertRouter.post('/login', expertController.loginExpert);
 expertRouter.post('/forgot-password', expertController.forgotPassword);
 expertRouter.post('/reset-password', expertController.resetPassword);

@@ -11,12 +11,24 @@ export default class StudentService implements IStudentService {
   constructor() {
     this.studentRepository = new StudentRepository();
   }
+
   async getAllStudents(): Promise<IStudent[]> {
-    return this.studentRepository.findAll();
+    const students = await this.studentRepository.findAll();
+    return students.map(student => {
+      const studentObj = student.toObject();
+      delete studentObj.password;
+      return studentObj;
+    });
   }
 
   async getStudentById(id: string): Promise<IStudent | null> {
-    return this.studentRepository.findById(id);
+    const student = await this.studentRepository.findById(id);
+    if (student) {
+      const studentObj = student.toObject();
+      delete studentObj.password;
+      return studentObj;
+    }
+    return null;
   }
 
   async createStudent(
@@ -35,23 +47,29 @@ export default class StudentService implements IStudentService {
       
       const accessToken = generateAccessToken(userId, "student");
       const refreshToken = generateRefreshToken(userId, "student");
-      return { student: newStudent, accessToken, refreshToken };
+      
+      const newStudentObj = newStudent.toObject();
+      delete newStudentObj.password;
+      
+      return { student: newStudentObj, accessToken, refreshToken };
     } catch (error) {
       console.log(
         "error occur in student repository while creating a student",
         error
       );
-
       throw error;
     }
   }
 
-
-
   async exitStudent(email: string): Promise<IStudent | null> {
-    return this.studentRepository.findOne(email);
+    const student = await this.studentRepository.findOne(email);
+    if (student) {
+      const studentObj = student.toObject();
+      delete studentObj.password;
+      return studentObj;
+    }
+    return null;
   }
-
 
   async login(
     email: string,
@@ -69,7 +87,10 @@ export default class StudentService implements IStudentService {
     const accessToken = generateAccessToken(userId, "student");
     const refreshToken = generateRefreshToken(userId, "student");
 
-    return { student, accessToken, refreshToken };
+    const studentObj = student.toObject();
+    delete studentObj.password;
+
+    return { student: studentObj, accessToken, refreshToken };
   }
 
   async updatePassword(email: string, newPassword: string): Promise<void> {
@@ -89,10 +110,9 @@ export default class StudentService implements IStudentService {
     id: string,
     student: Partial<IStudent>
   ): Promise<IStudent | null> {
-
     try {
-      const userExist= await this.studentRepository.findById(id)
-      if(!userExist){
+      const userExist = await this.studentRepository.findById(id);
+      if (!userExist) {
         throw new Error("User not found");
       }
 
@@ -100,17 +120,27 @@ export default class StudentService implements IStudentService {
         ...student,
         is_data_entered: true,
       };
-      return this.studentRepository.update(id, updatedData);
-      
+
+      const updatedStudent = await this.studentRepository.update(id, updatedData);
+      if (updatedStudent) {
+        const updatedStudentObj = updatedStudent.toObject();
+        delete updatedStudentObj.password;
+        return updatedStudentObj;
+      }
+      return null;
     } catch (error) {
-      console.log('error during update student',error);
-      
-      throw error
+      console.log('error during update student', error);
+      throw error;
     }
- 
   }
 
   async findUserById(id: string): Promise<IStudent | null> {
-    return this.studentRepository.findUserById(id);
+    const student = await this.studentRepository.findUserById(id);
+    if (student) {
+      const studentObj = student.toObject();
+      delete studentObj.password;
+      return studentObj;
+    }
+    return null;
   }
 }

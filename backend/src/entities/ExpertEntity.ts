@@ -1,6 +1,6 @@
-import { ObjectId } from "mongoose";
+import { ObjectId,Document } from "mongoose";
 
-export interface IExpert {
+export interface IExpert extends Document {
   _id: ObjectId;
   user_name: string;
   email: string;

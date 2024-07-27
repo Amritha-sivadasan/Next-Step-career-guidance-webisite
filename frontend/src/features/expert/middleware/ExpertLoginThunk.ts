@@ -4,7 +4,7 @@ import { IExpert } from "../../../@types/expert";
 
 import { loginExpert } from "../../../services/api/ExpertApi";
 
-export interface LoginResponse {
+export interface LoginResponseExpert {
   success: boolean;
   message: string;
   data?: IExpert;
@@ -23,7 +23,7 @@ interface LoginPayload {
 }
 
 export const Expertlogin= createAsyncThunk<
-  LoginResponse,
+LoginResponseExpert,
   LoginPayload,
   { rejectValue: ThunkError }
 >("login/user", async (payload: LoginPayload, thunkAPI) => {

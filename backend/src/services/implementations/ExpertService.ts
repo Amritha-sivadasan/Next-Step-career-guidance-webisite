@@ -6,45 +6,54 @@ import hashPassword from "../../utils/bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 
+// Helper function to transform Mongoose documents to plain objects and exclude the password
+function excludePassword(expert: any): IExpert {
+  const expertObj = expert.toObject();
+  delete expertObj.password;
+  return expertObj;
+}
+
 export default class ExpertService implements IExpertService {
   private expertRepository: IExpertRepository;
+  
   constructor() {
     this.expertRepository = new ExpertRepository();
   }
-  async getAllExprt(): Promise<IExpert[]> {
-    return this.expertRepository.findAll();
+
+  async getAllExperts(): Promise<IExpert[]> {
+    const experts = await this.expertRepository.findAll();
+    return experts.map(expert => excludePassword(expert));
   }
 
   async getExpertById(id: string): Promise<IExpert | null> {
-    return this.expertRepository.findById(id);
+    const expert = await this.expertRepository.findById(id);
+    return expert ? excludePassword(expert) : null;
   }
 
-  async createdExpert(
+  async createExpert(
     expert: IExpert
   ): Promise<{ expert: IExpert; accessToken: string; refreshToken: string }> {
     try {
       const hashedPassword = hashPassword(expert.password);
-      const expertWithHashedPassword = { ...expert, password: hashedPassword };
-      const newExpert = await this.expertRepository.create(
-        expertWithHashedPassword
-      );
+      const expertWithHashedPassword = {
+        ...expert,
+        password: hashedPassword,
+      };
+      const newExpert = await this.expertRepository.create(expertWithHashedPassword);
       const expertId = newExpert._id.toString();
       const accessToken = generateAccessToken(expertId, "expert");
       const refreshToken = generateRefreshToken(expertId, "expert");
 
-      return { expert: newExpert, accessToken, refreshToken };
+      return { expert: excludePassword(newExpert), accessToken, refreshToken };
     } catch (error) {
-      console.log(
-        "error occur in student repository while creating a student",
-        error
-      );
-
+      console.log("Error occurred in expert repository while creating an expert", error);
       throw error;
     }
   }
 
   async exitExpert(email: string): Promise<IExpert | null> {
-    return this.expertRepository.findOne(email);
+    const expert = await this.expertRepository.findOne(email);
+    return expert ? excludePassword(expert) : null;
   }
 
   async login(
@@ -60,10 +69,10 @@ export default class ExpertService implements IExpertService {
       throw new Error("Invalid email or password");
     }
     const expertId = expert._id.toString();
-    const accessToken = generateAccessToken(expertId, "student");
-    const refreshToken = generateRefreshToken(expertId, "student");
+    const accessToken = generateAccessToken(expertId, "expert");
+    const refreshToken = generateRefreshToken(expertId, "expert");
 
-    return { expert, accessToken, refreshToken };
+    return { expert: excludePassword(expert), accessToken, refreshToken };
   }
 
   async updatePassword(email: string, newPassword: string): Promise<void> {
@@ -84,19 +93,20 @@ export default class ExpertService implements IExpertService {
     expert: Partial<IExpert>
   ): Promise<IExpert | null> {
     try {
-      const userExist= await this.expertRepository.findById(id)
-      if(!userExist){
+      const existingExpert = await this.expertRepository.findById(id);
+      if (!existingExpert) {
         throw new Error("User not found");
       }
       const updatedData = {
         ...expert,
         is_data_entered: true,
       };
-      return this.expertRepository.update(id, updatedData);
-      
+
+      const updatedExpert = await this.expertRepository.update(id, updatedData);
+      return updatedExpert ? excludePassword(updatedExpert) : null;
     } catch (error) {
-      console.log('error during update student',error);
-      throw error
+      console.log('Error during update expert', error);
+      throw error;
     }
   }
 }

@@ -12,16 +12,21 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { app } from "../../config/firebase";
 import { IStudent } from "../../@types/user";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
+import { Expertlogin ,LoginResponseExpert} from "../../features/expert/middleware/ExpertLoginThunk";
+import { setExpert, setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
+import { IExpert } from "../../@types/expert";
+import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
 
 interface LoginPageProps {
   userType: "student" | "expert";
 }
-
 interface LoginFormInput {
   email: string;
   password: string;
 }
 
+
+//component start--------------------------------------//
 const Login: React.FC<LoginPageProps> = ({ userType }) => {
   const isExpert = userType === "expert";
   const navigate = useNavigate();
@@ -35,7 +40,6 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
     if (userType === "student") {
       const result = await dispatch(loginUser(data));
-      console.log("result", result.payload);
       const loginResponse = result.payload as LoginResponse;
       if (loginResponse.success && loginResponse.data) {
         const userData = loginResponse.data;
@@ -44,14 +48,28 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         localStorage.setItem("userAccess", loginResponse.accessToken);
         navigate("/");
       } else {
-        console.log("Login failed or data is missing");
+        console.log("Login failed or user data is missing");
       }
-    } else {
-      // Implement expert login logic here
+    } else if(userType==='expert') {
+      const result = await dispatch(Expertlogin(data));
+      console.log("result", result.payload);
+      const loginResponse = result.payload as LoginResponseExpert;
+      if (loginResponse.success && loginResponse.data) {
+        const expert = loginResponse.data;
+        dispatch(setExpert(expert));
+        dispatch(setExpertAuthenticated(true));
+        localStorage.setItem("expertAccess", loginResponse.accessToken);
+        navigate("/expert");
+      } else {
+        console.log("Login failed or expert data is missing ");
+      }
     }
   };
 
+  //--------------------Googole authentication----------------//
+
   const handleGoogleSignup = async () => {
+
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     try {
@@ -59,25 +77,45 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       console.log("credential", credential);
       const token = await auth.currentUser?.getIdToken();
-
+      
       if (token) {
-        const registerStudentResult = await dispatch(
-          registerStudentWithGoogle(token.toString())
-        ).unwrap();
+          if(userType==='student'){
 
-        if (registerStudentResult.success) {
-          const userData = registerStudentResult.data as IStudent;
-          dispatch(setUser(userData));
-          localStorage.setItem("userId", userData._id);
-          localStorage.setItem("userAccess", registerStudentResult.accessToken);
-          navigate("/");
+          const registerStudentResult = await dispatch(
+            registerStudentWithGoogle(token.toString())
+          ).unwrap();
+  
+          if (registerStudentResult.success) {
+            const userData = registerStudentResult.data as IStudent;
+            dispatch(setUser(userData));
+            localStorage.setItem("userId", userData._id);
+            localStorage.setItem("userAccess", registerStudentResult.accessToken);
+            navigate("/");
+          }
+        }else if(userType==='expert'){  
+            const registerExpertResult = await dispatch(
+              registerExpertWithGoogle(token.toString())
+            ).unwrap();
+            if(registerExpertResult.success){
+              const expertData = registerExpertResult.data as IExpert;
+              dispatch(setExpert(expertData))
+              // localStorage.setItem("exp", userData._id);
+              localStorage.setItem("expertAccess", registerExpertResult.accessToken);
+              navigate("/expert");
+
+            }
+      
         }
       }
+      
+
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
   };
 
+
+  ///jsx----------------------------------///
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
       <div className="flex-1 flex items-center justify-center p-4 bg-white relative">

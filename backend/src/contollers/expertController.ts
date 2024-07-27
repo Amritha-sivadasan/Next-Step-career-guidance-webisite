@@ -18,7 +18,7 @@ import { CustomRequest } from "../entities/jwtEntity";
           if(exitExpert){
             res.status(409 ).json({success:false,Message:"user already exist",})
           }else{
-            const { expert, accessToken, refreshToken } = await this.expertService.createdExpert(req.body);
+            const { expert, accessToken, refreshToken } = await this.expertService.createExpert(req.body);
             
             res.cookie('ExpertRefreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'lax' });
             res.status(201).json({success:true,Message:"Expert created successfully",accessToken,data:expert});

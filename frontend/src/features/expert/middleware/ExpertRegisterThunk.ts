@@ -4,8 +4,6 @@ import { IExpert } from "../../../@types/expert";
 import { expertRegister,googleSignupExpert,updateExpert,verifyOtpExpert } from "../../../services/api/ExpertApi";
 
 
-
-
 interface RegisterExpertResponse {
   success: boolean;
   Message: string;

@@ -106,7 +106,7 @@ export const  expertGoogleAuth =async (req: Request, res: Response) => {
       };
 
       const { expert, accessToken, refreshToken } =
-        await expertService.createdExpert(newExpert);
+        await expertService.createExpert(newExpert);
     
       res.cookie("ExpertRefreshToken", refreshToken, {
         httpOnly: false,
