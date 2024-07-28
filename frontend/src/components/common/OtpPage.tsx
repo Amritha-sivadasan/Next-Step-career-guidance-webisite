@@ -7,17 +7,13 @@ import {
   registerExpert,
   VerifyOtpExpert,
 } from "../../features/expert/middleware/ExpertRegisterThunk";
-import {
-  setUser,
-  setAuthenticated,
-} from "../../features/student/authSlice";
+import { setUser, setAuthenticated } from "../../features/student/authSlice";
 import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../../services/api/studentApi";
 import { registerStudent } from "../../features/student/middleware/StudentRegisterThunk";
 import { IStudent } from "../../@types/user";
 import {
   setExpert,
- 
   setExpertAuthenticated,
 } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
@@ -87,8 +83,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           }
         }
       }
-    } 
-    else if (userType=='expert'){
+    } else if (userType == "expert") {
       const storageData = sessionStorage.getItem("expertdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
@@ -100,10 +95,10 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           const registerExpertResult = await dispatch(
             registerExpert(parsedData)
           ).unwrap();
-          if (registerExpertResult.success) {   
+          if (registerExpertResult.success) {
             const expetData = registerExpertResult.data as IExpert;
-            console.log('expertdata',expetData);
-            
+            console.log("expertdata", expetData);
+
             if (expetData && expetData._id) {
               dispatch(setExpert(expetData));
               dispatch(setExpertAuthenticated(true));
@@ -164,10 +159,11 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
             className="flex flex-col space-y-4"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex ms-6 space-x-8">
+            <div className="flex  justify-center">
               <input
                 type="text"
                 maxLength={4}
+                className="border border-gray-300 p-2 text-sm rounded-lg w-8/12 "
                 {...register("otp", {
                   required: "OTP is required",
                   pattern: {
@@ -175,23 +171,24 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                     message: "OTP must be 4 digits",
                   },
                 })}
-                className="border h-12 ms-5 rounded-lg w-9/12"
-                placeholder="  Enter OTP"
-                value={otp}
                 onChange={(e) => setOtp(e.target.value)}
+                value={otp}
+                placeholder="  Enter OTP"
               />
             </div>
             {errors.otp && (
-              <p className="text-red-500 ms-7 text-sm">{errors.otp.message}</p>
+              <p className="text-red-500 flex justify-center text-sm">
+                {errors.otp.message}
+              </p>
             )}
-
-            <button
-              type="submit"
-              className="bg-[#0B2149] text-white w-9/12 ms-9 p-2 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
-            >
-              Verify OTP
-            </button>
-
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="bg-[#0B2149] text-white w-7/12  p-2 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
+              >
+                Verify OTP
+              </button>
+            </div>
             <div className="text-center mt-4">
               {canResend ? (
                 <button

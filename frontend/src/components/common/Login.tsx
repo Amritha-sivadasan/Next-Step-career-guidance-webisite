@@ -99,7 +99,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             if(registerExpertResult.success){
               const expertData = registerExpertResult.data as IExpert;
               dispatch(setExpert(expertData))
-              // localStorage.setItem("exp", userData._id);
+              localStorage.setItem("expertId", expertData._id);
               localStorage.setItem("expertAccess", registerExpertResult.accessToken);
               navigate("/expert");
 

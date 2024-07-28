@@ -1,7 +1,5 @@
 import { Router } from "express";
 import expertController from "../contollers/expertController";
-import otpController from "../contollers/otpController";
-import validateOtp from "../validator/otpValidator";
 import {
   verifyRefreshToken,
   verifyAccessToken,
@@ -10,6 +8,7 @@ import {
 import { refreshTokens } from "../contollers/authController";
 import validateExpert from "../validator/expertValidator";
 import {expertGoogleAuth} from "../contollers/firebaseController";
+import upload from "../utils/multerConfig";
 
 const expertRouter = Router();
 const role='expert'
@@ -29,7 +28,7 @@ expertRouter.post('/forgot-password', expertController.forgotPassword);
 expertRouter.post('/reset-password', expertController.resetPassword);
 
 expertRouter.post("/google-login",expertGoogleAuth );
-expertRouter.put("/update/:id", verifyAccessToken,verifyRole(role));
+expertRouter.put("/update/:id", verifyAccessToken, verifyRole(role), upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'credential', maxCount: 1 }]),expertController.updateExpert);
 
 
 export default expertRouter;

@@ -27,9 +27,10 @@ interface VerifyOtpPayload {
   otp: string;
 }
 
-interface UpdateUserPayload {
-  userId: string;
-  updateData: Partial<IExpert>;
+interface UpdateExpertPayload {
+  expertId: string;
+  updateData: FormData;
+
 }
 
 export const registerExpert = createAsyncThunk<
@@ -122,12 +123,12 @@ export const VerifyOtpExpert = createAsyncThunk<
 
 export const UpdateExpert = createAsyncThunk<
 RegisterExpertResponse,
-  UpdateUserPayload,
+UpdateExpertPayload,
   { rejectValue: ThunkError }
->("student/register", async (payload: UpdateUserPayload, thunkAPI) => {
-  const { userId, updateData } = payload;
+>("student/register", async (payload: UpdateExpertPayload, thunkAPI) => {
+  const { expertId, updateData,  } = payload;
   try {
-    const response = updateExpert(userId,updateData)
+    const response = updateExpert(expertId,updateData)
     return  (await response).data
   } catch (error) {
     if (axios.isAxiosError(error)) {

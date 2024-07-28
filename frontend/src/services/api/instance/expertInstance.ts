@@ -4,9 +4,6 @@ import axios from "axios";
 const API_URL = process.env.VITE_API_URL;
 export const axiosInstance = axios.create({
   baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 
@@ -39,7 +36,7 @@ axiosInstance.interceptors.response.use(
 
     if (error.response.data.error === "User is blocked") {
       alert("You are blocked by admin...");
-      window.location.href = "/login";
+      window.location.href = "/expert/login";
       return Promise.reject(new Error("User is blocked"));
     }
 

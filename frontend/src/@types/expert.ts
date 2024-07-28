@@ -4,10 +4,10 @@ export interface IExpert {
     email: string;
     password: string;
     phonenumber: string;
-    profile_picture: string;
+    profile_picture: File |string;
     personal_bio: string;
     consultation_fee: number;
-    credential: string;
+    credential: File |string;
     education_background: string;
     sub_category_id: string;
     area_of_expertise: string;

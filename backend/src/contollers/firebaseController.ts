@@ -89,7 +89,7 @@ export const  expertGoogleAuth =async (req: Request, res: Response) => {
   try {
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(req.body.token);
-    let expertExist = await expertService.exitExpert(
+    let expertExist = await expertService.existsExpert(
       decodedToken.email as string
     );
 
@@ -97,7 +97,7 @@ export const  expertGoogleAuth =async (req: Request, res: Response) => {
       const newExpert: Partial<IExpert> = {
         user_name: decodedToken.name || "",
         email: decodedToken.email || "",
-        password: "",
+        password:"",
         authentication_id: decodedToken.uid,
         authentication_provider: decodedToken.firebase.sign_in_provider || "",
         profile_picture: decodedToken.picture || "",

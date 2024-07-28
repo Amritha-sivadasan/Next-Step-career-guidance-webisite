@@ -14,7 +14,7 @@ import { CustomRequest } from "../entities/jwtEntity";
   
     public createExpert = async (req: Request, res: Response): Promise<void> => {
         try {
-          let exitExpert=await this.expertService.exitExpert(req.body.email)
+          let exitExpert=await this.expertService.existsExpert(req.body.email)
           if(exitExpert){
             res.status(409 ).json({success:false,Message:"user already exist",})
           }else{
@@ -44,9 +44,11 @@ import { CustomRequest } from "../entities/jwtEntity";
 
    public updateExpert=async(req:Request,res:Response):Promise<void>=>{
     const {id}=req.params
-    const {updatedDate}=req.body
+    const updateData: { [key: string]: any } = req.body;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+     
     try {
-      const updatedExpert= await this.expertService.updateExpertData(id,updatedDate)
+      const updatedExpert= await this.expertService.updateExpertData(id,updateData,files)
       if(updatedExpert){
         res
           .status(200)
@@ -85,7 +87,7 @@ import { CustomRequest } from "../entities/jwtEntity";
    public forgotPassword=async(req:Request,res:Response):Promise<void>=>{
         const {email}=req.body
        try {
-        let existExpert=await this.expertService.exitExpert(email)
+        let existExpert=await this.expertService.existsExpert(email)
         if(!existExpert){
          res.status(404).json({messsage:'User not found try another valid email '})
         }else{
@@ -105,7 +107,7 @@ import { CustomRequest } from "../entities/jwtEntity";
 
    public createOtp = async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body;
-    const existUser= await this.expertService.exitExpert(email)
+    const existUser= await this.expertService.existsExpert(email)
     if(existUser){
       res.status(409).json({message:'Expert already exist',succss:false})
       return

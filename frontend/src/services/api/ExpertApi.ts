@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { IExpert } from "../../@types/expert";
-import { axiosInstance } from "./instance/userInstance";
+import { axiosInstance } from "./instance/expertInstance";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -80,14 +80,21 @@ export const verifyOtpExpert = async (email: string, otp: string) => {
 };
 
 export const updateExpert = async (
-  userId: string,
-  updateData: Partial<IExpert>
+  expertId: string,
+  updateData: FormData
+
 ) => {
   try {
+
     const response = await axiosInstance.put(
-      `${API_URL}/expert/update/${userId}`,
-      { updateData },
-      { withCredentials: true }
+      `${API_URL}/expert/update/${expertId}`,
+      updateData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      }
     );
     return response;
   } catch (error) {
