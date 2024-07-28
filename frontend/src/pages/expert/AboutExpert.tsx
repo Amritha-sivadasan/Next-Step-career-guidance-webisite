@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -6,13 +6,14 @@ import { UpdateExpert } from "../../features/expert/middleware/ExpertRegisterThu
 import { IExpert } from "../../@types/expert";
 import { setExpert } from "../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../hooks/useTypeSelector";
 
 type FormValues = {
   personal_bio: string;
   area_of_expertise: string;
   consultation_fee: number;
   educationBackground: string;
-  category: string;
+  sub_category_id: string;
   credential: FileList;
   profilePicture: FileList;
 };
@@ -20,6 +21,8 @@ type FormValues = {
 const AboutExpert: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const expert = useAppSelector((state) => state.expert.expert);
+
   const {
     register,
     handleSubmit,
@@ -32,15 +35,17 @@ const AboutExpert: React.FC = () => {
     formData.append("area_of_expertise", data.area_of_expertise);
     formData.append("consultation_fee", data.consultation_fee.toString());
     formData.append("educationBackground", data.educationBackground);
-    formData.append("category", data.category);
+    formData.append("sub_category_id", data.sub_category_id);
     formData.append("credential", data.credential[0]);
     formData.append("profilePicture", data.profilePicture[0]);
 
     const expertId = localStorage.getItem("expertId");
+
     if (expertId) {
       const response = await dispatch(
         UpdateExpert({ expertId, updateData: formData })
       );
+
       if (response.payload?.data) {
         const data = response.payload.data as IExpert;
         dispatch(setExpert(data));
@@ -48,6 +53,13 @@ const AboutExpert: React.FC = () => {
       }
     }
   };
+  useEffect(() => {
+    if (expert && expert.is_data_entered === true) {
+      console.log("is data  enter", expert.is_data_entered);
+
+      navigate("/expert");
+    }
+  }, [expert, navigate]);
 
   return (
     <div className="flex flex-col min-h-screen text-white">
@@ -151,7 +163,7 @@ const AboutExpert: React.FC = () => {
               </label>
               <select
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
-                {...register("category", {
+                {...register("sub_category_id", {
                   required: "Category selection is required.",
                 })}
               >
@@ -160,9 +172,9 @@ const AboutExpert: React.FC = () => {
                 <option value="2">Category 2</option>
                 <option value="3">Category 3</option>
               </select>
-              {errors.category && (
+              {errors.sub_category_id && (
                 <p className="text-red-500 text-sm">
-                  {errors.category.message}
+                  {errors.sub_category_id.message}
                 </p>
               )}
             </div>

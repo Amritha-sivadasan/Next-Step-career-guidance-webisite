@@ -83,9 +83,9 @@ const ExpertSignup: React.FC = () => {
           const userData = registerExpertResult.data as IExpert;
           dispatch(setExpert(userData));
 
-          localStorage.setItem("experId", userData._id);
+          localStorage.setItem("expertId", userData._id);
           localStorage.setItem("expertAccess", registerExpertResult.accessToken);
-          navigate("/expert");
+          navigate("/expert/about-expert");
         }
       }
     } catch (error) {

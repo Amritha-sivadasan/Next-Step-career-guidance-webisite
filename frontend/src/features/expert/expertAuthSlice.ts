@@ -5,7 +5,7 @@ import { registerExpert, VerifyOtpExpert } from "./middleware/ExpertRegisterThun
 import { Expertlogin } from "./middleware/ExpertLoginThunk";
 
 export interface AuthState {
-  Expert: IExpert | null;
+  expert: IExpert | null;
   isAuthenticated: boolean;
   otpVerified: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -13,7 +13,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  Expert: null,
+  expert: null,
   isAuthenticated: false,
   otpVerified: false,
   status: "idle",
@@ -25,11 +25,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setExpert: (state, action: PayloadAction<IExpert>) => {
-      state.Expert = action.payload;
+      state.expert = action.payload;
       state.isAuthenticated = true;
     },
     expertLogout: (state) => {
-      state.Expert = null;
+      state.expert = null;
       state.isAuthenticated = false;
     },
     setExpertAuthenticated: (state, action: PayloadAction<boolean>) => {
@@ -46,7 +46,7 @@ const authSlice = createSlice({
       })
       .addCase(Expertlogin.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.Expert = action.payload.data ?? null;
+        state.expert = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         if (state.status === "succeeded") {
@@ -66,7 +66,7 @@ const authSlice = createSlice({
       })
       .addCase(registerExpert.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.Expert = action.payload.data ?? null;
+        state.expert = action.payload.data ?? null;
         state.isAuthenticated = true;
         state.error = null;
         if (state.status === "succeeded") {

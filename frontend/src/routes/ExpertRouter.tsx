@@ -18,7 +18,6 @@ import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 const ExpertRouter = () => {
   const dispatch = useDispatch();
   const { expert, isAuthenticated } = useFetchExpertData();
-  console.log("expert", expert);
 
   useEffect(() => {
     if (expert) {
@@ -64,16 +63,25 @@ const ExpertRouter = () => {
         path="/reset-password"
         element={<ResetPassword userType="expert" />}
       />
-      <Route path="/about-expert" element={<AboutExpert />} />
-
+      <Route
+        path="/about-expert"
+        element={
+          expert?.is_data_entered === true ? (
+            <Navigate to="/experet" />
+          ) : (
+            <AboutExpert />
+          )
+        }
+      />
       <Route element={<ExpertPrivateRoute />}>
+        <Route path="/" element={<ExpertHome />} />
         <Route
-          path="/"
+          path="/about-expert"
           element={
-            expert?.is_data_entered ? (
-              <ExpertHome />
+            expert?.is_data_entered === true ? (
+              <Navigate to="/experet" />
             ) : (
-              <Navigate to="/expert/about-expert" />
+              <AboutExpert />
             )
           }
         />

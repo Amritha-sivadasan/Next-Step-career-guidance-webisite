@@ -89,7 +89,7 @@ const Signup: React.FC = () => {
 
           localStorage.setItem("userId", userData._id);
           localStorage.setItem("userAccess", registerStudentResult.accessToken);
-          navigate("/");
+          navigate("/about-student");
         }
       }
     } catch (error) {

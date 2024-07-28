@@ -12,7 +12,7 @@ const ExpertSchema: Schema = new Schema(
     consultation_fee: { type: Number,  },
     credential: { type: String,  },
     education_background: { type: String, },
-    sub_category_id:{type:mongoose.Types.ObjectId,},
+    sub_category_id:{type:String,},
     area_of_expertise: { type: String,  },
     is_active: { type: Boolean, default: true }, 
     role: { type: String, default: "expert" },

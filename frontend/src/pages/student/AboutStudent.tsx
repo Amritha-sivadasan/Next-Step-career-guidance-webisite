@@ -1,13 +1,14 @@
-import React,{useEffect } from "react";
+import React, {  } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch,useSelector  } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../features/student/authSlice";
 import { IStudent } from "../../@types/user";
 
-interface FormlInputs {
+
+interface FormInputs {
   education_level: string;
   education_background: string;
   user_type: string;
@@ -15,35 +16,33 @@ interface FormlInputs {
 
 const AboutUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.student.user);
+  
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormlInputs>({
+  } = useForm<FormInputs>({
     defaultValues: {
       education_level: "",
       education_background: "",
       user_type: "",
     },
   });
-  useEffect(() => {
-    if (user?.is_data_entered) {
-      navigate("/");
-    }
-  }, []);
 
-  const onSubmit: SubmitHandler<FormlInputs> = async (updateData) => {
+  const onSubmit: SubmitHandler<FormInputs> = async (updateData) => {
     const userId = localStorage.getItem("userId");
     if (userId) {
-      const respose = await dispatch(updateUser({ userId, updateData }));
-      if (respose.payload?.data) {
-        console.log(respose.payload.data);
-        const data = respose.payload.data as IStudent;
-        dispatch(setUser(data));
-        navigate("/");
+      try {
+        const response = await dispatch(updateUser({ userId, updateData }));
+        if (response.payload?.data) {
+          const data = response.payload.data as IStudent;
+          dispatch(setUser(data));
+          navigate('/')
+        }
+      } catch (error) {
+        console.error("Failed to update user:", error);
       }
     }
   };

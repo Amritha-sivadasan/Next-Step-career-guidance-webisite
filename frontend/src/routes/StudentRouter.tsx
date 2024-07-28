@@ -12,11 +12,11 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 
-
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
-
+  console.log('user', user?.is_data_entered);
+  
   useEffect(() => {
     if (user) {
       dispatch(setUser(user));
@@ -25,6 +25,7 @@ const StudentRouter = () => {
       dispatch(setAuthenticated(false));
     }
   }, [dispatch, user, isAuthenticated]);
+
 
   return (
     <Routes>
@@ -64,19 +65,14 @@ const StudentRouter = () => {
           )
         }
       />
-
       <Route element={<StudentPrivateRoute />}>
+        <Route path="/" element={<Home />} />
         <Route
-          path="/"
+          path="/about-student"
           element={
-             <Home />
+            user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />
           }
         />
-
-      <Route
-        path="/about-student"
-        element={user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
-      />
       </Route>
     </Routes>
   );
