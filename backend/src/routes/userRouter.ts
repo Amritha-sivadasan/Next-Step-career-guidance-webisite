@@ -21,6 +21,8 @@ router.post("/register", studentController.createStudent);
 router.post("/otp-send", otpController.createOtp);
 router.post("/verify-otp", otpController.verifyOtp);
 router.post("/resend-otp", otpController.createOtp);
+router.post("/forgot-password", studentController.forgotPassword);
+router.post("/reset-password", studentController.resetPassword);
 
 router.get(
   "/",
@@ -28,10 +30,10 @@ router.get(
   verifyRole(role),
   studentController.fetchUserById
 );
+
 router.post("/refresh-token", verifyRefreshToken(token), refreshTokens);
 router.post("/login", studentController.loginUser);
-router.post("/forgot-password", studentController.forgotPassword);
-router.post("/reset-password", studentController.resetPassword);
+
 
 router.post("/google-login", studentGoogleAuth);
 router.put(

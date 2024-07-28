@@ -11,12 +11,13 @@ import { useDispatch } from "react-redux";
 import useFetchUserData from "../hooks/UseFetchUser";
 import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
+import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
-  console.log('user', user?.is_data_entered);
-  
+  console.log("user", user?.is_data_entered);
+
   useEffect(() => {
     if (user) {
       dispatch(setUser(user));
@@ -25,7 +26,6 @@ const StudentRouter = () => {
       dispatch(setAuthenticated(false));
     }
   }, [dispatch, user, isAuthenticated]);
-
 
   return (
     <Routes>
@@ -56,6 +56,17 @@ const StudentRouter = () => {
         }
       />
       <Route
+        path="/fortgot-password-otp"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/" />
+          ) : (
+            <ForgotPasswordOtpPage userType="student" />
+          )
+        }
+      />
+
+      <Route
         path="/reset-password"
         element={
           isAuthenticated ? (
@@ -69,9 +80,7 @@ const StudentRouter = () => {
         <Route path="/" element={<Home />} />
         <Route
           path="/about-student"
-          element={
-            user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />
-          }
+          element={user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
         />
       </Route>
     </Routes>

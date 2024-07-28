@@ -12,8 +12,14 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { app } from "../../config/firebase";
 import { IStudent } from "../../@types/user";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
-import { Expertlogin ,LoginResponseExpert} from "../../features/expert/middleware/ExpertLoginThunk";
-import { setExpert, setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
+import {
+  Expertlogin,
+  LoginResponseExpert,
+} from "../../features/expert/middleware/ExpertLoginThunk";
+import {
+  setExpert,
+  setExpertAuthenticated,
+} from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
 import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
 
@@ -24,7 +30,6 @@ interface LoginFormInput {
   email: string;
   password: string;
 }
-
 
 //component start--------------------------------------//
 const Login: React.FC<LoginPageProps> = ({ userType }) => {
@@ -50,7 +55,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       } else {
         console.log("Login failed or user data is missing");
       }
-    } else if(userType==='expert') {
+    } else if (userType === "expert") {
       const result = await dispatch(Expertlogin(data));
       console.log("result", result.payload);
       const loginResponse = result.payload as LoginResponseExpert;
@@ -69,7 +74,6 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   //--------------------Googole authentication----------------//
 
   const handleGoogleSignup = async () => {
-
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     try {
@@ -77,43 +81,43 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       console.log("credential", credential);
       const token = await auth.currentUser?.getIdToken();
-      
-      if (token) {
-          if(userType==='student'){
 
+      if (token) {
+        if (userType === "student") {
           const registerStudentResult = await dispatch(
             registerStudentWithGoogle(token.toString())
           ).unwrap();
-  
+
           if (registerStudentResult.success) {
             const userData = registerStudentResult.data as IStudent;
             dispatch(setUser(userData));
             localStorage.setItem("userId", userData._id);
-            localStorage.setItem("userAccess", registerStudentResult.accessToken);
+            localStorage.setItem(
+              "userAccess",
+              registerStudentResult.accessToken
+            );
             navigate("/");
           }
-        }else if(userType==='expert'){  
-            const registerExpertResult = await dispatch(
-              registerExpertWithGoogle(token.toString())
-            ).unwrap();
-            if(registerExpertResult.success){
-              const expertData = registerExpertResult.data as IExpert;
-              dispatch(setExpert(expertData))
-              localStorage.setItem("expertId", expertData._id);
-              localStorage.setItem("expertAccess", registerExpertResult.accessToken);
-              navigate("/expert");
-
-            }
-      
+        } else if (userType === "expert") {
+          const registerExpertResult = await dispatch(
+            registerExpertWithGoogle(token.toString())
+          ).unwrap();
+          if (registerExpertResult.success) {
+            const expertData = registerExpertResult.data as IExpert;
+            dispatch(setExpert(expertData));
+            localStorage.setItem("expertId", expertData._id);
+            localStorage.setItem(
+              "expertAccess",
+              registerExpertResult.accessToken
+            );
+            navigate("/expert");
+          }
         }
       }
-      
-
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
   };
-
 
   ///jsx----------------------------------///
   return (
@@ -156,26 +160,20 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             >
               Log In
             </button>
+            <div className="flex justify-end ">
 
-            <div className="text-center mt-4">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                {isExpert ? (
-                  <NavLink
-                    to="/expert/signup"
-                    className="text-[#0B2149] font-medium hover:underline"
-                  >
-                    Sign up
-                  </NavLink>
-                ) : (
-                  <NavLink
-                    to="/signup"
-                    className="text-[#0B2149] font-medium hover:underline"
-                  >
-                    Sign up
-                  </NavLink>
-                )}
-              </p>
+            {isExpert ?   <NavLink
+                to="/expert/forgot-password"
+                className="text-[#203253] font-medium hover:underline"
+              >
+                Forgot your password ?
+              </NavLink>:  <NavLink
+                to="/forgot-password"
+                className="text-[#203253] font-medium hover:underline"
+              >
+                Forgot your password ?
+              </NavLink>}
+            
             </div>
           </form>
 
@@ -193,6 +191,27 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               />
               <span className="text-[#0B2149] font-medium">Google</span>
             </button>
+          </div>
+
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{" "}
+              {isExpert ? (
+                <NavLink
+                  to="/expert/signup"
+                  className="text-[#0B2149] font-medium hover:underline"
+                >
+                  Sign up
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/signup"
+                  className="text-[#0B2149] font-medium hover:underline"
+                >
+                  Sign up
+                </NavLink>
+              )}
+            </p>
           </div>
         </div>
       </div>

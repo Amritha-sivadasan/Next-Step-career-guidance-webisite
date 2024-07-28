@@ -15,8 +15,11 @@ const useFetchExpertData = () => {
         const response = await axiosInstance.get(`${API_URL}/expert`, {
           withCredentials: true,
         });
-        setExpert(response.data.data);
-        setExpertAuthenticated(true);
+        if(response.data.data){
+          setExpert(response.data.data);
+          setExpertAuthenticated(true);
+        }
+     
       } catch (error) {
         console.error("Failed to fetch user data:", error);
         setExpertAuthenticated(false);

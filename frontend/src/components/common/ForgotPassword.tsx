@@ -1,11 +1,48 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { forgotPassword } from "../../services/api/studentApi";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 interface ForgotPasswordProps {
   userType: "student" | "expert";
 }
 
+interface FormData {
+  email: string;
+}
+
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
   const isExpert = userType === "expert";
+  const navigate=useNavigate()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onSubmit = async (data: FormData) => {
+    if (userType == "student") {
+      const response = await forgotPassword(data.email);
+      if (response?.success ) {
+        toast.success("Otp send successfully");      
+        sessionStorage.setItem('userEmail',JSON.stringify(response.data))  
+        navigate('/fortgot-password-otp')
+      } else {
+        toast.error(response.message);
+      }
+    }else if(userType==='expert'){
+      // const response = await forgotPassword(data.email);
+      // if (response?.success ) {
+      //   toast.success("Otp send successfully");      
+      //   sessionStorage.setItem('userEmail',JSON.stringify(response.data))  
+      //   navigate('/fortgot-password-otp')
+      // } else {
+      //   toast.error(response.message);
+      // }
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
@@ -25,7 +62,10 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
           <p className="text-center text-gray-600 mb-6">
             Please enter your email address to reset password
           </p>
-          <form className="flex flex-col space-y-4">
+          <form
+            className="flex flex-col space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             {/* Email Input */}
             <div className="flex flex-col space-y-2">
               <label className="text-lg text-[#0B2149] font-medium">
@@ -33,10 +73,17 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
               </label>
               <input
                 type="email"
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter your email address"
-                name="email"
+                {...register("email", { required: "Email is required" })}
               />
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
+              )}
             </div>
 
             <button

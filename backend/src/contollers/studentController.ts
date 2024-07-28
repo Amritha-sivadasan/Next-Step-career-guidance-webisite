@@ -96,7 +96,7 @@ class StudentController {
         .status(200)
         .json({ success: true, Message: "Password updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: "", error, success: false });
+      res.status(500).json({ message: "something went wrong", error, success: false });
     }
   };
 
@@ -110,13 +110,13 @@ class StudentController {
       if (!exitStudent) {
         res
           .status(404)
-          .json({ messsage: "User not found try another valid email " });
+          .json({ success: false, messsage: "User not found try another valid email " });
       } else {
-        const context = "otp is created for NextStep application ";
+        const context = "otp is created for NextStep application forgot password ";
         await this.otpService.generateOtp(email, context);
         res
           .status(200)
-          .json({ message: "OTP generated and sent successfully" });
+          .json({success:true, message: "OTP generated and sent successfully",data:email });
       }
     } catch (error) {
       res.status(500).json({

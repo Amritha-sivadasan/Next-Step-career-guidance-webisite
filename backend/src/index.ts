@@ -20,7 +20,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("This is new project from Amritha  ");
 });
 
-app.use("/api/student", studentRouter);
+app.use("/api/student",studentRouter);
 app.use("/api/expert", expertRouter);
 app.use("/api/admin", adminRoute);
 

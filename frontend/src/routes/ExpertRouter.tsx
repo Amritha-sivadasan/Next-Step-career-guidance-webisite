@@ -21,10 +21,13 @@ const ExpertRouter = () => {
 
   useEffect(() => {
     if (expert) {
+
       dispatch(setExpert(expert));
       dispatch(setExpertAuthenticated(isAuthenticated));
     } else {
+      
       dispatch(setExpertAuthenticated(false));
+      console.log("isauth", isAuthenticated);
     }
   }, [dispatch, expert, isAuthenticated]);
   return (
@@ -63,16 +66,7 @@ const ExpertRouter = () => {
         path="/reset-password"
         element={<ResetPassword userType="expert" />}
       />
-      <Route
-        path="/about-expert"
-        element={
-          expert?.is_data_entered === true ? (
-            <Navigate to="/experet" />
-          ) : (
-            <AboutExpert />
-          )
-        }
-      />
+
       <Route element={<ExpertPrivateRoute />}>
         <Route path="/" element={<ExpertHome />} />
         <Route

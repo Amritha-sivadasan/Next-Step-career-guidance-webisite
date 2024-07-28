@@ -1,11 +1,40 @@
 import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { resetPasssword } from "../../services/api/studentApi";
+import { useNavigate } from "react-router-dom";
 
 interface ResetPasswordProps {
   userType: "student" | "expert";
 }
 
+interface FormData {
+  newPassword: string;
+  confirmPassword: string;
+}
+
 const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
   const isExpert = userType === "expert";
+  const navigate=useNavigate()
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onSubmit: SubmitHandler<FormData> = async(data) => {
+    const storageData = sessionStorage.getItem("userEmail");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData;
+        const response= await resetPasssword(email,data.newPassword)
+         if(response.data.success){
+            navigate('/login')
+         }
+
+      }
+  };
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
@@ -23,7 +52,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
             Reset Your Password
           </h1>
 
-          <form className="flex flex-col space-y-4">
+          <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
             {/* New Password Input */}
             <div className="flex flex-col space-y-2">
               <label className="text-sm text-[#0B2149] font-medium">
@@ -31,10 +60,19 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
               </label>
               <input
                 type="password"
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${errors.newPassword ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Enter new password"
-                name="newPassword"
+                {...register("newPassword", {
+                  required: "New password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters long",
+                  },
+                })}
               />
+              {errors.newPassword && (
+                <span className="text-red-500 text-sm">{errors.newPassword.message}</span>
+              )}
             </div>
 
             {/* Confirm Password Input */}
@@ -44,10 +82,17 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
               </label>
               <input
                 type="password"
-                className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
+                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Confirm your new password"
-                name="confirmPassword"
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === watch("newPassword") || "Passwords do not match",
+                })}
               />
+              {errors.confirmPassword && (
+                <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>
+              )}
             </div>
 
             <button
@@ -63,7 +108,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
       {/* Image Section */}
       <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
         <img
-          src={isExpert ? "/experts.png" : "/home-image.png"} // Conditional image source
+          src={isExpert ? "/experts.png" : "/home-image.png"}
           alt={isExpert ? "Expert Image" : "Home Image"}
           className="w-full h-full object-cover"
         />
@@ -73,3 +118,4 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
 };
 
 export default ResetPassword;
+  
