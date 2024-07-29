@@ -44,10 +44,12 @@ const AdminRouter = () => {
           <Route
             element={
               <>
-                <Sidebar />
-                <div className="flex-1 flex flex-col">
+                <div className="flex flex-col w-full">
                   <Header />
-                  <Outlet />
+                  <div className="flex-1 flex ">
+                    <Sidebar />
+                    <Outlet />
+                  </div>
                 </div>
               </>
             }
