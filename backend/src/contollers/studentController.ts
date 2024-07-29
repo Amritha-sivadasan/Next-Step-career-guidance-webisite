@@ -18,7 +18,8 @@ class StudentController {
       if (exitStudent) {
         res.status(409).json({ success: false, message: "user already exist" });
       } else {
-        const { student, accessToken, refreshToken } = await this.studentService.createStudent(req.body); 
+        const { student, accessToken, refreshToken } =
+          await this.studentService.createStudent(req.body);
         const studentObject = student;
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
@@ -41,41 +42,34 @@ class StudentController {
     const { id } = req.params;
     const { updateData } = req.body;
     try {
-        
       const updatedStudent = await this.studentService.updateStudent(
         id,
         updateData
       );
       if (updatedStudent) {
-        res
-          .status(200)
-          .json({
-            success: true,
-            Message: "User updated successfully",
-            data: updatedStudent,
-          });
+        res.status(200).json({
+          success: true,
+          Message: "User updated successfully",
+          data: updatedStudent,
+        });
       } else {
         res.status(404).json({ success: false, Message: "User not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error occurred while updating user",
-          error,
-          success: false,
-        });
+      res.status(500).json({
+        message: "Error occurred while updating user",
+        error,
+        success: false,
+      });
     }
   };
 
   public loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     try {
-      const {student, accessToken, refreshToken } = await this.studentService.login(
-        email,
-        password
-      );
-    
+      const { student, accessToken, refreshToken } =
+        await this.studentService.login(email, password);
+
       res.cookie("refreshToken", refreshToken, {
         httpOnly: false,
         secure: false,
@@ -83,9 +77,16 @@ class StudentController {
       });
       res
         .status(200)
-        .json({ success: true,data:student,accessToken, message: "User logged successfully" });
+        .json({
+          success: true,
+          data: student,
+          accessToken,
+          message: "User logged successfully",
+        });
     } catch (error) {
-      res.status(500).json({ message: "User not found", success: false });
+      res
+        .status(500)
+        .json({ message: "Invalid Email or password", success: false });
     }
   };
   public resetPassword = async (req: Request, res: Response): Promise<void> => {
@@ -96,7 +97,9 @@ class StudentController {
         .status(200)
         .json({ success: true, Message: "Password updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: "something went wrong", error, success: false });
+      res
+        .status(500)
+        .json({ message: "something went wrong", error, success: false });
     }
   };
 
@@ -110,13 +113,21 @@ class StudentController {
       if (!exitStudent) {
         res
           .status(404)
-          .json({ success: false, messsage: "User not found try another valid email " });
+          .json({
+            success: false,
+            messsage: "User not found try another valid email ",
+          });
       } else {
-        const context = "otp is created for NextStep application forgot password ";
+        const context =
+          "otp is created for NextStep application forgot password ";
         await this.otpService.generateOtp(email, context);
         res
           .status(200)
-          .json({success:true, message: "OTP generated and sent successfully",data:email });
+          .json({
+            success: true,
+            message: "OTP generated and sent successfully",
+            data: email,
+          });
       }
     } catch (error) {
       res.status(500).json({
@@ -127,27 +138,27 @@ class StudentController {
     }
   };
 
-  public fetchUserById=async(req:CustomRequest,res:Response):Promise<void>=>{
-      const userId=req.user?.userId 
-      try {
-        if(userId){
-          const result= await this.studentService.getStudentById(userId)
-          res.status(200).json({success:true,data:result})
-        }else{
-          res.status(500).json({message:"Error occur in fetchdata",success:false})
-        }
-    
-      } catch (error) {
-        console.log('Error occur on the fetch user',error);
-         res.status(500).json({message:"Error occur in fetchdata",success:false})
+  public fetchUserById = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+    const userId = req.user?.userId;
+    try {
+      if (userId) {
+        const result = await this.studentService.getStudentById(userId);
+        res.status(200).json({ success: true, data: result });
+      } else {
+        res
+          .status(500)
+          .json({ message: "Error occur in fetchdata", success: false });
       }
-  }
-
-
+    } catch (error) {
+      console.log("Error occur on the fetch user", error);
+      res
+        .status(500)
+        .json({ message: "Error occur in fetchdata", success: false });
+    }
+  };
 }
-
-
-
-
 
 export default new StudentController();
