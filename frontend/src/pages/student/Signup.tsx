@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../features/student/authSlice";
 import { IStudent } from "../../@types/user";
+import LoadingPage from "../../components/common/LoadingPage";
 
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
@@ -23,6 +24,7 @@ interface SignupFormInputs {
 
 const Signup: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -40,6 +42,7 @@ const Signup: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+    setLoading(true);
     if (data.password !== data.confirmPassword) {
       Errornotify("Password and confirm password do not match");
       return;
@@ -48,6 +51,7 @@ const Signup: React.FC = () => {
     const { confirmPassword, ...userData } = data;
     const response = await sendOtp(data.email);
     if (response.success) {
+      setLoading(false);
       sessionStorage.setItem("userdata", JSON.stringify(userData));
       navigate("/otp-verify");
     } else {
@@ -79,6 +83,7 @@ const Signup: React.FC = () => {
       const token = await auth.currentUser?.getIdToken();
 
       if (token) {
+        setLoading(true);
         const registerStudentResult = await dispatch(
           registerStudentWithGoogle(token.toString())
         ).unwrap();
@@ -89,6 +94,7 @@ const Signup: React.FC = () => {
 
           localStorage.setItem("userId", userData._id);
           localStorage.setItem("userAccess", registerStudentResult.accessToken);
+          setLoading(false);
           navigate("/about-student");
         }
       }
@@ -96,6 +102,9 @@ const Signup: React.FC = () => {
       console.error("Error during Google sign-in:", error);
     }
   };
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="h-screen ">

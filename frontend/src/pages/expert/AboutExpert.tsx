@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -7,6 +7,7 @@ import { IExpert } from "../../@types/expert";
 import { setExpert } from "../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/useTypeSelector";
+import LoadingPage from "../../components/common/LoadingPage";
 
 type FormValues = {
   personal_bio: string;
@@ -21,7 +22,9 @@ type FormValues = {
 const AboutExpert: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading,setLoading]=useState(false)
   const expert = useAppSelector((state) => state.expert.expert);
+
 
   const {
     register,
@@ -30,6 +33,7 @@ const AboutExpert: React.FC = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setLoading(true)
     const formData = new FormData();
     formData.append("personal_bio", data.personal_bio);
     formData.append("area_of_expertise", data.area_of_expertise);
@@ -49,7 +53,10 @@ const AboutExpert: React.FC = () => {
       if (response.payload?.data) {
         const data = response.payload.data as IExpert;
         dispatch(setExpert(data));
-        navigate("/expert");
+        setTimeout(()=>{
+          setLoading(false)
+          navigate("/expert");
+        })
       }
     }
   };
@@ -60,6 +67,12 @@ const AboutExpert: React.FC = () => {
       navigate("/expert");
     }
   }, [expert, navigate]);
+
+
+  if (loading) {
+    return <LoadingPage />;
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen text-white">

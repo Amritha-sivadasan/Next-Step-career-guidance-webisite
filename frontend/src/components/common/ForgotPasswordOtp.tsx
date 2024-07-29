@@ -8,6 +8,7 @@ import { VerifyOtpExpert } from "../../features/expert/middleware/ExpertRegister
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../../services/api/studentApi";
 import { forgotPasswordExpert } from "../../services/api/ExpertApi";
+import LoadingPage from "./LoadingPage";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -21,6 +22,7 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [canResend, setCanResend] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (timer > 0) {
@@ -43,6 +45,7 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   } = useForm<OtpFormInputs>();
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
+    setLoading(true);
     if (userType == "student") {
       const storageData = sessionStorage.getItem("userEmail");
       if (storageData) {
@@ -53,7 +56,10 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         ).unwrap();
 
         if (verifyOtpResult.success) {
-          navigate("/reset-password");
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/reset-password");
+          }, 1000);
         }
       }
     } else if (userType == "expert") {
@@ -65,7 +71,10 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success) {
-          navigate("/expert/reset-password");
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/expert/reset-password");
+          });
         }
       }
     }
@@ -94,6 +103,10 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
       }
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">

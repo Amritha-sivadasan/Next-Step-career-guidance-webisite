@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../features/student/authSlice";
 import { IStudent } from "../../@types/user";
-
+import LoadingPage from "../../components/common/LoadingPage";
 
 interface FormInputs {
   education_level: string;
@@ -16,7 +16,7 @@ interface FormInputs {
 
 const AboutUser: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -32,6 +32,7 @@ const AboutUser: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = async (updateData) => {
+    setLoading(true);
     const userId = localStorage.getItem("userId");
     if (userId) {
       try {
@@ -39,13 +40,19 @@ const AboutUser: React.FC = () => {
         if (response.payload?.data) {
           const data = response.payload.data as IStudent;
           dispatch(setUser(data));
-          navigate('/')
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/");
+          }, 1000);
         }
       } catch (error) {
         console.error("Failed to update user:", error);
       }
     }
   };
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">

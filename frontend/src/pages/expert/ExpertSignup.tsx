@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import { AppDispatch } from "../../store/store";
 import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
 import { setExpert } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
+import LoadingPage from "../../components/common/LoadingPage";
 
 interface SignupFormInputs {
   user_name: string;
@@ -20,7 +21,8 @@ interface SignupFormInputs {
 }
 
 const ExpertSignup: React.FC = () => {
-  const dispatch:AppDispatch =useDispatch()
+  const [loading, setLoading] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -50,6 +52,7 @@ const ExpertSignup: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+    setLoading(true);
     if (data.password !== data.confirmPassword) {
       Errornotify("Password and confirm password do not match");
       return;
@@ -59,7 +62,10 @@ const ExpertSignup: React.FC = () => {
     const response = await sendOtpExpert(data.email);
     if (response.success) {
       sessionStorage.setItem("expertdata", JSON.stringify(expertData));
-      navigate("/expert/otp-verify");
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/expert/otp-verify");
+      }, 1000);
     } else {
       Errornotify(response.message);
     }
@@ -75,6 +81,7 @@ const ExpertSignup: React.FC = () => {
       const token = await auth.currentUser?.getIdToken();
 
       if (token) {
+        setLoading(true);
         const registerExpertResult = await dispatch(
           registerExpertWithGoogle(token.toString())
         ).unwrap();
@@ -84,14 +91,23 @@ const ExpertSignup: React.FC = () => {
           dispatch(setExpert(userData));
 
           localStorage.setItem("expertId", userData._id);
-          localStorage.setItem("expertAccess", registerExpertResult.accessToken);
-          navigate("/expert/about-expert");
+          localStorage.setItem(
+            "expertAccess",
+            registerExpertResult.accessToken
+          );
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/expert/about-expert");
+          }, 1000);
         }
       }
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
   };
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="h-screen">

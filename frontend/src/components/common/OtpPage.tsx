@@ -18,6 +18,7 @@ import {
 } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
 import { sendOtpExpert } from "../../services/api/ExpertApi";
+import LoadingPage from "./LoadingPage";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -31,6 +32,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [canResend, setCanResend] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (timer > 0) {
@@ -53,6 +55,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   } = useForm<OtpFormInputs>();
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
+    setLoading(true);
     if (userType == "student") {
       const storageData = sessionStorage.getItem("userdata");
       if (storageData) {
@@ -77,6 +80,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                 "userAccess",
                 registerStudentResult.accessToken
               );
+              setLoading(false);
               navigate("/about-student");
             } else {
               console.error("User data is missing or malformed.");
@@ -109,6 +113,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                 "expertAccess",
                 registerExpertResult.accessToken
               );
+              setLoading(false);
               navigate("/expert/about-expert");
             } else {
               console.log("Expert data is missing or malformed.");
@@ -118,6 +123,10 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
       }
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   const resendOtp = () => {
     if (userType == "student") {

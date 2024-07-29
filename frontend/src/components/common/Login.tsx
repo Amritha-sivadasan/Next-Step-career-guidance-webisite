@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -22,6 +22,7 @@ import {
 } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
 import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
+import LoadingPage from "./LoadingPage";
 
 interface LoginPageProps {
   userType: "student" | "expert";
@@ -33,6 +34,7 @@ interface LoginFormInput {
 
 //component start--------------------------------------//
 const Login: React.FC<LoginPageProps> = ({ userType }) => {
+  const [loading, setLoading] = useState(false);
   const isExpert = userType === "expert";
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -47,11 +49,23 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       const result = await dispatch(loginUser(data));
       const loginResponse = result.payload as LoginResponse;
       if (loginResponse.success && loginResponse.data) {
+        setLoading(true);
         const userData = loginResponse.data;
         dispatch(setUser(userData));
         dispatch(setAuthenticated(true));
         localStorage.setItem("userAccess", loginResponse.accessToken);
-        navigate("/");
+        localStorage.setItem("userId", loginResponse.data._id);
+        if (loginResponse.data.is_data_entered == true) {
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/");
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/about-student");
+          }, 1000);
+        }
       } else {
         console.log("Login failed or user data is missing");
       }
@@ -64,8 +78,13 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         dispatch(setExpert(expert));
         dispatch(setExpertAuthenticated(true));
         localStorage.setItem("expertAccess", loginResponse.accessToken);
-        navigate("/expert");
+        localStorage.setItem("expertId", loginResponse.data._id);
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/expert");
+        }, 1000);
       } else {
+        setLoading(false);
         console.log("Login failed or expert data is missing ");
       }
     }
@@ -83,6 +102,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       const token = await auth.currentUser?.getIdToken();
 
       if (token) {
+        setLoading(true);
         if (userType === "student") {
           const registerStudentResult = await dispatch(
             registerStudentWithGoogle(token.toString())
@@ -96,7 +116,17 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               "userAccess",
               registerStudentResult.accessToken
             );
-            navigate("/");
+            if (registerStudentResult.data?.is_data_entered) {
+              setTimeout(() => {
+                setLoading(false);
+                navigate("/");
+              }, 1000);
+            } else {
+              setTimeout(() => {
+                setLoading(false);
+                navigate("/about-student");
+              }, 1000);
+            }
           }
         } else if (userType === "expert") {
           const registerExpertResult = await dispatch(
@@ -110,7 +140,17 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               "expertAccess",
               registerExpertResult.accessToken
             );
-            navigate("/expert");
+            if (registerExpertResult.data?.is_data_entered) {
+              setTimeout(() => {
+                setLoading(false);
+                navigate("/expert");
+              }, 1000);
+            } else {
+              setTimeout(() => {
+                setLoading(false);
+                navigate("/expert/about-expert");
+              }, 1000);
+            }
           }
         }
       }
@@ -118,6 +158,10 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       console.error("Error during Google sign-in:", error);
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   ///jsx----------------------------------///
   return (
@@ -161,19 +205,21 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               Log In
             </button>
             <div className="flex justify-end ">
-
-            {isExpert ?   <NavLink
-                to="/expert/forgot-password"
-                className="text-[#203253] font-medium hover:underline"
-              >
-                Forgot your password ?
-              </NavLink>:  <NavLink
-                to="/forgot-password"
-                className="text-[#203253] font-medium hover:underline"
-              >
-                Forgot your password ?
-              </NavLink>}
-            
+              {isExpert ? (
+                <NavLink
+                  to="/expert/forgot-password"
+                  className="text-[#203253] font-medium hover:underline"
+                >
+                  Forgot your password ?
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/forgot-password"
+                  className="text-[#203253] font-medium hover:underline"
+                >
+                  Forgot your password ?
+                </NavLink>
+              )}
             </div>
           </form>
 

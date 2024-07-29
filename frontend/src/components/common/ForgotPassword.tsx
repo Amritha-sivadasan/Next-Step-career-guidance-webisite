@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { forgotPassword } from "../../services/api/studentApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { forgotPasswordExpert } from "../../services/api/ExpertApi";
-
+import LoadingPage from "./LoadingPage";
 
 interface ForgotPasswordProps {
   userType: "student" | "expert";
@@ -15,8 +15,9 @@ interface FormData {
 }
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
+  const [loading, setLoading] = useState(false);
   const isExpert = userType === "expert";
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -24,26 +25,37 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
+    setLoading(true);
     if (userType == "student") {
       const response = await forgotPassword(data.email);
-      if (response?.success ) {
-        toast.success("Otp send successfully");      
-        sessionStorage.setItem('userEmail',JSON.stringify(response.data))  
-        navigate('/fortgot-password-otp')
+      if (response?.success) {
+        toast.success("Otp send successfully");
+        sessionStorage.setItem("userEmail", JSON.stringify(response.data));
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/fortgot-password-otp");
+        }, 1000);
       } else {
         toast.error(response.message);
       }
-    }else if(userType==='expert'){     
-      const response = await forgotPasswordExpert(data.email);     
-      if (response?.success ) {
-        toast.success("Otp send successfully");      
-        sessionStorage.setItem('expertEmail',JSON.stringify(response.data))  
-        navigate('/expert/fortgot-password-otp')
+    } else if (userType === "expert") {
+      const response = await forgotPasswordExpert(data.email);
+      if (response?.success) {
+        toast.success("Otp send successfully");
+        sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/expert/fortgot-password-otp");
+        });
       } else {
         toast.error(response.message);
       }
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">

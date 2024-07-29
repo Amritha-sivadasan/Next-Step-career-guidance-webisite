@@ -77,7 +77,7 @@ const StudentRouter = () => {
         }
       />
       <Route element={<StudentPrivateRoute />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home /> } />
         <Route
           path="/about-student"
           element={user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}

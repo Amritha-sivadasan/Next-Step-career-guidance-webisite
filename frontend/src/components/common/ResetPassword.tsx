@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { resetPasssword } from "../../services/api/studentApi";
 import { useNavigate } from "react-router-dom";
 import { resetPassswordExpert } from "../../services/api/ExpertApi";
 import { toast } from "react-toastify";
+import LoadingPage from "./LoadingPage";
 
 interface ResetPasswordProps {
   userType: "student" | "expert";
@@ -16,6 +17,7 @@ interface FormData {
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
   const isExpert = userType === "expert";
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -26,6 +28,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setLoading(true);
     if (userType == "student") {
       const storageData = sessionStorage.getItem("userEmail");
       if (storageData) {
@@ -34,7 +37,10 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
         const response = await resetPasssword(email, data.newPassword);
         if (response.data.success) {
           toast.success("Reset password successfully");
-          navigate("/login");
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/login");
+          });
         } else {
           toast.error("Something went wrong please try again");
         }
@@ -46,14 +52,22 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
         const email: string = parsedData;
         const response = await resetPassswordExpert(email, data.newPassword);
         if (response.data.success) {
-          toast.success("Reset password successfully");
-          navigate("/expert/login");
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/login");
+            toast.success("Reset password successfully");
+            navigate("/expert/login");
+          });
         } else {
           toast.error("Something went wrong please try again");
         }
       }
     }
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
