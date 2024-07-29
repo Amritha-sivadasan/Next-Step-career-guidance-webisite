@@ -4,6 +4,10 @@ import { Admin } from "../../models/adminScheama";
 
 export  default class AdminRepository implements IAdminRepository{
     async findAdmin(user_name:string):Promise<IAdmin|null>{
+      
       return Admin.findOne({user_name})
+    }
+    async findById(id: string): Promise<IAdmin | null> {
+      return Admin.findById(id)
     }
 }

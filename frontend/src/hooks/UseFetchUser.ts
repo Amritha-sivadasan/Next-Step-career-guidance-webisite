@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { axiosInstance } from "../services/api/instance/userInstance";
+import { axiosInstance } from "../services/instance/userInstance";
 import { IStudent } from "../@types/user";
 
 const API_URL = process.env.VITE_API_URL;

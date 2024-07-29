@@ -4,5 +4,6 @@ export interface IAdminService{
     login(
         user_name: string,
         password: string
-      ): Promise<{  admin: IAdmin; accessToken: string; refreshToken: string }>
+      ): Promise<{  user_name:string; accessToken: string; refreshToken: string }>
+
 }

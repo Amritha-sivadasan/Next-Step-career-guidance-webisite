@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { IExpert } from "../../../@types/expert";
-
 import { loginExpert } from "../../../services/api/ExpertApi";
 
 export interface LoginResponseExpert {

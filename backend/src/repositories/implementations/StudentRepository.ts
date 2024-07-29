@@ -39,6 +39,7 @@ export default class StudentRepository implements IStudentRepository {
   async findOne(email: string): Promise<IStudent | null> {
     return Student.findOne({ email });
   }
+  
   async findUserById(authentication_id: string): Promise<IStudent | null> {
     return Student.findOne({ authentication_id });
   }

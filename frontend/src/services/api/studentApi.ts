@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { IStudent } from "../../@types/user";
-import { axiosInstance } from "./instance/userInstance";
+import { axiosInstance } from "../instance/userInstance";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -149,10 +149,13 @@ export const forgotPassword = async (
   }
 };
 
-export const resetPasssword = async (email: string, password:string) => {
+export const resetPasssword = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_URL}/student/reset-password`, { email ,password});
-    return response
+    const response = await axios.post(`${API_URL}/student/reset-password`, {
+      email,
+      password,
+    });
+    return response;
   } catch (error) {
     console.error("Error occurred during update user ", error);
     throw error;

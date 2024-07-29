@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { IExpert } from "../../@types/expert";
-import { axiosInstance } from "./instance/expertInstance";
+import { axiosInstance } from "../instance/expertInstance";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -85,19 +85,14 @@ export const verifyOtpExpert = async (email: string, otp: string) => {
   }
 };
 
-export const updateExpert = async (
-  expertId: string,
-  updateData: FormData
-
-) => {
+export const updateExpert = async (expertId: string, updateData: FormData) => {
   try {
-
     const response = await axiosInstance.put(
       `${API_URL}/expert/update/${expertId}`,
       updateData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       }
@@ -135,7 +130,6 @@ export const loginExpert = async (email: string, password: string) => {
   }
 };
 
-
 export const forgotPasswordExpert = async (
   email: string
 ): Promise<ForgotPasswordResponse> => {
@@ -157,11 +151,13 @@ export const forgotPasswordExpert = async (
   }
 };
 
-
-export const resetPassswordExpert = async (email: string, password:string) => {
+export const resetPassswordExpert = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_URL}/expert/reset-password`, { email ,password});
-    return response
+    const response = await axios.post(`${API_URL}/expert/reset-password`, {
+      email,
+      password,
+    });
+    return response;
   } catch (error) {
     console.error("Error occurred during update user ", error);
     throw error;

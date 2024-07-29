@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import AdminService from "../services/implementations/AdminService";
+import { CustomRequest } from "../entities/jwtEntity";
 
 class AdminController {
   private adminService: AdminService;
@@ -9,16 +10,34 @@ class AdminController {
   }
 
   public loginAdmin = async (req: Request, res: Response): Promise<void> => {
-    const { user_name, password } = req.body;
+    const { userName, password } = req.body;
     try {
-      const { admin, accessToken, refreshToken } = await this.adminService.login(user_name, password);
-     
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-      res.status(200).json({ success: true, message: "Admin logged in successfully",data:admin,accessToken });
+      const { user_name, accessToken, refreshToken } = await this.adminService.login(userName, password)
+
+      res.cookie('adminRefreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'strict' });
+      res.status(200).json({ success: true, message: "Admin logged in successfully",data:user_name,accessToken });
     } catch (error) {
       res.status(500).json({ message: "Error occurred during admin login", error, success: false });
     }
   };
+
+  public logoutAdmin= async(req:CustomRequest,res:Response):Promise<void>=>{
+    const userId=req.user?.userId 
+    try {
+      if(userId){
+        const response= await this.adminService.findAdminById(userId)
+        if(response){
+          res.clearCookie('adminRefreshToken');
+          res.status(200).json({ message: "Logged out successfully",success:true});
+        }
+      }
+    } catch (error) {
+    res.status(500).json({message:'admin id is missing ',success:false})
+    }
+  
+  
+    
+  }
 
   
 }

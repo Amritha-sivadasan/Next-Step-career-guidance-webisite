@@ -15,28 +15,38 @@ export default class AdminService implements IAdminService {
   async login(
     userName: string,
     password: string
-  ): Promise<{ admin: IAdmin; accessToken: string; refreshToken: string }> {
+  ): Promise<{ user_name: string; accessToken: string; refreshToken: string }> {
     try {
       const admin = await this.adminRepository.findAdmin(userName);
       if (!admin) {
         throw new Error("Invalid username or password");
       }
-      const isMatch = bcrypt.compare(password, admin.password);
+      const isMatch = await bcrypt.compare(password, admin.password);
       if (!isMatch) {
         throw new Error("Invalid username or password");
       }
-   
-      const adminId = admin._id.toString()
+      const adminId = admin._id.toString();
       const accessToken = generateAccessToken(adminId, "admin");
-      const refreshToken = generateRefreshToken(adminId, "admin");
-      return { admin, accessToken, refreshToken };
-     
-     
+      const refreshToken = generateRefreshToken(adminId, "admin")
+      const {user_name}=admin
 
+      return {user_name,accessToken, refreshToken };
     } catch (error) {
-    
       console.error("Login error:", error);
       throw new Error("An error occurred while trying to log in.");
+    }
+  }
+
+  async findAdminById(id: string): Promise<Partial<IAdmin> | null> {
+    try {
+      const result = await this.adminRepository.findById(id);
+      if (!result) {
+        throw new Error("Admin not found");
+      }
+      return result;
+    } catch (error) {
+      console.error("Find admin error:", error);
+      throw new Error("An error occurred while trying to find the admin.");
     }
   }
 }

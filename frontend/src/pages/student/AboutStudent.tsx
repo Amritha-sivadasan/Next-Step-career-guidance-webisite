@@ -39,6 +39,7 @@ const AboutUser: React.FC = () => {
         const response = await dispatch(updateUser({ userId, updateData }));
         if (response.payload?.data) {
           const data = response.payload.data as IStudent;
+          console.log("about data : ", data);
           dispatch(setUser(data));
           setTimeout(() => {
             setLoading(false);

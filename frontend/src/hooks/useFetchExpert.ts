@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { axiosInstance } from "../services/api/instance/expertInstance";
+import { axiosInstance } from "../services/instance/expertInstance"; 
 import { IExpert } from "../@types/expert";
 
 const API_URL = process.env.VITE_API_URL;

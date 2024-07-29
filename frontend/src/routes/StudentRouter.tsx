@@ -12,11 +12,12 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
+import { useAppSelector } from "../hooks/useTypeSelector";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
-  console.log("user", user?.is_data_entered);
+  const userDeatils = useAppSelector((state) => state.student);
 
   useEffect(() => {
     if (user) {
@@ -26,29 +27,29 @@ const StudentRouter = () => {
       dispatch(setAuthenticated(false));
     }
   }, [dispatch, user, isAuthenticated]);
-
+  console.log();
   return (
     <Routes>
       <Route
         path="/signup"
-        element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        element={userDeatils.isAuthenticated ? <Navigate to="/" /> : <Signup />}
       />
       <Route
         path="/login"
         element={
-          isAuthenticated ? <Navigate to="/" /> : <Login userType="student" />
+          userDeatils.isAuthenticated ? <Navigate to="/" /> : <Login userType="student" />
         }
       />
       <Route
         path="/otp-verify"
         element={
-          isAuthenticated ? <Navigate to="/" /> : <OtpPage userType="student" />
+          userDeatils.isAuthenticated ? <Navigate to="/" /> : <OtpPage userType="student" />
         }
       />
       <Route
         path="/forgot-password"
         element={
-          isAuthenticated ? (
+          userDeatils.isAuthenticated ? (
             <Navigate to="/" />
           ) : (
             <ForgotPassword userType="student" />
@@ -58,7 +59,7 @@ const StudentRouter = () => {
       <Route
         path="/fortgot-password-otp"
         element={
-          isAuthenticated ? (
+          userDeatils.isAuthenticated ? (
             <Navigate to="/" />
           ) : (
             <ForgotPasswordOtpPage userType="student" />
@@ -69,7 +70,7 @@ const StudentRouter = () => {
       <Route
         path="/reset-password"
         element={
-          isAuthenticated ? (
+          userDeatils.isAuthenticated ? (
             <Navigate to="/" />
           ) : (
             <ResetPassword userType="student" />
@@ -77,10 +78,19 @@ const StudentRouter = () => {
         }
       />
       <Route element={<StudentPrivateRoute />}>
-        <Route path="/" element={<Home /> } />
+        <Route
+          path="/"
+          element={
+            userDeatils?.user?.is_data_entered ? (
+              <Home />
+            ) : (
+              <Navigate to="/about-student" />
+            )
+          }
+        />
         <Route
           path="/about-student"
-          element={user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
+          element={userDeatils?.user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
         />
       </Route>
     </Routes>

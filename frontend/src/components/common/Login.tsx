@@ -167,6 +167,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
       <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
+
         <div className="absolute top-6 left-8 flex items-center">
           <img src="/image.png" alt="Website Logo" className="h-6" />
           <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>

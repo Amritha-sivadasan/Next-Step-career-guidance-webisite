@@ -15,18 +15,18 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
+import { useAppSelector } from "../hooks/useTypeSelector";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
   const { expert, isAuthenticated } = useFetchExpertData();
+  const expertDetails = useAppSelector((state) => state.expert);
 
   useEffect(() => {
     if (expert) {
-
       dispatch(setExpert(expert));
       dispatch(setExpertAuthenticated(isAuthenticated));
     } else {
-      
       dispatch(setExpertAuthenticated(false));
       console.log("isauth", isAuthenticated);
     }
@@ -36,7 +36,7 @@ const ExpertRouter = () => {
       <Route
         path="/login"
         element={
-          isAuthenticated ? (
+          expertDetails.isAuthenticated ? (
             <Navigate to="/expert/" />
           ) : (
             <Login userType="expert" />
@@ -46,13 +46,13 @@ const ExpertRouter = () => {
       <Route
         path="/signup"
         element={
-          isAuthenticated ? <Navigate to="/expert/" /> : <ExpertSignup />
+          expertDetails.isAuthenticated ? <Navigate to="/expert/" /> : <ExpertSignup />
         }
       />
       <Route
         path="/otp-verify"
         element={
-          isAuthenticated ? (
+          expertDetails.isAuthenticated ? (
             <Navigate to="/expert/" />
           ) : (
             <OtpPage userType="expert" />
@@ -63,7 +63,7 @@ const ExpertRouter = () => {
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
       />
-       <Route
+      <Route
         path="/fortgot-password-otp"
         element={<ForgotPasswordOtpPage userType="expert" />}
       />
@@ -73,12 +73,21 @@ const ExpertRouter = () => {
       />
 
       <Route element={<ExpertPrivateRoute />}>
-        <Route path="/" element={<ExpertHome />} />
+        <Route
+          path="/"
+          element={
+            expertDetails?.expert?.is_data_entered ? (
+              <ExpertHome />
+            ) : (
+              <Navigate to="/expert/about-expert" />
+            )
+          }
+        />
         <Route
           path="/about-expert"
           element={
-            expert?.is_data_entered === true ? (
-              <Navigate to="/experet" />
+            expertDetails?.expert?.is_data_entered ? (
+              <Navigate to="/expert" />
             ) : (
               <AboutExpert />
             )

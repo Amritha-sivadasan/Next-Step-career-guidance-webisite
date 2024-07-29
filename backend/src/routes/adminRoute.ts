@@ -1,10 +1,13 @@
 import { Router } from "express";
 import adminController from "../contollers/adminController";
 import { refreshTokens } from "../contollers/authController";
-import { verifyRefreshToken } from "../middlewares/authMiddleware";
+import { verifyAccessToken, verifyRefreshToken, verifyRole } from "../middlewares/authMiddleware";
 
 const adminRoute=Router()
+const role='admin'
+const token = "adminRefreshToken";
 
 adminRoute.post('/login',adminController.loginAdmin)
-adminRoute.post('/refresh-token',verifyRefreshToken,refreshTokens)
+adminRoute.get('/logout',adminController.logoutAdmin)
+adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), refreshTokens(token))
 export default adminRoute
