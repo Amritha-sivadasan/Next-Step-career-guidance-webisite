@@ -2,6 +2,8 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { resetPasssword } from "../../services/api/studentApi";
 import { useNavigate } from "react-router-dom";
+import { resetPassswordExpert } from "../../services/api/ExpertApi";
+import { toast } from "react-toastify";
 
 interface ResetPasswordProps {
   userType: "student" | "expert";
@@ -14,7 +16,7 @@ interface FormData {
 
 const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
   const isExpert = userType === "expert";
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const {
     register,
@@ -23,17 +25,34 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = async(data) => {
-    const storageData = sessionStorage.getItem("userEmail");
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    if (userType == "student") {
+      const storageData = sessionStorage.getItem("userEmail");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
         const email: string = parsedData;
-        const response= await resetPasssword(email,data.newPassword)
-         if(response.data.success){
-            navigate('/login')
-         }
-
+        const response = await resetPasssword(email, data.newPassword);
+        if (response.data.success) {
+          toast.success("Reset password successfully");
+          navigate("/login");
+        } else {
+          toast.error("Something went wrong please try again");
+        }
       }
+    } else if (userType == "expert") {
+      const storageData = sessionStorage.getItem("expertEmail");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData;
+        const response = await resetPassswordExpert(email, data.newPassword);
+        if (response.data.success) {
+          toast.success("Reset password successfully");
+          navigate("/expert/login");
+        } else {
+          toast.error("Something went wrong please try again");
+        }
+      }
+    }
   };
 
   return (
@@ -52,7 +71,10 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
             Reset Your Password
           </h1>
 
-          <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="flex flex-col space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             {/* New Password Input */}
             <div className="flex flex-col space-y-2">
               <label className="text-sm text-[#0B2149] font-medium">
@@ -60,7 +82,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
               </label>
               <input
                 type="password"
-                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${errors.newPassword ? 'border-red-500' : 'border-gray-300'}`}
+                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${
+                  errors.newPassword ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter new password"
                 {...register("newPassword", {
                   required: "New password is required",
@@ -71,7 +95,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
                 })}
               />
               {errors.newPassword && (
-                <span className="text-red-500 text-sm">{errors.newPassword.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.newPassword.message}
+                </span>
               )}
             </div>
 
@@ -82,7 +108,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
               </label>
               <input
                 type="password"
-                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+                className={`border p-2 text-sm rounded-lg bg-[#F0F8FF] ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Confirm your new password"
                 {...register("confirmPassword", {
                   required: "Please confirm your password",
@@ -91,7 +119,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
                 })}
               />
               {errors.confirmPassword && (
-                <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>
+                <span className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </span>
               )}
             </div>
 
@@ -118,4 +148,3 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
 };
 
 export default ResetPassword;
-  

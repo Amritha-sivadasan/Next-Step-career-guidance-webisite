@@ -46,8 +46,6 @@ import { CustomRequest } from "../entities/jwtEntity";
     const {id}=req.params
     const updateData: { [key: string]: any } = req.body;
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
-    
     try {
       const updatedExpert= await this.expertService.updateExpertData(id,updateData,files)
       if(updatedExpert){
@@ -90,11 +88,11 @@ import { CustomRequest } from "../entities/jwtEntity";
        try {
         let existExpert=await this.expertService.existsExpert(email)
         if(!existExpert){
-         res.status(404).json({messsage:'User not found try another valid email '})
+         res.status(404).json({ succes:false, messsage:'User not found try another valid email '})
         }else{
           const context = "otp is created for NextStep application ";
           await this.otpService.generateOtp(email, context);
-          res.status(200).json({ message: "OTP generated and sent successfully" })
+          res.status(200).json({ success:true, message: "OTP generated and sent successfully" ,data:email })
         }
         
        } catch (error) 

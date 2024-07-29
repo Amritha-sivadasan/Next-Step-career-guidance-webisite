@@ -90,12 +90,11 @@ export default class ExpertService implements IExpertService {
     if (!expert) {
       throw new Error("User not found");
     }
-
     const hashedPassword = hashPassword(newPassword);
     expert.password = hashedPassword;
-    const userId = expert._id.toString();
+    const expertId = expert._id.toString();
 
-    await this.expertRepository.update(userId, expert);
+    await this.expertRepository.update(expertId, expert);
   }
 
   async updateExpertData(
@@ -108,6 +107,8 @@ export default class ExpertService implements IExpertService {
       if (!existingExpert) {
         throw new Error("User not found");
       }
+
+
       let profile_picture = existingExpert.profile_picture;
       if (files.profilePicture && files.profilePicture[0]) {
         const result = await cloudinary.uploader.upload(
@@ -135,7 +136,8 @@ export default class ExpertService implements IExpertService {
         ...expert,
         is_data_entered: true,
         profile_picture,
-        credential:credentialImage
+        credential:credentialImage,
+      
       };
       const updatedExpert = await this.expertRepository.update(id, updatedData);
       return updatedExpert ? excludePassword(updatedExpert) : null;

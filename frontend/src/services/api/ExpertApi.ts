@@ -12,6 +12,12 @@ interface Error {
   };
 }
 
+interface ForgotPasswordResponse {
+  success: string;
+  message: string;
+  data: string;
+}
+
 export async function checkIfUserIsBlocked() {
   try {
     const response = await axios.get(`${API_URL}/check-report-user`, {
@@ -125,6 +131,39 @@ export const loginExpert = async (email: string, password: string) => {
     return response;
   } catch (error) {
     console.log("error in login student");
+    throw error;
+  }
+};
+
+
+export const forgotPasswordExpert = async (
+  email: string
+): Promise<ForgotPasswordResponse> => {
+  try {
+    const response = await axios.post(`${API_URL}/expert/forgot-password`, {
+      email,
+    });
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      success: "false",
+      message: (error as Error).response?.data?.message || "An error occurred",
+      data: "",
+    };
+  }
+};
+
+
+export const resetPassswordExpert = async (email: string, password:string) => {
+  try {
+    const response = await axios.post(`${API_URL}/expert/reset-password`, { email ,password});
+    return response
+  } catch (error) {
+    console.error("Error occurred during update user ", error);
     throw error;
   }
 };

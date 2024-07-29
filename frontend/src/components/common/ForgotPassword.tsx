@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { forgotPassword } from "../../services/api/studentApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { forgotPasswordExpert } from "../../services/api/ExpertApi";
 
 
 interface ForgotPasswordProps {
@@ -32,15 +33,15 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
       } else {
         toast.error(response.message);
       }
-    }else if(userType==='expert'){
-      // const response = await forgotPassword(data.email);
-      // if (response?.success ) {
-      //   toast.success("Otp send successfully");      
-      //   sessionStorage.setItem('userEmail',JSON.stringify(response.data))  
-      //   navigate('/fortgot-password-otp')
-      // } else {
-      //   toast.error(response.message);
-      // }
+    }else if(userType==='expert'){     
+      const response = await forgotPasswordExpert(data.email);     
+      if (response?.success ) {
+        toast.success("Otp send successfully");      
+        sessionStorage.setItem('expertEmail',JSON.stringify(response.data))  
+        navigate('/expert/fortgot-password-otp')
+      } else {
+        toast.error(response.message);
+      }
     }
   };
 

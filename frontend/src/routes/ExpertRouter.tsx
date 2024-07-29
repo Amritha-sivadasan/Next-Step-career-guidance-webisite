@@ -14,6 +14,7 @@ import {
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
+import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -61,6 +62,10 @@ const ExpertRouter = () => {
       <Route
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
+      />
+       <Route
+        path="/fortgot-password-otp"
+        element={<ForgotPasswordOtpPage userType="expert" />}
       />
       <Route
         path="/reset-password"

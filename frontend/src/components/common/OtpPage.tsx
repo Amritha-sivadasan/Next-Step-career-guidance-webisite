@@ -17,6 +17,7 @@ import {
   setExpertAuthenticated,
 } from "../../features/expert/expertAuthSlice";
 import { IExpert } from "../../@types/expert";
+import { sendOtpExpert } from "../../services/api/ExpertApi";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -103,7 +104,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
               dispatch(setExpert(expetData));
               dispatch(setExpertAuthenticated(true));
               sessionStorage.removeItem("expertdata");
-              localStorage.setItem("ExpertId", expetData._id);
+              localStorage.setItem("expertId", expetData._id);
               localStorage.setItem(
                 "expertAccess",
                 registerExpertResult.accessToken
@@ -133,7 +134,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
       if (storageData) {
         const parsedData = JSON.parse(storageData);
         const email: string = parsedData.email;
-        sendOtp(email);
+        sendOtpExpert(email);
         setTimer(10);
         setCanResend(false);
       }

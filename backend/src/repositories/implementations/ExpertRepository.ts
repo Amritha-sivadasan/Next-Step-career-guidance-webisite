@@ -12,13 +12,9 @@ export default class ExpertRepository implements IExpertRepository {
       if (!existingExpert) {
         throw new Error("Student not found");
       }
-      const updatedData = {
-        ...expert,
-        is_data_entered: true,
-      };
-      existingExpert.set(updatedData);
-      const updatedExpert = await existingExpert.save();
 
+      existingExpert.set(expert);
+      const updatedExpert = await existingExpert.save();
       return updatedExpert;
     } catch (error) {
       console.log("Error occurred in update repository", error);

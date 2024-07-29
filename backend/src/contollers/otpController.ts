@@ -34,8 +34,6 @@ class OtpController {
   };
 
   public verifyOtp = async (req: Request, res: Response): Promise<void> => {
-console.log(req.body);
-
     const { email, otp } = req.body;
     try {
       let verify = await this.otpservice.verifyOtp(email, otp);

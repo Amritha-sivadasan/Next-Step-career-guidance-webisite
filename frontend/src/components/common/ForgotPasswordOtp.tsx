@@ -3,18 +3,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
-import {
-  registerExpert,
-  VerifyOtpExpert,
-} from "../../features/expert/middleware/ExpertRegisterThunk";
+import { VerifyOtpExpert } from "../../features/expert/middleware/ExpertRegisterThunk";
 
 import { useNavigate } from "react-router-dom";
-import { sendOtp } from "../../services/api/studentApi";
-import {
-  setExpert,
-  setExpertAuthenticated,
-} from "../../features/expert/expertAuthSlice";
-import { IExpert } from "../../@types/expert";
+import { forgotPassword } from "../../services/api/studentApi";
+import { forgotPasswordExpert } from "../../services/api/ExpertApi";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -60,40 +53,19 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         ).unwrap();
 
         if (verifyOtpResult.success) {
-              navigate("/reset-password");  
-
+          navigate("/reset-password");
         }
       }
     } else if (userType == "expert") {
-      const storageData = sessionStorage.getItem("expertdata");
+      const storageData = sessionStorage.getItem("expertEmail");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        const email: string = parsedData.email;
+        const email: string = parsedData;
         const verifyOtpResult = await dispatch(
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success) {
-          const registerExpertResult = await dispatch(
-            registerExpert(parsedData)
-          ).unwrap();
-          if (registerExpertResult.success) {
-            const expetData = registerExpertResult.data as IExpert;
-            console.log("expertdata", expetData);
-
-            if (expetData && expetData._id) {
-              dispatch(setExpert(expetData));
-              dispatch(setExpertAuthenticated(true));
-              sessionStorage.removeItem("expertdata");
-              localStorage.setItem("ExpertId", expetData._id);
-              localStorage.setItem(
-                "expertAccess",
-                registerExpertResult.accessToken
-              );
-              navigate("/expert/about-expert");
-            } else {
-              console.log("Expert data is missing or malformed.");
-            }
-          }
+          navigate("/expert/reset-password");
         }
       }
     }
@@ -101,20 +73,22 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
 
   const resendOtp = () => {
     if (userType == "student") {
-      const storageData = sessionStorage.getItem("userdata");
+      const storageData = sessionStorage.getItem("userEmail");
+      console.log("storagedata", storageData);
+
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        const email: string = parsedData.email;
-        sendOtp(email);
+        const email: string = parsedData;
+        forgotPassword(email);
         setTimer(10);
         setCanResend(false);
       }
-    } else {
-      const storageData = sessionStorage.getItem("expertdata");
+    } else if (userType === "expert") {
+      const storageData = sessionStorage.getItem("expertEmail");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        const email: string = parsedData.email;
-        sendOtp(email);
+        const email: string = parsedData;
+        forgotPasswordExpert(email);
         setTimer(10);
         setCanResend(false);
       }
