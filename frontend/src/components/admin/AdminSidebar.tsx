@@ -61,7 +61,7 @@ const Sidebar: React.FC = () => {
         Category
       </Link>
       <Link
-        to="/admin/sub-category"
+        to="/admin/subCategory"
         className="p-2 flex items-center hover:bg-gray-200 rounded"
       >
         <FaListAlt className="mr-2 text-gray-700" />

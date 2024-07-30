@@ -14,6 +14,8 @@ import { useAppSelector } from "../hooks/useTypeSelector";
 import CategoryTable from "../pages/admin/CategoryList";
 import AddnewCategory from "../pages/admin/AddnewCategory";
 import EditCategory from "../pages/admin/CategoryEdit";
+import Subcategory from "../pages/admin/Subcategory";
+import EditSubCategory from "../pages/admin/SubCategoryEdit";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -62,6 +64,9 @@ const AdminRouter = () => {
             <Route path="/category" element={<CategoryTable />} />
             <Route path="/addCategory" element={<AddnewCategory />} />
             <Route path='/editCategory/:categoryId' element={<EditCategory/>}/>
+            <Route path="/subCategory" element={<Subcategory/>} />
+            <Route path="/addSubCategory" element={<EditSubCategory/>} />
+
           </Route>
         </Route>
       </Routes>
