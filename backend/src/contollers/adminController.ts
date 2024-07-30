@@ -1,12 +1,18 @@
 import { Request, Response } from "express";
 import AdminService from "../services/implementations/AdminService";
+import { IAdminService } from "../services/interface/IAdminService";
+import StudentService from "../services/implementations/StudentService";
+import ExpertService from "../services/implementations/ExpertService";
+import { IExpertService } from "../services/interface/IExpertService";
 import { CustomRequest } from "../entities/jwtEntity";
 
 class AdminController {
-  private adminService: AdminService;
+  private adminService: IAdminService;
+  private expertService:IExpertService
 
   constructor() {
     this.adminService = new AdminService();
+    this.expertService= new ExpertService()
   }
 
   public loginAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -39,14 +45,15 @@ class AdminController {
 
    public getAllExpert =async (req:Request,res:Response):Promise<void>=>{
     try {
-      
+      const response = await  this.expertService.getAllExperts()
+      res.status(200).json({succes:true, message:'',data:response})
       
     } catch (error) {
+      console.log('error during get all users');
       
+      res.status(500).json({message:'something went wrong on get all users ',success:false})
     }
    }
-
-
 
 }
 

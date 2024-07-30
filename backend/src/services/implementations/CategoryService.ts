@@ -2,6 +2,9 @@ import { ICategoryRepository } from "../../repositories/interface/ICategoryRepos
 import { ICategory } from "../../entities/CategoryEntity";
 import { ICategoryService } from "../interface/ICategoryService";
 import CategoryRepository from "../../repositories/implementations/CategoryRepository";
+import cloudinary from "../../config/cloudinaryConfig";
+import path from "path";
+import fs from "fs";
 
 export default class CategoryService implements ICategoryService {
   private categoryRepository: ICategoryRepository;
@@ -45,12 +48,20 @@ export default class CategoryService implements ICategoryService {
     }
   }
 
-  async createCategory(category: ICategory): Promise<ICategory> {
+  async createCategory(
+    category: ICategory,
+    file: Express.Multer.File
+  ): Promise<ICategory> {
     try {
       const exist = await this.categoryRepository.findOne(category.catName);
       if (exist) {
         throw new Error("Category Already Exist");
       }
+
+      const result = await cloudinary.uploader.upload(file.path);
+      const imageUrl = result.secure_url;
+      category.catImage = imageUrl;
+
       return await this.categoryRepository.create(category);
     } catch (error) {
       console.log("error during creating category");
@@ -60,18 +71,53 @@ export default class CategoryService implements ICategoryService {
 
   async updateCategory(
     id: string,
-    category: Partial<ICategory>
+    categoryData: Partial<ICategory>,
+    file?: Express.Multer.File
   ): Promise<ICategory | null> {
     try {
       const exist = await this.categoryRepository.findById(id);
       if (!exist) {
-        throw new Error("Category is not existed");
+        throw new Error("Category does not exist");
       }
-      const updateCat = await this.categoryRepository.update(id, category);
-      return updateCat;
-    } catch (error) {
-      console.log("error during updateing category");
 
+      if (categoryData.catName) {
+        const duplicateCategory = await this.categoryRepository.findOne(categoryData.catName);
+        if (duplicateCategory && duplicateCategory.id !== id) {
+          throw new Error("Category name must be unique");
+        }
+      }
+
+
+      if (file) {
+        const localPath = path.join(__dirname, "../../uploads", file.filename);
+
+        if (!fs.existsSync(localPath)) {
+          throw new Error(`File ${localPath} does not exist`);
+        }
+  
+       
+        const result = await cloudinary.uploader.upload(localPath);
+       
+        fs.unlinkSync(localPath);
+  
+      
+        const category = await this.categoryRepository.findById(id);
+        if (category?.catImage) {
+          const publicId = category.catImage.split("/").pop()?.split(".")[0];
+          await cloudinary.uploader.destroy(publicId as string);
+        }
+        
+        categoryData.catImage = result.secure_url;
+      } else if (!categoryData.catImage) {
+    
+        const category = await this.categoryRepository.findById(id);
+        categoryData.catImage = category?.catImage;
+      }
+  
+    
+      return await this.categoryRepository.update(id, categoryData);
+    } catch (error) {
+      console.error("Error during updating category:", error);
       throw error;
     }
   }
@@ -83,6 +129,15 @@ export default class CategoryService implements ICategoryService {
         return false;
       }
       return await this.categoryRepository.deleteCategory(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async fetchcategoryById(id: string): Promise<ICategory | null> {
+    try {
+      const data = await this.categoryRepository.findById(id);
+      return data;
     } catch (error) {
       throw error;
     }

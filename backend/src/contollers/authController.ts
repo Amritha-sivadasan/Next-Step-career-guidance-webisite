@@ -9,7 +9,7 @@ import {
 export const refreshTokens = (tokenName:string) => {
 
   return (req: Request, res: Response, ) => {
-    const refreshToken = req.cookies[tokenName];
+    const refreshToken = req.cookies[tokenName];    
   
     if (!refreshToken) {
       return res.status(401).json({ message: "Refresh token is missing" });
@@ -36,6 +36,12 @@ export const refreshTokens = (tokenName:string) => {
       
        }else if(role=='expert'){
         res.cookie("ExpertRefreshToken", newRefreshToken, {
+          httpOnly: false,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+        res.json({ accessToken: newAccessToken });
+       }else if(role=='admin'){
+        res.cookie("adminRefreshToken", newRefreshToken, {
           httpOnly: false,
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });

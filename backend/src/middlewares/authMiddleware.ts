@@ -49,6 +49,7 @@ export const verifyRole = (requiredRole: string) => {
         .json({ message: `Access denied. Required role: ${requiredRole}` });
     }
 
+
     next();
   };
 };

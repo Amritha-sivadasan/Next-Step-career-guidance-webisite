@@ -5,5 +5,5 @@ export interface IAdminService{
         user_name: string,
         password: string
       ): Promise<{  user_name:string; accessToken: string; refreshToken: string }>
-
+      findAdminById(id: string): Promise<Partial<IAdmin> | null>
 }

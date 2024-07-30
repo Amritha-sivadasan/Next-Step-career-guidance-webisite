@@ -12,8 +12,8 @@ import {
   FaStar,
   FaQuestionCircle,
   FaSignOutAlt,
-  GiBrain 
 } from "react-icons/fa";
+import { GiBrain } from "react-icons/gi";
 
 const Sidebar: React.FC = () => {
   return (

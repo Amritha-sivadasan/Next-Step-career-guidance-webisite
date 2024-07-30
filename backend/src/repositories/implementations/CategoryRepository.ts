@@ -56,9 +56,9 @@ export default class CategoryRepository implements ICategoryRepository {
     }
   }
 
-  async findOne(CatName: string): Promise<ICategory | null> {
+  async findOne(catName: string): Promise<ICategory | null> {
     try {
-      const result = await Category.findOne({ CatName });
+      const result = await Category.findOne({ catName });
       return result;
     } catch (error) {
       throw error;

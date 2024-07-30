@@ -12,6 +12,8 @@ import { useEffect } from "react";
 import { setAdmin, setadminAuthenticated } from "../features/admin/adminSlice";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import CategoryTable from "../pages/admin/CategoryList";
+import AddnewCategory from "../pages/admin/AddnewCategory";
+import EditCategory from "../pages/admin/CategoryEdit";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -57,7 +59,9 @@ const AdminRouter = () => {
           >
             <Route path="/" element={<Dashboard />} />
             <Route path="/experts" element={<Experts />} />
-            <Route path="/category" element={<CategoryTable/>}/>
+            <Route path="/category" element={<CategoryTable />} />
+            <Route path="/addCategory" element={<AddnewCategory />} />
+            <Route path='/editCategory/:categoryId' element={<EditCategory/>}/>
           </Route>
         </Route>
       </Routes>
