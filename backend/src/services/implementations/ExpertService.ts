@@ -35,15 +35,15 @@ export default class ExpertService implements IExpertService {
     expert: IExpert
   ): Promise<{ expert: IExpert; accessToken: string; refreshToken: string }> {
     try {
-      let hashedPassword=""
-       if(expert.password!==""){
+      let hashedPassword = "";
+      if (expert.password !== "") {
         hashedPassword = hashPassword(expert.password);
-       }
-       const expertWithHashedPassword = {
-         ...expert,
-         password: hashedPassword,
-       };
-    
+      }
+      const expertWithHashedPassword = {
+        ...expert,
+        password: hashedPassword,
+      };
+
       const newExpert = await this.expertRepository.create(
         expertWithHashedPassword
       );
@@ -108,7 +108,6 @@ export default class ExpertService implements IExpertService {
         throw new Error("User not found");
       }
 
-
       let profile_picture = existingExpert.profile_picture;
       if (files.profilePicture && files.profilePicture[0]) {
         const result = await cloudinary.uploader.upload(
@@ -117,7 +116,7 @@ export default class ExpertService implements IExpertService {
             folder: "profile_pictures",
           }
         );
-    
+
         profile_picture = result.secure_url;
       }
 
@@ -129,15 +128,14 @@ export default class ExpertService implements IExpertService {
             folder: "credential",
           }
         );
-        
+
         credentialImage = result.secure_url;
       }
       const updatedData = {
         ...expert,
         is_data_entered: true,
         profile_picture,
-        credential:credentialImage,
-      
+        credential: credentialImage,
       };
       const updatedExpert = await this.expertRepository.update(id, updatedData);
       return updatedExpert ? excludePassword(updatedExpert) : null;

@@ -11,6 +11,7 @@ import useFetchAdminData from "../hooks/useFetchAdmin";
 import { useEffect } from "react";
 import { setAdmin, setadminAuthenticated } from "../features/admin/adminSlice";
 import { useAppSelector } from "../hooks/useTypeSelector";
+import CategoryTable from "../pages/admin/CategoryList";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ const AdminRouter = () => {
           >
             <Route path="/" element={<Dashboard />} />
             <Route path="/experts" element={<Experts />} />
+            <Route path="/category" element={<CategoryTable/>}/>
           </Route>
         </Route>
       </Routes>

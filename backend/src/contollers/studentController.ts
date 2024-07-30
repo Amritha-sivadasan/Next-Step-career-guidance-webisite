@@ -115,7 +115,7 @@ class StudentController {
           .status(404)
           .json({
             success: false,
-            messsage: "User not found try another valid email ",
+            message: "User not found try another valid email ",
           });
       } else {
         const context =

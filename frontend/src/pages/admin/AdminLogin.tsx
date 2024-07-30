@@ -23,6 +23,8 @@ const AdminLogin: React.FC = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     const response = await dispatch(LoginAdmin(data));
+    console.log(response.payload);
+    
     if (response.payload?.success && response.payload.data) {
       const payload = response.payload as LoginResponseAdmin;
        localStorage.setItem('adminAccess',payload.accessToken)

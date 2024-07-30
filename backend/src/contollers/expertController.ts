@@ -100,7 +100,6 @@ import { CustomRequest } from "../entities/jwtEntity";
         res.status(500).json({ message:"error occur on forgot password",error,success:false });
        }    
 
-    
    }
    
 

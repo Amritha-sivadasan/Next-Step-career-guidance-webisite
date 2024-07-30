@@ -1,4 +1,4 @@
-import mongoose, { Schema ,model,Document } from "mongoose";
+import  { Schema ,model,Document } from "mongoose";
 import { IExpert } from "../entities/ExpertEntity";
 
 const ExpertSchema: Schema = new Schema(

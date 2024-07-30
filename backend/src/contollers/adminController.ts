@@ -33,13 +33,21 @@ class AdminController {
       }
     } catch (error) {
     res.status(500).json({message:'admin id is missing ',success:false})
-    }
-  
-  
+    }  
     
   }
 
-  
+   public getAllExpert =async (req:Request,res:Response):Promise<void>=>{
+    try {
+      
+      
+    } catch (error) {
+      
+    }
+   }
+
+
+
 }
 
 export default new AdminController();
