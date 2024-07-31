@@ -17,6 +17,7 @@ import EditCategory from "../pages/admin/CategoryEdit";
 import Subcategory from "../pages/admin/Subcategory";
 import EditSubCategory from "../pages/admin/SubCategoryEdit";
 import AddSubCategory from "../pages/admin/AddSubCategory";
+import ExpertView from "../pages/admin/ExpertView";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ const AdminRouter = () => {
             <Route path="/subCategory" element={<Subcategory/>} />
             <Route path="/addSubCategory" element={<AddSubCategory/>} />
             <Route path='/editSubCategory/:categoryId' element={<EditSubCategory/>}/>
-
+            <Route path='/expertView/:expertId'  element={<ExpertView/>} />
            
 
           </Route>

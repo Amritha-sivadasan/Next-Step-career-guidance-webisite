@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ICategory } from "../../@types/dashboard";
-import { deleteCategory, fetchAllCategories } from "../../services/api/adminApi";
+import { deleteCategory, fetchAllCategories } from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from 'sweetalert2';

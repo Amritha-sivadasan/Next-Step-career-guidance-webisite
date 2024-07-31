@@ -25,7 +25,7 @@ interface TokenPayload {
       return decoded;
     } catch (error) {
 
-      console.error('Token Verification Error:', error);
+      console.error('Token Verification Error:');
       throw new Error('Invalid or expired token');
     }
   };

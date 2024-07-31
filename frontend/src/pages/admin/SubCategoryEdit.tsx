@@ -5,7 +5,7 @@ import {
   fetchSubCategoryById,
   fetchAllCategories,
   updateSubCategory,
-} from "../../services/api/adminApi";
+} from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from "sweetalert2";

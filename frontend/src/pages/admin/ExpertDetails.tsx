@@ -1,58 +1,113 @@
 // src/components/Experts.tsx
-import React from 'react';
+import React, { useEffect, useState } from "react";
+
+import { toast } from "react-toastify";
+import LoadingPage from "../../components/common/LoadingPage"; // Make sure you have a LoadingPage component
+import { useNavigate } from "react-router-dom";
+import { fetchAllExpert } from "../../services/api/categoryApi";
 
 const Experts: React.FC = () => {
-    const experts = [
-        { id: 1, profile: 'https://via.placeholder.com/40', expertId: '578278092914', name: 'Amritha s', phone: '9632098524', email: 'amri@gmail.com', status: 'Pending' },
-        { id: 2, profile: 'https://via.placeholder.com/40', expertId: '578258092914', name: 'Ameen', phone: '9632098524', email: 'ameen@gmail.com', status: 'Active' },
-        { id: 3, profile: 'https://via.placeholder.com/40', expertId: '578278052914', name: 'Aathi', phone: '9632098524', email: 'aathi@gmail.com', status: 'Inactive' },
-        { id: 4, profile: 'https://via.placeholder.com/40', expertId: '578278032914', name: 'Amritha s', phone: '9632098524', email: 'amri@gmail.com', status: 'Active' },
-    ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [experts, setExperts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
-    return (
-        <main className="flex-1 p-6 bg-gray-100">
-            <div className="bg-white p-4 shadow rounded-lg">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold">Experts</h2>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded">Add Expert</button>
-                </div>
-                <table className="min-w-full bg-white mt-4">
-                    <thead>
-                        <tr>
-                            <th className="py-2 border-b">No</th>
-                            <th className="py-2 border-b">Profile</th>
-                            <th className="py-2 border-b">Expert Id</th>
-                            <th className="py-2 border-b">Expert Name</th>
-                            <th className="py-2 border-b">Phone Number</th>
-                            <th className="py-2 border-b">Email Id</th>
-                            <th className="py-2 border-b">Status</th>
-                            <th className="py-2 border-b">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {experts.map((expert, index) => (
-                            <tr key={expert.id}>
-                                <td className="py-2 border-b text-center">{index + 1}</td>
-                                <td className="py-2 border-b text-center"><img src={expert.profile} alt="Profile" className="h-10 w-10 rounded-full mx-auto" /></td>
-                                <td className="py-2 border-b text-center">{expert.expertId}</td>
-                                <td className="py-2 border-b text-center">{expert.name}</td>
-                                <td className="py-2 border-b text-center">{expert.phone}</td>
-                                <td className="py-2 border-b text-center">{expert.email}</td>
-                                <td className="py-2 border-b text-center">
-                                    <span className={`px-2 py-1 rounded-full text-white ${expert.status === 'Active' ? 'bg-green-500' : expert.status === 'Inactive' ? 'bg-red-500' : 'bg-yellow-500'}`}>
-                                        {expert.status}
-                                    </span>
-                                </td>
-                                <td className="py-2 border-b text-center">
-                                    <button className="bg-gray-200 px-2 py-1 rounded">View</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    );
+  useEffect(() => {
+    const loadExperts = async () => {
+      try {
+        const response = await fetchAllExpert();
+        if (response.data) {
+          setExperts(response.data);
+        } else {
+          toast.error(response.message || "Failed to fetch experts");
+        }
+      } catch (err) {
+        toast.error("Failed to fetch experts");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadExperts();
+  }, []);
+
+  const handleViewButton = (expertId: string) => {
+    navigate(`/admin/expertView/${expertId}`);
+  };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
+
+  return (
+    <main className="flex-1 p-6 bg-gray-100">
+      <div className="bg-white p-4 shadow rounded-lg">
+        <div className="m-5 flex justify-between items-center mb-12">
+          <h1 className="text-2xl font-bold">Experts List</h1>
+        </div>
+
+        <table className="min-w-full bg-white mt-4">
+          <thead>
+            <tr>
+              <th className="py-2 border-b">No</th>
+              <th className="py-2 border-b">Profile</th>
+              <th className="py-2 border-b">Expert Name</th>
+              <th className="py-2 border-b">SubCategory Name </th>
+              <th className="py-2 border-b">Email Id</th>
+              <th className="py-2 border-b">Status</th>
+              <th className="py-2 border-b">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {experts.map((expert, index) => (
+              <tr key={expert._id}>
+                <td className="py-2 border-b text-center">{index + 1}</td>
+                <td className="py-2 border-b text-center">
+                  <img
+                    src={expert.profile_picture}
+                    alt="Profile"
+                    className="h-10 w-10 rounded-full mx-auto"
+                  />
+                </td>
+                <td className="py-2 border-b text-center">
+                  {expert.user_name}
+                </td>
+                <td className="py-2 border-b text-center">
+                  {expert.sub_category_id}
+                </td>
+                <td className="py-2 border-b text-center">{expert.email}</td>
+                <td className="py-2 border-b text-center">
+                  <span
+                    className={`px-2 py-1 rounded-full text-white ${
+                      expert.is_credential_validate
+                        ? "bg-green-500" // Credential validated
+                        : expert.status === "Inactive"
+                        ? "bg-red-500" // Inactive status
+                        : "bg-yellow-500" // Pending status
+                    }`}
+                  >
+                    {expert.is_credential_validate
+                      ? "Validated"
+                      : expert.status === "Inactive"
+                      ? "Inactive"
+                      : "Pending"}
+                  </span>
+                </td>
+                <td className="py-2 border-b text-center">
+                  <button
+                    className="bg-gray-200 px-2 py-1 rounded"
+                    onClick={() => handleViewButton(expert._id)}
+                  >
+                    View
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  );
 };
 
 export default Experts;

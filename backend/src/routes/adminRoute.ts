@@ -27,6 +27,8 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  adminRoute.get('/deleteSubCategory/:id',verifyAccessToken, verifyRole(role),subCategoryController.deleteSubCategory)
 
  adminRoute.get('/allExperts',verifyAccessToken,verifyRole(role),adminController.getAllExpert)
+ adminRoute.get('/expertById/:id',verifyAccessToken,verifyRole(role),adminController.getExpertById)
+ adminRoute.get('/verifyExpert/:id',verifyAccessToken,verifyRole(role),adminController.verifyExpert)
 
 
 export default adminRoute

@@ -14,6 +14,8 @@ import { CustomRequest } from "../entities/jwtEntity";
   
     public createExpert = async (req: Request, res: Response): Promise<void> => {
         try {
+
+          
           let exitExpert=await this.expertService.existsExpert(req.body.email)
           if(exitExpert){
             res.status(409 ).json({success:false,Message:"user already exist",})

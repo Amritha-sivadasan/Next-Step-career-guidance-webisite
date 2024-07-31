@@ -8,6 +8,9 @@ import { setExpert } from "../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/useTypeSelector";
 import LoadingPage from "../../components/common/LoadingPage";
+import { fetchAllSubCategories } from "../../services/api/categoryApi";
+import { toast } from "react-toastify";
+import { ISubCategory } from "../../@types/dashboard";
 
 type FormValues = {
   personal_bio: string;
@@ -24,6 +27,7 @@ const AboutExpert: React.FC = () => {
   const navigate = useNavigate();
   const [loading,setLoading]=useState(false)
   const expert = useAppSelector((state) => state.expert.expert);
+  const [categories,setCategories]= useState<ISubCategory[]>([])
 
 
   const {
@@ -61,6 +65,19 @@ const AboutExpert: React.FC = () => {
     }
   };
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetchAllSubCategories();
+        setCategories(response.data);
+      } catch (error) {
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+  useEffect(() => {
     if (expert && expert.is_data_entered === true) {
       console.log("is data  enter", expert.is_data_entered);
 
@@ -72,6 +89,7 @@ const AboutExpert: React.FC = () => {
   if (loading) {
     return <LoadingPage />;
   }
+
 
 
   return (
@@ -169,7 +187,6 @@ const AboutExpert: React.FC = () => {
               )}
             </div>
 
-            {/* Choose Your Category */}
             <div className="flex flex-col space-y-2">
               <label className="text-sm font-semibold">
                 Choose your category
@@ -181,9 +198,11 @@ const AboutExpert: React.FC = () => {
                 })}
               >
                 <option value="">Select one</option>
-                <option value="1">Category 1</option>
-                <option value="2">Category 2</option>
-                <option value="3">Category 3</option>
+                {categories.map(category => (
+                  <option key={category._id} value={category.subCatName}>
+                    {category.subCatName}
+                  </option>
+                ))}
               </select>
               {errors.sub_category_id && (
                 <p className="text-red-500 text-sm">

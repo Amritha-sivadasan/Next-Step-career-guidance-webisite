@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ICategory } from "../../@types/dashboard";
-import { fetchCategoryById, updateCategory } from "../../services/api/adminApi";
+import { fetchCategoryById,updateCategory } from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from "sweetalert2";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
 interface FormData {
   catName: string;
@@ -68,7 +68,7 @@ const EditCategory = () => {
     }
   };
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",

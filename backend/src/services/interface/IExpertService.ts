@@ -8,4 +8,5 @@ export interface IExpertService{
   existsExpert(email: string): Promise<IExpert | null>;
   login(email: string, password: string): Promise<{ expert: IExpert; accessToken: string; refreshToken: string }>;
   updatePassword(email: string, newPassword: string): Promise<void>;
+  verifyExpert(id:string):Promise<Boolean>
 }

@@ -4,7 +4,7 @@ import { ISubCategory } from "../../@types/dashboard";
 import {
   deleteSubCategory,
   fetchAllSubCategories,
-} from "../../services/api/adminApi";
+} from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from "sweetalert2";

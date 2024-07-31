@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addSubCategory, fetchAllCategories } from "../../services/api/adminApi";
+import { addSubCategory, fetchAllCategories } from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/common/LoadingPage";

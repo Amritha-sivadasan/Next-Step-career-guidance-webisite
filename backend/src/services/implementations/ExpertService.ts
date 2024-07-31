@@ -22,7 +22,8 @@ export default class ExpertService implements IExpertService {
   }
 
   async getAllExperts(): Promise<IExpert[]> {
-    const experts = await this.expertRepository.findAll();
+    const experts = await this.expertRepository.findAll();    
+    
     return experts.map((expert) => excludePassword(expert));
   }
 
@@ -97,6 +98,26 @@ export default class ExpertService implements IExpertService {
     await this.expertRepository.update(expertId, expert);
   }
 
+   async verifyExpert(id: string): Promise<Boolean> {
+     try {
+      const expert = await this.expertRepository.findById(id)
+      if(!expert){
+        throw new Error('expert not found')
+      }
+      expert.is_credential_validate=true
+    const result=  await this.expertRepository.update(id, expert);
+     if(result){
+       return true
+     }
+     return false
+
+     } catch (error) {
+      throw error
+     }
+   }
+
+
+
   async updateExpertData(
     id: string,
     expert: Partial<IExpert>,
@@ -144,4 +165,6 @@ export default class ExpertService implements IExpertService {
       throw error;
     }
   }
+
+
 }

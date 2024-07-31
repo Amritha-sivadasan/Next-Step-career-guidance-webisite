@@ -8,6 +8,7 @@ export const verifyAccessToken = (
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
+  
 
   if (!token) {
     return res.status(401).json({ message: "Access token is missing" });
@@ -15,7 +16,7 @@ export const verifyAccessToken = (
   try {
     const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);
     req.user = decoded as TokenPayload;
-
+    
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired access token" });
@@ -48,8 +49,7 @@ export const verifyRole = (requiredRole: string) => {
         .status(403)
         .json({ message: `Access denied. Required role: ${requiredRole}` });
     }
-
-
+     
     next();
   };
 };
