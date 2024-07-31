@@ -3,12 +3,12 @@ export interface IExpert {
     user_name: string;
     email: string;
     password: string;
-    phonenumber: string;
+    phoneNumber: string;
     profile_picture: File |string;
     personal_bio: string;
     consultation_fee: number;
     credential: File |string;
-    education_background: string;
+    educationBackground: string;
     sub_category_id: string;
     area_of_expertise: string;
     is_active: boolean;

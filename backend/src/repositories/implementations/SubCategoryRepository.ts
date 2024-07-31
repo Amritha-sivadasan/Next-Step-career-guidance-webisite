@@ -1,6 +1,7 @@
 import { ISubCategeryRepository } from "../interface/ISubCategoryRepository";
 import { SubCategory } from "../../models/subCategorySchema";
 import { ISubCategory } from "../../entities/SubCategoryEntity";
+import e from "express";
 
 export default class SubCategoryRepository implements ISubCategeryRepository{
 
@@ -66,5 +67,19 @@ async findOne(subCatName: string): Promise<ISubCategory | null> {
 
     }
 }
+
+ async deleteByCategory(catName:string):Promise<boolean>{
+    try {
+        const result= await SubCategory.deleteMany({catName})
+        if(result){
+            return true
+        }else{
+            return false
+        }
+    } catch (error) {
+        throw error
+    }
+ }
+
 }
 

@@ -1,61 +1,72 @@
-// src/components/ProfileDetails.tsx
-import React from 'react';
+import { useAppSelector } from "../../hooks/useTypeSelector";
 
-const ProfileDetails: React.FC = () => {
+const ExpertProfile: React.FC = () => {
+  const { expert } = useAppSelector((state) => state.expert);
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex justify-center mb-6">
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Profile"
-          className="w-24 h-24 rounded-full"
-        />
-      </div>
-      <h2 className="text-2xl font-semibold text-center mb-6">My Details</h2>
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Full Name</label>
-            <input type="text" value="Amritha s" className="w-full border-gray-300 rounded-md shadow-sm" readOnly />
-          </div>
-          <div>
-            <label className="block text-gray-700">Email</label>
-            <input type="text" value="amr@gmail.com" className="w-full border-gray-300 rounded-md shadow-sm" readOnly />
-          </div>
-          <div>
-            <label className="block text-gray-700">Phone Number</label>
-            <input type="text" value="9048564474" className="w-full border-gray-300 rounded-md shadow-sm" readOnly />
-          </div>
-          <div>
-            <label className="block text-gray-700">Availability</label>
-            <input type="text" value="09:00 am-04:00pm" className="w-full border-gray-300 rounded-md shadow-sm" readOnly />
-          </div>
-          <div>
-            <label className="block text-gray-700">Consulting Fee</label>
-            <input type="text" value="1000rs" className="w-full border-gray-300 rounded-md shadow-sm" readOnly />
+    <div className="min-h-screen p-4 ms-12  w-11/12 flex justify-center ">
+      {expert ? (
+        <div className="container mx-auto bg-white p-6 rounded-lg border shadow-md ">
+          <h1 className="text-3xl font-bold mb-4 text-center">
+            Expert Details
+          </h1>
+          <img
+            src={
+              typeof expert.profile_picture === "string"
+                ? expert.profile_picture
+                : URL.createObjectURL(expert.profile_picture)
+            }
+            alt="Profile"
+            className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
+          />
+          <div className="grid grid-cols  gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2">
+            <div className=" ">
+              <h2 className="font-semibold p-2 ">Username:-</h2>
+              <p className="p-3 border rounded-lg shadow-md">
+                {expert.user_name}
+              </p>
+            </div>
+            <div>
+              <h2 className="font-semibold p-2">Email:</h2>
+              <p className="p-3 border rounded-lg shadow-md">{expert.email}</p>
+            </div>
+            <div>
+              <h2 className="font-semibold">Phone Number:</h2>
+              <p className="p-3 border rounded-lg shadow-md">{expert.phoneNumber}</p>
+            </div>
+            <div className="">
+              <h2 className="font-semibold">Personal Bio:</h2>
+              <p className="p-3 border rounded-lg shadow-md">{expert.personal_bio}</p>
+            </div>
+            <div>
+              <h2 className="font-semibold">Area of Expertise:</h2>
+              <p className="p-3 border rounded-lg shadow-md">
+                {expert.area_of_expertise}
+              </p>
+            </div>
+            <div>
+              <h2 className="font-semibold">Consultation Fee:</h2>
+              <p className="p-3 border rounded-lg ">
+                {expert.consultation_fee}
+              </p>
+            </div>
+            <div>
+              <h2 className="font-semibold">Educational Background:</h2>
+              <p className="p-3 border rounded-lg shadow-md">
+                {expert.educationBackground}
+              </p>
+            </div>
+            <div>
+              <h2 className="font-semibold">Category:</h2>
+              <p className="p-3 border rounded-lg shadow-md">{expert.sub_category_id}</p>
+            </div>
           </div>
         </div>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Professional Bio</label>
-            <textarea
-              className="w-full border-gray-300 rounded-md shadow-sm"
-              readOnly
-              value="Experienced nursing professional dedicated to patient care and evidence-based practice in critical care settings"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Areas of Expertise</label>
-            <textarea
-              className="w-full border-gray-300 rounded-md shadow-sm"
-              readOnly
-              value="• Paramedical\n• Nursing"
-            />
-          </div>
-        </div>
-      </div>
+      ) : (
+        <p className="text-center">Expert not found</p>
+      )}
     </div>
   );
 };
 
-export default ProfileDetails;
+export default ExpertProfile;

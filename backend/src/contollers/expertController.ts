@@ -49,6 +49,10 @@ import { CustomRequest } from "../entities/jwtEntity";
     const updateData: { [key: string]: any } = req.body;
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     try {
+
+     console.log('data',updateData);
+     
+
       const updatedExpert= await this.expertService.updateExpertData(id,updateData,files)
       if(updatedExpert){
         res

@@ -11,7 +11,7 @@ const ExpertSchema: Schema = new Schema(
     personal_bio: { type: String, },
     consultation_fee: { type: Number,  },
     credential: { type: String,  },
-    education_background: { type: String, },
+    educationBackground: { type: String, },
     sub_category_id:{type:String,},
     area_of_expertise: { type: String,  },
     is_active: { type: Boolean, default: true }, 

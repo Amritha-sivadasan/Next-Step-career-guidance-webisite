@@ -28,6 +28,7 @@ const AdminRouter = () => {
     if (admin) {
       dispatch(setAdmin(admin));
       dispatch(setadminAuthenticated(isAuthenticated));
+      console.log("isauth", isAuthenticated);
     } else {
       dispatch(setadminAuthenticated(false));
       console.log("isauth", isAuthenticated);
@@ -53,7 +54,7 @@ const AdminRouter = () => {
               <>
                 <div className="flex flex-col w-full">
                   <Header />
-                  <div className="flex-1 flex ">
+                  <div className="flex-1 flex bg-white ">
                     <Sidebar />
                     <Outlet />
                   </div>
@@ -65,13 +66,17 @@ const AdminRouter = () => {
             <Route path="/experts" element={<Experts />} />
             <Route path="/category" element={<CategoryTable />} />
             <Route path="/addCategory" element={<AddnewCategory />} />
-            <Route path='/editCategory/:categoryId' element={<EditCategory/>}/>
-            <Route path="/subCategory" element={<Subcategory/>} />
-            <Route path="/addSubCategory" element={<AddSubCategory/>} />
-            <Route path='/editSubCategory/:categoryId' element={<EditSubCategory/>}/>
-            <Route path='/expertView/:expertId'  element={<ExpertView/>} />
-           
-
+            <Route
+              path="/editCategory/:categoryId"
+              element={<EditCategory />}
+            />
+            <Route path="/subCategory" element={<Subcategory />} />
+            <Route path="/addSubCategory" element={<AddSubCategory />} />
+            <Route
+              path="/editSubCategory/:categoryId"
+              element={<EditSubCategory />}
+            />
+            <Route path="/expertView/:expertId" element={<ExpertView />} />
           </Route>
         </Route>
       </Routes>

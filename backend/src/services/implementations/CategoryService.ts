@@ -2,14 +2,18 @@ import { ICategoryRepository } from "../../repositories/interface/ICategoryRepos
 import { ICategory } from "../../entities/CategoryEntity";
 import { ICategoryService } from "../interface/ICategoryService";
 import CategoryRepository from "../../repositories/implementations/CategoryRepository";
+import { ISubCategeryRepository } from "../../repositories/interface/ISubCategoryRepository";
+import SubCategoryRepository from "../../repositories/implementations/SubCategoryRepository";
 import cloudinary from "../../config/cloudinaryConfig";
 import path from "path";
 import fs from "fs";
 
 export default class CategoryService implements ICategoryService {
   private categoryRepository: ICategoryRepository;
+  private subcategoryRepository:ISubCategeryRepository;
   constructor() {
     this.categoryRepository = new CategoryRepository();
+    this.subcategoryRepository= new SubCategoryRepository()
   }
 
   async getAllCategory(): Promise<ICategory[]> {
@@ -128,7 +132,12 @@ export default class CategoryService implements ICategoryService {
       if (!exist) {
         return false;
       }
-      return await this.categoryRepository.deleteCategory(id);
+     const result= await this.categoryRepository.deleteCategory(id);
+      if(result){
+        const deletesubcat= await this.subcategoryRepository.deleteByCategory(exist.catName)
+        return true
+      }
+      return false
     } catch (error) {
       throw error;
     }
