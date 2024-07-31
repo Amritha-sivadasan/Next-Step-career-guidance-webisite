@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import StudentService from "../services/implementations/StudentService";
 import OtpService from "../services/implementations/OtpService";
 import { CustomRequest } from "../entities/jwtEntity";
-import { errorMonitor } from "events";
 
 class StudentController {
   private studentService: StudentService;
@@ -75,14 +74,12 @@ class StudentController {
         secure: false,
         sameSite: "none",
       });
-      res
-        .status(200)
-        .json({
-          success: true,
-          data: student,
-          accessToken,
-          message: "User logged successfully",
-        });
+      res.status(200).json({
+        success: true,
+        data: student,
+        accessToken,
+        message: "User logged successfully",
+      });
     } catch (error) {
       res
         .status(500)
@@ -111,23 +108,19 @@ class StudentController {
     try {
       let exitStudent = await this.studentService.exitStudent(email);
       if (!exitStudent) {
-        res
-          .status(404)
-          .json({
-            success: false,
-            message: "User not found try another valid email ",
-          });
+        res.status(404).json({
+          success: false,
+          message: "User not found try another valid email ",
+        });
       } else {
         const context =
           "otp is created for NextStep application forgot password ";
         await this.otpService.generateOtp(email, context);
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "OTP generated and sent successfully",
-            data: email,
-          });
+        res.status(200).json({
+          success: true,
+          message: "OTP generated and sent successfully",
+          data: email,
+        });
       }
     } catch (error) {
       res.status(500).json({
@@ -157,6 +150,26 @@ class StudentController {
       res
         .status(500)
         .json({ message: "Error occur in fetchdata", success: false });
+    }
+  };
+
+  public logoutStuent = async (req: CustomRequest, res: Response) => {
+    try {
+      const userId = req.user?.userId;
+      if (userId) {
+        const exist = await this.studentService.getStudentById(userId);
+        if (exist) {
+          res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,  
+            sameSite: "lax",
+          });
+          res.status(200).json({ success: true, message: "Logged out successfully" });
+        }
+      }
+    } catch (error) {
+      console.error("Error occurred during logout:", error);
+      res.status(500).json({ success: false, message: "Error occurred during logout" });
     }
   };
 }

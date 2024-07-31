@@ -130,6 +130,7 @@ const ExpertSignup: React.FC = () => {
                 type="text"
                 {...register("user_name", {
                   required: "Username is required",
+                  validate: (value) => !/\s/.test(value) || "Username should not contain spaces"
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Username"

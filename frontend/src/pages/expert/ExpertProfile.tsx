@@ -31,33 +31,33 @@ const ExpertProfile: React.FC = () => {
               <p className="p-3 border rounded-lg shadow-md">{expert.email}</p>
             </div>
             <div>
-              <h2 className="font-semibold">Phone Number:</h2>
+              <h2 className="font-semibold p-2">Phone Number:</h2>
               <p className="p-3 border rounded-lg shadow-md">{expert.phoneNumber}</p>
             </div>
             <div className="">
-              <h2 className="font-semibold">Personal Bio:</h2>
+              <h2 className="font-semibold p-2">Personal Bio:</h2>
               <p className="p-3 border rounded-lg shadow-md">{expert.personal_bio}</p>
             </div>
             <div>
-              <h2 className="font-semibold">Area of Expertise:</h2>
+              <h2 className="font-semibold p-2">Area of Expertise:</h2>
               <p className="p-3 border rounded-lg shadow-md">
                 {expert.area_of_expertise}
               </p>
             </div>
             <div>
-              <h2 className="font-semibold">Consultation Fee:</h2>
+              <h2 className="font-semibold p-2">Consultation Fee:</h2>
               <p className="p-3 border rounded-lg ">
                 {expert.consultation_fee}
               </p>
             </div>
             <div>
-              <h2 className="font-semibold">Educational Background:</h2>
+              <h2 className="font-semibold p-2">Educational Background:</h2>
               <p className="p-3 border rounded-lg shadow-md">
                 {expert.educationBackground}
               </p>
             </div>
             <div>
-              <h2 className="font-semibold">Category:</h2>
+              <h2 className="font-semibold p-2">Category:</h2>
               <p className="p-3 border rounded-lg shadow-md">{expert.sub_category_id}</p>
             </div>
           </div>

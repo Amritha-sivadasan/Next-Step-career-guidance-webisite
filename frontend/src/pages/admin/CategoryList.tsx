@@ -62,7 +62,12 @@ function CategoryTable() {
   };
 
   if (loading) {
-    return <LoadingPage />;
+    return (
+      <div className="flex items-center justify-center min-w-screen w-full">
+        {" "}
+        <LoadingPage />
+      </div>
+    );
   }
 
   return (

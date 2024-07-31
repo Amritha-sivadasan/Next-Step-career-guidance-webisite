@@ -29,6 +29,7 @@ expertRouter.post('/reset-password', expertController.resetPassword);
 
 expertRouter.post("/google-login",expertGoogleAuth );
 expertRouter.put("/update/:id", verifyAccessToken, verifyRole(role), upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'credential', maxCount: 1 }]),expertController.updateExpert);
+expertRouter.get('/logout/' ,verifyAccessToken,verifyRole(role),expertController.logoutExpert)
 
 
 export default expertRouter;

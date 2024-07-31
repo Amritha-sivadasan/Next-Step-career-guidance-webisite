@@ -42,4 +42,8 @@ router.put(
   verifyRole(role),
   studentController.updateStudent
 );
+
+
+router.get('/logout/' ,verifyAccessToken,
+  verifyRole(role),studentController.logoutStuent,)
 export default router;

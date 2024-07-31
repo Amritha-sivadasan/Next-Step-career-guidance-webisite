@@ -25,10 +25,9 @@ type FormValues = {
 const AboutExpert: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const expert = useAppSelector((state) => state.expert.expert);
-  const [categories,setCategories]= useState<ISubCategory[]>([])
-
+  const [categories, setCategories] = useState<ISubCategory[]>([]);
 
   const {
     register,
@@ -37,7 +36,7 @@ const AboutExpert: React.FC = () => {
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setLoading(true)
+    setLoading(true);
     const formData = new FormData();
     formData.append("personal_bio", data.personal_bio);
     formData.append("area_of_expertise", data.area_of_expertise);
@@ -57,10 +56,10 @@ const AboutExpert: React.FC = () => {
       if (response.payload?.data) {
         const data = response.payload.data as IExpert;
         dispatch(setExpert(data));
-        setTimeout(()=>{
-          setLoading(false)
+        setTimeout(() => {
+          setLoading(false);
           navigate("/expert");
-        })
+        });
       }
     }
   };
@@ -85,12 +84,9 @@ const AboutExpert: React.FC = () => {
     }
   }, [expert, navigate]);
 
-
   if (loading) {
     return <LoadingPage />;
   }
-
-
 
   return (
     <div className="flex flex-col min-h-screen text-white">
@@ -120,6 +116,8 @@ const AboutExpert: React.FC = () => {
                 placeholder="Summarize career achievements and expertise"
                 {...register("personal_bio", {
                   required: "Professional Bio is required.",
+                  validate: (value) =>
+                    value.trim().length > 0 || "Professional Bio is required",
                 })}
               />
               {errors.personal_bio && (
@@ -140,6 +138,9 @@ const AboutExpert: React.FC = () => {
                 placeholder="List your specialized skills and industries"
                 {...register("area_of_expertise", {
                   required: "Areas of Expertise are required.",
+                  validate: (value) =>
+                    value.trim().length > 0 ||
+                    "Areas of Expertise are required",
                 })}
               />
               {errors.area_of_expertise && (
@@ -158,6 +159,10 @@ const AboutExpert: React.FC = () => {
                 placeholder="Min amount"
                 {...register("consultation_fee", {
                   required: "Fee Structure is required.",
+                  validate: (value) => {
+                    if (value < 0) return "Fee must be a positive number.";
+                    return true;
+                  },
                 })}
               />
               {errors.consultation_fee && (
@@ -178,6 +183,12 @@ const AboutExpert: React.FC = () => {
                 placeholder="Provide details of your academic qualifications"
                 {...register("educationBackground", {
                   required: "Educational Background is required.",
+                  validate: (value) => {
+                    if (!value) return "Educational Background is required.";
+                    if (value.length < 5)
+                      return "Background must be at least 5 characters.";
+                    return true;
+                  },
                 })}
               />
               {errors.educationBackground && (
@@ -195,10 +206,14 @@ const AboutExpert: React.FC = () => {
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
                 {...register("sub_category_id", {
                   required: "Category selection is required.",
+                  validate: (value) => {
+                    if (!value) return "Category selection is required.";
+                    return true;
+                  },
                 })}
               >
                 <option value="">Select one</option>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category._id} value={category.subCatName}>
                     {category.subCatName}
                   </option>

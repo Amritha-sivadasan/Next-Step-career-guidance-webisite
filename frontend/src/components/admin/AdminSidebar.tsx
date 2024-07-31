@@ -1,6 +1,6 @@
 // src/components/admin/AdminSidebar.tsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
   FaChartLine,
@@ -16,83 +16,84 @@ import {
 import { GiBrain } from "react-icons/gi";
 
 const Sidebar: React.FC = () => {
+  const location = useLocation();
+
+  const getLinkClass = (paths: string[]) => {
+    return paths.some((path) => location.pathname.startsWith(path))
+      ? "p-2 flex items-center bg-gray-200 rounded text-black"
+      : "p-2 flex items-center hover:bg-gray-200 rounded text-gray-700";
+  };
+
   return (
     <aside className="w-72 bg-white text-black flex flex-col p-4 space-y-4 border">
-      <Link
-        to="/admin"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
-      >
-        <FaHome className="mr-2 text-gray-700" />
+      <Link to="/admin" className={getLinkClass(["/admin"])}>
+        <FaHome className="mr-2" />
         Dashboard
       </Link>
-      <Link
-        to="/admin/report"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
-      >
-        <FaChartLine className="mr-2 text-gray-700" />
+      <Link to="/admin/report" className={getLinkClass(["/admin/report"])}>
+        <FaChartLine className="mr-2" />
         Report
       </Link>
-      <Link
-        to="/admin/users"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
-      >
-        <FaUsers className="mr-2 text-gray-700" />
+      <Link to="/admin/users" className={getLinkClass(["/admin/users"])}>
+        <FaUsers className="mr-2" />
         Users
       </Link>
       <Link
         to="/admin/experts"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        className={getLinkClass(["/admin/experts", "/admin/expertView"])}
       >
-        <FaUserTie className="mr-2 text-gray-700" />
+        <FaUserTie className="mr-2" />
         Experts
       </Link>
       <Link
         to="/admin/booking-details"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        className={getLinkClass(["/admin/booking-details"])}
       >
-        <FaCalendarCheck className="mr-2 text-gray-700" />
+        <FaCalendarCheck className="mr-2" />
         Booking Details
       </Link>
       <Link
         to="/admin/category"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        className={getLinkClass([
+          "/admin/category",
+          "/admin/addCategory",
+          "/admin/editCategory",
+        ])}
       >
-        <FaTags className="mr-2 text-gray-700" />
+        <FaTags className="mr-2" />
         Category
       </Link>
       <Link
         to="/admin/subCategory"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        className={getLinkClass([
+          "/admin/subCategory",
+          "/admin/addSubCategory",
+          "/admin/editSubCategory"
+        ])}
       >
-        <FaListAlt className="mr-2 text-gray-700" />
+        <FaListAlt className="mr-2" />
         Sub-Category
       </Link>
       <Link
-        to="/admin/users"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        to="/admin/psychometric-test"
+        className={getLinkClass(["/admin/psychometric-test"])}
       >
-        <GiBrain className="mr-2 text-gray-700" />
+        <GiBrain className="mr-2" />
         Psychometric Test
       </Link>
       <Link
         to="/admin/review-rating"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
+        className={getLinkClass(["/admin/review-rating"])}
       >
-        <FaStar className="mr-2 text-gray-700" />
+        <FaStar className="mr-2" />
         Review & Rating
       </Link>
-      <Link
-        to="/admin/faq"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
-      >
-        <FaQuestionCircle className="mr-2 text-gray-700" />
+      <Link to="/admin/faq" className={getLinkClass(["/admin/faq"])}>
+        <FaQuestionCircle className="mr-2" />
         FAQ
       </Link>
-      <Link
-        to="/admin/logout"
-        className="p-2 flex items-center hover:bg-gray-200 rounded"
-      >
-        <FaSignOutAlt className="mr-2 text-gray-700" />
+      <Link to="/admin/logout" className={getLinkClass(["/admin/logout"])}>
+        <FaSignOutAlt className="mr-2" />
         Logout
       </Link>
     </aside>

@@ -25,7 +25,9 @@ const EditSubCategory = () => {
   const [, setSubCategory] = useState<ISubCategory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
+    null
+  );
 
   const {
     control,
@@ -115,125 +117,146 @@ const EditSubCategory = () => {
   };
 
   if (loading) {
-    return <LoadingPage />;
+    return (
+      <div className="flex items-center justify-center min-w-screen w-full">
+        {" "}
+        <LoadingPage />
+      </div>
+    );
   }
 
   return (
     <div className="mt-4 w-full bg-white">
       <div className="m-5">
-        <h1 className="text-2xl font-bold">Edit SubCategory</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          <div className="mb-4">
-            <label
-              htmlFor="subCatName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              SubCategory Name
-            </label>
-            <Controller
-              name="subCatName"
-              control={control}
-              rules={{ required: "SubCategory name is required" }}
-              render={({ field }) => (
-                <input
-                  type="text"
-                  id="subCatName"
-                  {...field}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                />
+        <div className="flex flex-col justify-center  border p-5 rounded-lg  w-8/12  mx-auto">
+          <h1 className="text-2xl font-bold">Edit SubCategory</h1>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
+            <div className="mb-4">
+              <label
+                htmlFor="subCatName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                SubCategory Name
+              </label>
+              <Controller
+                name="subCatName"
+                control={control}
+                rules={{
+                  required: "SubCategory name is required",
+                  validate: (value) =>
+                    value.trim() !== "" || "SubCategory name be just spaces",
+                }}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    id="subCatName"
+                    {...field}
+                    className="mt-1 block w-full p-2  border rounded bg-[#E8EFFA]"
+                  />
+                )}
+              />
+              {errors.subCatName && (
+                <p className="text-red-500 text-sm">
+                  {errors.subCatName.message}
+                </p>
               )}
-            />
-            {errors.subCatName && (
-              <p className="text-red-500 text-sm">{errors.subCatName.message}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <Controller
-              name="description"
-              control={control}
-              rules={{ required: "Description is required" }}
-              render={({ field }) => (
-                <textarea
-                  id="description"
-                  {...field}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <Controller
+                name="description"
+                control={control}
+                rules={{
+                  required: "Description is required",
+                  validate: (value) =>
+                    value.trim() !== "" || "Description be just spaces",
+                }}
+                render={({ field }) => (
+                  <textarea
+                    id="description"
+                    {...field}
+                    className="mt-1 block w-full p-2 border bg-[#E8EFFA] rounded"
+                  />
+                )}
+              />
+              {errors.description && (
+                <p className="text-red-500 text-sm">
+                  {errors.description.message}
+                </p>
               )}
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm">{errors.description.message}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="catName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Category Name
-            </label>
-            <Controller
-              name="catName"
-              control={control}
-              rules={{ required: "Category name is required" }}
-              render={({ field }) => (
-                <select
-                  id="catName"
-                  {...field}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                >
-                  {categories.map((category) => (
-                    <option key={category._id} value={category.catName}>
-                      {category.catName}
-                    </option>
-                  ))}
-                </select>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="catName"
+                className="block text-sm font-medium  text-gray-700"
+              >
+                Category Name
+              </label>
+              <Controller
+                name="catName"
+                control={control}
+                rules={{ required: "Category name is required" }}
+                render={({ field }) => (
+                  <select
+                    id="catName"
+                    {...field}
+                    className="mt-1 block w-full p-2 border bg-[#E8EFFA] rounded"
+                  >
+                    {categories.map((category) => (
+                      <option key={category._id} value={category.catName}>
+                        {category.catName}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.catName && (
+                <p className="text-red-500 text-sm">{errors.catName.message}</p>
               )}
-            />
-            {errors.catName && (
-              <p className="text-red-500 text-sm">{errors.catName.message}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="imageFile"
-              className="block text-sm font-medium text-gray-700"
-            >
-              SubCategory Image
-            </label>
-            {imagePreview && (
-              <div className="mb-2">
-                <img
-                  src={imagePreview as string}
-                  alt="SubCategory Preview"
-                  className="w-32 h-32 object-cover rounded"
-                />
-              </div>
-            )}
-            <input
-              type="file"
-              id="imageFile"
-              onChange={handleImageChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-            />
-            {errors.imageFile && (
-              <p className="text-red-500 text-sm">{errors.imageFile.message}</p>
-            )}
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
-            >
-              Update SubCategory
-            </button>
-          </div>
-        </form>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="imageFile"
+                className="block text-sm font-medium text-gray-700"
+              >
+                SubCategory Image
+              </label>
+              {imagePreview && (
+                <div className="mb-2">
+                  <img
+                    src={imagePreview as string}
+                    alt="SubCategory Preview"
+                    className="w-32 h-32 object-cover rounded"
+                  />
+                </div>
+              )}
+              <input
+                type="file"
+                id="imageFile"
+                onChange={handleImageChange}
+                className="mt-1 block w-36 p-2 border border-gray-300 rounded"
+              />
+              {errors.imageFile && (
+                <p className="text-red-500 text-sm">
+                  {errors.imageFile.message}
+                </p>
+              )}
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+              >
+                Update SubCategory
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

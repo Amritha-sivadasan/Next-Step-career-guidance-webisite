@@ -163,3 +163,17 @@ export const resetPassswordExpert = async (email: string, password: string) => {
     throw error;
   }
 };
+
+
+export const logoutExpert = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/logout`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.log("error in login student");
+    throw error;
+  }
+};

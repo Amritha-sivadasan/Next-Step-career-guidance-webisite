@@ -161,3 +161,17 @@ export const resetPasssword = async (email: string, password: string) => {
     throw error;
   }
 };
+
+
+export const logoutStudent = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/student/logout`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.log("error in login student");
+    throw error;
+  }
+};

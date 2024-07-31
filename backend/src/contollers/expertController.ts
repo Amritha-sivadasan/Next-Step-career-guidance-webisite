@@ -166,6 +166,27 @@ import { CustomRequest } from "../entities/jwtEntity";
     }
 }
 
+public logoutExpert=async(req:CustomRequest,res:Response)=>{
+  try {
+    const userId = req.user?.userId;
+    if (userId) {
+      const exist = await this.expertService.getExpertById(userId);
+      if (exist) {
+        res.clearCookie("ExpertRefreshToken", {
+          httpOnly: true,
+          secure: false,  
+          sameSite: "lax",
+        });
+        res.status(200).json({ success: true, message: "Logged out successfully" });
+      }
+    }
+  } catch (error) {
+    console.error("Error occurred during logout:", error);
+    res.status(500).json({ success: false, message: "Error occurred during logout" });
+  }
+};
 }
+
+
 
 export default new ExpertController(); 

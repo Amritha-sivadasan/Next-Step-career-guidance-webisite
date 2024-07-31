@@ -129,6 +129,8 @@ const AboutUser: React.FC = () => {
                 placeholder="Enter your preferred subject"
                 {...register("education_background", {
                   required: "Preferred subject is required",
+                  validate: (value) =>
+                    !/\s/.test(value) || "Preferred subject is required",
                 })}
               />
               {errors.education_background && (
