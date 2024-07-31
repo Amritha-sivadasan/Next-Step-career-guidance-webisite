@@ -1,41 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addSubCategory } from "../../services/api/adminApi";
+import { addSubCategory, fetchAllCategories } from "../../services/api/adminApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../../components/common/LoadingPage";
+import { ICategory } from "../../@types/dashboard";
 
 interface IFormInput {
   subCatName: string;
   catName:string;
-  subcatImage: FileList | string;
+  subCatImage: FileList | string;
   description: string;
 }
 
-const AddnewCategory: React.FC = () => {
+const AddSubCategory: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
 
+
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await fetchAllCategories();    
+      if (response.success) {
+        setCategories(response.data);
+      } else {
+        toast.error("Failed to load categories");
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const formData = new FormData();
-    formData.append("SubCatName", data.catName);
+    formData.append("subCatName", data.subCatName);
     formData.append("description", data.description);
-    formData.append("catname", data.description);
-    if (data.subcatImage.length > 0) {
-      formData.append("SubcatImage", data.subcatImage[0]);
+    formData.append("catName", data.catName);
+    if (data.subCatImage.length > 0) {
+      formData.append("subcatImage", data.subCatImage[0]);
     }
+  
+    
+
     setLoading(true);
     const response = await addSubCategory(formData);
-    console.log("response", response);
     if (response.success) {
       setLoading(false);
       toast.success(response.message);
-      navigate("/admin/category");
+      navigate("/admin/subCategory");
     } else {
       toast.error(response.message);
       setLoading(false);
@@ -49,31 +68,54 @@ const AddnewCategory: React.FC = () => {
           <LoadingPage />
         ) : (
           <>
-            <h1 className="text-2xl font-bold mb-10">Add New Category</h1>
+            <h1 className="text-2xl font-bold mb-10">Add New SubCategory</h1>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className=" w-6/12 border p-6 rounded-lg "
             >
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">
-                  Category Name
+                  SubCategory Name
                 </label>
                 <input
                   type="text"
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                    errors.catName ? "border-red-500" : ""
+                    errors.subCatName ? "border-red-500" : ""
                   }`}
-                  {...register("catName", {
+                  {...register("subCatName", {
                     required: "Category Name is required",
                   })}
                 />
+                {errors.subCatName && (
+                  <p className="text-red-500 mt-1">{errors.subCatName.message}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">
+                  Select Category
+                </label>
+                <select
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
+                    errors.catName ? "border-red-500" : ""
+                  }`}
+                  {...register("catName", {
+                    required: "Category is required",
+                  })}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category:ICategory) => (
+                    <option key={category._id} value={category.catName}>
+                      {category.catName}
+                    </option>
+                  ))}
+                </select>
                 {errors.catName && (
                   <p className="text-red-500 mt-1">{errors.catName.message}</p>
                 )}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">
-                  Category Description
+                SubCategory Description
                 </label>
                 <textarea
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
@@ -91,19 +133,19 @@ const AddnewCategory: React.FC = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">
-                  Category Image
+                SubCategory Image
                 </label>
                 <input
                   type="file"
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 ${
-                    errors.subcatImage ? "border-red-500" : ""
+                    errors.subCatImage ? "border-red-500" : ""
                   }`}
-                  {...register("subcatImage", {
+                  {...register("subCatImage", {
                     required: "Category Image is required",
                   })}
                 />
-                {errors.subcatImage && (
-                  <p className="text-red-500 mt-1">{errors.subcatImage.message}</p>
+                {errors.subCatImage && (
+                  <p className="text-red-500 mt-1">{errors.subCatImage.message}</p>
                 )}
               </div>
               <button
@@ -120,4 +162,4 @@ const AddnewCategory: React.FC = () => {
   );
 };
 
-export default AddnewCategory;
+export default AddSubCategory;

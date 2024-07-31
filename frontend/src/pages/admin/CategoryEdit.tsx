@@ -5,33 +5,46 @@ import { fetchCategoryById, updateCategory } from "../../services/api/adminApi";
 import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from "sweetalert2";
+import { useForm, Controller } from "react-hook-form";
+
+interface FormData {
+  catName: string;
+  description: string;
+  catImage: string;
+  imageFile: File | null;
+}
 
 const EditCategory = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
-  const [category, setCategory] = useState<ICategory | null>(null);
+  const [, setCategory] = useState<ICategory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [formData, setFormData] = useState({
-    catName: "",
-    description: "",
-    catImage: "",
-    imageFile: null as File | null,
-  });
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null
   );
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      catName: "",
+      description: "",
+      catImage: "",
+      imageFile: null,
+    },
+  });
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         const response = await fetchCategoryById(categoryId!);
         setCategory(response.data);
-        setFormData({
-          catName: response.data.catName,
-          description: response.data.description,
-          catImage: response.data.catImage,
-          imageFile: null,
-        });
+        setValue("catName", response.data.catName);
+        setValue("description", response.data.description);
+        setValue("catImage", response.data.catImage);
         setImagePreview(response.data.catImage);
       } catch (error) {
         toast.error("Failed to fetch category");
@@ -41,25 +54,12 @@ const EditCategory = () => {
     };
 
     fetchCategory();
-  }, [categoryId]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  }, [categoryId, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prevData) => ({
-        ...prevData,
-        imageFile: file,
-      }));
+      setValue("imageFile", file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -68,8 +68,7 @@ const EditCategory = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -83,14 +82,13 @@ const EditCategory = () => {
 
       if (result.isConfirmed) {
         const formDataToSend = new FormData();
-        formDataToSend.append("catName", formData.catName);
-        formDataToSend.append("description", formData.description);
+        formDataToSend.append("catName", data.catName);
+        formDataToSend.append("description", data.description);
 
-        // Append either imageFile or the existing catImage URL
-        if (formData.imageFile) {
-          formDataToSend.append("imageFile", formData.imageFile);
+        if (data.imageFile) {
+          formDataToSend.append("imageFile", data.imageFile);
         } else {
-          formDataToSend.append("catImage", formData.catImage);
+          formDataToSend.append("catImage", data.catImage);
         }
 
         const response = await updateCategory(categoryId!, formDataToSend);
@@ -98,8 +96,6 @@ const EditCategory = () => {
           Swal.fire("Updated!", "The category has been updated.", "success");
           navigate("/admin/category");
         } else {
-            console.log(response);
-            
           toast.error(response.message);
         }
       }
@@ -116,7 +112,7 @@ const EditCategory = () => {
     <div className="mt-4 w-full bg-white">
       <div className="m-5">
         <h1 className="text-2xl font-bold">Edit Category</h1>
-        <form onSubmit={handleSubmit} className="mt-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
           <div className="mb-4">
             <label
               htmlFor="catName"
@@ -124,15 +120,22 @@ const EditCategory = () => {
             >
               Category Name
             </label>
-            <input
-              type="text"
-              id="catName"
+            <Controller
               name="catName"
-              value={formData.catName}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
+              control={control}
+              rules={{ required: "Category name is required" }}
+              render={({ field }) => (
+                <input
+                  type="text"
+                  id="catName"
+                  {...field}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                />
+              )}
             />
+            {errors.catName && (
+              <p className="text-red-500 text-sm">{errors.catName.message}</p>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -141,14 +144,23 @@ const EditCategory = () => {
             >
               Description
             </label>
-            <textarea
-              id="description"
+            <Controller
               name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
+              control={control}
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <textarea
+                  id="description"
+                  {...field}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                />
+              )}
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -169,10 +181,12 @@ const EditCategory = () => {
             <input
               type="file"
               id="imageFile"
-              name="imageFile"
               onChange={handleImageChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
             />
+            {errors.imageFile && (
+              <p className="text-red-500 text-sm">{errors.imageFile.message}</p>
+            )}
           </div>
           <div className="flex justify-end">
             <button

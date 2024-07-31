@@ -16,6 +16,7 @@ import AddnewCategory from "../pages/admin/AddnewCategory";
 import EditCategory from "../pages/admin/CategoryEdit";
 import Subcategory from "../pages/admin/Subcategory";
 import EditSubCategory from "../pages/admin/SubCategoryEdit";
+import AddSubCategory from "../pages/admin/AddSubCategory";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -65,7 +66,10 @@ const AdminRouter = () => {
             <Route path="/addCategory" element={<AddnewCategory />} />
             <Route path='/editCategory/:categoryId' element={<EditCategory/>}/>
             <Route path="/subCategory" element={<Subcategory/>} />
-            <Route path="/addSubCategory" element={<EditSubCategory/>} />
+            <Route path="/addSubCategory" element={<AddSubCategory/>} />
+            <Route path='/editSubCategory/:categoryId' element={<EditSubCategory/>}/>
+
+           
 
           </Route>
         </Route>

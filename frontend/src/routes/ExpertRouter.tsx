@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
+import ProfilePage from "../components/expert/Profilepage";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -46,7 +47,11 @@ const ExpertRouter = () => {
       <Route
         path="/signup"
         element={
-          expertDetails.isAuthenticated ? <Navigate to="/expert/" /> : <ExpertSignup />
+          expertDetails.isAuthenticated ? (
+            <Navigate to="/expert/" />
+          ) : (
+            <ExpertSignup />
+          )
         }
       />
       <Route
@@ -71,6 +76,7 @@ const ExpertRouter = () => {
         path="/reset-password"
         element={<ResetPassword userType="expert" />}
       />
+       <Route path="/profile" element={<ProfilePage />} />
 
       <Route element={<ExpertPrivateRoute />}>
         <Route
@@ -93,6 +99,8 @@ const ExpertRouter = () => {
             )
           }
         />
+
+       
       </Route>
     </Routes>
   );

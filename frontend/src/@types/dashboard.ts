@@ -9,6 +9,6 @@ export interface ISubCategory {
   _id:string,
   catName: string;
   subCatName:string,
-  SubCatImage: string,
+  subCatImage: string,
   description:string
 }

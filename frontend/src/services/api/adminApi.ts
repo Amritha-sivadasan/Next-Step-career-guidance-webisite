@@ -58,11 +58,14 @@ export const fetchAllCategories = async () => {
     return (error as Error).response?.data;
   }
 };
-export const deleteCategory = async (id:string) => {
+export const deleteCategory = async (id: string) => {
   try {
-    const response = await adminAxiosInstance.get(`${API_URL}/admin/deleteCategory/${id}`, {
-      withCredentials: true,
-    });
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/deleteCategory/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
 
     if (response.data.success) {
       return response.data;
@@ -72,48 +75,50 @@ export const deleteCategory = async (id:string) => {
   }
 };
 
+export const fetchCategoryById = async (id: string) => {
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/categoryById/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
 
-export const fetchCategoryById =async(id:string)=>{
-try {
-  const response = await adminAxiosInstance.get(`${API_URL}/admin/categoryById/${id}`, {
-    withCredentials: true,
-  });
-
-  if (response.data.success) {
-    return response.data;
+    if (response.data.success) {
+      return response.data;
+    }
+  } catch (error) {
+    return (error as Error).response?.data;
   }
-  
-} catch (error) {
-  return (error as Error).response?.data;
-}
+};
+
+export const updateCategory = async (id: string, data: FormData) => {
+  try {
  
-}
+    const response = await adminAxiosInstance.put(
+      `${API_URL}/admin/editCategory/${id}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
 
-export const updateCategory= async(id:string,data:FormData)=>{
-try {
-
-  const response = await adminAxiosInstance.put(`${API_URL}/admin/editCategory/${id}`, data,{
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true,
-  })
-
-  if (response.data.success) {
-    return response.data;
+    if (response.data.success) {
+      return response.data;
+    }
+  } catch (error) {
+    return (error as Error).response?.data;
   }
-  
-} catch (error) {
-  return (error as Error).response?.data;
-}
-  
-}
+};
 
 ////------------------Subcategory----------------//
 
-
 export const addSubCategory = async (data: FormData) => {
   try {
+   
     const response = await adminAxiosInstance.post(
       `${API_URL}/admin/addSubCategory`,
       data,
@@ -124,6 +129,7 @@ export const addSubCategory = async (data: FormData) => {
         withCredentials: true,
       }
     );
+
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
@@ -147,11 +153,14 @@ export const fetchAllSubCategories = async () => {
   }
 };
 
-export const deleteSubCategory = async (id:string) => {
+export const deleteSubCategory = async (id: string) => {
   try {
-    const response = await adminAxiosInstance.get(`${API_URL}/admin/deleteSubCategory/${id}`, {
-      withCredentials: true,
-    });
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/deleteSubCategory/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
 
     if (response.data.success) {
       return response.data;
@@ -161,39 +170,40 @@ export const deleteSubCategory = async (id:string) => {
   }
 };
 
-export const fetchSubCategoryById =async(id:string)=>{
+export const fetchSubCategoryById = async (id: string) => {
   try {
-    const response = await adminAxiosInstance.get(`${API_URL}/admin/subCategoryById/${id}`, {
-      withCredentials: true,
-    });
-  
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/subCategoryById/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
     if (response.data.success) {
       return response.data;
     }
-    
   } catch (error) {
     return (error as Error).response?.data;
   }
-   
-  }
+};
 
-  export const updateSubCategory= async(id:string,data:FormData)=>{
-    try {
-    
-      const response = await adminAxiosInstance.put(`${API_URL}/admin/editSubCategory/${id}`, data,{
+export const updateSubCategory = async (id: string, data: FormData) => {
+  try {
+    const response = await adminAxiosInstance.put(
+      `${API_URL}/admin/editSubCategory/${id}`,
+      data,
+      {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
-      })
-    
-      if (response.data.success) {
-        return response.data;
       }
-      
-    } catch (error) {
-      return (error as Error).response?.data;
+    );
+
+    if (response.data.success) {
+      return response.data;
     }
-      
-    }
-    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

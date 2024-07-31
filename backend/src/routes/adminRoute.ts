@@ -20,9 +20,10 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  adminRoute.put('/editCategory/:id',verifyAccessToken, verifyRole(role),upload.single('imageFile'),categoryController.EditCategory)
  adminRoute.get('/deleteCategory/:id',verifyAccessToken, verifyRole(role),categoryController.deleteCategory)
 
- adminRoute.get('/subCategory',verifyAccessToken, verifyRole(role),subCategoryController.findAllSubCategroy)
- adminRoute.post('/addSubCategory',verifyAccessToken, verifyRole(role),subCategoryController.CreateSubCategory)
- adminRoute.put('/editSubCategory',verifyAccessToken, verifyRole(role),subCategoryController.EditSubCategory)
+ adminRoute.get('/allSubCategory',verifyAccessToken, verifyRole(role),subCategoryController.findAllSubCategroy)
+ adminRoute.get('/subCategoryById/:id',verifyAccessToken, verifyRole(role),subCategoryController.findSubCategoryById)
+ adminRoute.post('/addSubCategory',verifyAccessToken, verifyRole(role),upload.single('subcatImage'),subCategoryController.CreateSubCategory)
+ adminRoute.put('/editSubCategory/:id',verifyAccessToken, verifyRole(role),upload.single('imageFile'),subCategoryController.EditSubCategory)
  adminRoute.get('/deleteSubCategory/:id',verifyAccessToken, verifyRole(role),subCategoryController.deleteSubCategory)
 
  adminRoute.get('/allExperts',verifyAccessToken,verifyRole(role),adminController.getAllExpert)
