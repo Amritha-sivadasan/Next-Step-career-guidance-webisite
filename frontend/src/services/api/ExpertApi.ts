@@ -177,3 +177,20 @@ export const logoutExpert = async () => {
     throw error;
   }
 };
+
+export const fetchAllSubCategoriesExpert = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/allSubCategory`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    if (response.data.success) {
+      return response.data;
+    }
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

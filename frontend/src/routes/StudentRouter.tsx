@@ -18,7 +18,7 @@ const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
   const userDeatils = useAppSelector((state) => state.student);
-
+//  const userAuth= localStorage.getItem("userAuth");
   useEffect(() => {
     if (user) {
       dispatch(setUser(user));
@@ -32,12 +32,12 @@ const StudentRouter = () => {
     <Routes>
       <Route
         path="/signup"
-        element={userDeatils.isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        element={userDeatils.isAuthenticated? <Navigate to="/" /> : <Signup />}
       />
       <Route
         path="/login"
         element={
-          userDeatils.isAuthenticated ? <Navigate to="/" /> : <Login userType="student" />
+          userDeatils.isAuthenticated? <Navigate to="/" /> : <Login userType="student" />
         }
       />
       <Route

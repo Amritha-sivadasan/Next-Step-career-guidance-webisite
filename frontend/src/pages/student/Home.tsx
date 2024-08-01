@@ -16,6 +16,7 @@ const Home = () => {
     if (response.success) {
       localStorage.removeItem("userAccess");
       localStorage.removeItem("userId");
+      localStorage.removeItem("userAuth");
       dispatch(setAuthenticated(false));
       navigate("/login");
     }

@@ -14,7 +14,8 @@ const ExpertHome = () => {
     const response = await logoutExpert();
     if (response.success) {
       localStorage.removeItem("expertAccess");
-      localStorage.removeItem('expertId')
+      localStorage.removeItem("expertId");
+      localStorage.removeItem("expertAuth");
       dispatch(setExpertAuthenticated(false));
     }
   };

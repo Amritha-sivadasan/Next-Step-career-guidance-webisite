@@ -30,6 +30,7 @@ const AdminLogin: React.FC = () => {
        localStorage.setItem('adminAccess',payload.accessToken)
        if(payload.data){
         localStorage.setItem('adminName',payload.data)
+        localStorage.setItem('adminAuth',"true")
        }
         if (response.payload?.success) {
           navigate("/admin");

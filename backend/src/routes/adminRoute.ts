@@ -11,7 +11,6 @@ const role='admin'
 const token = "adminRefreshToken";
 
 adminRoute.post('/login',adminController.loginAdmin)
-adminRoute.get('/logout',adminController.logoutAdmin)
 adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), refreshTokens(token))
 
  adminRoute.get('/allCategory',verifyAccessToken, verifyRole(role),categoryController.findAllCategroy)
@@ -29,6 +28,7 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  adminRoute.get('/allExperts',verifyAccessToken,verifyRole(role),adminController.getAllExpert)
  adminRoute.get('/expertById/:id',verifyAccessToken,verifyRole(role),adminController.getExpertById)
  adminRoute.get('/verifyExpert/:id',verifyAccessToken,verifyRole(role),adminController.verifyExpert)
+ adminRoute.get('/logout',verifyAccessToken,verifyRole(role),adminController.logoutAdmin)
 
 
 export default adminRoute

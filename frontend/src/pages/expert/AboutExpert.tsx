@@ -8,9 +8,9 @@ import { setExpert } from "../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/useTypeSelector";
 import LoadingPage from "../../components/common/LoadingPage";
-import { fetchAllSubCategories } from "../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { ISubCategory } from "../../@types/dashboard";
+import { fetchAllSubCategoriesExpert } from "../../services/api/ExpertApi";
 
 type FormValues = {
   personal_bio: string;
@@ -66,7 +66,9 @@ const AboutExpert: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetchAllSubCategories();
+        const response = await fetchAllSubCategoriesExpert();
+        console.log('response',response);
+        
         setCategories(response.data);
       } catch (error) {
         toast.error("Something went wrong");

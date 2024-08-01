@@ -5,6 +5,7 @@ import StudentService from "../services/implementations/StudentService";
 import ExpertService from "../services/implementations/ExpertService";
 import { IExpertService } from "../services/interface/IExpertService";
 import { CustomRequest } from "../entities/jwtEntity";
+import { log } from "console";
 
 class AdminController {
   private adminService: IAdminService;
@@ -46,8 +47,11 @@ class AdminController {
     res: Response
   ): Promise<void> => {
     const userId = req.user?.userId;
+
+
     try {
       if (userId) {
+      
         const response = await this.adminService.findAdminById(userId);
         if (response) {
           res.clearCookie("adminRefreshToken");

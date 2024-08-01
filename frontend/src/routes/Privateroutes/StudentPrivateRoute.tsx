@@ -1,11 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { useAppSelector } from "../../hooks/useTypeSelector";
-
 const StudentPrivateRoute = () => {
-  const { isAuthenticated } = useAppSelector((state) => state.student);  
+  const userAuth= localStorage.getItem("userAuth");
   
-  return isAuthenticated ? <Outlet/> : <Navigate to="/login" replace />;
+  return userAuth ? <Outlet/> : <Navigate to="/login" replace />;
 };
 
 export default StudentPrivateRoute

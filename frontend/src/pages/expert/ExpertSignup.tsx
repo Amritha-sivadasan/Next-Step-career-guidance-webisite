@@ -95,6 +95,8 @@ const ExpertSignup: React.FC = () => {
             "expertAccess",
             registerExpertResult.accessToken
           );
+          localStorage.setItem("expertAuth", "true");
+
           setTimeout(() => {
             setLoading(false);
             navigate("/expert/about-expert");

@@ -24,6 +24,20 @@ export const adminLogin = async (userName: string, password: string) => {
   }
 };
 
+export const adminLogout= async()=>{
+  try {
+    const response = await adminAxiosInstance.get(`${API_URL}/admin/logout`, { withCredentials: true })
+   return response.data
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+
+
+
+
+
+
 export const fetchExpertDetailsById= async(expertId:string)=>{
   try {
     

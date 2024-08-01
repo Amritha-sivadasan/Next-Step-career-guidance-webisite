@@ -55,6 +55,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         dispatch(setAuthenticated(true));
         localStorage.setItem("userAccess", loginResponse.accessToken);
         localStorage.setItem("userId", loginResponse.data._id);
+        localStorage.setItem("userAuth", "true");
         if (loginResponse.data.is_data_entered == true) {
           setTimeout(() => {
             setLoading(false);
@@ -79,6 +80,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         dispatch(setExpertAuthenticated(true));
         localStorage.setItem("expertAccess", loginResponse.accessToken);
         localStorage.setItem("expertId", loginResponse.data._id);
+        localStorage.setItem("expertAuth", "true");
         setTimeout(() => {
           setLoading(false);
           navigate("/expert");
@@ -114,8 +116,10 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             localStorage.setItem("userId", userData._id);
             localStorage.setItem(
               "userAccess",
+        
               registerStudentResult.accessToken
             );
+            localStorage.setItem("userAuth", "true");
             if (registerStudentResult.data?.is_data_entered) {
               setTimeout(() => {
                 setLoading(false);
@@ -140,6 +144,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               "expertAccess",
               registerExpertResult.accessToken
             );
+            localStorage.setItem("expertAuth", "true");
             if (registerExpertResult.data?.is_data_entered) {
               setTimeout(() => {
                 setLoading(false);

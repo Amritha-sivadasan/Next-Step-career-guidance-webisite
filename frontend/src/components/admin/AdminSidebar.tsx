@@ -1,6 +1,6 @@
 // src/components/admin/AdminSidebar.tsx
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaChartLine,
@@ -14,9 +14,29 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { GiBrain } from "react-icons/gi";
+import { adminLogout } from "../../services/api/adminApi";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setadminAuthenticated } from "../../features/admin/adminSlice";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch=useDispatch()
+
+  const handleAdminLogout = async () => {
+    const response = await adminLogout();
+    if (response.success) {
+      localStorage.removeItem("adminAuth");
+      localStorage.removeItem("adminName");
+      localStorage.removeItem("adminAccess");
+      dispatch(setadminAuthenticated(false));
+      navigate("/admin/login");
+
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
 
   const getLinkClass = (paths: string[]) => {
     return paths.some((path) => location.pathname.startsWith(path))
@@ -26,7 +46,14 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside className="w-72 bg-white text-black flex flex-col p-4 space-y-4 border">
-      <Link to="/admin" className={getLinkClass(["/admin"])}>
+      <Link
+        to="/admin"
+        className={`p-2 flex items-center rounded ${
+          location.pathname === "/admin"
+            ? "bg-gray-200 text-#0B2149"
+            : "hover:bg-gray-200 text-#0B2149"
+        }`}
+      >
         <FaHome className="mr-2" />
         Dashboard
       </Link>
@@ -68,7 +95,7 @@ const Sidebar: React.FC = () => {
         className={getLinkClass([
           "/admin/subCategory",
           "/admin/addSubCategory",
-          "/admin/editSubCategory"
+          "/admin/editSubCategory",
         ])}
       >
         <FaListAlt className="mr-2" />
@@ -92,10 +119,13 @@ const Sidebar: React.FC = () => {
         <FaQuestionCircle className="mr-2" />
         FAQ
       </Link>
-      <Link to="/admin/logout" className={getLinkClass(["/admin/logout"])}>
+      <button
+        className="p-2 flex items-center  rounded text-black"
+        onClick={handleAdminLogout}
+      >
         <FaSignOutAlt className="mr-2" />
         Logout
-      </Link>
+      </button>
     </aside>
   );
 };

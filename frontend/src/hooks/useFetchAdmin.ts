@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 const useFetchAdminData = () => {
   const [admin, setAdmin] = useState<string | null>(null);
   const [isAuthenticated, setadminAuthenticated] = useState<boolean>(false);
@@ -8,10 +7,10 @@ const useFetchAdminData = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-          const response= localStorage.getItem('adminName')
+        const response = localStorage.getItem("adminName");
         if (response) {
-            setAdmin(response);
-            setadminAuthenticated(true);
+          setAdmin(response);
+          setadminAuthenticated(true);
         }
       } catch (error) {
         console.error("Failed to fetch user data:", error);

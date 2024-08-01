@@ -11,6 +11,7 @@ import { registerStudentWithGoogle } from "../../features/student/middleware/Stu
 import { setUser } from "../../features/student/authSlice";
 import { IStudent } from "../../@types/user";
 import LoadingPage from "../../components/common/LoadingPage";
+import { validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
@@ -94,6 +95,8 @@ const Signup: React.FC = () => {
 
           localStorage.setItem("userId", userData._id);
           localStorage.setItem("userAccess", registerStudentResult.accessToken);
+          localStorage.setItem("userAuth", "true");
+      
           setLoading(false);
           navigate("/about-student");
         }
@@ -157,7 +160,7 @@ const Signup: React.FC = () => {
                 type="text"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
-                  // validate: validatePhoneNumber,
+                  validate: validatePhoneNumber,
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Phone number"

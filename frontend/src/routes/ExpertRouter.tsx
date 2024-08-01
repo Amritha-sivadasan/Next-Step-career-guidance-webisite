@@ -76,7 +76,7 @@ const ExpertRouter = () => {
         path="/reset-password"
         element={<ResetPassword userType="expert" />}
       />
-      <Route path="/profile" element={<ProfilePage />} />
+
       <Route element={<ExpertPrivateRoute />}>
         <Route
           path="/"
@@ -98,6 +98,7 @@ const ExpertRouter = () => {
             )
           }
         />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
     </Routes>
   );

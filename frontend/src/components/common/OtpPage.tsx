@@ -55,17 +55,18 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   } = useForm<OtpFormInputs>();
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
-    setLoading(true);
     if (userType == "student") {
       const storageData = sessionStorage.getItem("userdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
         const email: string = parsedData.email;
+
         const verifyOtpResult = await dispatch(
           VerifyOtp({ email, otp: data.otp })
         ).unwrap();
 
         if (verifyOtpResult.success) {
+          setLoading(true);
           const registerStudentResult = await dispatch(
             registerStudent(parsedData)
           ).unwrap();
@@ -80,10 +81,12 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                 "userAccess",
                 registerStudentResult.accessToken
               );
+              localStorage.setItem("userAuth", "true");
               setLoading(false);
               navigate("/about-student");
             } else {
               console.error("User data is missing or malformed.");
+              setLoading(false);
             }
           }
         }
@@ -97,6 +100,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success) {
+          setLoading(true);
           const registerExpertResult = await dispatch(
             registerExpert(parsedData)
           ).unwrap();
@@ -113,6 +117,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
                 "expertAccess",
                 registerExpertResult.accessToken
               );
+              localStorage.setItem("expertAuth", "true");
               setLoading(false);
               navigate("/expert/about-expert");
             } else {
