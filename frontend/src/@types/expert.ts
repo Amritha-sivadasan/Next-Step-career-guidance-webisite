@@ -16,6 +16,6 @@ export interface IExpert {
     is_data_entered: boolean;
     authentication_id: string;
     authentication_provider: string;
-    is_credential_validate:boolean
+    is_credential_validate:string
   }
   

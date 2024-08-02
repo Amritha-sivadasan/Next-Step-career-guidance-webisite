@@ -25,10 +25,11 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true);
     if (userType == "student") {
+      setLoading(true);
       const response = await forgotPassword(data.email);
-      if (response?.success) {
+
+      if (response.success) {
         toast.success("Otp send successfully");
         sessionStorage.setItem("userEmail", JSON.stringify(response.data));
         setTimeout(() => {
@@ -37,10 +38,12 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
         }, 1000);
       } else {
         toast.error(response.message);
+        setLoading(false);
       }
     } else if (userType === "expert") {
+      setLoading(true);
       const response = await forgotPasswordExpert(data.email);
-      if (response?.success) {
+      if (response.success) {
         toast.success("Otp send successfully");
         sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
         setTimeout(() => {

@@ -84,18 +84,18 @@ const Experts: React.FC = () => {
                 <td className="py-2 border-b text-center">
                   <span
                     className={`px-2 py-1 rounded-full text-white ${
-                      expert.is_credential_validate
-                        ? "bg-green-500" // Credential validated
-                        : expert.status === "Inactive"
-                        ? "bg-red-500" // Inactive status
-                        : "bg-yellow-500" // Pending status
+                      expert.is_credential_validate == "pending"
+                        ? "bg-yellow-500"
+                        : expert.is_credential_validate == "true"
+                        ? "bg-green-500"
+                        : "bg-red-500"
                     }`}
                   >
-                    {expert.is_credential_validate
-                      ? "Validated"
-                      : expert.status === "Inactive"
-                      ? "Inactive"
-                      : "Pending"}
+                    {expert.is_credential_validate == "pending"
+                      ? "Pending"
+                      : expert.is_credential_validate == "true"
+                      ? "Validate"
+                      : "Rejected"}
                   </span>
                 </td>
                 <td className="py-2 border-b text-center">

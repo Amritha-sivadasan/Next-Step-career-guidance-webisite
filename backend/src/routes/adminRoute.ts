@@ -27,8 +27,9 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
 
  adminRoute.get('/allExperts',verifyAccessToken,verifyRole(role),adminController.getAllExpert)
  adminRoute.get('/expertById/:id',verifyAccessToken,verifyRole(role),adminController.getExpertById)
- adminRoute.get('/verifyExpert/:id',verifyAccessToken,verifyRole(role),adminController.verifyExpert)
+ adminRoute.patch('/verifyExpert/:id',verifyAccessToken,verifyRole(role),adminController.verifyExpert)
  adminRoute.get('/logout',verifyAccessToken,verifyRole(role),adminController.logoutAdmin)
+ adminRoute.patch('/rejectExpert/:id',verifyAccessToken,verifyRole(role),adminController.rejectExpert)
 
 
 export default adminRoute

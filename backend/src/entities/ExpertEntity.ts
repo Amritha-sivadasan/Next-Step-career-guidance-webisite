@@ -18,5 +18,12 @@ export interface IExpert extends Document {
   is_data_entered: Boolean;
   authentication_id: string;
   authentication_provider: string;
-  is_credential_validate:boolean
+  is_credential_validate:CredentialStatus 
+}
+
+
+export enum CredentialStatus {
+  Pending = 'pending',
+  True = 'true',
+  False = 'false'
 }

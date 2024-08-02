@@ -35,9 +35,9 @@ class AdminController {
       });
     } catch (error) {
       res.status(500).json({
-        message: "Error occurred during admin login",
-        error,
+        message: "Invalid user name or password",
         success: false,
+        data: error,
       });
     }
   };
@@ -48,10 +48,8 @@ class AdminController {
   ): Promise<void> => {
     const userId = req.user?.userId;
 
-
     try {
       if (userId) {
-      
         const response = await this.adminService.findAdminById(userId);
         if (response) {
           res.clearCookie("adminRefreshToken");
@@ -99,11 +97,13 @@ class AdminController {
     }
   };
 
-  public verifyExpert =async (req:Request,res:Response):Promise<void>=>{
+  public verifyExpert = async (req: Request, res: Response): Promise<void> => {
     try {
-       const id= req.params.id
-      const response=await this.expertService.verifyExpert(id)
-       res.status(200).json({success:response,message:"Expert verify True",data:""})
+      const id = req.params.id;
+      const response = await this.expertService.verifyExpert(id);
+      res
+        .status(200)
+        .json({ success: response, message: "Expert verify True", data: "" });
     } catch (error) {
       console.log("error during get verify expert ");
 
@@ -112,7 +112,28 @@ class AdminController {
         success: false,
       });
     }
-  }
+  };
+
+  public rejectExpert = async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    const { reason } = req.body;
+
+    try {
+      const response = await this.expertService.rejectExpert(id, reason);
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "Expert Profile is rejected",
+          data: response,
+        });
+    } catch (error) {
+      res.status(500).json({
+        message: "something went wrong on verify expert",
+        success: false,
+      });
+    }
+  };
 }
 
 export default new AdminController();

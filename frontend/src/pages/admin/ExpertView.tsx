@@ -8,10 +8,14 @@ import {
 import LoadingPage from "../../components/common/LoadingPage";
 import { IExpert } from "../../@types/expert";
 
+import { rejectExpert } from "../../services/api/adminApi";
+
 const ExpertDetailsView: React.FC = () => {
   const { expertId } = useParams<{ expertId: string }>();
   const [expert, setExpert] = useState<IExpert | null>(null);
   const [loading, setLoading] = useState(true);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectForm, setShowRejectForm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +52,30 @@ const ExpertDetailsView: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRejectExpert = async () => {
+    if (!expertId || !rejectionReason.trim()) return;
+    setLoading(true);
+    try {
+      const result = await rejectExpert(expertId, rejectionReason);
+      if (result.success) {
+        console.log(result);
+        toast.success("Expert rejected successfully");
+        navigate("/admin/experts");
+      }
+    } catch (error) {
+      toast.error("Failed to reject expert");
+    } finally {
+      setLoading(false);
+      setShowRejectForm(false);
+      setRejectionReason("");
+    }
+  };
+
+  const handleCancelReject = () => {
+    setShowRejectForm(false);
+    setRejectionReason("");
   };
 
   if (loading) {
@@ -147,14 +175,46 @@ const ExpertDetailsView: React.FC = () => {
               />
             )}
           </div>
-          {!expert.is_credential_validate && (
-            <div className="text-center">
+          <div className="flex justify-center gap-5 mt-10 mb-6">
+            <div className="flex justify-center gap-5">
               <button
                 onClick={handleVerifyExpert}
                 className="mt-6 bg-[#0B2149] text-white px-6 py-2 rounded-lg hover: transition-colors duration-300"
               >
                 Verify Expert
               </button>
+              <button
+                onClick={() => setShowRejectForm(true)}
+                className="mt-6 bg-red-800 text-white px-6 py-2 rounded-lg hover: transition-colors duration-300"
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+          {showRejectForm && (
+            <div className="bg-white p-6 rounded-lg border shadow-md mt-6">
+              <h2 className="text-lg font-semibold mb-4">Rejection Reason</h2>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={4}
+                className="w-full p-2 bg-[#E8EFFA] border rounded-lg mb-4"
+                placeholder="Enter the rejection reason"
+              />
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={handleRejectExpert}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Send
+                </button>
+                <button
+                  onClick={handleCancelReject}
+                  className="bg-red-600 px-4 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
         </div>

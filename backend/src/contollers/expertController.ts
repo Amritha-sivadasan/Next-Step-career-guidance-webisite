@@ -71,8 +71,7 @@ class ExpertController {
     const { id } = req.params;
     const updateData: { [key: string]: any } = req.body;
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    try {
-      console.log("data", updateData);
+    try { 
 
       const updatedExpert = await this.expertService.updateExpertData(
         id,

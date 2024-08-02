@@ -33,7 +33,7 @@ export default class AdminService implements IAdminService {
       return {user_name,accessToken, refreshToken };
     } catch (error) {
       console.error("Login error:", error);
-      throw new Error("An error occurred while trying to log in.");
+      throw  error
     }
   }
 

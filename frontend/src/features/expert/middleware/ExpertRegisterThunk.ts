@@ -4,7 +4,7 @@ import { IExpert } from "../../../@types/expert";
 import {
   expertRegister,
   googleSignupExpert,
-  updateExpert,
+aboutExpert,
   verifyOtpExpert,
 } from "../../../services/api/ExpertApi";
 
@@ -128,7 +128,7 @@ export const UpdateExpert = createAsyncThunk<
   const { expertId, updateData } = payload;
   try {
 
-    const response = updateExpert(expertId, updateData);
+    const response = aboutExpert(expertId, updateData);
     return (await response).data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

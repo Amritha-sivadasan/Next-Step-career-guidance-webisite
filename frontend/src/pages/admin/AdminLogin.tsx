@@ -3,7 +3,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LoginAdmin, LoginResponseAdmin } from "../../features/admin/middleware/adminLoginThunk";
+import {
+  LoginAdmin,
+  LoginResponseAdmin,
+} from "../../features/admin/middleware/adminLoginThunk";
 // import { setAdmin } from "../../features/admin/adminSlice";
 
 interface LoginFormInputs {
@@ -22,21 +25,15 @@ const AdminLogin: React.FC = () => {
   } = useForm<LoginFormInputs>();
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    const response = await dispatch(LoginAdmin(data));
-    console.log(response.payload);
-    
-    if (response.payload?.success && response.payload.data) {
-      const payload = response.payload as LoginResponseAdmin;
-       localStorage.setItem('adminAccess',payload.accessToken)
-       if(payload.data){
-        localStorage.setItem('adminName',payload.data)
-        localStorage.setItem('adminAuth',"true")
-       }
-        if (response.payload?.success) {
-          navigate("/admin");
-        }
-      
-      
+    const result = await dispatch(LoginAdmin(data));
+    const loginResponse = result.payload as LoginResponseAdmin;
+    if (loginResponse.success && loginResponse.data) {
+      localStorage.setItem("adminAccess", loginResponse.accessToken);
+      if (loginResponse.data) {
+        localStorage.setItem("adminName", loginResponse.data);
+        localStorage.setItem("adminAuth", "true");
+        navigate("/admin");
+      }
     }
   };
 

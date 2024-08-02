@@ -12,7 +12,7 @@ export interface LoginResponseAdmin {
 interface ThunkError {
   message: string;
   success: boolean;
-  data: object;
+  data: Record<string, unknown>;
 }
 
 interface LoginPayload {
@@ -24,26 +24,26 @@ export const LoginAdmin = createAsyncThunk<
   LoginResponseAdmin,
   LoginPayload,
   { rejectValue: ThunkError }
->('login/admin', async (payload: LoginPayload, thunkAPI) => {
+>("login/admin", async (payload: LoginPayload, thunkAPI) => {
   const { user_name, password } = payload;
-
   try {
     const response = await adminLogin(user_name, password);
-    return response
+  
+    const data = response.data as LoginResponseAdmin;
+    return data;
   } catch (error) {
-    let errorMsg = "An error occurred";
-    if (axios.isAxiosError(error) && error.response) {
-      errorMsg = error.response.data.message;
+    if (axios.isAxiosError(error)) {
       return thunkAPI.rejectWithValue({
-        message: errorMsg,
+        message: error.response?.data?.message || "An error occurred",
+        success: error.response?.data?.success || false,
+        data: error.response?.data || {}
+      });
+    } else {
+      return thunkAPI.rejectWithValue({
+        message: "An unexpected error occurred",
         success: false,
-        data: error.response.data,
+        data: {}
       });
     }
-    return thunkAPI.rejectWithValue({
-      message: errorMsg,
-      success: false,
-      data: {},
-    });
   }
 });

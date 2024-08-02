@@ -12,12 +12,6 @@ interface Error {
   };
 }
 
-interface ForgotPasswordResponse {
-  success: string;
-  message: string;
-  data: string;
-}
-
 export async function checkIfUserIsBlocked() {
   try {
     const response = await axios.get(`${API_URL}/check-report-user`, {
@@ -128,24 +122,14 @@ export const loginStudent = async (email: string, password: string) => {
   }
 };
 
-export const forgotPassword = async (
-  email: string
-): Promise<ForgotPasswordResponse> => {
+export const forgotPassword = async (email: string) => {
   try {
     const response = await axios.post(`${API_URL}/student/forgot-password`, {
       email,
     });
-    return {
-      success: response.data.success,
-      message: response.data.message,
-      data: response.data.data,
-    };
+    return response.data
   } catch (error) {
-    return {
-      success: "false",
-      message: (error as Error).response?.data?.message || "An error occurred",
-      data: "",
-    };
+    return (error as Error).response?.data;
   }
 };
 
@@ -162,13 +146,11 @@ export const resetPasssword = async (email: string, password: string) => {
   }
 };
 
-
 export const logoutStudent = async () => {
   try {
-    const response = await axiosInstance.get(
-      `${API_URL}/student/logout`,
-      { withCredentials: true }
-    );
+    const response = await axiosInstance.get(`${API_URL}/student/logout`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.log("error in login student");

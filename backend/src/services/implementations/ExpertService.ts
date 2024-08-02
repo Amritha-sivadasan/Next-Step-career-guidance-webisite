@@ -1,11 +1,13 @@
 import { IExpertRepository } from "../../repositories/interface/IExpertRepository";
-import { IExpert } from "../../entities/ExpertEntity";
+import { CredentialStatus, IExpert } from "../../entities/ExpertEntity";
 import { IExpertService } from "../interface/IExpertService";
 import ExpertRepository from "../../repositories/implementations/ExpertRepository";
 import hashPassword from "../../utils/bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
+import { SentRejectMail } from "../../utils/sendOtp";
+import { resourceUsage } from "process";
 
 // Helper function to transform Mongoose documents to plain objects and exclude the password
 function excludePassword(expert: any): IExpert {
@@ -22,8 +24,8 @@ export default class ExpertService implements IExpertService {
   }
 
   async getAllExperts(): Promise<IExpert[]> {
-    const experts = await this.expertRepository.findAll();    
-    
+    const experts = await this.expertRepository.findAll();
+
     return experts.map((expert) => excludePassword(expert));
   }
 
@@ -98,25 +100,43 @@ export default class ExpertService implements IExpertService {
     await this.expertRepository.update(expertId, expert);
   }
 
-   async verifyExpert(id: string): Promise<Boolean> {
-     try {
-      const expert = await this.expertRepository.findById(id)
-      if(!expert){
-        throw new Error('expert not found')
+  async verifyExpert(id: string): Promise<Boolean> {
+    try {
+      const expert = await this.expertRepository.findById(id);
+      if (!expert) {
+        throw new Error("expert not found");
       }
-      expert.is_credential_validate=true
-    const result=  await this.expertRepository.update(id, expert);
-     if(result){
-       return true
-     }
-     return false
+      expert.is_credential_validate = CredentialStatus.True;
+      const result = await this.expertRepository.update(id, expert);
+      const reason ='Your Next Step Account is  verifies'
+         const subject='Your Next-Step credential is verified'
+      await SentRejectMail(subject,expert.email, reason);
+      if (result) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-     } catch (error) {
+  async rejectExpert(id: string, reason: string):Promise<boolean> {
+    try {
+      const expert = await this.expertRepository.findById(id);
+      if (expert) {
+        expert.is_credential_validate = CredentialStatus.False;
+        const result = await this.expertRepository.update(id, expert);
+        const subject='Rejection mail for your Next-Step Registration'
+        await SentRejectMail( subject,expert.email, reason);
+        if(result){
+          return true
+        }
+      }
+      return false
+    } catch (error) {
       throw error
-     }
-   }
-
-
+    }
+  }
 
   async updateExpertData(
     id: string,
@@ -165,6 +185,4 @@ export default class ExpertService implements IExpertService {
       throw error;
     }
   }
-
-
 }

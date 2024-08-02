@@ -112,16 +112,16 @@ class StudentController {
           success: false,
           message: "User not found try another valid email ",
         });
-      } else {
-        const context =
-          "otp is created for NextStep application forgot password ";
-        await this.otpService.generateOtp(email, context);
-        res.status(200).json({
-          success: true,
-          message: "OTP generated and sent successfully",
-          data: email,
-        });
+        return;
       }
+      const context =
+        "otp is created for NextStep application forgot password ";
+      await this.otpService.generateOtp(email, context);
+      res.status(200).json({
+        success: true,
+        message: "OTP generated and sent successfully",
+        data: email,
+      });
     } catch (error) {
       res.status(500).json({
         message: "error occur on forgot password",
@@ -161,15 +161,19 @@ class StudentController {
         if (exist) {
           res.clearCookie("refreshToken", {
             httpOnly: true,
-            secure: false,  
+            secure: false,
             sameSite: "lax",
           });
-          res.status(200).json({ success: true, message: "Logged out successfully" });
+          res
+            .status(200)
+            .json({ success: true, message: "Logged out successfully" });
         }
       }
     } catch (error) {
       console.error("Error occurred during logout:", error);
-      res.status(500).json({ success: false, message: "Error occurred during logout" });
+      res
+        .status(500)
+        .json({ success: false, message: "Error occurred during logout" });
     }
   };
 }

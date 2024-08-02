@@ -85,10 +85,10 @@ export const verifyOtpExpert = async (email: string, otp: string) => {
   }
 };
 
-export const updateExpert = async (expertId: string, updateData: FormData) => {
+export const aboutExpert = async (expertId: string, updateData: FormData) => {
   try {
     const response = await axiosInstance.put(
-      `${API_URL}/expert/update/${expertId}`,
+      `${API_URL}/expert/about/${expertId}`,
       updateData,
       {
         headers: {
@@ -194,3 +194,22 @@ export const fetchAllSubCategoriesExpert = async () => {
     return (error as Error).response?.data;
   }
 };
+
+export const upadateExpert = async(expertId:string,updateData:Partial<IExpert>)=>{
+  try{
+    
+    const response = await axiosInstance.put(
+      `${API_URL}/expert/update/${expertId}`,updateData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    
+    return response.data;
+  }catch(error){
+    return (error as Error).response?.data;
+  }
+}
