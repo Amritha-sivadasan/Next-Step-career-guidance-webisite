@@ -6,16 +6,35 @@ import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from 'sweetalert2';
 
+interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
+}
+
+interface CategoryResponse {
+  data: {
+    items: ICategory[];
+    pagination: Pagination;
+  };
+  message?: string;
+}
+
 function CategoryTable() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(5);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetchAllCategories();
-        setCategories(response.data);
+        const response: CategoryResponse = await fetchAllCategories(currentPage, itemsPerPage);
+        setCategories(response.data.items);
+        setTotalPages(response.data.pagination.totalPages);
       } catch (error) {
         toast.error("Something went wrong");
       } finally {
@@ -23,7 +42,7 @@ function CategoryTable() {
       }
     };
     fetchCategories();
-  }, []);
+  }, [currentPage]);
 
   const handleAddCategory = () => {
     navigate("/admin/addCategory");
@@ -53,12 +72,17 @@ function CategoryTable() {
           'success'
         );
         // Refresh the category list
-        const response = await fetchAllCategories();
-        setCategories(response.data);
+        const response = await fetchAllCategories(currentPage, itemsPerPage);
+        setCategories(response.data.items);
+        setTotalPages(response.data.pagination.totalPages);
       }
     } catch (error) {
       toast.error("Failed to delete category");
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   if (loading) {
@@ -95,7 +119,7 @@ function CategoryTable() {
           <tbody>
             {categories.map((category, index) => (
               <tr key={category._id} className="border-b">
-                <td className="py-2 px-4 text-left text-xs sm:text-sm">{index + 1}</td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="py-2 px-4 text-left text-xs sm:text-sm">
                   <img
                     src={category.catImage}
@@ -125,6 +149,27 @@ function CategoryTable() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center mt-4">
+        <div className="flex gap-2">
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 text-lg">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

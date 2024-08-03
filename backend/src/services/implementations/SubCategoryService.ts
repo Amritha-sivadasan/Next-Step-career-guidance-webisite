@@ -12,12 +12,28 @@ export default class SubCategoryService implements ISubCategoryService {
     this.subCategoryRepository = new SubCategoryRepository();
   }
 
-  async getAllSubCategory(): Promise<ISubCategory[]> {
+  async getAllSubCategory(
+    page: number,
+    limit: number
+  ): Promise<{
+    items: ISubCategory[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      const result = await this.subCategoryRepository.findAll();
-      return result;
+      const items = await this.subCategoryRepository.findAll(page, limit);
+      const totalCount = await this.subCategoryRepository.countDocuments();
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        items,
+        totalCount,
+        totalPages,
+        currentPage: page,
+      };
     } catch (error) {
-      console.log("error during get all category", error);
+      console.log("Error during get all categories", error);
       throw error;
     }
   }

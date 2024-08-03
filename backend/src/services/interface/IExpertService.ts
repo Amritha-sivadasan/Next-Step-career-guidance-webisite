@@ -1,7 +1,7 @@
 import { IExpert } from "../../entities/ExpertEntity";
 
 export interface IExpertService{
-  getAllExperts(): Promise<IExpert[]>;
+  getAllExperts(page:number,limit:number): Promise<{ items: IExpert[], totalCount: number, totalPages: number, currentPage: number }>;
   getExpertById(id: string): Promise<IExpert | null>;
   createExpert(expert: Partial<IExpert>): Promise<{ expert: IExpert; accessToken: string; refreshToken: string }>;
   updateExpertData(id: string, expert: Partial<IExpert>, files: { [fieldname: string]: Express.Multer.File[] }): Promise<IExpert | null>;

@@ -67,9 +67,9 @@ const AboutExpert: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetchAllSubCategoriesExpert();
-        console.log('response',response);
-        
-        setCategories(response.data);
+        console.log("response", response);
+
+        setCategories(response.data.items);
       } catch (error) {
         toast.error("Something went wrong");
       } finally {

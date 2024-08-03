@@ -65,9 +65,34 @@ class AdminController {
 
   public getAllExpert = async (req: Request, res: Response): Promise<void> => {
     try {
-      const response = await this.expertService.getAllExperts();
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const limit: number = parseInt(req.query.limit as string, 10) || 10;
 
-      res.status(200).json({ success: true, message: "", data: response });
+      // Ensure valid page and limit
+        if (page <= 0 || limit <= 0) {
+          res.status(400).json({
+            message: "Invalid page or limit value",
+            success: false,
+          });
+          return;
+        }
+
+      const response = await this.expertService.getAllExperts(page, limit);
+
+
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: {
+          items: response.items,
+          pagination: {
+            totalCount: response.totalCount,
+            totalPages: response.totalPages,
+            currentPage: response.currentPage,
+            perPage: limit,
+          },
+        }
+      });
     } catch (error) {
       console.log("error during get all users");
 
@@ -120,13 +145,11 @@ class AdminController {
 
     try {
       const response = await this.expertService.rejectExpert(id, reason);
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Expert Profile is rejected",
-          data: response,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Expert Profile is rejected",
+        data: response,
+      });
     } catch (error) {
       res.status(500).json({
         message: "something went wrong on verify expert",

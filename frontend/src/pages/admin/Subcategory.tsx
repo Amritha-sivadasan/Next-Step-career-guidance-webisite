@@ -9,16 +9,38 @@ import { toast } from "react-toastify";
 import LoadingPage from "../../components/common/LoadingPage";
 import Swal from "sweetalert2";
 
+interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
+}
+
+interface categoryResponse {
+  data: {
+    items: ISubCategory[];
+    pagination: Pagination;
+  };
+  message?: string;
+}
+
 function CategoryTable() {
   const navigate = useNavigate();
   const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(5);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetchAllSubCategories();
-        setSubCategories(response.data);
+        const response: categoryResponse = await fetchAllSubCategories(
+          currentPage,
+          itemsPerPage
+        );
+        setSubCategories(response.data.items);
+        setTotalPages(response.data.pagination.totalPages);
       } catch (error) {
         toast.error("Something went wrong");
       } finally {
@@ -52,12 +74,15 @@ function CategoryTable() {
         await deleteSubCategory(subCategoryId);
         Swal.fire("Deleted!", "Your subcategory has been deleted.", "success");
 
-        const response = await fetchAllSubCategories();
+        const response = await fetchAllSubCategories(currentPage, itemsPerPage);
         setSubCategories(response.data);
       }
     } catch (error) {
       toast.error("Failed to delete subcategory");
     }
+  };
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   if (loading) {
@@ -145,6 +170,27 @@ function CategoryTable() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center mt-4">
+        <div className="flex gap-2">
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 text-lg">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

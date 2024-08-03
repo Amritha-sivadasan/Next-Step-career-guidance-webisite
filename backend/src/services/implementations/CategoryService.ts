@@ -16,10 +16,22 @@ export default class CategoryService implements ICategoryService {
     this.subcategoryRepository= new SubCategoryRepository()
   }
 
-  async getAllCategory(): Promise<ICategory[]> {
+  async getAllCategory(page:number,limit:number): Promise<{
+    items: ICategory[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     try {
-      const result = await this.categoryRepository.findAll();
-      return result;
+      const items = await this.categoryRepository.findAll(page,limit);
+      const totalCount = await this.categoryRepository.countDocuments();
+      const totalPages = Math.ceil(totalCount / limit);
+      return {
+        items,
+        totalCount,
+        totalPages,
+        currentPage: page,
+      };
     } catch (error) {
       console.log("error during get all category", error);
       throw error;

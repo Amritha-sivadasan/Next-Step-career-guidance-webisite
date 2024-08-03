@@ -1,16 +1,20 @@
 import { ISubCategeryRepository } from "../interface/ISubCategoryRepository";
 import { SubCategory } from "../../models/subCategorySchema";
 import { ISubCategory } from "../../entities/SubCategoryEntity";
-import e from "express";
-import { trusted } from "mongoose";
+
+
 
 export default class SubCategoryRepository implements ISubCategeryRepository {
-  async findAll(): Promise<ISubCategory[]> {
+  async findAll(page:number,limit:number): Promise<ISubCategory[]> {
     try {
-      return SubCategory.find({is_delete:false}).exec();
+      const skip = (page - 1) * limit;
+      return SubCategory.find({is_delete:false}).skip(skip).limit(limit).exec()
     } catch (error) {
       throw error;
     }
+  }
+  async countDocuments(): Promise<number> {
+    return SubCategory.countDocuments({is_delete:false}).exec();
   }
 
   async findById(id: string): Promise<ISubCategory | null> {

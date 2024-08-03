@@ -6,11 +6,18 @@ export const adminAxiosInstance = axios.create({
   withCredentials: true,
 });
 
+const cancelTokenMap = new Map();
+
 //request interceptor
 adminAxiosInstance.interceptors.request.use(async (config) => {
   const token = localStorage.getItem("adminAccess");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  if (!config.cancelToken) {
+    const source = axios.CancelToken.source();
+    config.cancelToken = source.token;
+    cancelTokenMap.set(config.url, source);
   }
   return config;
 });
@@ -18,15 +25,12 @@ adminAxiosInstance.interceptors.request.use(async (config) => {
 //response interceptor
 adminAxiosInstance.interceptors.response.use(
   (response) => {
+    cancelTokenMap.delete(response.config.url);
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-    // if (error.response.data.error === "User is blocked") {
-    //   alert("You are blocked by admin...");
-    //   window.location.href = "/expert/login";
-    //   return Promise.reject(new Error("User is blocked"));
-    // }
+    const url = originalRequest.url;
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -40,6 +44,7 @@ adminAxiosInstance.interceptors.response.use(
         return Promise.reject(error);
       }
     }
+    cancelTokenMap.delete(url);
     return Promise.reject(error);
   }
 );

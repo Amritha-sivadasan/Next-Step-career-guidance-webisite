@@ -21,8 +21,9 @@ export default class ExpertRepository implements IExpertRepository {
       throw error;
     }
   }
-  async findAll(): Promise<IExpert[]> {
-    return Expert.find();
+  async findAll(page: number, limit: number): Promise<IExpert[]> {
+    const skip = (page - 1) * limit;
+    return Expert.find().skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IExpert | null> {
     return Expert.findOne({ email });
@@ -37,10 +38,10 @@ export default class ExpertRepository implements IExpertRepository {
       throw error;
     }
   }
-
-
+  async countDocuments(): Promise<number> {
+    return Expert.countDocuments().exec();
+  }
   async findUserByAuthId(authentication_id: string): Promise<IExpert | null> {
     return Expert.findOne({ authentication_id });
   }
-
 }

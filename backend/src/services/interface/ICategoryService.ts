@@ -1,7 +1,12 @@
 import { ICategory } from "../../entities/CategoryEntity";
 
 export interface ICategoryService {
-    getAllCategory():Promise<ICategory[]>
+    getAllCategory(page:number,limit:number):Promise<{
+        items: ICategory[];
+        totalCount: number;
+        totalPages: number;
+        currentPage: number;
+      }>
     getCategoryById(id:string):Promise<ICategory|null>
     createCategory(category:Partial<ICategory>,file: Express.Multer.File):Promise<ICategory>
     updateCategory(id:string,category:Partial<ICategory> ,file?: Express.Multer.File):Promise<ICategory|null>

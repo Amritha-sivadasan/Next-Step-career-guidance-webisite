@@ -1,7 +1,7 @@
 import { ISubCategory } from "../../entities/SubCategoryEntity"
 
 export interface ISubCategoryService {
-    getAllSubCategory():Promise<ISubCategory[]>
+    getAllSubCategory(page: number, limit: number): Promise<{ items: ISubCategory[], totalCount: number, totalPages: number, currentPage: number }>
     getSubCategoryById(id:string):Promise<ISubCategory|null>
     createSubCategory(category:ISubCategory,file: Express.Multer.File):Promise<ISubCategory>
     updateSubCategory(id:string,category:Partial<ISubCategory>,file?: Express.Multer.File):Promise<ISubCategory|null>

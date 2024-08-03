@@ -14,10 +14,29 @@ class CategoryController {
     res: Response
   ): Promise<void> => {
     try {
-      const response = await this.categoryService.getAllCategory();
-      res
-        .status(200)
-        .json({ success: true, message: "find all category", data: response });
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const limit: number = parseInt(req.query.limit as string, 10) || 10;
+      if (page <= 0 || limit <= 0) {
+        res.status(400).json({
+          message: "Invalid page or limit value",
+          success: false,
+        });
+        return;
+      }
+      const response = await this.categoryService.getAllCategory(page,limit);
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: {
+          items: response.items,
+          pagination: {
+            totalCount: response.totalCount,
+            totalPages: response.totalPages,
+            currentPage: response.currentPage,
+            perPage: limit,
+          },
+        }
+      });
     } catch (error) {
       console.log("error in finding category");
       res

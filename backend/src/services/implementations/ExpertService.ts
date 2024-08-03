@@ -23,10 +23,15 @@ export default class ExpertService implements IExpertService {
     this.expertRepository = new ExpertRepository();
   }
 
-  async getAllExperts(): Promise<IExpert[]> {
-    const experts = await this.expertRepository.findAll();
-
-    return experts.map((expert) => excludePassword(expert));
+  async getAllExperts(page: number, limit: number): Promise<{ items: IExpert[], totalCount: number, totalPages: number, currentPage: number }> {
+    const experts = await this.expertRepository.findAll(page, limit);
+    const totalCount = await this.expertRepository.countDocuments();
+    return {
+      items: experts.map((expert) => excludePassword(expert)),
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    };
   }
 
   async getExpertById(id: string): Promise<IExpert | null> {
@@ -174,7 +179,6 @@ export default class ExpertService implements IExpertService {
         );
 
         credentialImage = result.secure_url;
-
       }
       const updatedData = {
         ...expert,
