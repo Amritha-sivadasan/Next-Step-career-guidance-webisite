@@ -130,7 +130,7 @@ export const loginExpert = async (email: string, password: string) => {
   }
 };
 
-export const forgotPasswordExpert = async (
+export const forgotPasswordExpertOtp = async (
   email: string
 ): Promise<ForgotPasswordResponse> => {
   try {

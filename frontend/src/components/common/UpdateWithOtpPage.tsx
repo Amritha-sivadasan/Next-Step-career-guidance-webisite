@@ -7,8 +7,9 @@ import { VerifyOtpExpert } from "../../features/expert/middleware/ExpertRegister
 
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../../services/api/studentApi";
-import { forgotPasswordExpertOtp } from "../../services/api/ExpertApi";
+import { forgotPasswordExpertOtp, upadateExpert } from "../../services/api/ExpertApi";
 import LoadingPage from "./LoadingPage";
+import { useAppSelector } from "../../hooks/useTypeSelector";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -18,11 +19,12 @@ interface OtpFormInputs {
   otp: string;
 }
 
-const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
+const UpdateWithOtp: React.FC<OtpPageProps> = ({ userType }) => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { expert } = useAppSelector((state) => state.expert);
 
   useEffect(() => {
     if (timer > 0) {
@@ -70,11 +72,15 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         const verifyOtpResult = await dispatch(
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
-        if (verifyOtpResult.success) {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/expert/reset-password");
-          });
+        if (verifyOtpResult.success && expert && expert._id) {
+          const response = await upadateExpert(expert._id,{email:email} );
+          if(response.success){
+            setTimeout(() => {
+              setLoading(false);
+              navigate("/expert/profile");
+            });
+
+          }
         }
       }
     }
@@ -187,4 +193,4 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   );
 };
 
-export default ForgotPasswordOtpPage;
+export default UpdateWithOtp;

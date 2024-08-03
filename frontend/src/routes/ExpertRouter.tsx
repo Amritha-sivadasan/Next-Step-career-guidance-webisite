@@ -17,6 +17,7 @@ import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ProfilePage from "../components/expert/Profilepage";
+import UpdadteWithOtp from "../components/common/UpdateWithOtpPage";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -68,9 +69,14 @@ const ExpertRouter = () => {
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
       />
+    
       <Route
         path="/fortgot-password-otp"
         element={<ForgotPasswordOtpPage userType="expert" />}
+      />
+       <Route
+        path="/update-otp"
+        element={<UpdadteWithOtp userType="expert" />}
       />
       <Route
         path="/reset-password"

@@ -6,4 +6,5 @@ export interface ICategory extends Document{
     catName:string
     catImage?:string,
     description:string
+    is_delete:boolean
 }

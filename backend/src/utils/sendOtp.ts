@@ -16,7 +16,7 @@ export async function sendOtpToUser(email: string, otp: String): Promise<void> {
   await transporter.sendMail(mailOptions);
 }
 
-export async function SentRejectMail(subject:string ,email: string, reason: string) {
+export async function SendMail(subject:string ,email: string, reason: string) {
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",

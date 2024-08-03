@@ -5,7 +5,7 @@ import { ICategory } from "../../entities/CategoryEntity";
 export default class CategoryRepository implements ICategoryRepository {
   async findAll(): Promise<ICategory[]> {
     try {
-      return Category.find().exec();
+      return Category.find({is_delete:false}).exec();
     } catch (error) {
       throw error;
     }
@@ -13,7 +13,7 @@ export default class CategoryRepository implements ICategoryRepository {
 
   async findById(id: string): Promise<ICategory | null> {
     try {
-      return Category.findById(id).exec();
+      return Category.findById(id,{is_delete:false}).exec();
     } catch (error) {
       throw error;
     }
@@ -45,7 +45,7 @@ export default class CategoryRepository implements ICategoryRepository {
 
   async deleteCategory(id: string): Promise<boolean> {
     try {
-      const result = await Category.findByIdAndDelete(id).exec();
+      const result = await Category.findByIdAndUpdate(id,{$set:{is_delete:true}}).exec();
       if (!result) {
        return false
       }

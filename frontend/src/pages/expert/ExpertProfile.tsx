@@ -5,10 +5,13 @@ import { IExpert } from "../../@types/expert";
 import { upadateExpert } from "../../services/api/ExpertApi";
 import { setExpert } from "../../features/expert/expertAuthSlice";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+
 // import { updateExpert } from "../../store/actions/expertActions";
 
 const ExpertProfile: React.FC = () => {
   const { expert } = useAppSelector((state) => state.expert);
+  const dispatch = useDispatch();
 
   const [isEditing, setIsEditing] = useState({
     user_name: false,
@@ -60,18 +63,23 @@ const ExpertProfile: React.FC = () => {
       ...isEditing,
       [field]: false,
     });
-    console.log("data to send", dataToSend);
 
     if (expert && expert._id) {
+      // if(field === "email" && typeof formData.email === "string"){
+      //   const response= await sendOtpExpert(formData.email)
+      //    if(response.success){
+      //     sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
+      //     navigate('/expert/update-otp')
+      //    }else{
+      //     toast.error('try another email ')
+      //    }
+      //  }
       const response = await upadateExpert(expert._id, dataToSend);
       if (response.success) {
-        console.log("response", response);
-        toast("Updation successfull");
-        const result= await setExpert(response.data);
-        setFormData({ ...result.payload });
+        toast.success("Updation successfull");
+        dispatch(setExpert(response.data));
+        setFormData({ ...response.data });
         setCredentialUrl(response.data.credential);
-   console.log('rsult',result)
-        
       }
     }
   };
@@ -93,7 +101,6 @@ const ExpertProfile: React.FC = () => {
         ...formData,
         credential: file,
       });
-  
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -165,43 +172,8 @@ const ExpertProfile: React.FC = () => {
             <div>
               <div className="flex justify-between">
                 <h2 className="font-semibold p-2">Email:</h2>
-                {isEditing.email ? (
-                  <>
-                    <div className="flex gap-8">
-                      <MdSave
-                        className="mt-2 cursor-pointer"
-                        size={24}
-                        onClick={() => handleSaveClick("email")}
-                      />
-                      <MdCancel
-                        className="mt-2 cursor-pointer"
-                        size={24}
-                        onClick={() => handleCancelClick("email")}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <MdEdit
-                    className="mt-2 cursor-pointer"
-                    size={20}
-                    color="gray"
-                    onClick={() => handleEditClick("email")}
-                  />
-                )}
               </div>
-              {isEditing.email ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="p-3 border rounded-lg shadow-md w-full border-black"
-                />
-              ) : (
-                <p className="p-3 border rounded-lg shadow-md">
-                  {expert.email}
-                </p>
-              )}
+              <p className="p-3 border rounded-lg shadow-md">{expert.email}</p>
             </div>
 
             <div>

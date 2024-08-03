@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
+// import HeroSection from "../pages/student/HeroSection";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ const StudentRouter = () => {
           )
         }
       />
+ 
 
       <Route
         path="/reset-password"
@@ -93,6 +95,7 @@ const StudentRouter = () => {
           element={userDeatils?.user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
         />
       </Route>
+    
     </Routes>
   );
 };

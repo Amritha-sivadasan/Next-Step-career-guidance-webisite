@@ -6,7 +6,7 @@ import hashPassword from "../../utils/bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
-import { SentRejectMail } from "../../utils/sendOtp";
+import { SendMail } from "../../utils/sendOtp";
 import { resourceUsage } from "process";
 
 // Helper function to transform Mongoose documents to plain objects and exclude the password
@@ -108,9 +108,9 @@ export default class ExpertService implements IExpertService {
       }
       expert.is_credential_validate = CredentialStatus.True;
       const result = await this.expertRepository.update(id, expert);
-      const reason ='Your Next Step Account is  verifies'
-         const subject='Your Next-Step credential is verified'
-      await SentRejectMail(subject,expert.email, reason);
+      const reason = "Your Next Step Account is  verifies";
+      const subject = "Your Next-Step credential is verified";
+      await SendMail(subject, expert.email, reason);
       if (result) {
         return true;
       }
@@ -120,21 +120,21 @@ export default class ExpertService implements IExpertService {
     }
   }
 
-  async rejectExpert(id: string, reason: string):Promise<boolean> {
+  async rejectExpert(id: string, reason: string): Promise<boolean> {
     try {
       const expert = await this.expertRepository.findById(id);
       if (expert) {
         expert.is_credential_validate = CredentialStatus.False;
         const result = await this.expertRepository.update(id, expert);
-        const subject='Rejection mail for your Next-Step Registration'
-        await SentRejectMail( subject,expert.email, reason);
-        if(result){
-          return true
+        const subject = "Rejection mail for your Next-Step Registration";
+        await SendMail(subject, expert.email, reason);
+        if (result) {
+          return true;
         }
       }
-      return false
+      return false;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -162,6 +162,9 @@ export default class ExpertService implements IExpertService {
       }
 
       let credentialImage;
+      if (existingExpert.credential) {
+        credentialImage = existingExpert.credential;
+      }
       if (files.credential && files.credential[0]) {
         const result = await cloudinary.uploader.upload(
           files.credential[0].path,
@@ -171,6 +174,7 @@ export default class ExpertService implements IExpertService {
         );
 
         credentialImage = result.secure_url;
+
       }
       const updatedData = {
         ...expert,

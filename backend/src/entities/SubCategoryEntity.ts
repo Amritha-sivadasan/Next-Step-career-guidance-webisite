@@ -6,5 +6,6 @@ export interface ISubCategory extends Document{
     subCatName:string
     subCatImage:string,
     description:string,
-    catName:string
+    catName:string,
+    is_delete:boolean
 }
