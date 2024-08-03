@@ -12,8 +12,8 @@ import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
 import { studentGoogleAuth } from "../contollers/firebaseController";
 
-const role = "student";
-const token = "refreshToken";
+const role = process.env.STUDENT_ROLE as string
+const token = process.env.STUDENT_TOKEN as string
 
 const router = Router();
 

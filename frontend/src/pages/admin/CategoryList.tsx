@@ -63,8 +63,7 @@ function CategoryTable() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-w-screen w-full">
-        {" "}
+      <div className="flex items-center justify-center min-h-screen w-full">
         <LoadingPage />
       </div>
     );
@@ -72,54 +71,55 @@ function CategoryTable() {
 
   return (
     <div className="mt-4 w-full bg-white">
-      <div className="m-5 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">All Categories</h1>
+      <div className="m-5 flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold mb-4 sm:mb-0">All Categories</h1>
       </div>
-      <div className="flex justify-end me-8">
+      <div className="flex justify-end me-10">
         <button
           onClick={handleAddCategory}
           className="px-4 py-2 bg-[#0B2149] text-white rounded-lg hover:bg-[#062038] focus:outline-none"
         >
           Add New Category
-        </button>
-      </div>
-      <div className="m-4">
+        </button></div>
+      <div className="m-4 overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded">
           <thead className="bg-[#E8EFFA] border-b">
             <tr>
-              <th className="py-2 px-4 text-left">No</th>
-              <th className="py-2 px-4 text-left">Category Image</th>
-              <th className="py-2 px-4 text-left">Category Name</th>
-              <th className="py-2 px-4 text-left">Description</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">No</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">Category Image</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">Category Name</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">Description</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">Actions</th>
             </tr>
           </thead>
           <tbody>
             {categories.map((category, index) => (
               <tr key={category._id} className="border-b">
-                <td className="py-2 px-4 text-left">{index + 1}</td>
-                <td className="py-2 px-4 text-left">
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">{index + 1}</td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
                   <img
                     src={category.catImage}
                     alt={category.catName}
                     className="w-16 h-16 object-cover rounded"
                   />
                 </td>
-                <td className="py-2 px-4 text-left">{category.catName}</td>
-                <td className="py-2 px-4 text-left">{category.description}</td>
-                <td className="py-2 px-4 text-left">
-                  <button
-                    className="px-2 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600 focus:outline-none"
-                    onClick={() => handleEdit(category._id)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
-                    onClick={() => handleDelete(category._id)}
-                  >
-                    Delete
-                  </button>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">{category.catName}</td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">{category.description}</td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
+                      onClick={() => handleEdit(category._id)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+                      onClick={() => handleDelete(category._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

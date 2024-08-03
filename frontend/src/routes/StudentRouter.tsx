@@ -13,13 +13,12 @@ import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
-// import HeroSection from "../pages/student/HeroSection";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
   const userDeatils = useAppSelector((state) => state.student);
-//  const userAuth= localStorage.getItem("userAuth");
+
   useEffect(() => {
     if (user) {
       dispatch(setUser(user));

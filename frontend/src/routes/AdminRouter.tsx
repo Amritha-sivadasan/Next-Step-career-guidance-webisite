@@ -1,7 +1,7 @@
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import AdminLogin from "../pages/admin/AdminLogin";
 import Sidebar from "../components/admin/AdminSidebar";
-import Header from "../components/admin/AdminLayout";
+import Header from "../components/admin/AdminHeader";
 import Dashboard from "../pages/admin/AdimnDashboard";
 import Experts from "../pages/admin/ExpertDetails";
 import AdmintPrivateRoute from "./Privateroutes/AdminPrivateRoute";

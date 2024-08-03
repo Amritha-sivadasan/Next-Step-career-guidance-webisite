@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
 import ForgotPassword from "../components/common/ForgotPassword";
@@ -16,8 +16,9 @@ import { useDispatch } from "react-redux";
 import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
-import ProfilePage from "../components/expert/Profilepage";
 import UpdadteWithOtp from "../components/common/UpdateWithOtpPage";
+import Sidebar from "../components/expert/ExpertSidebar";
+import ExpertProfile from "../pages/expert/ExpertProfile";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -69,12 +70,12 @@ const ExpertRouter = () => {
         path="/forgot-password"
         element={<ForgotPassword userType="expert" />}
       />
-    
+
       <Route
         path="/fortgot-password-otp"
         element={<ForgotPasswordOtpPage userType="expert" />}
       />
-       <Route
+      <Route
         path="/update-otp"
         element={<UpdadteWithOtp userType="expert" />}
       />
@@ -104,7 +105,24 @@ const ExpertRouter = () => {
             )
           }
         />
-        <Route path="/profile" element={<ProfilePage />} />
+           <Route
+            element={
+              <>
+                <div className="flex flex-col w-full">
+                       <h1>Header</h1>
+                  <div className="flex-1 flex bg-white ">
+                    <Sidebar />
+                    <Outlet />
+                  </div>
+                </div>
+              </>
+            }
+          >
+        <Route path="/profile" element={<ExpertProfile />} />
+
+          </Route>
+
+      
       </Route>
     </Routes>
   );

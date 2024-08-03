@@ -88,10 +88,10 @@ const ExpertDetailsView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 ms-12  w-8/12 flex justify-center">
+    <div className="min-h-screen p-4 lg:ms-12 sm:mx-auto md:w-8/12 lg:w-8/12 sm:w-full flex justify-center">
       {expert ? (
-        <div className="container mx-auto bg-white p-6 rounded-lg border shadow-md ">
-          <h1 className="text-3xl font-bold mb-4 text-center">
+        <div className="container mx-auto bg-white p-6 rounded-lg border shadow-md sm:w-full ">
+          <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center">
             Expert Details
           </h1>
           <img
@@ -175,21 +175,19 @@ const ExpertDetailsView: React.FC = () => {
               />
             )}
           </div>
-          <div className="flex justify-center gap-5 mt-10 mb-6">
-            <div className="flex justify-center gap-5">
-              <button
-                onClick={handleVerifyExpert}
-                className="mt-6 bg-[#0B2149] text-white px-6 py-2 rounded-lg hover: transition-colors duration-300"
-              >
-                Verify Expert
-              </button>
-              <button
-                onClick={() => setShowRejectForm(true)}
-                className="mt-6 bg-red-800 text-white px-6 py-2 rounded-lg hover: transition-colors duration-300"
-              >
-                Reject
-              </button>
-            </div>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 mb-6">
+            <button
+              onClick={handleVerifyExpert}
+              className="bg-[#0B2149] text-white px-6 py-2 rounded-lg hover:bg-[#0a1d34] transition-colors duration-300"
+            >
+              Verify Expert
+            </button>
+            <button
+              onClick={() => setShowRejectForm(true)}
+              className="bg-red-800 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300"
+            >
+              Reject
+            </button>
           </div>
           {showRejectForm && (
             <div className="bg-white p-6 rounded-lg border shadow-md mt-6">

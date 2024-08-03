@@ -12,8 +12,8 @@ import upload from "../utils/multerConfig";
 import subCategoryController from "../contollers/subCategoryController";
 
 const expertRouter = Router();
-const role='expert'
-const token = "ExpertRefreshToken";
+const role=process.env.EXPERT_ROLE as string
+const token = process.env.EXPERT_TOKEN as string
 
 
 

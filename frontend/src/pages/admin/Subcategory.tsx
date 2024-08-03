@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 function CategoryTable() {
   const navigate = useNavigate();
-  const [Subcategories, setSubCategories] = useState<ISubCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -32,11 +32,11 @@ function CategoryTable() {
     navigate("/admin/addSubCategory");
   };
 
-  const handleEdit = (categoryId: string) => {
-    navigate(`/admin/editSubCategory/${categoryId}`);
+  const handleEdit = (subCategoryId: string) => {
+    navigate(`/admin/editSubCategory/${subCategoryId}`);
   };
 
-  const handleDelete = async (categoryId: string) => {
+  const handleDelete = async (subCategoryId: string) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -49,21 +49,20 @@ function CategoryTable() {
       });
 
       if (result.isConfirmed) {
-        await deleteSubCategory(categoryId);
-        Swal.fire("Deleted!", "Your category has been deleted.", "success");
-    
+        await deleteSubCategory(subCategoryId);
+        Swal.fire("Deleted!", "Your subcategory has been deleted.", "success");
+
         const response = await fetchAllSubCategories();
         setSubCategories(response.data);
       }
     } catch (error) {
-      toast.error("Failed to delete category");
+      toast.error("Failed to delete subcategory");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-w-screen w-full">
-        {" "}
+      <div className="flex items-center justify-center min-h-screen w-full">
         <LoadingPage />
       </div>
     );
@@ -71,59 +70,76 @@ function CategoryTable() {
 
   return (
     <div className="mt-4 w-full bg-white">
-      <div className="m-5 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">All SubCategories</h1>
+      <div className="m-5 flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold mb-4 sm:mb-0">All SubCategories</h1>
       </div>
-      <div className="flex justify-end me-8">
+      <div className="flex justify-end me-10">
         <button
           onClick={handleAddCategory}
           className="px-4 py-2 bg-[#0B2149] text-white rounded-lg hover:bg-[#062038] focus:outline-none"
         >
-          Add New Category
+          Add New SubCategory
         </button>
       </div>
-      <div className="m-4">
+      <div className="m-4 overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded">
           <thead className="bg-[#E8EFFA] border-b">
             <tr>
-              <th className="py-2 px-4 text-left">No</th>
-              <th className="py-2 px-4 text-left">Categroy Name</th>
-              <th className="py-2 px-4 text-left">SubCategory Image</th>
-              <th className="py-2 px-4 text-left">SubCategory Name</th>
-             
-              <th className="py-2 px-4 text-left">Description</th>
-              <th className="py-2 px-4 text-left">Actions</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">No</th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">
+                Category Name
+              </th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">
+                SubCategory Image
+              </th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">
+                SubCategory Name
+              </th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">
+                Description
+              </th>
+              <th className="py-2 px-4 text-left text-xs sm:text-sm">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
-            {Subcategories.map((Subcategory, index) => (
-              <tr key={Subcategory._id} className="border-b">
-                <td className="py-2 px-4 text-left">{index + 1}</td>
-                <td className="py-2 px-4 text-left">{Subcategory.catName}</td>
-                <td className="py-2 px-4 text-left">
+            {subCategories.map((subCategory, index) => (
+              <tr key={subCategory._id} className="border-b">
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  {index + 1}
+                </td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  {subCategory.catName}
+                </td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
                   <img
-                    src={Subcategory.subCatImage}
-                    alt={Subcategory.subCatName}
+                    src={subCategory.subCatImage}
+                    alt={subCategory.subCatName}
                     className="w-16 h-16 object-cover rounded"
                   />
                 </td>
-                <td className="py-2 px-4 text-left">{Subcategory.subCatName}</td>
-                <td className="py-2 px-4 text-left">
-                  {Subcategory.description}
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  {subCategory.subCatName}
                 </td>
-                <td className="py-2 px-4 text-left">
-                  <button
-                    className="px-2 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600 focus:outline-none"
-                    onClick={() => handleEdit(Subcategory._id)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
-                    onClick={() => handleDelete(Subcategory._id)}
-                  >
-                    Delete
-                  </button>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  {subCategory.description}
+                </td>
+                <td className="py-2 px-4 text-left text-xs sm:text-sm">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
+                      onClick={() => handleEdit(subCategory._id)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+                      onClick={() => handleDelete(subCategory._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

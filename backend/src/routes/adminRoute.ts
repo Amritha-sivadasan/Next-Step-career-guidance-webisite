@@ -7,8 +7,8 @@ import subCategoryController from "../contollers/subCategoryController";
 import upload from "../utils/multerConfig";
 
 const adminRoute=Router()
-const role='admin'
-const token = "adminRefreshToken";
+const role=process.env.ADMIN_ROLE as string
+const token = process.env.ADMIN_TOKEN as string
 
 adminRoute.post('/login',adminController.loginAdmin)
 adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), refreshTokens(token))

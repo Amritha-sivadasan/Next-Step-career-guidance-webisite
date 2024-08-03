@@ -247,10 +247,10 @@ const EditSubCategory = () => {
                 </p>
               )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-center">
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+                className="px-4 py-2 bg-[#062038] text-white rounded-lg hover:bg-blue-600 focus:outline-none"
               >
                 Update SubCategory
               </button>
