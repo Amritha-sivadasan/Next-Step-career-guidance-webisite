@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { logoutStudent } from "../../services/api/studentApi";
+import { logoutStudent } from "../../../services/api/studentApi";
 import { useDispatch } from "react-redux";
-import { setAuthenticated } from "../../features/student/authSlice";
+import { setAuthenticated } from "../../../features/student/authSlice";
 
 const Home = () => {
   const navigate = useNavigate();

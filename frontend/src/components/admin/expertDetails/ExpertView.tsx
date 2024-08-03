@@ -4,11 +4,11 @@ import { toast } from "react-toastify";
 import {
   fetchExpertDetailsById,
   verifyExpert,
-} from "../../services/api/adminApi";
-import LoadingPage from "../../components/common/LoadingPage";
-import { IExpert } from "../../@types/expert";
+} from "../../../services/api/adminApi";
+import LoadingPage from "../../common/LoadingPage";
+import { IExpert } from "../../../@types/expert";
 
-import { rejectExpert } from "../../services/api/adminApi";
+import { rejectExpert } from "../../../services/api/adminApi";
 
 const ExpertDetailsView: React.FC = () => {
   const { expertId } = useParams<{ expertId: string }>();

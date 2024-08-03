@@ -3,11 +3,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import {
   addSubCategory,
   fetchAllCategories,
-} from "../../services/api/categoryApi";
+} from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingPage from "../../components/common/LoadingPage";
-import { ICategory } from "../../@types/dashboard";
+import LoadingPage from "../../../components/common/LoadingPage";
+import { ICategory } from "../../../@types/dashboard";
 
 interface IFormInput {
   subCatName: string;
@@ -28,7 +28,7 @@ const AddSubCategory: React.FC = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await fetchAllCategories();
+      const response = await fetchAllCategories(1,10);
       if (response.success) {
         setCategories(response.data);
       } else {

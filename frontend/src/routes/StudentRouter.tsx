@@ -1,11 +1,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Signup from "../pages/student/Signup";
+import Signup from "../components/student/register/Signup";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
-import AboutUser from "../pages/student/AboutStudent";
+import AboutUser from "../components/student/aboutStudent/AboutStudent";
 import ForgotPassword from "../components/common/ForgotPassword";
 import ResetPassword from "../components/common/ResetPassword";
-import Home from "../pages/student/Home";
+import Home from "../components/student/landingPage/Home";
 import StudentPrivateRoute from "./Privateroutes/StudentPrivateRoute";
 import { useDispatch } from "react-redux";
 import useFetchUserData from "../hooks/UseFetchUser";
@@ -32,18 +32,26 @@ const StudentRouter = () => {
     <Routes>
       <Route
         path="/signup"
-        element={userDeatils.isAuthenticated? <Navigate to="/" /> : <Signup />}
+        element={userDeatils.isAuthenticated ? <Navigate to="/" /> : <Signup />}
       />
       <Route
         path="/login"
         element={
-          userDeatils.isAuthenticated? <Navigate to="/" /> : <Login userType="student" />
+          userDeatils.isAuthenticated ? (
+            <Navigate to="/" />
+          ) : (
+            <Login userType="student" />
+          )
         }
       />
       <Route
         path="/otp-verify"
         element={
-          userDeatils.isAuthenticated ? <Navigate to="/" /> : <OtpPage userType="student" />
+          userDeatils.isAuthenticated ? (
+            <Navigate to="/" />
+          ) : (
+            <OtpPage userType="student" />
+          )
         }
       />
       <Route
@@ -66,7 +74,7 @@ const StudentRouter = () => {
           )
         }
       />
- 
+      <Route path="/" element={<Home />} />
 
       <Route
         path="/reset-password"
@@ -78,6 +86,7 @@ const StudentRouter = () => {
           )
         }
       />
+
       <Route element={<StudentPrivateRoute />}>
         <Route
           path="/"
@@ -91,10 +100,15 @@ const StudentRouter = () => {
         />
         <Route
           path="/about-student"
-          element={userDeatils?.user?.is_data_entered ? <Navigate to="/" /> : <AboutUser />}
+          element={
+            userDeatils?.user?.is_data_entered ? (
+              <Navigate to="/" />
+            ) : (
+              <AboutUser />
+            )
+          }
         />
       </Route>
-    
     </Routes>
   );
 };

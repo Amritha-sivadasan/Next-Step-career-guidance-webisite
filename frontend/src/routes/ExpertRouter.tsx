@@ -1,11 +1,11 @@
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
 import ForgotPassword from "../components/common/ForgotPassword";
 import ResetPassword from "../components/common/ResetPassword";
-import AboutExpert from "../pages/expert/AboutExpert";
-import ExpertSignup from "../pages/expert/ExpertSignup";
-import ExpertHome from "../pages/expert/ExpertHome";
+import AboutExpert from "../components/expert/about/AboutExpert";
+import ExpertSignup from "../components/expert/register/ExpertSignup";
+import ExpertHome from "../components/expert/landingpage/ExpertHome";
 import useFetchExpertData from "../hooks/useFetchExpert";
 import {
   setExpert,
@@ -17,8 +17,8 @@ import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
 import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import UpdadteWithOtp from "../components/common/UpdateWithOtpPage";
-import Sidebar from "../components/expert/ExpertSidebar";
-import ExpertProfile from "../pages/expert/ExpertProfile";
+import ProfilePage from "../pages/expert/Profilepage";
+
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -105,24 +105,9 @@ const ExpertRouter = () => {
             )
           }
         />
-           <Route
-            element={
-              <>
-                <div className="flex flex-col w-full">
-                       <h1>Header</h1>
-                  <div className="flex-1 flex bg-white ">
-                    <Sidebar />
-                    <Outlet />
-                  </div>
-                </div>
-              </>
-            }
-          >
-        <Route path="/profile" element={<ExpertProfile />} />
 
-          </Route>
+          <Route path="/profile" element={<ProfilePage />} />
 
-      
       </Route>
     </Routes>
   );

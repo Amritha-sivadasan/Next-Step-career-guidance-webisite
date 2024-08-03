@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch } from "../../../store/store";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   LoginAdmin,
   LoginResponseAdmin,
-} from "../../features/admin/middleware/adminLoginThunk";
+} from "../../../features/admin/middleware/adminLoginThunk";
 // import { setAdmin } from "../../features/admin/adminSlice";
 
 interface LoginFormInputs {

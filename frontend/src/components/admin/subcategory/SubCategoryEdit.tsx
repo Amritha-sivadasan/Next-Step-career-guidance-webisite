@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ICategory } from "../../@types/dashboard";
+import { ISubCategory, ICategory } from "../../../@types/dashboard";
 import {
-  fetchCategoryById,
-  updateCategory,
-} from "../../services/api/categoryApi";
+  fetchSubCategoryById,
+  fetchAllCategories,
+  updateSubCategory,
+} from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
-import LoadingPage from "../../components/common/LoadingPage";
+import LoadingPage from "../../../components/common/LoadingPage";
 import Swal from "sweetalert2";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 interface FormData {
   catName: string;
+  subCatName: string;
   description: string;
-  catImage: string;
+  subCatImage: string;
   imageFile: File | null;
 }
 
-const EditCategory = () => {
-  const { categoryId } = useParams();
+const EditSubCategory = () => {
+  const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
-  const [, setCategory] = useState<ICategory | null>(null);
+  const [, setSubCategory] = useState<ISubCategory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
     null
   );
@@ -34,29 +37,35 @@ const EditCategory = () => {
   } = useForm<FormData>({
     defaultValues: {
       catName: "",
+      subCatName: "",
       description: "",
-      catImage: "",
+      subCatImage: "",
       imageFile: null,
     },
   });
 
   useEffect(() => {
-    const fetchCategory = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetchCategoryById(categoryId!);
-        setCategory(response.data);
+        const response = await fetchSubCategoryById(categoryId!);
+        const categoriesResponse = await fetchAllCategories(1,10);
+
+        setSubCategory(response.data);
+        setCategories(categoriesResponse.data);
+
         setValue("catName", response.data.catName);
+        setValue("subCatName", response.data.subCatName);
         setValue("description", response.data.description);
-        setValue("catImage", response.data.catImage);
-        setImagePreview(response.data.catImage);
+        setValue("subCatImage", response.data.subCatImage);
+        setImagePreview(response.data.subCatImage);
       } catch (error) {
-        toast.error("Failed to fetch category");
+        toast.error("Failed to fetch data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategory();
+    fetchData();
   }, [categoryId, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,11 +80,11 @@ const EditCategory = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit = async (data: FormData) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "Do you want to update this category?",
+        text: "Do you want to update this subcategory?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -86,24 +95,24 @@ const EditCategory = () => {
       if (result.isConfirmed) {
         const formDataToSend = new FormData();
         formDataToSend.append("catName", data.catName);
+        formDataToSend.append("subCatName", data.subCatName);
         formDataToSend.append("description", data.description);
-
         if (data.imageFile) {
           formDataToSend.append("imageFile", data.imageFile);
         } else {
-          formDataToSend.append("catImage", data.catImage);
+          formDataToSend.append("subCatImage", data.subCatImage);
         }
 
-        const response = await updateCategory(categoryId!, formDataToSend);
+        const response = await updateSubCategory(categoryId!, formDataToSend);
         if (response.success) {
-          Swal.fire("Updated!", "The category has been updated.", "success");
-          navigate("/admin/category");
+          Swal.fire("Updated!", "The subcategory has been updated.", "success");
+          navigate("/admin/subCategory");
         } else {
           toast.error(response.message);
         }
       }
     } catch (error) {
-      toast.error("Failed to update category");
+      toast.error("Failed to update subcategory");
     }
   };
 
@@ -120,35 +129,36 @@ const EditCategory = () => {
     <div className="mt-4 w-full bg-white">
       <div className="m-5">
         <div className="flex flex-col justify-center  border p-5 rounded-lg  w-8/12  mx-auto">
-          <h1 className="text-2xl font-bold mb-10">Edit Category</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-4 ">
+          <h1 className="text-2xl font-bold">Edit SubCategory</h1>
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
             <div className="mb-4">
               <label
-                htmlFor="catName"
+                htmlFor="subCatName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Category Name
+                SubCategory Name
               </label>
               <Controller
-                name="catName"
+                name="subCatName"
                 control={control}
                 rules={{
-                  required: "Category name is required",
+                  required: "SubCategory name is required",
                   validate: (value) =>
-                    value.trim() !== "" ||
-                    "Category name cannot be just spaces",
+                    value.trim() !== "" || "SubCategory name be just spaces",
                 }}
                 render={({ field }) => (
                   <input
                     type="text"
-                    id="catName"
+                    id="subCatName"
                     {...field}
-                    className="mt-1 block w-full p-2 border  rounded-lg bg-[#E8EFFA]"
+                    className="mt-1 block w-full p-2  border rounded bg-[#E8EFFA]"
                   />
                 )}
               />
-              {errors.catName && (
-                <p className="text-red-500 text-sm">{errors.catName.message}</p>
+              {errors.subCatName && (
+                <p className="text-red-500 text-sm">
+                  {errors.subCatName.message}
+                </p>
               )}
             </div>
             <div className="mb-4">
@@ -161,13 +171,16 @@ const EditCategory = () => {
               <Controller
                 name="description"
                 control={control}
-                rules={{ required: "Description is required", validate: (value) =>
-                  value.trim() !== "" || "Description cannot be just spaces", }}
+                rules={{
+                  required: "Description is required",
+                  validate: (value) =>
+                    value.trim() !== "" || "Description be just spaces",
+                }}
                 render={({ field }) => (
                   <textarea
                     id="description"
                     {...field}
-                    className="mt-1 block w-full p-2 border  rounded-lg bg-[#E8EFFA] "
+                    className="mt-1 block w-full p-2 border bg-[#E8EFFA] rounded"
                   />
                 )}
               />
@@ -179,16 +192,45 @@ const EditCategory = () => {
             </div>
             <div className="mb-4">
               <label
+                htmlFor="catName"
+                className="block text-sm font-medium  text-gray-700"
+              >
+                Category Name
+              </label>
+              <Controller
+                name="catName"
+                control={control}
+                rules={{ required: "Category name is required" }}
+                render={({ field }) => (
+                  <select
+                    id="catName"
+                    {...field}
+                    className="mt-1 block w-full p-2 border bg-[#E8EFFA] rounded"
+                  >
+                    {categories.map((category) => (
+                      <option key={category._id} value={category.catName}>
+                        {category.catName}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.catName && (
+                <p className="text-red-500 text-sm">{errors.catName.message}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
                 htmlFor="imageFile"
                 className="block text-sm font-medium text-gray-700"
               >
-                Category Image
+                SubCategory Image
               </label>
               {imagePreview && (
                 <div className="mb-2">
                   <img
                     src={imagePreview as string}
-                    alt="Category Preview"
+                    alt="SubCategory Preview"
                     className="w-32 h-32 object-cover rounded"
                   />
                 </div>
@@ -208,9 +250,9 @@ const EditCategory = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#0B2149] text-white rounded-lg  focus:outline-none"
+                className="px-4 py-2 bg-[#062038] text-white rounded-lg hover:bg-blue-600 focus:outline-none"
               >
-                Update Category
+                Update SubCategory
               </button>
             </div>
           </form>
@@ -220,4 +262,4 @@ const EditCategory = () => {
   );
 };
 
-export default EditCategory;
+export default EditSubCategory;

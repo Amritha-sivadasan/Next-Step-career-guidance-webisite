@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ISubCategory } from "../../@types/dashboard";
+import { ISubCategory } from "../../../@types/dashboard";
 import {
   deleteSubCategory,
   fetchAllSubCategories,
-} from "../../services/api/categoryApi";
+} from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
-import LoadingPage from "../../components/common/LoadingPage";
+import LoadingPage from "../../../components/common/LoadingPage";
 import Swal from "sweetalert2";
 
 interface Pagination {
@@ -24,7 +24,7 @@ interface categoryResponse {
   message?: string;
 }
 
-function CategoryTable() {
+function SubCategoryTable() {
   const navigate = useNavigate();
   const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -196,4 +196,4 @@ function CategoryTable() {
   );
 }
 
-export default CategoryTable;
+export default SubCategoryTable;

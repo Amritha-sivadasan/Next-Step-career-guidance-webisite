@@ -15,10 +15,10 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { GiBrain } from "react-icons/gi";
-import { adminLogout } from "../../services/api/adminApi";
+import { adminLogout } from "../../../services/api/adminApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setadminAuthenticated } from "../../features/admin/adminSlice";
+import { setadminAuthenticated } from "../../../features/admin/adminSlice";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();

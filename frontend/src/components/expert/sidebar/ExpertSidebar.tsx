@@ -10,10 +10,10 @@ import {
   FaSignOutAlt,
   FaBars,
 } from "react-icons/fa";
-import { useAppSelector } from "../../hooks/useTypeSelector";
-import { logoutExpert } from "../../services/api/ExpertApi";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
+import { logoutExpert } from "../../../services/api/ExpertApi";
 import { useDispatch } from "react-redux";
-import { setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
+import { setExpertAuthenticated } from "../../../features/expert/expertAuthSlice";
 
 interface SidebarItemProps {
   icon: React.ElementType;
@@ -25,7 +25,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, to }) => {
   return (
     <Link
       to={to}
-      className="flex items-center space-x-3 p-2 text-gray-600 hover:bg-gray-200 rounded-lg"
+      className="flex items-center space-x-3  bg-[#F2F2F2] p-3 text-[#0B2149] hover:text-white hover:bg-[#0B2149] rounded-lg border"
     >
       <Icon className="h-6 w-6" />
       <span>{label}</span>
@@ -79,7 +79,9 @@ const Sidebar: React.FC = () => {
             className="h-12 w-12 rounded-full object-cover"
           />
           <div>
-            <h4 className="font-semibold text-lg">{expert?.user_name}</h4>
+            <h4 className="font-semibold text-lg text-[#0B2149]">
+              {expert?.user_name}
+            </h4>
             <p className="text-gray-600">{expert?.email}</p>
           </div>
         </div>
@@ -119,8 +121,8 @@ const Sidebar: React.FC = () => {
             label="Meeting History"
             to="/expert/meeting-history"
           />
-          <div className="flex items-center space-x-3 p-2 text-gray-600 hover:bg-gray-200 rounded-lg">
-            <FaSignOutAlt />
+          <div className="flex items-center space-x-3 bg-[#F2F2F2]  p-3  hover:bg-gray-200 rounded-lg border text-[#0B2149]">
+            <FaSignOutAlt size={24} />
             <button onClick={handleLogout}>Logout</button>
           </div>
         </nav>

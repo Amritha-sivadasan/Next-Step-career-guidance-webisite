@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { UpdateExpert } from "../../features/expert/middleware/ExpertRegisterThunk";
-import { IExpert } from "../../@types/expert";
-import { setExpert } from "../../features/expert/expertAuthSlice";
+import { AppDispatch } from "../../../store/store";
+import { UpdateExpert } from "../../../features/expert/middleware/ExpertRegisterThunk";
+import { IExpert } from "../../../@types/expert";
+import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/useTypeSelector";
-import LoadingPage from "../../components/common/LoadingPage";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
+import LoadingPage from "../../../components/common/LoadingPage";
 import { toast } from "react-toastify";
-import { ISubCategory } from "../../@types/dashboard";
-import { fetchAllSubCategoriesExpert } from "../../services/api/ExpertApi";
+import { ISubCategory } from "../../../@types/dashboard";
+import { fetchAllSubCategoriesExpert } from "../../../services/api/ExpertApi";
 
 type FormValues = {
   personal_bio: string;

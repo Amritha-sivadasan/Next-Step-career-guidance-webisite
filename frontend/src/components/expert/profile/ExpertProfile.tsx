@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../hooks/useTypeSelector";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { MdEdit, MdSave, MdCancel } from "react-icons/md";
-import { IExpert } from "../../@types/expert";
-import { upadateExpert } from "../../services/api/ExpertApi";
-import { setExpert } from "../../features/expert/expertAuthSlice";
+import { IExpert } from "../../../@types/expert";
+import { upadateExpert } from "../../../services/api/ExpertApi";
+import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 
@@ -27,6 +27,11 @@ const ExpertProfile: React.FC = () => {
   const [credentialUrl, setCredentialUrl] = useState<string | undefined>(
     undefined
   );
+  useEffect(() => {
+    if (expert) {
+      setFormData({ ...expert });
+    }
+  }, [expert]);
 
   useEffect(() => {
     if (formData.credential instanceof File) {
@@ -102,19 +107,22 @@ const ExpertProfile: React.FC = () => {
   return (
     <div className="min-h-screen p-4 md:p-6 lg:p-8 mx-auto w-full max-w-4xl flex justify-center">
       {expert ? (
-        <div className="container mx-auto bg-white p-6 rounded-lg border shadow-md">
-          <h1 className="text-3xl font-bold mb-4 text-center">
-            Expert Details
-          </h1>
-          {typeof formData.profile_picture == "string" && (
-            <img
-              src={formData.profile_picture}
-              alt="Profile"
-              className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
-            />
-          )}
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2">
+        <div className="container mx-auto bg-white p-6 rounded-lg ">
+          <div className="relative bg-[#F2F2F2] border h-40 rounded-lg mb-8 shadow-md">
+            <h1 className="text-3xl font-bold mt-10 text-center">
+              Expert Details
+            </h1>
+          </div>
+          <div className="relative -mt-32 flex justify-start ms-32">
+            {typeof formData.profile_picture == "string" && (
+              <img
+                src={formData.profile_picture}
+                alt="Profile"
+                className="w-32 h-32 object-cover rounded-full border-2 border-white shadow-lg"
+              />
+            )}
+          </div>
+          <div className="grid grid-cols-1 gap-4 mt-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 p-5 rounded-lg border shadow-md">
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="font-semibold">Username:</h2>

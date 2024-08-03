@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { AppDispatch } from "../../store/store";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import { NavLink, useNavigate } from "react-router-dom";
-import { sendOtp } from "../../services/api/studentApi";
-import { app } from "../../config/firebase";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
+import { sendOtpExpert } from "../../../services/api/ExpertApi"; 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
-import { setUser } from "../../features/student/authSlice";
-import { IStudent } from "../../@types/user";
-import LoadingPage from "../../components/common/LoadingPage";
-import { validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
-
-// import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
+import { app } from "../../../config/firebase";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store/store";
+import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk"; 
+import { setExpert } from "../../../features/expert/expertAuthSlice";
+import { IExpert } from "../../../@types/expert";
+import LoadingPage from "../../../components/common/LoadingPage";
 
 interface SignupFormInputs {
   user_name: string;
@@ -23,9 +20,9 @@ interface SignupFormInputs {
   confirmPassword: string;
 }
 
-const Signup: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+const ExpertSignup: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -42,24 +39,6 @@ const Signup: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    setLoading(true);
-    if (data.password !== data.confirmPassword) {
-      Errornotify("Password and confirm password do not match");
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...userData } = data;
-    const response = await sendOtp(data.email);
-    if (response.success) {
-      setLoading(false);
-      sessionStorage.setItem("userdata", JSON.stringify(userData));
-      navigate("/otp-verify");
-    } else {
-      Errornotify(response.message);
-    }
-  };
-
   const Errornotify = (msg: string) => {
     toast.error(msg, {
       position: "top-center",
@@ -72,7 +51,25 @@ const Signup: React.FC = () => {
     });
   };
 
-  //Google sign up
+  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+    setLoading(true);
+    if (data.password !== data.confirmPassword) {
+      Errornotify("Password and confirm password do not match");
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...expertData } = data;
+    const response = await sendOtpExpert(data.email);
+    if (response.success) {
+      sessionStorage.setItem("expertdata", JSON.stringify(expertData));
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/expert/otp-verify");
+      }, 1000);
+    } else {
+      Errornotify(response.message);
+    }
+  };
 
   const handleGoogleSignup = async () => {
     const auth = getAuth(app);
@@ -85,20 +82,25 @@ const Signup: React.FC = () => {
 
       if (token) {
         setLoading(true);
-        const registerStudentResult = await dispatch(
-          registerStudentWithGoogle(token.toString())
+        const registerExpertResult = await dispatch(
+          registerExpertWithGoogle(token.toString())
         ).unwrap();
 
-        if (registerStudentResult.success) {
-          const userData = registerStudentResult.data as IStudent;
-          dispatch(setUser(userData));
+        if (registerExpertResult.success) {
+          const userData = registerExpertResult.data as IExpert;
+          dispatch(setExpert(userData));
 
-          localStorage.setItem("userId", userData._id);
-          localStorage.setItem("userAccess", registerStudentResult.accessToken);
-          localStorage.setItem("userAuth", "true");
-      
-          setLoading(false);
-          navigate("/about-student");
+          localStorage.setItem("expertId", userData._id);
+          localStorage.setItem(
+            "expertAccess",
+            registerExpertResult.accessToken
+          );
+          localStorage.setItem("expertAuth", "true");
+
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/expert/about-expert");
+          }, 1000);
         }
       }
     } catch (error) {
@@ -110,11 +112,12 @@ const Signup: React.FC = () => {
   }
 
   return (
-    <div className="h-screen ">
+    <div className="h-screen">
       <header className="p-4 flex items-center bg-white text-[#0B2149]">
         <img src="/image.png" alt="Website Logo" className="h-6" />
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
       </header>
+
       <div className="flex flex-col md:flex-row w-full max-h-screen">
         <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
           <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
@@ -139,7 +142,6 @@ const Signup: React.FC = () => {
                   {errors.user_name.message}
                 </p>
               )}
-
               <input
                 type="email"
                 {...register("email", {
@@ -155,12 +157,11 @@ const Signup: React.FC = () => {
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
-
               <input
                 type="text"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
-                  validate: validatePhoneNumber,
+                  // validate: validatePhoneNumber,
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Phone number"
@@ -170,7 +171,6 @@ const Signup: React.FC = () => {
                   {errors.phoneNumber.message}
                 </p>
               )}
-
               <input
                 type="password"
                 {...register("password", {
@@ -185,7 +185,6 @@ const Signup: React.FC = () => {
                   {errors.password.message}
                 </p>
               )}
-
               <input
                 type="password"
                 {...register("confirmPassword", {
@@ -201,7 +200,6 @@ const Signup: React.FC = () => {
                   {errors.confirmPassword.message}
                 </p>
               )}
-
               <button
                 type="submit"
                 className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
@@ -213,7 +211,7 @@ const Signup: React.FC = () => {
                 <p className="text-sm text-gray-600">
                   Already have an account?{" "}
                   <NavLink
-                    to="/login"
+                    to="/expert/login"
                     className="text-[#0B2149] font-medium hover:underline"
                   >
                     LogIn
@@ -242,7 +240,7 @@ const Signup: React.FC = () => {
 
         <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
           <img
-            src="/home-image.png"
+            src="/experts.png"
             alt="Description of Image"
             className="w-full h-full object-cover"
           />
@@ -252,4 +250,4 @@ const Signup: React.FC = () => {
   );
 };
 
-export default Signup;
+export default ExpertSignup;

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch } from "../../../store/store";
 import { useNavigate } from "react-router-dom";
-import { updateUser } from "../../features/student/middleware/StudentRegisterThunk";
-import { setUser } from "../../features/student/authSlice";
-import { IStudent } from "../../@types/user";
-import LoadingPage from "../../components/common/LoadingPage";
+import { updateUser } from "../../../features/student/middleware/StudentRegisterThunk";
+import { setUser } from "../../../features/student/authSlice";
+import { IStudent } from "../../../@types/user";
+import LoadingPage from "../../common/LoadingPage";
 
 interface FormInputs {
   education_level: string;

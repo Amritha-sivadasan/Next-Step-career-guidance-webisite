@@ -1,7 +1,7 @@
 // src/pages/admin/AdminDashboard.tsx
 import React from 'react';
 
-const Dashboard: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   return (
     <main className="flex-1 p-6 bg-gray-100">
       <div className="grid grid-cols-4 gap-4">
@@ -65,4 +65,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

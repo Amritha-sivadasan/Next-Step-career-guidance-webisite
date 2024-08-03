@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addCategory } from "../../services/api/categoryApi";
+import { addCategory } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingPage from "../../components/common/LoadingPage";
+import LoadingPage from "../../../components/common/LoadingPage";
 
 interface IFormInput {
   catName: string;
