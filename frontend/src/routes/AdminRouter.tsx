@@ -1,8 +1,7 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import AdminLogin from "../components/admin/login/AdminLogin";
 
-// import Dashboard from "../components/admin/dashbord/AdimnDashboard";
-import Experts from "../components/admin/expertDetails/ExpertDetails";
+import Dashboard from "../components/admin/dashbord/AdimnDashboard";
 import AdmintPrivateRoute from "./Privateroutes/AdminPrivateRoute";
 import { useDispatch } from "react-redux";
 import useFetchAdminData from "../hooks/useFetchAdmin";
@@ -15,9 +14,12 @@ import EditCategory from "../components/admin/category/CategoryEdit";
 import SubCategoryTable from "../components/admin/subcategory/Subcategory";
 import EditSubCategory from "../components/admin/subcategory/SubCategoryEdit";
 import AddSubCategory from "../components/admin/subcategory/AddSubCategory";
-import ExpertView from "../components/admin/expertDetails/ExpertView";
+import ExpertDetailsView from "../components/admin/expertDetails/ExpertView"; 
 import { useAppSelector } from "../hooks/useTypeSelector";
-import Dashboard from "../pages/admin/Dashbord";
+// import Dashboard from "../pages/admin/Dashbord";
+import Experts from "../components/admin/expertDetails/ExpertDetails";
+import Header from "../components/admin/header/AdminHeader";
+import Sidebar from "../components/admin/sidebar/AdminSidebar";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -48,7 +50,7 @@ const AdminRouter = () => {
         />
 
         <Route element={<AdmintPrivateRoute />}>
-          {/* <Route
+          <Route
             element={
               <>
                 <div className="flex flex-col w-full">
@@ -60,7 +62,7 @@ const AdminRouter = () => {
                 </div>
               </>
             }
-          > */}
+          >
           <Route path="/" element={<Dashboard />} />
           <Route path="/experts" element={<Experts />} />
           <Route path="/category" element={<CategoryTable />} />
@@ -72,9 +74,9 @@ const AdminRouter = () => {
             path="/editSubCategory/:categoryId"
             element={<EditSubCategory />}
           />
-          <Route path="/expertView/:expertId" element={<ExpertView />} />
+          <Route path="/expertView/:expertId" element={< ExpertDetailsView/>} />
         </Route>
-        {/* </Route> */}
+        </Route>
       </Routes>
     </div>
   );

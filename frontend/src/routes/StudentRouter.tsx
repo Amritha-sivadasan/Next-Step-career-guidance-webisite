@@ -5,7 +5,7 @@ import OtpPage from "../components/common/OtpPage";
 import AboutUser from "../components/student/aboutStudent/AboutStudent";
 import ForgotPassword from "../components/common/ForgotPassword";
 import ResetPassword from "../components/common/ResetPassword";
-import Home from "../components/student/landingPage/Home";
+import Home from "../pages/student/Home";
 import StudentPrivateRoute from "./Privateroutes/StudentPrivateRoute";
 import { useDispatch } from "react-redux";
 import useFetchUserData from "../hooks/UseFetchUser";

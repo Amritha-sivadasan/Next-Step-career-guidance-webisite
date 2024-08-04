@@ -28,9 +28,9 @@ const AddSubCategory: React.FC = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await fetchAllCategories(1,10);
+      const response = await fetchAllCategories(1, 10);
       if (response.success) {
-        setCategories(response.data);
+        setCategories(response.data.items);
       } else {
         toast.error("Failed to load categories");
       }
@@ -82,7 +82,8 @@ const AddSubCategory: React.FC = () => {
                     {...register("subCatName", {
                       required: "SubCategory Name is required",
                       validate: (value) =>
-                        value.trim().length > 0 || "SubCategory Name is required",
+                        value.trim().length > 0 ||
+                        "SubCategory Name is required",
                     })}
                   />
                   {errors.subCatName && (
@@ -127,7 +128,8 @@ const AddSubCategory: React.FC = () => {
                     {...register("description", {
                       required: "Sub Category Description is required",
                       validate: (value) =>
-                        value.trim().length > 0 || "Sub Category Description is required",
+                        value.trim().length > 0 ||
+                        "Sub Category Description is required",
                     })}
                   />
                   {errors.description && (

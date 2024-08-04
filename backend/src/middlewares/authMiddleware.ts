@@ -11,7 +11,7 @@ export const verifyAccessToken = (
 
 
   if (!token) {
-    return res.status(401).json({ message: "Access token is missing" });
+    return res.status(403).json({ message: "Access token is missing" });
   }
   try {
     const decoded = verifyToken(token, process.env.JWT_ACCESS_TOKEN_SECRET!);

@@ -48,10 +48,10 @@ const EditSubCategory = () => {
     const fetchData = async () => {
       try {
         const response = await fetchSubCategoryById(categoryId!);
-        const categoriesResponse = await fetchAllCategories(1,10);
+        const categoriesResponse = await fetchAllCategories(1, 10);
 
-        setSubCategory(response.data);
-        setCategories(categoriesResponse.data);
+        setSubCategory(response.data.items);
+        setCategories(categoriesResponse.data.items);
 
         setValue("catName", response.data.catName);
         setValue("subCatName", response.data.subCatName);

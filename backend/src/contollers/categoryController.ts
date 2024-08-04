@@ -36,7 +36,7 @@ class CategoryController {
             perPage: limit,
           },
         }
-      });
+      }); 
     } catch (error) {
       console.log("error in finding category");
       res

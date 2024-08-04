@@ -63,7 +63,7 @@ const Sidebar: React.FC = () => {
       <aside
         className={`fixed inset-y-0 left-0 bg-white text-black flex flex-col p-4 space-y-4 border transition-transform transform ${
           isSidebarOpen ? "translate-x-0 mt-14" : "-translate-x-full"
-        } md:translate-x-0 md:relative md:w-72 lg:w-80`}
+        } md:translate-x-0 md:relative md:w-64 lg:w-64`}
       >
         <Link
           to="/admin"
