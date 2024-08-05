@@ -15,6 +15,8 @@ import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import AllCategoryPage from "../pages/student/CategoryPage";
 import CategoryDetailsPage from "../pages/student/CategoryDetailsPage";
+import ExpertListing from "../pages/student/ExpertListing";
+import PaymentSuccessPage from "../pages/student/paymentSuccessPage";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
@@ -91,6 +93,8 @@ const StudentRouter = () => {
       <Route path="/" element={<Home />} />
       <Route path="/allcategory" element={<AllCategoryPage />} />
       <Route path="/categoryDetails" element={<CategoryDetailsPage />} />
+      <Route path="/experts" element={<ExpertListing />} />
+      <Route path ='/paymentSuccess' element={<PaymentSuccessPage/>}/>
 
       <Route element={<StudentPrivateRoute />}>
         <Route

@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
-        <div className="hidden md:flex w-6/12 justify-between me-5">
+        <div className="hidden md:flex w-7/12 justify-between me-5">
           <nav className="flex items-center space-x-20 w-full">
             <ul className="flex space-x-8">
               <li>
@@ -51,6 +51,14 @@ const Navbar: React.FC = () => {
                 >
                   How it Works
                 </a>
+              </li>
+              <li>
+                <Link
+                  to="/expert"
+                  className="text-[#0B2149] font-thin hover:text-black"
+                >
+                  Professional
+                </Link>
               </li>
               <li>
                 <a
@@ -122,6 +130,15 @@ const Navbar: React.FC = () => {
                 onClick={toggleSidebar}
               >
                 How it Works
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/expert"
+                className="text-[#0B2149] font-thin hover:text-blue-800"
+                onClick={toggleSidebar}
+              >
+                Professional
               </Link>
             </li>
             <li>
