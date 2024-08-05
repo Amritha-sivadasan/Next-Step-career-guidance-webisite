@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Navbar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { isAuthenticated, user } = useAppSelector((state) => state.student);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -29,7 +31,7 @@ const Navbar: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Home
                 </a>
@@ -37,7 +39,7 @@ const Navbar: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Find Your Path
                 </a>
@@ -45,7 +47,7 @@ const Navbar: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  className="text-[#0B2149] font-thin hover:text-black"
                 >
                   How it Works
                 </a>
@@ -53,7 +55,7 @@ const Navbar: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Contact us
                 </a>
@@ -61,16 +63,24 @@ const Navbar: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  className="text-[#0B2149] font-thin hover:text-black"
                 >
                   About Us
                 </a>
               </li>
             </ul>
           </nav>
-          <button className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition duration-300">
-            Login
-          </button>
+
+          {isAuthenticated ? (
+            <>{user?.user_name}</>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover: transition duration-300"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
 

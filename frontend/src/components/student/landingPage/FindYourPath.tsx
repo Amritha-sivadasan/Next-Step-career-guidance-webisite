@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const FindYourPath: React.FC = () => {
-  // Reference for the scrollable container
   const scrollRef = useRef<HTMLUListElement>(null);
+  const navigate = useNavigate();
 
-  // State to track the selected category
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const subcategories = [
     {
@@ -25,7 +25,6 @@ const FindYourPath: React.FC = () => {
     },
   ];
 
-  // Categories to display
   const categories = [
     "Medical",
     "Engineering",
@@ -49,6 +48,10 @@ const FindYourPath: React.FC = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
     }
+  };
+
+  const handleViewAllCategory = () => {
+    navigate("/allcategory");
   };
 
   return (
@@ -117,7 +120,10 @@ const FindYourPath: React.FC = () => {
           ))}
         </div>
         <div className="flex justify-center mt-10 ">
-          <button className="border text-xl  border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold">
+          <button
+            onClick={handleViewAllCategory}
+            className="border text-xl  border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
+          >
             View All
           </button>
         </div>

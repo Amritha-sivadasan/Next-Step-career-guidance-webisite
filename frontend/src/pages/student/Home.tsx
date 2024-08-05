@@ -7,6 +7,8 @@ import HowItWorks from "../../components/student/landingPage/HowItWork";
 import Testimonials from "../../components/student/landingPage/Testimonials";
 
 const Home = () => {
+
+
   return (
     <div>
       <Navbar />
