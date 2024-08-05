@@ -9,6 +9,8 @@ import {
   FaClock,
   FaSignOutAlt,
   FaBars,
+  FaBook,
+  FaBookOpen,
 } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { logoutExpert } from "../../../services/api/ExpertApi";
@@ -104,7 +106,7 @@ const Sidebar: React.FC = () => {
             isActive={location.pathname === "/expert/profile"}
           />
           <SidebarItem
-            icon={FaCalendarAlt}
+            icon={FaBookOpen}
             label="Booking Request"
             to="/expert/booking-request"
             isActive={location.pathname === "/expert/booking-request"}
@@ -116,7 +118,7 @@ const Sidebar: React.FC = () => {
             isActive={location.pathname === "/expert/available-schedule"}
           />
           <SidebarItem
-            icon={FaCalendarAlt}
+            icon={FaBook}
             label="Booking Details"
             to="/expert/booking-details"
             isActive={location.pathname === "/expert/booking-details"}

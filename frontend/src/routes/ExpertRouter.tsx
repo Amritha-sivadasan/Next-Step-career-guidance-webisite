@@ -21,7 +21,8 @@ import ProfilePage from "../pages/expert/Profilepage";
 import HomePage from "../pages/expert/HomePage";
 import AvailableSchedule from "../pages/expert/AvailableSchedule";
 import BookingRequestPage from "../pages/expert/BookingRequestPage";
-import BookingDetails from "../pages/expert/BookingDetails";
+import BookingDetailsPage from "../pages/expert/BookingDetailsPage";
+import PaymentHistory from "../pages/expert/PaymentHistory";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -91,7 +92,8 @@ const ExpertRouter = () => {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/available-schedule" element={<AvailableSchedule />} />
       <Route path="/booking-request" element={<BookingRequestPage />} />
-      <Route path="/booking-details" element={<BookingDetails />} />
+      <Route path="/booking-details" element={<BookingDetailsPage />} />
+      <Route path="/payment-history" element={<PaymentHistory />} />
 
       <Route element={<ExpertPrivateRoute />}>
         <Route

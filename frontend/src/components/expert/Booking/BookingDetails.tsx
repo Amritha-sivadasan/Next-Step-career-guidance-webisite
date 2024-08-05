@@ -1,5 +1,3 @@
-import React from 'react';
-
 const bookingDetails = [
   {
     id: 1,
@@ -22,12 +20,14 @@ const bookingDetails = [
 
 const BookingDetails = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Booking Details</h1>
-      <div className="overflow-x-auto">
+    <div className="p-4 bg-white min-h-screen border rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
+      
+      <div className="overflow-x-auto ">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
           <thead>
             <tr className="bg-gray-200 border-b">
+              <th className="py-3 px-4 text-left">NO.</th>
               <th className="py-3 px-4 text-left">Profile Picture</th>
               <th className="py-3 px-4 text-left">Student Name</th>
               <th className="py-3 px-4 text-left">Schedule Date</th>
@@ -37,16 +37,17 @@ const BookingDetails = () => {
           <tbody>
             {bookingDetails.map((detail) => (
               <tr key={detail.id} className="border-b">
-                <td className="py-3 px-4">
+                <td className="py-3 px-4 text-sm">{detail.id}</td>
+                <td className="py-3 px-4 text-sm">
                   <img
                     src={detail.studentImage}
                     alt="Student"
                     className="h-12 w-12 rounded-full object-cover"
                   />
                 </td>
-                <td className="py-3 px-4">{detail.studentName}</td>
-                <td className="py-3 px-4">{detail.scheduleDate}</td>
-                <td className="py-3 px-4">
+                <td className="py-3 px-4 text-sm">{detail.studentName}</td>
+                <td className="py-3 px-4 text-sm">{detail.scheduleDate}</td>
+                <td className="py-3 px-4 text-sm">
                   {detail.scheduleTimeFrom} - {detail.scheduleTimeTo}
                 </td>
               </tr>

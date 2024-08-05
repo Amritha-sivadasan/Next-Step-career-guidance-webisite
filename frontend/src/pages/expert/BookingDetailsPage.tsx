@@ -1,8 +1,9 @@
 import Sidebar from "../../components/expert/sidebar/ExpertSidebar";
 import ExpertNavbar from "../../components/expert/header/ExpertNavBar";
+import BookingDetails from "../../components/expert/Booking/BookingDetails";
 
 
-const BookingDetails = () => {
+const BookingDetailsPage = () => {
   return (
     <>
     <ExpertNavbar />
@@ -16,4 +17,4 @@ const BookingDetails = () => {
   )
 }
 
-export default BookingDetails
+export default BookingDetailsPage
