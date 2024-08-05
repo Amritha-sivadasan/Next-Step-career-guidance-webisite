@@ -14,12 +14,14 @@ import EditCategory from "../components/admin/category/CategoryEdit";
 import SubCategoryTable from "../components/admin/subcategory/Subcategory";
 import EditSubCategory from "../components/admin/subcategory/SubCategoryEdit";
 import AddSubCategory from "../components/admin/subcategory/AddSubCategory";
-import ExpertDetailsView from "../components/admin/expertDetails/ExpertView"; 
+import ExpertDetailsView from "../components/admin/expertDetails/ExpertView";
 import { useAppSelector } from "../hooks/useTypeSelector";
 // import Dashboard from "../pages/admin/Dashbord";
 import Experts from "../components/admin/expertDetails/ExpertDetails";
 import Header from "../components/admin/header/AdminHeader";
 import Sidebar from "../components/admin/sidebar/AdminSidebar";
+import BookingDetails from "../components/admin/booking/BookingDetails";
+import BookingView from "../components/admin/booking/BookingView";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -63,19 +65,27 @@ const AdminRouter = () => {
               </>
             }
           >
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/experts" element={<Experts />} />
-          <Route path="/category" element={<CategoryTable />} />
-          <Route path="/addCategory" element={<AddnewCategory />} />
-          <Route path="/editCategory/:categoryId" element={<EditCategory />} />
-          <Route path="/subCategory" element={<SubCategoryTable />} />
-          <Route path="/addSubCategory" element={<AddSubCategory />} />
-          <Route
-            path="/editSubCategory/:categoryId"
-            element={<EditSubCategory />}
-          />
-          <Route path="/expertView/:expertId" element={< ExpertDetailsView/>} />
-        </Route>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/experts" element={<Experts />} />
+            <Route path="/category" element={<CategoryTable />} />
+            <Route path="/addCategory" element={<AddnewCategory />} />
+            <Route
+              path="/editCategory/:categoryId"
+              element={<EditCategory />}
+            />
+            <Route path="/subCategory" element={<SubCategoryTable />} />
+            <Route path="/addSubCategory" element={<AddSubCategory />} />
+            <Route path="/booking-details" element={<BookingDetails />} />
+            <Route path="/booking-view" element={<BookingView />} />
+            <Route
+              path="/editSubCategory/:categoryId"
+              element={<EditSubCategory />}
+            />
+            <Route
+              path="/expertView/:expertId"
+              element={<ExpertDetailsView />}
+            />
+          </Route>
         </Route>
       </Routes>
     </div>
