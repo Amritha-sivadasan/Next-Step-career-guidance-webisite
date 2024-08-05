@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaUserCircle,
   FaCalendarAlt,
@@ -19,13 +19,23 @@ interface SidebarItemProps {
   icon: React.ElementType;
   label: string;
   to: string;
+  isActive: boolean;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, to }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({
+  icon: Icon,
+  label,
+  to,
+  isActive,
+}) => {
   return (
     <Link
       to={to}
-      className="flex items-center space-x-3  bg-[#F2F2F2] p-3 text-[#0B2149] hover:text-white hover:bg-[#0B2149] rounded-lg border"
+      className={`flex items-center space-x-3 p-3 text-[#0B2149] rounded-lg border ${
+        isActive
+          ? "bg-[#0B2149] text-white"
+          : "bg-[#F2F2F2] hover:text-white hover:bg-[#0B2149]"
+      }`}
     >
       <Icon className="h-6 w-6" />
       <span>{label}</span>
@@ -37,6 +47,7 @@ const Sidebar: React.FC = () => {
   const { expert } = useAppSelector((state) => state.expert);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const getImageSrc = () => {
     if (typeof expert?.profile_picture === "string") {
@@ -63,7 +74,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="md:flex">
+    <div className="md:flex mt-1">
       <button className="md:hidden p-4" onClick={toggleSidebar}>
         <FaBars size={24} />
       </button>
@@ -90,36 +101,49 @@ const Sidebar: React.FC = () => {
             icon={FaUserCircle}
             label="My Profile"
             to="/expert/profile"
+            isActive={location.pathname === "/expert/profile"}
           />
           <SidebarItem
             icon={FaCalendarAlt}
             label="Booking Request"
             to="/expert/booking-request"
+            isActive={location.pathname === "/expert/booking-request"}
           />
           <SidebarItem
             icon={FaCalendarAlt}
             label="Available Schedule"
             to="/expert/available-schedule"
+            isActive={location.pathname === "/expert/available-schedule"}
+          />
+          <SidebarItem
+            icon={FaCalendarAlt}
+            label="Booking Details"
+            to="/expert/booking-details"
+            isActive={location.pathname === "/expert/booking-details"}
           />
           <SidebarItem
             icon={FaComments}
             label="Chat with Student"
             to="/expert/chat-with-student"
+            isActive={location.pathname === "/expert/chat-with-student"}
           />
           <SidebarItem
             icon={FaClock}
             label="Meeting Start"
             to="/expert/meeting-start"
+            isActive={location.pathname === "/expert/meeting-start"}
           />
           <SidebarItem
             icon={FaCreditCard}
             label="Payment History"
             to="/expert/payment-history"
+            isActive={location.pathname === "/expert/payment-history"}
           />
           <SidebarItem
             icon={FaHistory}
             label="Meeting History"
             to="/expert/meeting-history"
+            isActive={location.pathname === "/expert/meeting-history"}
           />
           <div className="flex items-center space-x-3 bg-[#F2F2F2]  p-3  hover:bg-gray-200 rounded-lg border text-[#0B2149]">
             <FaSignOutAlt size={24} />

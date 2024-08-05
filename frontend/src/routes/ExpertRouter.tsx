@@ -5,7 +5,7 @@ import ForgotPassword from "../components/common/ForgotPassword";
 import ResetPassword from "../components/common/ResetPassword";
 import AboutExpert from "../components/expert/about/AboutExpert";
 import ExpertSignup from "../components/expert/register/ExpertSignup";
-import ExpertHome from "../components/expert/landingpage/ExpertHome";
+
 import useFetchExpertData from "../hooks/useFetchExpert";
 import {
   setExpert,
@@ -18,7 +18,10 @@ import ForgotPasswordOtpPage from "../components/common/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import UpdadteWithOtp from "../components/common/UpdateWithOtpPage";
 import ProfilePage from "../pages/expert/Profilepage";
-
+import HomePage from "../pages/expert/HomePage";
+import AvailableSchedule from "../pages/expert/AvailableSchedule";
+import BookingRequestPage from "../pages/expert/BookingRequestPage";
+import BookingDetails from "../pages/expert/BookingDetails";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -84,12 +87,18 @@ const ExpertRouter = () => {
         element={<ResetPassword userType="expert" />}
       />
 
+      <Route path="/" element={<HomePage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/available-schedule" element={<AvailableSchedule />} />
+      <Route path="/booking-request" element={<BookingRequestPage />} />
+      <Route path="/booking-details" element={<BookingDetails />} />
+
       <Route element={<ExpertPrivateRoute />}>
         <Route
           path="/"
           element={
             expertDetails?.expert?.is_data_entered ? (
-              <ExpertHome />
+              <HomePage />
             ) : (
               <Navigate to="/expert/about-expert" />
             )
@@ -105,9 +114,6 @@ const ExpertRouter = () => {
             )
           }
         />
-
-          <Route path="/profile" element={<ProfilePage />} />
-
       </Route>
     </Routes>
   );
