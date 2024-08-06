@@ -145,6 +145,26 @@ class CategoryController {
       });
     }
   };
+
+public findCategoryByName=async(req:Request,res:Response): Promise<void>=>{
+  try {
+   const catName =req.params.catName
+   const response = await this.categoryService.fetchCateByname(catName);
+   if (response) {
+    res.status(200).json({ success: true, message: "", data: response });
+  }
+    
+  } catch (error) {
+    console.log("error during fetching category", error);
+    res.json(500).json({
+      success: false,
+      message: "something went wrong on fetching category",
+      error,
+    });
+  }
+}
+
+
 }
 
 export default new CategoryController();

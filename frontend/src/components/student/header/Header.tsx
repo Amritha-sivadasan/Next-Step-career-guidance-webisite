@@ -1,15 +1,26 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Navbar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated, user } = useAppSelector((state) => state.student);
+  const navigate=useNavigate()
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const handleProfile=()=>{
+  try {
+    navigate('/profile')
+    
+  } catch (error) {
+    console.log(error)
+  }
+  
+  }
 
   return (
     <header className="bg-white shadow w-full">
@@ -80,7 +91,10 @@ const Navbar: React.FC = () => {
           </nav>
 
           {isAuthenticated ? (
-            <>{user?.user_name}</>
+            <>
+              <FaUser size={20} style={{ color: "#0B2149" }} />
+              <button className="font-bold ms-2 " onClick={handleProfile}>{user?.user_name}</button>
+            </>
           ) : (
             <Link
               to="/login"

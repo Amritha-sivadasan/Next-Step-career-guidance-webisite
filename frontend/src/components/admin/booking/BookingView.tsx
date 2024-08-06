@@ -29,27 +29,27 @@ const BookingView = () => {
   } = bookingDetails;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="max-w-3xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="bg-blue-600 p-6">
-          <h1 className="text-2xl font-bold text-white">Booking Details</h1>
+          <h1 className="text-3xl font-bold text-white">Booking Details</h1>
         </div>
         <div className="p-6">
-          <div className="flex items-center mb-6">
+          <div className="flex items-center mb-8">
             <img
               src={studentImage}
               alt="Student"
-              className="h-20 w-20 rounded-full object-cover border-2 border-blue-600"
+              className="h-24 w-24 rounded-full object-cover border-4 border-blue-600"
             />
-            <div className="ml-4">
-              <h2 className="text-xl font-bold text-gray-800">{studentName}</h2>
+            <div className="ml-6">
+              <h2 className="text-2xl font-bold text-gray-800">{studentName}</h2>
               <p className="text-gray-600">{educationLevel}</p>
               <p className="text-gray-600">{educationBackground}</p>
             </div>
           </div>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800">Schedule Details</h3>
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Schedule Details</h3>
             <p className="text-gray-700">
               <strong>Date:</strong> {scheduleDate}
             </p>
@@ -58,8 +58,8 @@ const BookingView = () => {
             </p>
           </div>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800">Payment Details</h3>
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Payment Details</h3>
             <p className="text-gray-700">
               <strong>Transaction ID:</strong> {transactionId}
             </p>
@@ -68,13 +68,13 @@ const BookingView = () => {
             </p>
             <p className="text-gray-700">
               <strong>Status:</strong> 
-              <span className={`ml-2 px-2 py-1 rounded-full text-white ${paymentStatus === "Completed" ? "bg-green-500" : "bg-yellow-500"}`}>
+              <span className={`ml-2 px-3 py-1 rounded-full text-white ${paymentStatus === "Completed" ? "bg-green-500" : "bg-yellow-500"}`}>
                 {paymentStatus}
               </span>
             </p>
           </div>
 
-          <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
             View More Details
           </button>
         </div>

@@ -159,4 +159,13 @@ export default class SubCategoryService implements ISubCategoryService {
       throw error;
     }
   }
+
+  async fetchSubCategoryByCatName(catName:string):Promise<ISubCategory[] | null>{
+    try {
+      const data = await this.subCategoryRepository.findSubcategoryByCatName(catName);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

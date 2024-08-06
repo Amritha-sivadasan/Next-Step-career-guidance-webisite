@@ -87,4 +87,17 @@ export default class SubCategoryRepository implements ISubCategeryRepository {
       throw error;
     }
   }
+    
+  async findSubcategoryByCatName(catName:string):Promise<ISubCategory[]|null>{
+    try {
+  
+      const result = await SubCategory.find({catName})
+        return result
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 }

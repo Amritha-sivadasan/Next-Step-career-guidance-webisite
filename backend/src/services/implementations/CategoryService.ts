@@ -163,4 +163,13 @@ export default class CategoryService implements ICategoryService {
       throw error;
     }
   }
+
+  async fetchCateByname(catName:string): Promise<ICategory | null>{
+    try {
+      const data= await this.categoryRepository.findOne(catName)
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -8,4 +8,5 @@ export interface ISubCategoryService {
     existSubCategory(id:string):Promise<boolean>
     deleteSubCategory(id:string):Promise<boolean>
     fetchSubcategoryById(id: string): Promise<ISubCategory | null>
+    fetchSubCategoryByCatName(catName:string):Promise<ISubCategory[] | null>
 }

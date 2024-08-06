@@ -149,6 +149,28 @@ class SubCategoryController {
       });
     }
   };
+
+
+
+  public findSubCategoryBycatname = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const catName = req.params.catName;
+      const response = await this.subCategoryService.fetchSubCategoryByCatName(catName);
+      if (response) {
+        res.status(200).json({ success: true, message: "", data: response });
+      }
+    } catch (error) {
+      console.log("error during fetching category", error);
+      res.json(500).json({
+        success: false,
+        message: "something went wrong on fetching category",
+        error,
+      });
+    }
+  };
 }
 
 export default new SubCategoryController();

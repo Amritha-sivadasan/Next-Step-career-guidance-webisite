@@ -13,4 +13,5 @@ export interface ICategoryService {
     existCategory(id:string):Promise<boolean>
     deleteCategory(id:string):Promise<boolean>
     fetchcategoryById(id:string): Promise<ICategory|null>
+    fetchCateByname(catName:string): Promise<ICategory | null>
 }

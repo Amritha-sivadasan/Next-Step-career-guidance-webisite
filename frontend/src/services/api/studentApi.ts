@@ -127,7 +127,7 @@ export const forgotPassword = async (email: string) => {
     const response = await axios.post(`${API_URL}/student/forgot-password`, {
       email,
     });
-    return response.data
+    return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
@@ -142,7 +142,7 @@ export const resetPasssword = async (email: string, password: string) => {
     return response;
   } catch (error) {
     console.error("Error occurred during update user ", error);
-    throw error;
+    return (error as Error).response?.data;
   }
 };
 
@@ -154,6 +154,66 @@ export const logoutStudent = async () => {
     return response.data;
   } catch (error) {
     console.log("error in login student");
-    throw error;
+    return (error as Error).response?.data;
+  }
+};
+
+export const getAllCategory = async (page: number, limit: number) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/student/getAllcategory?page=${page}&limit=${limit}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const getAllSubCategory = async (catName: string) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/student/getAllSubCategory/${catName}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const getCategoryByName = async (catName: string) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/student/getCategoryByName/${catName}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const subCategoryById = async (id: string) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/student/subCategoryById/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
   }
 };

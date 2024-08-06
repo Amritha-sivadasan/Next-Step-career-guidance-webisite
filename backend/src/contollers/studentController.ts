@@ -176,6 +176,8 @@ class StudentController {
         .json({ success: false, message: "Error occurred during logout" });
     }
   };
+
+
 }
 
 export default new StudentController();

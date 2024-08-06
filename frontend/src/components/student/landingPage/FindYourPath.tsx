@@ -1,57 +1,55 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import {
+  getAllCategory,
+  getAllSubCategory,
+} from "../../../services/api/studentApi";
+import { ICategory, ISubCategory } from "../../../@types/dashboard";
 
 const FindYourPath: React.FC = () => {
   const scrollRef = useRef<HTMLUListElement>(null);
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>();
+  const [categories, setCategory] = useState<ICategory[]>([]);
+  const [subcategories, setSubcategories] = useState<ISubCategory[]>([]);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const response = await getAllCategory(1, 10);
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const subcategories = [
-    {
-      name: "Subcategory 1",
-      description: "Short description of subcategory 1.",
-      image: "/path/to/image1.png",
-    },
-    {
-      name: "Subcategory 2",
-      description: "Short description of subcategory 2.",
-      image: "/path/to/image2.png",
-    },
-    {
-      name: "Subcategory 3",
-      description: "Short description of subcategory 3.",
-      image: "/path/to/image3.png",
-    },
-  ];
+      setCategory(response.data.items);
+      setSelectedCategory(response.data.items[0].catName);
 
-  const categories = [
-    "Medical",
-    "Engineering",
-    "Arts",
-    "Science",
-    "Business",
-    "Law",
-    "Education",
-    "Technology",
-  ];
+      const fetSubcategory = async () => {
+        const result = await getAllSubCategory(response.data.items[0].catName);
 
-  // Scroll to the left
+        setSubcategories(result.data.slice(0, 3));
+      };
+      fetSubcategory();
+    };
+    fetchCategory();
+  }, []);
+
+  const handleSelectCategory = async(catName: string) => {
+    setSelectedCategory(catName);
+    const result = await getAllSubCategory(catName);
+    setSubcategories(result.data.slice(0, 3));
+  };
+
   const scrollLeft = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
     }
   };
 
-  // Scroll to the right
   const scrollRight = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
 
-  const handleViewAllCategory = () => {
-    navigate("/allcategory");
+  const handleViewAllCategory = (catName:string) => {
+    navigate(`/allcategory/${catName}`);
   };
 
   return (
@@ -80,15 +78,15 @@ const FindYourPath: React.FC = () => {
             >
               {categories.map((category) => (
                 <li
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  key={category._id}
+                  onClick={() => handleSelectCategory(category.catName)}
                   className={`p-2 md:p-4 cursor-pointer rounded-lg flex-shrink-0 w-1/3 md:w-1/4 transition-all text-center duration-300 ${
-                    selectedCategory === category
+                    selectedCategory === category.catName
                       ? "text-blue-900 border-b-2 border-blue-900"
                       : "text-[#0B2149]"
                   }`}
                 >
-                  {category}
+                  {category.catName}
                 </li>
               ))}
             </ul>
@@ -106,28 +104,35 @@ const FindYourPath: React.FC = () => {
 
       {/* Subcategory Section */}
       <div className="h-auto md:h-[70vh] bg-[#F0F8FF] p-6">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12 shadow-sm">
-          {subcategories.map((subcat) => (
-            <div
-              key={subcat.name}
-              className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center"
-            >
-              {/* <img src={subcat.image} alt={subcat.name} className="w-24 h-24 object-cover mb-4 rounded-full" /> */}
-              <h3 className="text-xl font-semibold mb-2">{subcat.name}</h3>
-              <p className="text-center text-gray-700">{subcat.description}</p>
-              <img src="" alt="subcatimage" />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center mt-10 ">
-          <button
-            onClick={handleViewAllCategory}
-            className="border text-xl  border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
-          >
-            View All
-          </button>
+  <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12">
+    {subcategories.map((subcat) => (
+      <div
+        key={subcat._id}
+        className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center"
+      >
+        <h3 className="text-xl font-semibold mb-2">
+          {subcat.subCatName}
+        </h3>
+        <p className="text-center text-gray-700">{subcat.description}</p>
+        <div className="w-full flex justify-center overflow-hidden rounded-lg">
+          <img
+            src={subcat.subCatImage}
+            alt="subcatimage"
+            className="max-w-full h-auto object-contain"
+          />
         </div>
       </div>
+    ))}
+  </div>
+  <div className="flex justify-center mt-10">
+    <button
+      onClick={() => handleViewAllCategory(subcategories[0]?.catName)}
+      className="border text-xl border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
+    >
+      View All
+    </button>
+  </div>
+</div>
     </section>
   );
 };

@@ -11,6 +11,8 @@ import {
 import { refreshTokens } from "../contollers/authController";
 import validateStudentLogin from "../validator/studentLoginvalidator";
 import { studentGoogleAuth } from "../contollers/firebaseController";
+import categoryController from "../contollers/categoryController";
+import subCategoryController from "../contollers/subCategoryController";
 
 const role = process.env.STUDENT_ROLE as string
 const token = process.env.STUDENT_TOKEN as string
@@ -46,4 +48,9 @@ router.put(
 
 router.get('/logout/' ,verifyAccessToken,
   verifyRole(role),studentController.logoutStuent,)
+
+  router.get('/getAllcategory',categoryController.findAllCategroy)
+  router.get('/getAllSubCategory/:catName', subCategoryController.findSubCategoryBycatname)
+  router.get('/getCategoryByName/:catName',categoryController.findCategoryByName)
+  router.get('/subCategoryById/:id',subCategoryController.findSubCategoryById)
 export default router;

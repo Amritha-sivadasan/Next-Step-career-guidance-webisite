@@ -91,8 +91,8 @@ const StudentRouter = () => {
       />
 
       <Route path="/" element={<Home />} />
-      <Route path="/allcategory" element={<AllCategoryPage />} />
-      <Route path="/categoryDetails" element={<CategoryDetailsPage />} />
+      <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
+      <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
       <Route path="/experts" element={<ExpertListing />} />
       <Route path ='/paymentSuccess' element={<PaymentSuccessPage/>}/>
 

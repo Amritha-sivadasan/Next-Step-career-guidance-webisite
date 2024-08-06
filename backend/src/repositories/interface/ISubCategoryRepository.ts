@@ -9,5 +9,6 @@ export interface ISubCategeryRepository {
     deleteSubCategory(id:string):Promise<boolean>
     deleteByCategory(catName:string):Promise<boolean>
     countDocuments(): Promise<number>
+    findSubcategoryByCatName(cateName:string):Promise<ISubCategory[]|null>
     
 }
