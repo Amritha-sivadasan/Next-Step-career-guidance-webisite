@@ -240,6 +240,28 @@ class ExpertController {
         .json({ success: false, message: "Error occurred during logout" });
     }
   };
+
+  public findExpertBySubCategory=async(req:Request,res:Response): Promise<void>=>{
+    try {
+      const subCatName= req.params.subCatName
+      console.log('subcatName',subCatName)
+      const result =await this.expertService.findExpertBySubCatName(subCatName)
+      res.status(200).json({ success: true, data: result  });
+      
+    } catch (error) {
+      console.log("error during fetching expert", error);
+      res.json(500).json({
+        success: false,
+        message: "something went wrong on fetching expert",
+        error,
+      });
+    }
+
+  }
+
+
+
+
 }
 
 export default new ExpertController();

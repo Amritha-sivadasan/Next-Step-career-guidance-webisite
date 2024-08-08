@@ -19,7 +19,7 @@ const ExpertProfile: React.FC = () => {
     area_of_expertise: false,
     consultation_fee: false,
     educationBackground: false,
-    sub_category_id: false,
+    subCatName: false,
     credential: false,
   });
 
@@ -372,17 +372,17 @@ const ExpertProfile: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="font-semibold">Sub Category ID:</h2>
-                {isEditing.sub_category_id ? (
+                {isEditing.subCatName ? (
                   <div className="flex gap-4">
                     <MdSave
                       className="cursor-pointer"
                       size={24}
-                      onClick={() => handleSaveClick("sub_category_id")}
+                      onClick={() => handleSaveClick("subCatName")}
                     />
                     <MdCancel
                       className="cursor-pointer"
                       size={24}
-                      onClick={() => handleCancelClick("sub_category_id")}
+                      onClick={() => handleCancelClick("subCatName")}
                     />
                   </div>
                 ) : (
@@ -390,21 +390,21 @@ const ExpertProfile: React.FC = () => {
                     className="cursor-pointer"
                     size={20}
                     color="gray"
-                    onClick={() => handleEditClick("sub_category_id")}
+                    onClick={() => handleEditClick("subCatName")}
                   />
                 )}
               </div>
-              {isEditing.sub_category_id ? (
+              {isEditing.subCatName ? (
                 <input
                   type="text"
                   name="sub_category_id"
-                  value={formData.sub_category_id}
+                  value={formData.subCatName}
                   onChange={handleChange}
                   className="p-3 border rounded-lg shadow-md w-full border-black"
                 />
               ) : (
                 <p className="p-3 border rounded-lg shadow-md">
-                  {expert.sub_category_id}
+                  {expert.subCatName}
                 </p>
               )}
             </div>

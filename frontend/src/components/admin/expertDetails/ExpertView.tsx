@@ -149,7 +149,7 @@ const ExpertDetailsView: React.FC = () => {
             <div>
               <h2 className="font-semibold">Category:</h2>
               <p className="p-3 border rounded-lg bg-[#E8EFFA]">
-                {expert.sub_category_id}
+                {expert.subCatName}
               </p>
             </div>
             <div>

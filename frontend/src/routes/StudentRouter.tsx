@@ -36,7 +36,7 @@ const StudentRouter = () => {
     <Routes>
       <Route
         path="/signup"
-        element={userDeatils.isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        element={userDeatils?.isAuthenticated ? <Navigate to="/" /> : <Signup />}
       />
       <Route
         path="/login"
@@ -90,10 +90,12 @@ const StudentRouter = () => {
         }
       />
 
+
+
       <Route path="/" element={<Home />} />
       <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
       <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
-      <Route path="/experts" element={<ExpertListing />} />
+      <Route path="/experts/:subCatName" element={<ExpertListing />} />
       <Route path ='/paymentSuccess' element={<PaymentSuccessPage/>}/>
 
       <Route element={<StudentPrivateRoute />}>

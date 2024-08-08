@@ -171,6 +171,9 @@ class SubCategoryController {
       });
     }
   };
+
+
+
 }
 
 export default new SubCategoryController();

@@ -17,7 +17,7 @@ type FormValues = {
   area_of_expertise: string;
   consultation_fee: number;
   educationBackground: string;
-  sub_category_id: string;
+  subCatName: string;
   credential: FileList;
   profilePicture: FileList;
 };
@@ -42,7 +42,7 @@ const AboutExpert: React.FC = () => {
     formData.append("area_of_expertise", data.area_of_expertise);
     formData.append("consultation_fee", data.consultation_fee.toString());
     formData.append("educationBackground", data.educationBackground);
-    formData.append("sub_category_id", data.sub_category_id);
+    formData.append("subCatName", data.subCatName);
     formData.append("credential", data.credential[0]);
     formData.append("profilePicture", data.profilePicture[0]);
 
@@ -206,7 +206,7 @@ const AboutExpert: React.FC = () => {
               </label>
               <select
                 className="border text-sm text-gray-600 border-gray-300 p-2 rounded-lg bg-[#F0F8FF]"
-                {...register("sub_category_id", {
+                {...register("subCatName", {
                   required: "Category selection is required.",
                   validate: (value) => {
                     if (!value) return "Category selection is required.";
@@ -221,9 +221,9 @@ const AboutExpert: React.FC = () => {
                   </option>
                 ))}
               </select>
-              {errors.sub_category_id && (
+              {errors.subCatName && (
                 <p className="text-red-500 text-sm">
-                  {errors.sub_category_id.message}
+                  {errors.subCatName.message}
                 </p>
               )}
             </div>

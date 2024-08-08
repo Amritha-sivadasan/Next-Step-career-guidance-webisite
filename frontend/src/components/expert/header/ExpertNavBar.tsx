@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const ExpertNavbar: React.FC = () => {
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated, user } = useAppSelector((state) => state.student);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleProfile = () => {
+    navigate("/expert/profile");
   };
 
   return (
@@ -69,7 +74,12 @@ const ExpertNavbar: React.FC = () => {
           </nav>
 
           {isAuthenticated ? (
-            <>{user?.user_name}</>
+            <>
+              <FaUser size={20} style={{ color: "#0B2149" }} />
+              <button className="font-bold w-32" onClick={handleProfile}>
+                {user?.user_name}
+              </button>
+            </>
           ) : (
             <Link
               to="/expert/login"

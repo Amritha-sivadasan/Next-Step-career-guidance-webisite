@@ -10,4 +10,5 @@ export interface IExpertService{
   updatePassword(email: string, newPassword: string): Promise<void>;
   verifyExpert(id:string):Promise<Boolean>
   rejectExpert(id: string, reason: string):Promise<boolean>
+  findExpertBySubCatName(subCatName:string): Promise<IExpert[] | null>;
 }

@@ -5,6 +5,7 @@ import Navbar from "../../components/student/header/Header";
 import { useEffect, useState } from "react";
 import { ISubCategory } from "../../@types/dashboard";
 import { subCategoryById } from "../../services/api/studentApi";
+import Footer from "../../components/common/footer/Footer";
 
 const initialSubCategory: ISubCategory = {
   _id: '',
@@ -17,6 +18,9 @@ const initialSubCategory: ISubCategory = {
 const CategoryDetailsPage = () => {
   const { id } = useParams();
   const [subCategory, setSubCategory] = useState<ISubCategory>(initialSubCategory);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const fetchSubCategory = async () => {
@@ -32,7 +36,8 @@ const CategoryDetailsPage = () => {
     <div>
       <Navbar />
       <AboutCategoryIntro subCategory={subCategory} />
-      <AboutCategory />
+      <AboutCategory subCategory={subCategory} />
+      <Footer/>
     </div>
   );
 };

@@ -1,7 +1,17 @@
 import React from "react";
 import { FaLaptopCode, FaUserGraduate } from "react-icons/fa"; // Importing FontAwesome icons
+import { useNavigate } from "react-router-dom";
+import { ISubCategory } from "../../../@types/dashboard";
+interface SubcategoryProps {
+  subCategory: ISubCategory;
+}
 
-const AboutCategory: React.FC = () => {
+const AboutCategory: React.FC <SubcategoryProps>= ({subCategory}) => {
+  const navigate = useNavigate();
+  const handleMentorBooking = () => {
+    navigate(`/experts/${subCategory.subCatName}`);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-center mb-14 ">
@@ -111,7 +121,10 @@ const AboutCategory: React.FC = () => {
               to better opportunities and successful outcomes.
             </p>
             <div className="flex justify-center mt-7 ">
-              <button className="border p-3 w-52 rounded-lg bg-[#0B2149] text-white transition-transform duration-300 transform hover:scale-105 hover:bg-[#0A1E3F] focus:outline-none focus:ring-2 focus:ring-[#0A1E3F] focus:ring-offset-2">
+              <button
+                onClick={handleMentorBooking}
+                className="border p-3 w-52 rounded-lg bg-[#0B2149] text-white transition-transform duration-300 transform hover:scale-105 hover:bg-[#0A1E3F] focus:outline-none focus:ring-2 focus:ring-[#0A1E3F] focus:ring-offset-2"
+              >
                 Book Your Mentor{" "}
               </button>
             </div>

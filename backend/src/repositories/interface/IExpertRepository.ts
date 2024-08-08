@@ -8,4 +8,5 @@ export interface IExpertRepository {
   findOne(email: string): Promise<IExpert | null>;
   findUserByAuthId(authentication_id:string):Promise<IExpert|null>
   countDocuments(): Promise<number>
+  findExpertBySubCatName(subCatName:string):Promise<IExpert[]|null>
 }

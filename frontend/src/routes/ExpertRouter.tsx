@@ -89,11 +89,7 @@ const ExpertRouter = () => {
       />
 
       <Route path="/" element={<HomePage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/available-schedule" element={<AvailableSchedule />} />
-      <Route path="/booking-request" element={<BookingRequestPage />} />
-      <Route path="/booking-details" element={<BookingDetailsPage />} />
-      <Route path="/payment-history" element={<PaymentHistory />} />
+      
 
       <Route element={<ExpertPrivateRoute />}>
         <Route
@@ -116,6 +112,11 @@ const ExpertRouter = () => {
             )
           }
         />
+        <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/available-schedule" element={<AvailableSchedule />} />
+      <Route path="/booking-request" element={<BookingRequestPage />} />
+      <Route path="/booking-details" element={<BookingDetailsPage />} />
+      <Route path="/payment-history" element={<PaymentHistory />} />
       </Route>
     </Routes>
   );

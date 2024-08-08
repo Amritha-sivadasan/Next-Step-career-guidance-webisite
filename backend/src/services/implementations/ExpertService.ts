@@ -23,7 +23,15 @@ export default class ExpertService implements IExpertService {
     this.expertRepository = new ExpertRepository();
   }
 
-  async getAllExperts(page: number, limit: number): Promise<{ items: IExpert[], totalCount: number, totalPages: number, currentPage: number }> {
+  async getAllExperts(
+    page: number,
+    limit: number
+  ): Promise<{
+    items: IExpert[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+  }> {
     const experts = await this.expertRepository.findAll(page, limit);
     const totalCount = await this.expertRepository.countDocuments();
     return {
@@ -190,6 +198,18 @@ export default class ExpertService implements IExpertService {
       return updatedExpert ? excludePassword(updatedExpert) : null;
     } catch (error) {
       console.log("Error during update expert", error);
+      throw error;
+    }
+  }
+
+  async findExpertBySubCatName(subCatName: string): Promise<IExpert[] | null> {
+    try {
+      const data = await this.expertRepository.findExpertBySubCatName(
+        subCatName
+      );
+
+      return data;
+    } catch (error) {
       throw error;
     }
   }

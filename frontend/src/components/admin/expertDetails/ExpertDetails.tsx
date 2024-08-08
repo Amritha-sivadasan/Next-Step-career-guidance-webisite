@@ -122,7 +122,7 @@ const Experts: React.FC = () => {
                     {expert.user_name}
                   </td>
                   <td className="py-2 border-b text-center text-xs sm:text-sm md:text-base">
-                    {expert.sub_category_id}
+                    {expert.subCatName}
                   </td>
                   <td className="py-2 border-b text-center text-xs sm:text-sm md:text-base">
                     {expert.email}

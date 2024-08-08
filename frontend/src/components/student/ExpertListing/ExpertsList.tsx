@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import { IExpert } from "../../../@types/expert";
 
 const expertsData = [
   {
@@ -25,10 +26,20 @@ const expertsData = [
   },
   // Add more experts as needed
 ];
+interface ExpertsListProps{
+  expets:IExpert[]
+}
 
-const ExpertsList = () => {
+const ExpertsList:React.FC <ExpertsListProps> = ({expets}) => {
   const [activeExpert, setActiveExpert] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
+
+  const [expertsData,setExpertsData]=useState<IExpert[]>([])
+
+
+  useEffect(()=>{
+    setExpertsData(expets)
+  },[expets])
 
   const handleSelectExpert = (expertId) => {
     setActiveExpert(activeExpert === expertId ? null : expertId);
@@ -47,27 +58,27 @@ const ExpertsList = () => {
       <div className="space-y-6 ">
         {expertsData.map((expert) => (
           <div
-            key={expert.id}
+            key={expert._id}
             className="relative border bg-white rounded-lg shadow-md p-4  w-10/12 mx-auto"
           >
             <div className="flex flex-col md:flex-row items-start">
               <img
-                src={expert.image}
-                alt={expert.name}
+                src={expert.profile_picture}
+                alt={expert.user_name}
                 className="w-40 h-32 object-cover rounded-lg mr-4"
               />
               <div className="flex-1">
-                <h2 className="text-xl font-semibold mb-2">{expert.name}</h2>
-                <p className="text-gray-600 mb-4">{expert.description}</p>
+                <h2 className="text-xl font-semibold mb-2">{expert.user_name}</h2>
+                <p className="text-gray-600 mb-4">{expert.personal_bio}</p>
               </div>
               <button
-                onClick={() => handleSelectExpert(expert.id)}
+                onClick={() => handleSelectExpert(expert._id)}
                 className="bg-blue-500 text-white p-2 rounded-lg m-8"
               >
-                {activeExpert === expert.id ? "Hide Slots" : "Select Slot"}
+                {activeExpert === expert._id ? "Hide Slots" : "Select Slot"}
               </button>
             </div>
-            {activeExpert === expert.id && (
+            {activeExpert === expert._id && (
               <div className="mt-4 bg-white rounded-lg shadow-lg z-10 w-full p-3 border">
                 <h3 className="text-lg font-semibold mb-2">Select a Slot</h3>
                 {expert.slots.map((slot) => (

@@ -13,6 +13,7 @@ import validateStudentLogin from "../validator/studentLoginvalidator";
 import { studentGoogleAuth } from "../contollers/firebaseController";
 import categoryController from "../contollers/categoryController";
 import subCategoryController from "../contollers/subCategoryController";
+import expertController from "../contollers/expertController";
 
 const role = process.env.STUDENT_ROLE as string
 const token = process.env.STUDENT_TOKEN as string
@@ -53,4 +54,5 @@ router.get('/logout/' ,verifyAccessToken,
   router.get('/getAllSubCategory/:catName', subCategoryController.findSubCategoryBycatname)
   router.get('/getCategoryByName/:catName',categoryController.findCategoryByName)
   router.get('/subCategoryById/:id',subCategoryController.findSubCategoryById)
+  router.get('/experts/:subCatName',expertController.findExpertBySubCategory)
 export default router;

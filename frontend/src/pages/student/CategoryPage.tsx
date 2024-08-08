@@ -17,6 +17,9 @@ const AllCategoryPage = () => {
   const { catName } = useParams<{ catName: string }>();
   const [subcategories,setSubcategories]=useState<ISubCategory[]>([])
   const [category, setCategory] = useState<ICategory >(initialCategory);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(()=>{
     const fetchAllSubCategory=async()=>{

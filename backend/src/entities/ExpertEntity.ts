@@ -11,7 +11,7 @@ export interface IExpert extends Document {
   consultation_fee: number;
   credential: string;
   education_background: string;
-  sub_category_id: ObjectId;
+  sub_category_name: string;
   area_of_expertise: string;
   is_active: boolean;
   role: string;

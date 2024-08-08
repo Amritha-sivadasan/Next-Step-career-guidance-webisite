@@ -44,4 +44,8 @@ export default class ExpertRepository implements IExpertRepository {
   async findUserByAuthId(authentication_id: string): Promise<IExpert | null> {
     return Expert.findOne({ authentication_id });
   }
+
+  async findExpertBySubCatName(subCatName: string): Promise<IExpert[] | null> {
+    return Expert.find({ subCatName });
+  }
 }

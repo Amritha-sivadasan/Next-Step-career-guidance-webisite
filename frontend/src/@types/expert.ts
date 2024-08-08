@@ -9,7 +9,7 @@ export interface IExpert {
     consultation_fee: number;
     credential: File |string;
     educationBackground: string;
-    sub_category_id: string;
+    subCatName: string;
     area_of_expertise: string;
     is_active: boolean;
     role: string;
