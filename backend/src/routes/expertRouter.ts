@@ -34,5 +34,7 @@ expertRouter.get('/logout/' ,verifyAccessToken,verifyRole(role),expertController
 expertRouter.get('/allSubCategory' ,verifyAccessToken,verifyRole(role),subCategoryController.findAllSubCategroy)
 expertRouter.put('/update/:id',verifyAccessToken,verifyRole(role),upload.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'credential', maxCount: 1 }]),expertController.updateExpert)
 
+expertRouter.post('/addSlots')
+
 
 export default expertRouter;

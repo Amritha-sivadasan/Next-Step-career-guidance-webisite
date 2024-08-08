@@ -1,6 +1,6 @@
 import { Schema, model,Document } from "mongoose";
 import { IStudent } from "../entities/StudentEntity";
-import { boolean } from "joi";
+
 
 const StudentSchema: Schema = new Schema(
   {
