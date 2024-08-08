@@ -6,7 +6,7 @@ import { useAppSelector } from "../../../hooks/useTypeSelector";
 const ExpertNavbar: React.FC = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { isAuthenticated, user } = useAppSelector((state) => state.student);
+  const { isAuthenticated, expert } = useAppSelector((state) => state.expert);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -76,8 +76,8 @@ const ExpertNavbar: React.FC = () => {
           {isAuthenticated ? (
             <>
               <FaUser size={20} style={{ color: "#0B2149" }} />
-              <button className="font-bold w-32" onClick={handleProfile}>
-                {user?.user_name}
+              <button className="font-bold w-32 " onClick={handleProfile}>
+                {expert?.user_name}
               </button>
             </>
           ) : (

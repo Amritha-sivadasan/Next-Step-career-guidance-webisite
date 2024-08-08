@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { axiosInstance } from "../services/instance/userInstance";
+import { studentAxiosInstance } from "../services/instance/userInstance";
 import { IStudent } from "../@types/user";
 
 const API_URL = process.env.VITE_API_URL;
@@ -12,7 +12,7 @@ const useFetchUserData = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axiosInstance.get(`${API_URL}/student`, {
+        const response = await studentAxiosInstance.get(`${API_URL}/student`, {
           withCredentials: true,
         });
 

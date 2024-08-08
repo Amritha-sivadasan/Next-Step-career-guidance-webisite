@@ -14,6 +14,8 @@ import { studentGoogleAuth } from "../contollers/firebaseController";
 import categoryController from "../contollers/categoryController";
 import subCategoryController from "../contollers/subCategoryController";
 import expertController from "../contollers/expertController";
+import slotController from "../contollers/slotController";
+import bookingController from "../contollers/bookingController";
 
 const role = process.env.STUDENT_ROLE as string
 const token = process.env.STUDENT_TOKEN as string
@@ -34,7 +36,7 @@ router.get(
   studentController.fetchUserById
 );
 
-router.post("/refresh-token", verifyRefreshToken(token), refreshTokens);
+router.post("/refresh-token", verifyRefreshToken(token), refreshTokens(token));
 router.post("/login", studentController.loginUser);
 
 
@@ -55,4 +57,10 @@ router.get('/logout/' ,verifyAccessToken,
   router.get('/getCategoryByName/:catName',categoryController.findCategoryByName)
   router.get('/subCategoryById/:id',subCategoryController.findSubCategoryById)
   router.get('/experts/:subCatName',expertController.findExpertBySubCategory)
+  router.get('/getAllSlot/:expertId',verifyAccessToken,
+    verifyRole(role),slotController.getAllSlotByExpert)
+
+
+  router.post('/bookSlot',verifyAccessToken,verifyRole(role),bookingController.createBooking)
+ 
 export default router;

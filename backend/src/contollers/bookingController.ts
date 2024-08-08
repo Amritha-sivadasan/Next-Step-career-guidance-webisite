@@ -1,16 +1,23 @@
 import { IBookingService } from "../services/interface/IBookingService";
 import BookingService from "../services/implementations/BookingService";
+import { ISlotService } from "../services/interface/ISlotService";
+import SlotService from "../services/implementations/SlotService";
 import { Request,Response } from "express";
 
 class BookingController{
     private bookingservice: IBookingService
+    private slotRepository:ISlotService
     constructor() {
         this.bookingservice= new BookingService()
+        this.slotRepository= new SlotService()
     }
 
     public createBooking= async (req:Request,res:Response):Promise<void>=>{
         try {
+
             const result = await this.bookingservice.create(req.body)
+            const slotId= result.slotId.toString()
+            const slotStatus= await   this.slotRepository.update(slotId,result.bookingStatus)
             res.status(200).json({success:true, data:result , message:"Successfully created new Booking"})
             
         } catch (error) {
@@ -28,6 +35,8 @@ class BookingController{
         }
     }
 
+
+    
 
 }
 

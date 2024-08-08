@@ -11,12 +11,13 @@ export default class BookingService implements IBookingService{
     }
 
 
-    async create(booking: IBooking): Promise<IBooking> {
+    async create(booking: Partial< IBooking>): Promise<IBooking> {
         try {
           const result= await this.bookingRepository.create(booking)
           return result
 
         } catch (error) {
+            console.log(error)
             throw error
         }
     }

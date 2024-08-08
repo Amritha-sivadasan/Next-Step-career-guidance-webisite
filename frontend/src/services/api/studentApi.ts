@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { IStudent } from "../../@types/user";
-import { axiosInstance } from "../instance/userInstance";
+import { studentAxiosInstance } from "../instance/userInstance";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -84,7 +84,7 @@ export const updatestudent = async (
   updateData: Partial<IStudent>
 ) => {
   try {
-    const response = await axiosInstance.put(
+    const response = await studentAxiosInstance.put(
       `${API_URL}/student/update/${userId}`,
       { updateData },
       { withCredentials: true }
@@ -98,7 +98,7 @@ export const updatestudent = async (
 
 export const fetchUserData = async () => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/student`, {
+    const response = await studentAxiosInstance.get(`${API_URL}/student`, {
       withCredentials: true,
     });
     return response.data;
@@ -148,7 +148,7 @@ export const resetPasssword = async (email: string, password: string) => {
 
 export const logoutStudent = async () => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/student/logout`, {
+    const response = await studentAxiosInstance.get(`${API_URL}/student/logout`, {
       withCredentials: true,
     });
     return response.data;
@@ -234,3 +234,5 @@ export const findExpertBySubCategory= async(subCatName:string)=>{
     return (error as Error).response?.data;
   }
 }
+
+

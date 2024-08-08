@@ -2,13 +2,13 @@ import axios from "axios";
 // import { checkIfUserIsBlocked } from "./studentApi";
 
 const API_URL = process.env.VITE_API_URL;
-export const axiosInstance = axios.create({
+export const studentAxiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
 
 //request interceptor
-axiosInstance.interceptors.request.use(async (config) => {
+studentAxiosInstance.interceptors.request.use(async (config) => {
   // const isUserAllowed = await checkIfUserIsBlocked();
 
   // if (!isUserAllowed) {
@@ -28,7 +28,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 });
 
 //response interceptor
-axiosInstance.interceptors.response.use(
+studentAxiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
 
         localStorage.setItem("userAccess", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
+        return studentAxiosInstance(originalRequest);
       } catch (error) {
         return Promise.reject(error);
       }

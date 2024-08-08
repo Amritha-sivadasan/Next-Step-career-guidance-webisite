@@ -244,7 +244,7 @@ class ExpertController {
   public findExpertBySubCategory=async(req:Request,res:Response): Promise<void>=>{
     try {
       const subCatName= req.params.subCatName
-      console.log('subcatName',subCatName)
+  
       const result =await this.expertService.findExpertBySubCatName(subCatName)
       res.status(200).json({ success: true, data: result  });
       
