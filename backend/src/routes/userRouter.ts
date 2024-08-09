@@ -62,5 +62,6 @@ router.get('/logout/' ,verifyAccessToken,
 
 
   router.post('/bookSlot',verifyAccessToken,verifyRole(role),bookingController.createBooking)
+  router.put('/updatePayment/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingPaymentStatus)
  
 export default router;

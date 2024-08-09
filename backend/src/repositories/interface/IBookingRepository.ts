@@ -6,5 +6,8 @@ export interface IBookingRepository{
     findById(id:string):Promise<IBooking|null>
     findAllById(id:string):Promise<IBooking[]|null>
     updateBookingTransactionId(bookingId: string, transactionId: string): Promise<IBooking | null>
+    updateBookingPaymentStatus(transactionId:string,status:string):Promise<void>
+    updateBookingStatus(bookingId:string, status:string):Promise<void>
+  
    
 }

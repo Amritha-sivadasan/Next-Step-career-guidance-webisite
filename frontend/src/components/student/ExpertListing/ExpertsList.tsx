@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
-console.log("payment id", process.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface ExpertsListProps {
   expets: IExpert[];
@@ -21,12 +20,15 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [slots, setSlots] = useState<ISlot[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { user } = useAppSelector((state) => state.student);
 
   useEffect(() => {
-    setExpertsData(expets);
-    setPaymentAmount(5000);
-    setPaymentMethod("card");
+    setExpertsData(expets.slice(0, 3));
+    
+   
+    setTotalPages(Math.ceil(expets.length / 3));
   }, [expets]);
 
   const handleSelectExpert = async (expertId: string) => {
@@ -35,22 +37,24 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
       if (response.success) {
         setSlots(response.data);
         setActiveExpert(activeExpert === expertId ? null : expertId);
-        setSelectedSlot(null); // Reset the selected slot when a new expert is selected
+        setSelectedSlot(null);
       }
     } catch (error) {
       console.error("Failed to fetch slots:", error);
     }
   };
 
-  const handleSlotSelect = (slotId: string) => {
+  const handleSlotSelect = (slotId: string,consultationFee: number) => {
     setSelectedSlot(slotId);
+    setPaymentAmount(consultationFee);
+    setPaymentMethod("card");
+    
   };
 
   const handleBooking = async () => {
     if (selectedSlot && activeExpert && user) {
       try {
         const stripe = await stripePromise;
-
         const response = await bookSlot(
           user._id,
           selectedSlot,
@@ -59,12 +63,11 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
           paymentMethod
         );
 
-        console.log("payment response", response);
-     
-
         const result = await stripe?.redirectToCheckout({
           sessionId: response.data.sessionId,
         });
+
+        console.log('result form the payment',result)
 
         if (result?.error) {
           toast.error(
@@ -72,18 +75,18 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
               "An error occurred while redirecting to Stripe"
           );
         }
-
-        // if (response.success) {
-        //   toast.success("Booking successful!");
-        //   setActiveExpert(null);
-        //   setSelectedSlot(null);
-        // } else {
-        //   toast.error("Booking failed. Please try again.");
-        // }
       } catch (error) {
         console.error("Booking failed:", error);
         toast.error("An error occurred while booking. Please try again.");
       }
+    }
+  };
+
+  const handleViewMore = () => {
+    const nextPage = currentPage + 1;
+    if (nextPage <= totalPages) {
+      setCurrentPage(nextPage);
+      setExpertsData(expets.slice(0, nextPage * 3));
     }
   };
 
@@ -98,7 +101,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
             key={expert._id}
             className="relative border bg-white rounded-lg shadow-md p-4 w-10/12 mx-auto"
           >
-            <div className="flex flex-col md:flex-row items-start">
+            <div className="flex flex-col justify-between md:flex-row items-start">
               <img
                 src={
                   typeof expert.profile_picture === "string"
@@ -108,18 +111,34 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                 alt={expert.user_name}
                 className="w-40 h-32 object-cover rounded-lg mr-4"
               />
-              <div className="flex-1">
+
+              <div className="flex-1 ms-4">
                 <h2 className="text-xl font-semibold mb-2">
                   {expert.user_name}
                 </h2>
-                <p className="text-gray-600 mb-4">{expert.personal_bio}</p>
+                <p className="text-gray-600 mb-1">{expert.personal_bio}</p>
+                <p className="text-gray-600 mb-1">
+                  {expert.educationBackground}
+                </p>
+                <p className="text-gray-600 mb-1">
+                  Specialized in {expert.subCatName}
+                </p>
               </div>
-              <button
-                onClick={() => handleSelectExpert(expert._id)}
-                className="bg-blue-500 text-white p-2 rounded-lg m-8"
-              >
-                {activeExpert === expert._id ? "Hide Slots" : "Select Slot"}
-              </button>
+              <div className="flex flex-col  me-32 ">
+                <p className="text-gray-600 font-semibold  mb-10">
+                  Consultation Fee :{" "}
+                  <span className="text-gray-800">
+                    ₹{expert.consultation_fee}
+                  </span>
+                </p>
+
+                <button
+                  onClick={() => handleSelectExpert(expert._id)}
+                  className="bg-[#0B2149] text-white p-2 rounded-lg "
+                >
+                  {activeExpert === expert._id ? "Hide Slots" : "Select Slot"}
+                </button>
+              </div>
             </div>
             {activeExpert === expert._id && (
               <div className="flex justify-end">
@@ -128,7 +147,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                   {slots.map((slot) => (
                     <button
                       key={slot._id}
-                      onClick={() => slot?._id && handleSlotSelect(slot._id)}
+                      onClick={() => slot?._id && handleSlotSelect(slot._id,expert.consultation_fee)}
                       className={`flex justify-between items-center block w-full text-left p-2 rounded-lg mb-4 ${
                         selectedSlot === slot._id
                           ? "bg-green-500 text-white"
@@ -148,7 +167,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                   {selectedSlot && (
                     <button
                       onClick={handleBooking}
-                      className="bg-blue-500 text-white p-2 rounded-lg w-full mt-2"
+                      className="bg-[#0B2149] text-white p-2 rounded-lg w-full mt-2"
                     >
                       Book Now
                     </button>
@@ -161,8 +180,11 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
       </div>
 
       <div className="flex justify-center mt-10">
-        <button className="border p-3 rounded-full bg-[#0B2149] text-white w-32">
-          View More
+        <button
+          onClick={handleViewMore}
+          className="border p-3 rounded-full bg-[#0B2149] text-white w-34"
+        >
+          {currentPage < totalPages ? "View More" : "No more items"}
         </button>
       </div>
     </div>

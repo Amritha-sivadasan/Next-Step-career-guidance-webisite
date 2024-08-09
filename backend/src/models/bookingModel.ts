@@ -7,7 +7,7 @@ const BookingSchema: Schema = new Schema({
     bookingStatus: { type: String, default:'pending', enum: [ 'pending', 'confirmed', 'cancelled' ] },
     subCatName: { type: String  },
     paymentAmount: { type: Number },
-    paymentStatus: { type: String,  enum: [ 'completed', ' pending ', 'cancelled' ] },
+    paymentStatus: { type: String, default:'pending', enum: [ 'completed', 'pending', 'cancelled','refund' ] },
     slotId: { type: Schema.Types.ObjectId },
     paymentMethod: { type: String },
     transactionId: { type: String },

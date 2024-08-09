@@ -25,5 +25,15 @@ export default class BookingRepository implements IBookingRepository{
     async findAllById(id: string): Promise<IBooking[] | null> {
         return Booking.findById(id)
     }
-   
+    async updateBookingPaymentStatus(transactionId: string, status: string): Promise<void> {
+        try {
+          const result= await Booking.findOneAndUpdate({transactionId},{paymentStatus:status})
+        } catch (error) {
+            console.log('eror',error)
+        }
+    
+    }
+   async updateBookingStatus(bookingId: string, status: string): Promise<void> {
+       await Booking.findByIdAndUpdate(bookingId,{bookingStatus:status})
+   }
 }

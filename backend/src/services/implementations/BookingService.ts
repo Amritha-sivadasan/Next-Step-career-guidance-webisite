@@ -4,50 +4,57 @@ import { IBooking } from "../../entities/BookingEntity";
 import { IBookingService } from "../interface/IBookingService";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
 export default class BookingService implements IBookingService {
   private bookingRepository: IBookingRepository;
   constructor() {
     this.bookingRepository = new BookingRepository();
   }
 
-  async create(bookingData: Partial<IBooking>): Promise<{ sessionId: string; updatedBooking: IBooking | null }> {
+  async create(
+    bookingData: Partial<IBooking>
+  ): Promise<{ sessionId: string; updatedBooking: IBooking | null }> {
     try {
-
       const newBooking = await this.bookingRepository.create(bookingData);
-  
+
       const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
+        payment_method_types: ["card"],
         line_items: [
           {
             price_data: {
-              currency: 'usd',
+              currency: "inr",
               product_data: {
-                name: 'Consultation Slot',
+                name: "Consultation Slot",
                 description: `Booking slot with expert ${bookingData.expertId}`,
               },
-              unit_amount: bookingData.paymentAmount,
+              unit_amount: bookingData.paymentAmount! * 100,
             },
             quantity: 1,
           },
         ],
-        mode: 'payment',
+        mode: "payment",
         success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
-        metadata: {
+          metadata: {
           bookingId: newBooking._id.toString(),
         },
       });
 
-      const updatedBooking = await this.bookingRepository.updateBookingTransactionId(newBooking._id.toString(), session.id)
- 
+      const updatedBooking =
+        await this.bookingRepository.updateBookingTransactionId(
+          newBooking._id.toString(),
+          session.id
+        );
+
       return {
         sessionId: session.id,
         updatedBooking,
       };
     } catch (error) {
-      console.error('Error creating booking and Stripe session:', error);
-      throw new Error('Failed to create booking and Stripe session');
+      console.error("Error creating booking and Stripe session:", error);
+      throw new Error("Failed to create booking and Stripe session");
     }
   }
   async getAllBooking(): Promise<IBooking[] | null> {
@@ -78,6 +85,24 @@ export default class BookingService implements IBookingService {
     try {
       const result = await this.bookingRepository.findAllById(id);
       return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateBookingStatus(id: string, status: string): Promise<void> {
+    try {
+      
+       await this.bookingRepository.updateBookingStatus(id,status)
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateBookingPaymentStatus(id: string, status: string): Promise<void> {
+    try {
+
+      await this.bookingRepository.updateBookingPaymentStatus(id,status)
     } catch (error) {
       throw error;
     }

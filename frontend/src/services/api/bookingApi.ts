@@ -1,6 +1,4 @@
-
 import { studentAxiosInstance } from "../instance/userInstance";
-
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -16,9 +14,8 @@ export const bookSlot = async (
   studentId: string,
   slotId: string,
   expertId: string,
-  paymentAmount:number,
-  paymentMethod:string,
-
+  paymentAmount: number,
+  paymentMethod: string
 ) => {
   try {
     const response = await studentAxiosInstance.post(
@@ -28,8 +25,24 @@ export const bookSlot = async (
         slotId,
         expertId,
         paymentAmount,
-        paymentMethod
+        paymentMethod,
       },
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const updatePaymentStatus = async (id: string, status: string) => {
+  try {
+    const response = await studentAxiosInstance.put(
+      `${API_URL}/student/updatePayment/${id}`,
+      { status },
       {
         withCredentials: true,
       }

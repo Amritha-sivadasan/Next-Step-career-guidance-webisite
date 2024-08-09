@@ -6,5 +6,7 @@ export interface IBookingService {
     create(bookingData: Partial<IBooking>): Promise<{ sessionId: string; updatedBooking: IBooking | null }>
     getBookingByExpertId(id:string):Promise<IBooking[]|null>
     getBookingBystudentId(id:string):Promise<IBooking[]|null>
+    updateBookingStatus(id:string,status:string):Promise<void>
+    updateBookingPaymentStatus(id:string, status:string):Promise<void>
 
 }
