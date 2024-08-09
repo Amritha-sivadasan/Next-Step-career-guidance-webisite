@@ -1,7 +1,6 @@
 import ExpertIntro from "../../components/student/ExpertListing/ExpertIntro";
 import ExpertsList from "../../components/student/ExpertListing/ExpertsList";
-import Footer from "../../components/common/footer/Footer";
-import Navbar from "../../components/student/header/Header";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { findExpertBySubCategory } from "../../services/api/studentApi";
@@ -26,10 +25,10 @@ const ExpertListing = () => {
 
   return (
     <div>
-      <Navbar />
+ 
       <ExpertIntro />
       <ExpertsList expets={expets} />
-      <Footer />
+    
     </div>
   );
 };

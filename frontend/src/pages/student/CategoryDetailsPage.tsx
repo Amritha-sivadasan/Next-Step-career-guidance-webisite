@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import AboutCategory from "../../components/student/allCategory/AboutCategory";
 import AboutCategoryIntro from "../../components/student/allCategory/AboutCategoryIntro";
-import Navbar from "../../components/student/header/Header";
+
 import { useEffect, useState } from "react";
 import { ISubCategory } from "../../@types/dashboard";
 import { subCategoryById } from "../../services/api/studentApi";
-import Footer from "../../components/common/footer/Footer";
+
 
 const initialSubCategory: ISubCategory = {
   _id: '',
@@ -34,10 +34,10 @@ const CategoryDetailsPage = () => {
   }, [id]);
   return (
     <div>
-      <Navbar />
+ 
       <AboutCategoryIntro subCategory={subCategory} />
       <AboutCategory subCategory={subCategory} />
-      <Footer/>
+   
     </div>
   );
 };

@@ -1,5 +1,4 @@
-import Footer from "../../components/common/footer/Footer";
-import Navbar from "../../components/student/header/Header";
+
 import Banner from "../../components/student/landingPage/Banner";
 import Faq from "../../components/student/landingPage/FAQ";
 import FindYourPath from "../../components/student/landingPage/FindYourPath";
@@ -13,7 +12,6 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <Navbar />
       <Banner />
       <div id="find_path">
         <FindYourPath />
@@ -23,7 +21,7 @@ const Home = () => {
       </div>
       <Testimonials />
       <Faq />
-      <Footer />
+
     </div>
   );
 };

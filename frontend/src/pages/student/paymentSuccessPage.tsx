@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
-import Footer from "../../components/common/footer/Footer";
-import Navbar from "../../components/student/header/Header";
+
 import PaymentSuccess from "../../components/student/payment/PaymentSuccess";
 import { useLocation } from "react-router-dom";
 import { updatePaymentStatus } from "../../services/api/bookingApi";
@@ -27,9 +26,9 @@ const PaymentSuccessPage = () => {
   }, [sessionId]);
   return (
     <div>
-      <Navbar />
+    
       <PaymentSuccess />
-      <Footer />
+      
     </div>
   );
 };

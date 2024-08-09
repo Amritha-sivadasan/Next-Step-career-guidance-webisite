@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
 import ForgotPassword from "../components/common/ForgotPassword";
@@ -23,6 +23,8 @@ import AvailableSchedule from "../pages/expert/AvailableSchedule";
 import BookingRequestPage from "../pages/expert/BookingRequestPage";
 import BookingDetailsPage from "../pages/expert/BookingDetailsPage";
 import PaymentHistory from "../pages/expert/PaymentHistory";
+import ExpertNavbar from "../components/expert/header/ExpertNavBar";
+import Sidebar from "../components/expert/sidebar/ExpertSidebar";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -89,7 +91,6 @@ const ExpertRouter = () => {
       />
 
       <Route path="/" element={<HomePage />} />
-      
 
       <Route element={<ExpertPrivateRoute />}>
         <Route
@@ -112,11 +113,26 @@ const ExpertRouter = () => {
             )
           }
         />
-        <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/available-schedule" element={<AvailableSchedule />} />
-      <Route path="/booking-request" element={<BookingRequestPage />} />
-      <Route path="/booking-details" element={<BookingDetailsPage />} />
-      <Route path="/payment-history" element={<PaymentHistory />} />
+
+        <Route
+          element={
+            <>
+              <div className="flex py-2 flex-col w-full">
+                <ExpertNavbar />
+                <div className="min-h-screen flex bg-gray-100 ">
+                  <Sidebar />
+                  <Outlet />
+                </div>
+              </div>
+            </>
+          }
+        >
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/available-schedule" element={<AvailableSchedule />} />
+          <Route path="/booking-request" element={<BookingRequestPage />} />
+          <Route path="/booking-details" element={<BookingDetailsPage />} />
+          <Route path="/payment-history" element={<PaymentHistory />} />
+        </Route>
       </Route>
     </Routes>
   );

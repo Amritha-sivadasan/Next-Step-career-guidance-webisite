@@ -1,21 +1,41 @@
-// import React from 'react';
+import React from "react";
 
-// const Header: React.FC = () => {
-//   return (
-//     <header className="bg-white shadow">
-//       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-//         <div className="text-2xl font-bold">Logo</div>
-//         <nav>
-//           <ul className="flex space-x-4">
-//             <li><a href="#" className="text-gray-600">Home</a></li>
-//             <li><a href="#" className="text-gray-600">About</a></li>
-//             <li><a href="#" className="text-gray-600">Services</a></li>
-//             <li><a href="#" className="text-gray-600">Contact</a></li>
-//           </ul>
-//         </nav>
-//       </div>
-//     </header>
-//   );
-// };
+const UserSideBar: React.FC = () => {
+  return (
+    <div className="w-64 bg-gray-800 text-white h-screen flex flex-col p-4">
+      <div className="flex flex-col gap-4">
+        {/* Profile Section */}
+        <div className="bg-gray-700 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold">Profile</h2>
+          {/* Add profile details or avatar here */}
+        </div>
 
-// export default Header;
+        {/* Second Section */}
+        <div className="bg-gray-700 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold">Second Section</h2>
+          {/* Add content for the second section here */}
+        </div>
+
+        {/* Third Section */}
+        <div className="bg-gray-700 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold">Third Section</h2>
+          {/* Add content for the third section here */}
+        </div>
+
+        {/* Fourth Section */}
+        <div className="bg-gray-700 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold">Fourth Section</h2>
+          {/* Add content for the fourth section here */}
+        </div>
+
+        {/* Fifth Section */}
+        <div className="bg-gray-700 p-4 rounded-lg">
+          <h2 className="text-lg font-semibold">Fifth Section</h2>
+          {/* Add content for the fifth section here */}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserSideBar;

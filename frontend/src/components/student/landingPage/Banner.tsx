@@ -1,6 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Banner: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAppSelector((state) => state.student);
+
+  const handleGetStart = () => {
+    navigate("/login");
+  };
   return (
     <section className="bg-[#0B2149] text-white h-[80vh] py-20 rounded-b-3xl flex flex-col md:flex-row items-center">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
@@ -15,9 +23,14 @@ const Banner: React.FC = () => {
             pivotal decision and opportunity, ensuring you're prepared for
             success.
           </p>
-          <button className="bg-white text-blue-900 px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold">
-            Get Started
-          </button>
+          {!isAuthenticated && (
+            <button
+              className="bg-white text-blue-900 px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold"
+              onClick={handleGetStart}
+            >
+              Get Started
+            </button>
+          )}
         </div>
 
         {/* Image Section */}

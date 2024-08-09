@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Signup from "../components/student/register/Signup";
 import Login from "../components/common/Login";
 import OtpPage from "../components/common/OtpPage";
@@ -17,6 +17,10 @@ import AllCategoryPage from "../pages/student/CategoryPage";
 import CategoryDetailsPage from "../pages/student/CategoryDetailsPage";
 import ExpertListing from "../pages/student/ExpertListing";
 import PaymentSuccessPage from "../pages/student/paymentSuccessPage";
+import ProfilePage from "../pages/student/ProfilePage";
+import Navbar from "../components/student/header/Header";
+import Footer from "../components/common/footer/Footer";
+import UserSideBar from "../components/student/sidebar/SideBar";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
@@ -36,7 +40,9 @@ const StudentRouter = () => {
     <Routes>
       <Route
         path="/signup"
-        element={userDeatils?.isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        element={
+          userDeatils?.isAuthenticated ? <Navigate to="/" /> : <Signup />
+        }
       />
       <Route
         path="/login"
@@ -90,14 +96,32 @@ const StudentRouter = () => {
         }
       />
 
+      <Route
+        element={
+          <>
+            <Navbar />
 
+            <Outlet />
 
-      <Route path="/" element={<Home />} />
-      <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
-      <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
-      <Route path="/experts/:subCatName" element={<ExpertListing />} />
-      <Route path ='/payment-success' element={<PaymentSuccessPage/>}/>
-
+            <Footer />
+          </>
+        }
+      >
+        <Route path="/" element={<Home />} />
+        <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
+        <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
+        <Route path="/experts/:subCatName" element={<ExpertListing />} />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
+        <Route
+          element={
+            <>
+              <UserSideBar /> <Outlet />
+            </>
+          }
+        >
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+      </Route>
       <Route element={<StudentPrivateRoute />}>
         <Route
           path="/"
