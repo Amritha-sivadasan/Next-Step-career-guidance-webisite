@@ -15,8 +15,12 @@ const Home = () => {
     <div>
       <Navbar />
       <Banner />
-      <FindYourPath />
-      <HowItWorks />
+      <div id="find_path">
+        <FindYourPath />
+      </div>
+      <div id="how_work">
+        <HowItWorks />
+      </div>
       <Testimonials />
       <Faq />
       <Footer />

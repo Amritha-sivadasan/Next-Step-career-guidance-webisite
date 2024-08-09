@@ -6,21 +6,19 @@ import { useAppSelector } from "../../../hooks/useTypeSelector";
 const Navbar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated, user } = useAppSelector((state) => state.student);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleProfile=()=>{
-  try {
-    navigate('/profile')
-    
-  } catch (error) {
-    console.log(error)
-  }
-  
-  }
+  const handleProfile = () => {
+    try {
+      navigate("/profile");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <header className="bg-white shadow w-full">
@@ -40,16 +38,16 @@ const Navbar: React.FC = () => {
           <nav className="flex items-center space-x-20 w-full">
             <ul className="flex space-x-8">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#find_path"
                   className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Find Your Path
@@ -57,7 +55,7 @@ const Navbar: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#how_work"
                   className="text-[#0B2149] font-thin hover:text-black"
                 >
                   How it Works
@@ -93,7 +91,9 @@ const Navbar: React.FC = () => {
           {isAuthenticated ? (
             <>
               <FaUser size={20} style={{ color: "#0B2149" }} />
-              <button className="font-bold ms-2 " onClick={handleProfile}>{user?.user_name}</button>
+              <button className="font-bold ms-2 " onClick={handleProfile}>
+                {user?.user_name}
+              </button>
             </>
           ) : (
             <Link

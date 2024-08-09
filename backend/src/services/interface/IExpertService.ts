@@ -11,4 +11,5 @@ export interface IExpertService{
   verifyExpert(id:string):Promise<Boolean>
   rejectExpert(id: string, reason: string):Promise<boolean>
   findExpertBySubCatName(subCatName:string): Promise<IExpert[] | null>;
+  fetchAllExpert(): Promise<IExpert[] | null>
 }

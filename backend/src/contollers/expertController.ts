@@ -259,6 +259,18 @@ class ExpertController {
 
   }
 
+   public fetchAllExperts = async(req:Request,res:Response)=>{
+    try {
+      const result =await this.expertService.fetchAllExpert()
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      res.json(500).json({
+        success: false,
+        message: "something went wrong on fetching expert",
+        error,
+      });
+    }
+   }
 
 
 

@@ -57,7 +57,7 @@ const FindYourPath: React.FC = () => {
   };
 
   return (
-    <section className="mt-10 h-auto md:h-[100vh]">
+    <section className="mt-10 h-auto md:h-[100vh]" >
       <div className="flex justify-center text-[#0B2149] ">
         <h1 className="font-bold text-3xl">Find Your Path</h1>
       </div>

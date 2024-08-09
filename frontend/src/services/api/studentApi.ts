@@ -236,3 +236,19 @@ export const findExpertBySubCategory= async(subCatName:string)=>{
 }
 
 
+export const getAllExperts= async()=>{
+  try {
+    const response = await axios.get(
+      `${API_URL}/student/experts/`,
+      {
+        withCredentials: true,
+      }
+    );
+  
+
+    return response.data;
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

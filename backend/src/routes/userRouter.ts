@@ -17,8 +17,8 @@ import expertController from "../contollers/expertController";
 import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
 
-const role = process.env.STUDENT_ROLE as string
-const token = process.env.STUDENT_TOKEN as string
+const role = process.env.STUDENT_ROLE as string;
+const token = process.env.STUDENT_TOKEN as string;
 
 const router = Router();
 
@@ -39,7 +39,6 @@ router.get(
 router.post("/refresh-token", verifyRefreshToken(token), refreshTokens(token));
 router.post("/login", studentController.loginUser);
 
-
 router.post("/google-login", studentGoogleAuth);
 router.put(
   "/update/:id",
@@ -48,20 +47,43 @@ router.put(
   studentController.updateStudent
 );
 
+router.get(
+  "/logout/",
+  verifyAccessToken,
+  verifyRole(role),
+  studentController.logoutStuent
+);
 
-router.get('/logout/' ,verifyAccessToken,
-  verifyRole(role),studentController.logoutStuent,)
+router.get("/getAllcategory", categoryController.findAllCategroy);
+router.get(
+  "/getAllSubCategory/:catName",
+  subCategoryController.findSubCategoryBycatname
+);
+router.get(
+  "/getCategoryByName/:catName",
+  categoryController.findCategoryByName
+);
+router.get("/subCategoryById/:id", subCategoryController.findSubCategoryById);
+router.get("/experts/:subCatName", expertController.findExpertBySubCategory);
+router.get("/experts",expertController.fetchAllExperts);
+router.get(
+  "/getAllSlot/:expertId",
+  verifyAccessToken,
+  verifyRole(role),
+  slotController.getAllSlotByExpert
+);
 
-  router.get('/getAllcategory',categoryController.findAllCategroy)
-  router.get('/getAllSubCategory/:catName', subCategoryController.findSubCategoryBycatname)
-  router.get('/getCategoryByName/:catName',categoryController.findCategoryByName)
-  router.get('/subCategoryById/:id',subCategoryController.findSubCategoryById)
-  router.get('/experts/:subCatName',expertController.findExpertBySubCategory)
-  router.get('/getAllSlot/:expertId',verifyAccessToken,
-    verifyRole(role),slotController.getAllSlotByExpert)
+router.post(
+  "/bookSlot",
+  verifyAccessToken,
+  verifyRole(role),
+  bookingController.createBooking
+);
+router.put(
+  "/updatePayment/:id",
+  verifyAccessToken,
+  verifyRole(role),
+  bookingController.updateBookingPaymentStatus
+);
 
-
-  router.post('/bookSlot',verifyAccessToken,verifyRole(role),bookingController.createBooking)
-  router.put('/updatePayment/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingPaymentStatus)
- 
 export default router;

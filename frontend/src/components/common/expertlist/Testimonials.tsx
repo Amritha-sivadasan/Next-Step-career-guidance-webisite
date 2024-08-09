@@ -1,25 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../../App.css";
+import { getAllExperts } from "../../../services/api/studentApi";
+import { IExpert } from "../../../@types/expert";
 
 const Testimonials: React.FC = () => {
-  
-  const testimonials = [
-    {
-      name: "Expert 1",
-      feedback: "Feedback from expert 1",
-      image: "/path/to/image1.jpg",
-    },
-    {
-      name: "Expert 2",
-      feedback: "Feedback from expert 2",
-      image: "/path/to/image2.jpg",
-    },
-    {
-      name: "Expert 3",
-      feedback: "Feedback from expert 3",
-      image: "/path/to/image3.jpg",
-    },
-  ];
+  const [testimonials, setTestimonials] = useState<IExpert[]>([]);
+
+  useEffect(() => {
+    const fetchExpert = async () => {
+      const response = await getAllExperts();
+      console.log("response", response);
+      setTestimonials(response.data);
+    };
+
+    fetchExpert();
+  }, []);
 
   return (
     <section className="py-20 w-full">
@@ -42,19 +37,23 @@ const Testimonials: React.FC = () => {
                       key={index}
                       className="scroll-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center"
                     >
-                      {/* Image */}
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        className="w-24 h-24 object-cover mb-4 rounded-full"
-                      />
-                      {/* Feedback */}
+                      {typeof testimonial.profile_picture == "string" && (
+                        <img
+                          src={testimonial.profile_picture}
+                          alt={testimonial.user_name}
+                          className="w-24 h-24 object-cover mb-4 rounded-full"
+                        />
+                      )}
+
                       <p className="italic mb-4 flex-grow">
-                        "{testimonial.feedback}"
+                        {testimonial.personal_bio}
                       </p>
-                      {/* Name */}
+                      <p className="italic mb-4 flex-grow">
+                        {testimonial.educationBackground}
+                      </p>
+
                       <div className="font-bold text-lg">
-                        {testimonial.name}
+                        {testimonial.user_name}
                       </div>
                     </div>
                   )

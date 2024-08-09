@@ -9,4 +9,5 @@ export interface IExpertRepository {
   findUserByAuthId(authentication_id:string):Promise<IExpert|null>
   countDocuments(): Promise<number>
   findExpertBySubCatName(subCatName:string):Promise<IExpert[]|null>
+  findAllExpert(): Promise<IExpert[]>;
 }

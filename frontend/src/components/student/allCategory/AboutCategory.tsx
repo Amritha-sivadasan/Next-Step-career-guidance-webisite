@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaLaptopCode, FaUserGraduate } from "react-icons/fa"; // Importing FontAwesome icons
 import { useNavigate } from "react-router-dom";
-import { ISubCategory } from "../../../@types/dashboard";
+import { ICategory, ISubCategory } from "../../../@types/dashboard";
+import { getAllCategory } from "../../../services/api/studentApi";
 interface SubcategoryProps {
   subCategory: ISubCategory;
 }
 
-const AboutCategory: React.FC <SubcategoryProps>= ({subCategory}) => {
+const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
   const navigate = useNavigate();
+  const [categories, setCategory] = useState<ICategory[]>([]);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const response = await getAllCategory(1, 3);
+      console.log("response", response);
+      setCategory(response.data.items);
+    };
+    fetchCategory();
+  }, []);
+
   const handleMentorBooking = () => {
     navigate(`/experts/${subCategory.subCatName}`);
   };
@@ -137,38 +148,19 @@ const AboutCategory: React.FC <SubcategoryProps>= ({subCategory}) => {
           You May Also Be Interested In
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 ">
-          {/* Category Item 1 */}
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
-            <img
-              src="/path/to/category1.jpg" // Replace with your category image path
-              alt="Category 1"
-              className="w-24 h-24 object-cover rounded-full mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-2">Category 1</h3>
-            <p className="text-gray-600">Brief description of Category 1.</p>
-          </div>
-
-          {/* Category Item 2 */}
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
-            <img
-              src="/path/to/category2.jpg" // Replace with your category image path
-              alt="Category 2"
-              className="w-24 h-24 object-cover rounded-full mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-2">Category 2</h3>
-            <p className="text-gray-600">Brief description of Category 2.</p>
-          </div>
-
-          {/* Category Item 3 */}
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
-            <img
-              src="/path/to/category3.jpg" // Replace with your category image path
-              alt="Category 3"
-              className="w-24 h-24 object-cover rounded-full mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-2">Category 3</h3>
-            <p className="text-gray-600">Brief description of Category 3.</p>
-          </div>
+          {categories.map((category) => (
+            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
+              <img
+                src={category.catImage} // Replace with your category image path
+                alt="Category 1"
+                className="w-52 h-32 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-xl font-semibold mb-2">
+                {category.catName}{" "}
+              </h3>
+              <p className="text-gray-600">Brief description of Category 1.</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

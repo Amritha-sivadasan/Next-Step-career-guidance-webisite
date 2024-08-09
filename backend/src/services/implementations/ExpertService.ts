@@ -213,4 +213,13 @@ export default class ExpertService implements IExpertService {
       throw error;
     }
   }
+
+  async fetchAllExpert(): Promise<IExpert[] | null>{
+    try {
+      const data = await this.expertRepository.findAllExpert()
+        return data
+    } catch (error) {
+      throw error;
+    }
+  }
 }
