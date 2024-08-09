@@ -16,6 +16,9 @@ export const bookSlot = async (
   studentId: string,
   slotId: string,
   expertId: string,
+  paymentAmount:number,
+  paymentMethod:string,
+
 ) => {
   try {
     const response = await studentAxiosInstance.post(
@@ -24,6 +27,8 @@ export const bookSlot = async (
         studentId,
         slotId,
         expertId,
+        paymentAmount,
+        paymentMethod
       },
       {
         withCredentials: true,

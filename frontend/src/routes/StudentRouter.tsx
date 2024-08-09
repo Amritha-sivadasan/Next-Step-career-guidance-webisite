@@ -96,7 +96,7 @@ const StudentRouter = () => {
       <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
       <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
       <Route path="/experts/:subCatName" element={<ExpertListing />} />
-      <Route path ='/paymentSuccess' element={<PaymentSuccessPage/>}/>
+      <Route path ='/payment-success' element={<PaymentSuccessPage/>}/>
 
       <Route element={<StudentPrivateRoute />}>
         <Route

@@ -1,6 +1,10 @@
 import { AiOutlineArrowRight } from "react-icons/ai"; // Import the arrow icon
 
-const PaymentSuccess = () => {
+interface PaymentProps{
+  sessionId:string
+}
+
+const PaymentSuccess:React.FC <PaymentProps> = ({sessionId}) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <img
@@ -12,6 +16,7 @@ const PaymentSuccess = () => {
         Payment Successful
       </h1>
       <p className="text-lg text-gray-700 text-center">
+        TransctionId {sessionId}
         Your mentorship session has been successfully booked. Details will be
         sent to the email address associated with your account shortly.
       </p>

@@ -30,7 +30,7 @@ const FindYourPath: React.FC = () => {
     fetchCategory();
   }, []);
 
-  const handleSelectCategory = async(catName: string) => {
+  const handleSelectCategory = async (catName: string) => {
     setSelectedCategory(catName);
     const result = await getAllSubCategory(catName);
     setSubcategories(result.data.slice(0, 3));
@@ -48,8 +48,12 @@ const FindYourPath: React.FC = () => {
     }
   };
 
-  const handleViewAllCategory = (catName:string) => {
+  const handleViewAllCategory = (catName: string) => {
     navigate(`/allcategory/${catName}`);
+  };
+
+  const handleSubCategory = (id: string) => {
+    navigate(`/categoryDetails/${id}`);
   };
 
   return (
@@ -104,35 +108,36 @@ const FindYourPath: React.FC = () => {
 
       {/* Subcategory Section */}
       <div className="h-auto md:h-[70vh] bg-[#F0F8FF] p-6">
-  <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12">
-    {subcategories.map((subcat) => (
-      <div
-        key={subcat._id}
-        className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center"
-      >
-        <h3 className="text-xl font-semibold mb-2">
-          {subcat.subCatName}
-        </h3>
-        <p className="text-center text-gray-700">{subcat.description}</p>
-        <div className="w-full flex justify-center overflow-hidden rounded-lg">
-          <img
-            src={subcat.subCatImage}
-            alt="subcatimage"
-            className="max-w-full h-auto object-contain"
-          />
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12">
+          {subcategories.map((subcat) => (
+            <div
+              key={subcat._id}
+              className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer"
+              onClick={() => handleSubCategory(subcat._id)}
+            >
+              <h3 className="text-xl font-semibold mb-2">
+                {subcat.subCatName}
+              </h3>
+              <p className="text-center text-gray-700">{subcat.description}</p>
+              <div className="w-full flex justify-center overflow-hidden rounded-lg">
+                <img
+                  src={subcat.subCatImage}
+                  alt="subcatimage"
+                  className="max-w-full h-auto object-contain"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={() => handleViewAllCategory(subcategories[0]?.catName)}
+            className="border text-xl border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
+          >
+            View All
+          </button>
         </div>
       </div>
-    ))}
-  </div>
-  <div className="flex justify-center mt-10">
-    <button
-      onClick={() => handleViewAllCategory(subcategories[0]?.catName)}
-      className="border text-xl border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
-    >
-      View All
-    </button>
-  </div>
-</div>
     </section>
   );
 };

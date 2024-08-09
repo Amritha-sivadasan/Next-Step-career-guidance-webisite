@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { IExpert } from "../../../@types/expert";
-import { getAllSlotsByStudent, } from "../../../services/api/slotApi";
+import { getAllSlotsByStudent } from "../../../services/api/slotApi";
 import { bookSlot } from "../../../services/api/bookingApi";
 import { ISlot } from "../../../@types/slot";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { toast } from "react-toastify";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
+console.log("payment id", process.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface ExpertsListProps {
   expets: IExpert[];
@@ -14,11 +18,15 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const [activeExpert, setActiveExpert] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [expertsData, setExpertsData] = useState<IExpert[]>([]);
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [slots, setSlots] = useState<ISlot[]>([]);
-  const {user}= useAppSelector(state=>state.student)
+  const { user } = useAppSelector((state) => state.student);
 
   useEffect(() => {
     setExpertsData(expets);
+    setPaymentAmount(5000);
+    setPaymentMethod("card");
   }, [expets]);
 
   const handleSelectExpert = async (expertId: string) => {
@@ -41,20 +49,37 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const handleBooking = async () => {
     if (selectedSlot && activeExpert && user) {
       try {
+        const stripe = await stripePromise;
+
         const response = await bookSlot(
           user._id,
           selectedSlot,
-           activeExpert,
+          activeExpert,
+          paymentAmount,
+          paymentMethod
         );
 
-        if (response.success) {
-          toast.success("Booking successful!");
-          // Optionally, reset the state or perform other actions
-          setActiveExpert(null);
-          setSelectedSlot(null);
-        } else {
-          toast.error("Booking failed. Please try again.");
+        console.log("payment response", response);
+     
+
+        const result = await stripe?.redirectToCheckout({
+          sessionId: response.data.sessionId,
+        });
+
+        if (result?.error) {
+          toast.error(
+            result.error.message ||
+              "An error occurred while redirecting to Stripe"
+          );
         }
+
+        // if (response.success) {
+        //   toast.success("Booking successful!");
+        //   setActiveExpert(null);
+        //   setSelectedSlot(null);
+        // } else {
+        //   toast.error("Booking failed. Please try again.");
+        // }
       } catch (error) {
         console.error("Booking failed:", error);
         toast.error("An error occurred while booking. Please try again.");
