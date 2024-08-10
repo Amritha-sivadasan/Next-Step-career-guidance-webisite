@@ -1,5 +1,3 @@
-
-
 const paymentDetails = [
   {
     id: 1,
@@ -20,9 +18,9 @@ const paymentDetails = [
   // Add more payment details as needed
 ];
 
-const PaymentDetails = () => {
+const PaymentHistory = () => {
   return (
-    <div className="p-6 bg-white border border-gray-300 shadow-lg rounded-lg">
+    <div className="p-6 bg-white   rounded-lg">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Payment Details</h1>
       <div className="flex justify-center mb-10">
         <img src="/pay.png" alt="details" className="w-3/4" />
@@ -75,4 +73,4 @@ const PaymentDetails = () => {
   );
 };
 
-export default PaymentDetails;
+export default PaymentHistory;

@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
           {isAuthenticated ? (
             <>
               <FaUser size={20} style={{ color: "#0B2149" }} />
-              <button className="font-bold ms-2 " onClick={handleProfile}>
+              <button className="font-bold ms-2  w-24" onClick={handleProfile}>
                 {user?.user_name}
               </button>
             </>
@@ -174,13 +174,23 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/login"
-                className="text-[#0B2149] font-thin hover:text-blue-800"
-                onClick={toggleSidebar}
-              >
-                Login
-              </Link>
+              {isAuthenticated ? (
+               <Link
+               to="/profile"
+               className="text-[#0B2149] font-thin hover:text-blue-800"
+               onClick={toggleSidebar}
+             >
+              Profile
+             </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  onClick={toggleSidebar}
+                >
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

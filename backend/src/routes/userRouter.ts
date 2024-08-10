@@ -90,4 +90,6 @@ router.put(
 
 router.put('/uploadImage',verifyAccessToken,
   verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
+
+  router.put('/uploadPersonalInfo',verifyAccessToken,verifyRole(role),studentController.updateuserData)
 export default router;

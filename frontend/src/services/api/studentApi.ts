@@ -148,9 +148,12 @@ export const resetPasssword = async (email: string, password: string) => {
 
 export const logoutStudent = async () => {
   try {
-    const response = await studentAxiosInstance.get(`${API_URL}/student/logout`, {
-      withCredentials: true,
-    });
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/logout`,
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     console.log("error in login student");
@@ -218,7 +221,7 @@ export const subCategoryById = async (id: string) => {
   }
 };
 
-export const findExpertBySubCategory= async(subCatName:string)=>{
+export const findExpertBySubCategory = async (subCatName: string) => {
   try {
     const response = await axios.get(
       `${API_URL}/student/experts/${subCatName}`,
@@ -226,39 +229,30 @@ export const findExpertBySubCategory= async(subCatName:string)=>{
         withCredentials: true,
       }
     );
-  
 
     return response.data;
-    
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
 
-
-export const getAllExperts= async()=>{
+export const getAllExperts = async () => {
   try {
-    const response = await axios.get(
-      `${API_URL}/student/experts/`,
-      {
-        withCredentials: true,
-      }
-    );
-  
+    const response = await axios.get(`${API_URL}/student/experts/`, {
+      withCredentials: true,
+    });
 
     return response.data;
-    
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
 
-
-
-export const uploadImage = async(formData:FormData)=>{
+export const uploadImage = async (formData: FormData) => {
   try {
     const response = await studentAxiosInstance.put(
-      `${API_URL}/student/uploadImage/`,formData,
+      `${API_URL}/student/uploadImage/`,
+      formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -266,9 +260,25 @@ export const uploadImage = async(formData:FormData)=>{
         withCredentials: true,
       }
     );
-      
-    return response.data
-    
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const updatePersonalInfo =async(data: Partial<IStudent>)=>{
+  try {
+    const response = await studentAxiosInstance.put(
+      `${API_URL}/student/uploadPersonalInfo/`,data,
+  
+      {
+  
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
