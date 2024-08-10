@@ -110,7 +110,7 @@ const ExpertProfile: React.FC = () => {
         <div className="container mx-auto bg-white p-6 rounded-lg ">
           <div className="relative bg-[#F2F2F2] border h-40 rounded-lg mb-8 shadow-md">
             <h1 className="text-3xl font-bold mt-10 text-center">
-              Expert Details
+           Your Profile 
             </h1>
           </div>
           <div className="relative -mt-32 flex justify-start ms-32">

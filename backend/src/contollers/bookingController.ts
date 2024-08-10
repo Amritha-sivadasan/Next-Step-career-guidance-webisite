@@ -27,7 +27,7 @@ class BookingController {
         });
         return;
       }
-      // await this.slotService.update(slotId, bookingStatus);
+      await this.slotService.update(slotId, bookingStatus);
       res.status(200).json({
         success: true,
         data: result,

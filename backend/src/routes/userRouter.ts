@@ -16,6 +16,7 @@ import subCategoryController from "../contollers/subCategoryController";
 import expertController from "../contollers/expertController";
 import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
+import upload from "../utils/multerConfig";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -86,4 +87,7 @@ router.put(
   bookingController.updateBookingPaymentStatus
 );
 
+
+router.put('/uploadImage',verifyAccessToken,
+  verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
 export default router;

@@ -11,5 +11,5 @@ export interface IStudentService {
       password: string
     ): Promise<{ student: IStudent; accessToken: string; refreshToken: string }>
     findUserById(id:string):Promise<IStudent|null>
-
+    updateStudentData(id:string,student: Partial<IStudent>,file?: Express.Multer.File):Promise<IStudent | null>
   }

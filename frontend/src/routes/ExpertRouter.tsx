@@ -23,8 +23,7 @@ import AvailableSchedule from "../pages/expert/AvailableSchedule";
 import BookingRequestPage from "../pages/expert/BookingRequestPage";
 import BookingDetailsPage from "../pages/expert/BookingDetailsPage";
 import PaymentHistory from "../pages/expert/PaymentHistory";
-import ExpertNavbar from "../components/expert/header/ExpertNavBar";
-import Sidebar from "../components/expert/sidebar/ExpertSidebar";
+import ExpertLayout from "../components/common/expertLayout/ExpertLayout";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -42,91 +41,20 @@ const ExpertRouter = () => {
   }, [dispatch, expert, isAuthenticated]);
   return (
     <Routes>
-      <Route
-        path="/login"
-        element={
-          expertDetails.isAuthenticated ? (
-            <Navigate to="/expert/" />
-          ) : (
-            <Login userType="expert" />
-          )
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          expertDetails.isAuthenticated ? (
-            <Navigate to="/expert/" />
-          ) : (
-            <ExpertSignup />
-          )
-        }
-      />
-      <Route
-        path="/otp-verify"
-        element={
-          expertDetails.isAuthenticated ? (
-            <Navigate to="/expert/" />
-          ) : (
-            <OtpPage userType="expert" />
-          )
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={<ForgotPassword userType="expert" />}
-      />
-
-      <Route
-        path="/fortgot-password-otp"
-        element={<ForgotPasswordOtpPage userType="expert" />}
-      />
-      <Route
-        path="/update-otp"
-        element={<UpdadteWithOtp userType="expert" />}
-      />
-      <Route
-        path="/reset-password"
-        element={<ResetPassword userType="expert" />}
-      />
-
+      <Route  path="/login"  element={  expertDetails.isAuthenticated ? (  <Navigate to="/expert/" />  ) : (  <Login userType="expert" /> ) }  />
+      <Route path="/signup"  element={  expertDetails.isAuthenticated ? (   <Navigate to="/expert/" />  ) : (  <ExpertSignup />  )  }  />
+      <Route path="/otp-verify"  element={  expertDetails.isAuthenticated ? (  <Navigate to="/expert/" />  ) : (  <OtpPage userType="expert" />  ) } />
+      <Route path="/forgot-password" element={<ForgotPassword userType="expert" />}/>
+      <Route  path="/fortgot-password-otp"  element={<ForgotPasswordOtpPage userType="expert" />} />
+      <Route  path="/update-otp"  element={<UpdadteWithOtp userType="expert" />} />
+      <Route  path="/reset-password"  element={<ResetPassword userType="expert" />}  />
       <Route path="/" element={<HomePage />} />
 
-      <Route element={<ExpertPrivateRoute />}>
-        <Route
-          path="/"
-          element={
-            expertDetails?.expert?.is_data_entered ? (
-              <HomePage />
-            ) : (
-              <Navigate to="/expert/about-expert" />
-            )
-          }
-        />
-        <Route
-          path="/about-expert"
-          element={
-            expertDetails?.expert?.is_data_entered ? (
-              <Navigate to="/expert" />
-            ) : (
-              <AboutExpert />
-            )
-          }
-        />
 
-        <Route
-          element={
-            <>
-              <div className="flex py-2 flex-col w-full">
-                <ExpertNavbar />
-                <div className="min-h-screen flex bg-gray-100 ">
-                  <Sidebar />
-                  <Outlet />
-                </div>
-              </div>
-            </>
-          }
-        >
+     <Route element={<ExpertPrivateRoute />}>
+       <Route  path="/"  element={  expertDetails?.expert?.is_data_entered ? (  <HomePage />  ) : (  <Navigate to="/expert/about-expert" />  ) } />
+        <Route path="/about-expert" element={ expertDetails?.expert?.is_data_entered ? (  <Navigate to="/expert" />  ) : (  <AboutExpert /> )  }  />
+        <Route  element={ <ExpertLayout><Outlet/></ExpertLayout>} >
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/available-schedule" element={<AvailableSchedule />} />
           <Route path="/booking-request" element={<BookingRequestPage />} />

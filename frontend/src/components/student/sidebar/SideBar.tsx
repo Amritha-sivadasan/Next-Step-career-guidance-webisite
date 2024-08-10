@@ -1,39 +1,30 @@
 import React from "react";
 
+// Update with paths to your image assets or URLs
+const menuItems = [
+  { title: "My Profile", imageUrl: "/profile.png" },
+  { title: "Schedule Session", imageUrl: "/session.png" },
+  { title: "Psychometric Test", imageUrl: "/test.png" },
+  { title: "Meeting History", imageUrl: "/meeting.png" },
+  { title: "Payment History", imageUrl: "/payment-user.png" },
+];
+
 const UserSideBar: React.FC = () => {
   return (
-    <div className="w-64 bg-gray-800 text-white h-screen flex flex-col p-4">
-      <div className="flex flex-col gap-4">
-        {/* Profile Section */}
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Profile</h2>
-          {/* Add profile details or avatar here */}
+    <div className="sm: md:w-1/3 lg:w-1/4 p-4 border-gray-300">
+      {menuItems.map((item, index) => (
+        <div
+          key={index}
+          className="flex flex-col items-center p-4 mb-4 bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer"
+        >
+          <span className="text-lg">{item.title}</span>
+          <img
+            src={item.imageUrl}
+            alt={item.title}
+            className="w-22 h-24 mb-2" // Adjust size as needed
+          />
         </div>
-
-        {/* Second Section */}
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Second Section</h2>
-          {/* Add content for the second section here */}
-        </div>
-
-        {/* Third Section */}
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Third Section</h2>
-          {/* Add content for the third section here */}
-        </div>
-
-        {/* Fourth Section */}
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Fourth Section</h2>
-          {/* Add content for the fourth section here */}
-        </div>
-
-        {/* Fifth Section */}
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <h2 className="text-lg font-semibold">Fifth Section</h2>
-          {/* Add content for the fifth section here */}
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

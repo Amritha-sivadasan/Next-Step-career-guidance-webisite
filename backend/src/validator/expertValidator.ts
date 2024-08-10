@@ -4,7 +4,7 @@ const expertSchema = Joi.object({
     user_name: Joi.string().min(3).max(30).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).optional(),
-    phonenumber: Joi.string()
+    phoneNumber: Joi.string()
       .pattern(/^[0-9]{10}$/).optional(),
     profile_picture: Joi.string().optional(),
     personal_bio: Joi.string().optional(),

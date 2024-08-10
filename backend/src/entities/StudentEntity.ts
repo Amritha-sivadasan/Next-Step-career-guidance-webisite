@@ -7,7 +7,7 @@ export interface IStudent extends Document  {
   email: string;
   password: string;
   education_level: string;
-  phonenumber: string;
+  phoneNumber: string;
   education_background: string;
   user_type: string;
   profile_picture: string;

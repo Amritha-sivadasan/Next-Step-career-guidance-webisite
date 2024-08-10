@@ -5,6 +5,7 @@ import StudentRepository from "../../repositories/implementations/StudentReposit
 import hashPassword from "../../utils/bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
+import cloudinary from "../../config/cloudinaryConfig";
 
 export default class StudentService implements IStudentService {
   private studentRepository: IStudentRepository;
@@ -143,4 +144,34 @@ export default class StudentService implements IStudentService {
     }
     return null;
   }
+
+    async updateStudentData(id: string, student: Partial<IStudent>,  file?: Express.Multer.File): Promise<IStudent | null> {
+      try {
+        const userExist = await this.studentRepository.findById(id);
+        if (!userExist) {
+          throw new Error("User not found");
+        }
+        let profile_picture = userExist.profile_picture;
+        if(file){
+          const result = await cloudinary.uploader.upload(file.path);
+          profile_picture= result.secure_url;
+        }
+        const updatedData= {
+          ...student,
+          profile_picture
+        }
+        const updatedStudent= await this.studentRepository.update(id,updatedData)
+        if (updatedStudent) {
+          const updatedStudentObj = updatedStudent.toObject();
+          delete updatedStudentObj.password;
+          return updatedStudentObj;
+        }
+        return null;
+      } catch (error) {
+        console.log('error',error)
+        throw error;
+      }
+    }
+
+  
 }

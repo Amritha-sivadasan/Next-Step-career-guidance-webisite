@@ -42,7 +42,7 @@ export const  studentGoogleAuth =async (req: Request, res: Response) => {
         authentication_id: decodedToken.uid,
         authentication_provider: decodedToken.firebase.sign_in_provider || "",
         profile_picture: decodedToken.picture || "",
-        phonenumber: "",
+        phoneNumber: "",
         role: "student",
       };
 
@@ -101,7 +101,7 @@ export const  expertGoogleAuth =async (req: Request, res: Response) => {
         authentication_id: decodedToken.uid,
         authentication_provider: decodedToken.firebase.sign_in_provider || "",
         profile_picture: decodedToken.picture || "",
-        phonenumber: "",
+        phoneNumber: "",
         role: "expert",
       };
 

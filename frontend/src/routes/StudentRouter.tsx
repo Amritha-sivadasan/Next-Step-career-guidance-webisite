@@ -18,9 +18,8 @@ import CategoryDetailsPage from "../pages/student/CategoryDetailsPage";
 import ExpertListing from "../pages/student/ExpertListing";
 import PaymentSuccessPage from "../pages/student/paymentSuccessPage";
 import ProfilePage from "../pages/student/ProfilePage";
-import Navbar from "../components/student/header/Header";
-import Footer from "../components/common/footer/Footer";
 import UserSideBar from "../components/student/sidebar/SideBar";
+import StudentLayout from "../components/common/studentLayout/StudentLayout";
 
 const StudentRouter = () => {
   const dispatch = useDispatch();
@@ -38,111 +37,31 @@ const StudentRouter = () => {
   console.log();
   return (
     <Routes>
-      <Route
-        path="/signup"
-        element={
-          userDeatils?.isAuthenticated ? <Navigate to="/" /> : <Signup />
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          userDeatils.isAuthenticated ? (
-            <Navigate to="/" />
-          ) : (
-            <Login userType="student" />
-          )
-        }
-      />
-      <Route
-        path="/otp-verify"
-        element={
-          userDeatils.isAuthenticated ? (
-            <Navigate to="/" />
-          ) : (
-            <OtpPage userType="student" />
-          )
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={
-          userDeatils.isAuthenticated ? (
-            <Navigate to="/" />
-          ) : (
-            <ForgotPassword userType="student" />
-          )
-        }
-      />
-      <Route
-        path="/fortgot-password-otp"
-        element={
-          userDeatils.isAuthenticated ? (
-            <Navigate to="/" />
-          ) : (
-            <ForgotPasswordOtpPage userType="student" />
-          )
-        }
-      />
+ 
+      <Route path="/signup" element={userDeatils?.isAuthenticated ? <Navigate to="/" /> : <Signup /> }/>
+      <Route path="/login" element={ userDeatils.isAuthenticated ? ( <Navigate to="/" /> ) : ( <Login userType="student" /> ) }/>
+      <Route path="/otp-verify" element={userDeatils.isAuthenticated ? ( <Navigate to="/" />) : ( <OtpPage userType="student" /> ) }/>
+      <Route path="/forgot-password" element={ userDeatils.isAuthenticated ? (<Navigate to="/" />  ) : (  <ForgotPassword userType="student" /> ) }/>
+      <Route path="/fortgot-password-otp"element={ userDeatils.isAuthenticated ? (  <Navigate to="/" /> ) : ( <ForgotPasswordOtpPage userType="student" />  )  } />
+      <Route  path="/reset-password" element={ userDeatils.isAuthenticated ? (  <Navigate to="/" /> ) : (  <ResetPassword userType="student" />  ) }  />
 
-      <Route
-        path="/reset-password"
-        element={
-          userDeatils.isAuthenticated ? (
-            <Navigate to="/" />
-          ) : (
-            <ResetPassword userType="student" />
-          )
-        }
-      />
 
-      <Route
-        element={
-          <>
-            <Navbar />
-
-            <Outlet />
-
-            <Footer />
-          </>
-        }
-      >
+      <Route element={<StudentLayout > <Outlet/>  </StudentLayout>  } >
         <Route path="/" element={<Home />} />
         <Route path="/allcategory/:catName" element={<AllCategoryPage />} />
         <Route path="/categoryDetails/:id" element={<CategoryDetailsPage />} />
         <Route path="/experts/:subCatName" element={<ExpertListing />} />
-        <Route path="/payment-success" element={<PaymentSuccessPage />} />
-        <Route
-          element={
-            <>
-              <UserSideBar /> <Outlet />
-            </>
-          }
-        >
-          <Route path="/profile" element={<ProfilePage />} />
-        </Route>
+       
       </Route>
       <Route element={<StudentPrivateRoute />}>
-        <Route
-          path="/"
-          element={
-            userDeatils?.user?.is_data_entered ? (
-              <Home />
-            ) : (
-              <Navigate to="/about-student" />
-            )
-          }
-        />
-        <Route
-          path="/about-student"
-          element={
-            userDeatils?.user?.is_data_entered ? (
-              <Navigate to="/" />
-            ) : (
-              <AboutUser />
-            )
-          }
-        />
+        <Route  path="/"  element={ userDeatils?.user?.is_data_entered ? (  <Home />  ) : (  <Navigate to="/about-student" />  )  }  />
+        <Route  path="/about-student"  element={  userDeatils?.user?.is_data_entered ? (  <Navigate to="/" /> ) : (  <AboutUser />  )  } />
+        <Route element={<StudentLayout > <Outlet/>  </StudentLayout>  } >
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
+        <Route element={ <> <div className="flex ms-24 flex-grow mt-9">  <UserSideBar /> <Outlet /> </div>  </>  } >
+         <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+        </Route>
       </Route>
     </Routes>
   );

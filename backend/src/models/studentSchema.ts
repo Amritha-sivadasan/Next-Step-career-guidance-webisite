@@ -8,7 +8,7 @@ const StudentSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
     password: { type: String,  },
     education_level: { type: String,  },
-    phonenumber: { type: String,  match: /^[0-9]{10}$/ },
+    phoneNumber: { type: String,  match: /^[0-9]{10}$/ },
     education_background: { type: String, },
     user_type: { type: String,},
     profile_picture: { type: String, default: "" },

@@ -252,3 +252,24 @@ export const getAllExperts= async()=>{
     return (error as Error).response?.data;
   }
 }
+
+
+
+export const uploadImage = async(formData:FormData)=>{
+  try {
+    const response = await studentAxiosInstance.put(
+      `${API_URL}/student/uploadImage/`,formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+      
+    return response.data
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

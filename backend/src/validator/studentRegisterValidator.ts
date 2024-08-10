@@ -6,7 +6,7 @@ const studentSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).optional(),
   education_level: Joi.string().optional(),
-  phonenumber: Joi.string()
+  phoneNumber: Joi.string()
     .pattern(/^[0-9]{10}$/).optional()
     ,
   education_background: Joi.string().optional(),

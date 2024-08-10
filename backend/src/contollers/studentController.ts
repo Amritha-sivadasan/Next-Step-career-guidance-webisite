@@ -178,6 +178,38 @@ class StudentController {
   };
 
 
-}
+  public  updateuserImage = async(req:CustomRequest,res:Response)=>{
+    try {
+      const file = req.file;
+      const student= req.body
+      const id = req.user?.userId;
+
+      console.log('file',file)
+      console.log('student',student)
+      console.log('id',id)
+
+      const result= await this.studentService.updateStudentData(id!,student,file)
+      if (result) {
+        res.status(200).json({
+          success: true,
+          Message: "image updated successfully",
+          data: result,
+        });
+      } else {
+        res.status(404).json({ success: false, Message: "User not found" });
+      }
+    } catch (error) {
+      res
+      .status(500)
+      .json({ success: false, message: "Error occurred during update User" });
+  }
+    }
+  }
+
+
+
+
+
+
 
 export default new StudentController();

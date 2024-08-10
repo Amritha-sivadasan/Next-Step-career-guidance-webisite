@@ -5,7 +5,7 @@ export interface IExpert extends Document {
   user_name: string;
   email: string;
   password: string;
-  phonenumber: string;
+  phoneNumber: string;
   profile_picture: string;
   personal_bio: string;
   consultation_fee: number;
