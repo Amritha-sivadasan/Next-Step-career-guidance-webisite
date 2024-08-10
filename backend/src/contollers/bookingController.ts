@@ -3,6 +3,7 @@ import BookingService from "../services/implementations/BookingService";
 import { ISlotService } from "../services/interface/ISlotService";
 import SlotService from "../services/implementations/SlotService";
 import { Request, Response } from "express";
+import { CustomRequest } from "../entities/jwtEntity";
 
 class BookingController {
   private bookingservice: IBookingService;
@@ -41,18 +42,18 @@ class BookingController {
   };
 
   public findAllExpertBooking = async (
-    req: Request,
+    req: CustomRequest,
     res: Response
   ): Promise<void> => {
-    const id = req.params.id;
+    const id = req.user?.userId;
     try {
-      const result = await this.bookingservice.getBookingByExpertId(id);
+      const result = await this.bookingservice.getBookingByExpertId(id!);
       res
         .status(200)
         .json({ success: true, message: "successfull ", data: result });
     } catch (error) {
       res.status(500).json({
-        success: true,
+        success: false,
         message: "Something went wrong  finding Bookings",
       });
     }
@@ -78,10 +79,11 @@ class BookingController {
   };
   public updateBookingStatus = async (req:Request,res:Response)=>{
     const {id}= req.params
+    const {status}=req.body
     try {
       const response = await this.bookingservice.updateBookingStatus(
         id!,
-        req.body
+        status
       );
       res
         .status(200)
@@ -94,6 +96,25 @@ class BookingController {
       });
     }
   }
+
+  public findAllConfirmBooking = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+    const id = req.user?.userId;
+    try {
+      const result = await this.bookingservice.getConfirmBooking(id!);
+      res
+        .status(200)
+        .json({ success: true, message: "successfull ", data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  finding Bookings",
+      });
+    }
+  };
+
 }
 
 export default new BookingController();

@@ -8,6 +8,7 @@ export interface IBookingRepository{
     updateBookingTransactionId(bookingId: string, transactionId: string): Promise<IBooking | null>
     updateBookingPaymentStatus(transactionId:string,status:string):Promise<void>
     updateBookingStatus(bookingId:string, status:string):Promise<void>
+    findConfirmBooking(id: string): Promise<IBooking[] | null>
   
    
 }

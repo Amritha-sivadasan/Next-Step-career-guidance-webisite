@@ -11,4 +11,5 @@ export interface IBooking extends Document {
   paymentStatus: string;
   transactionId:string;
   paymentMethod:string
+  meetingStatus:string
 }

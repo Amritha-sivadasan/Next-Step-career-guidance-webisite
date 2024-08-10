@@ -89,9 +89,34 @@ const SchedulePage: React.FC = () => {
         Swal.fire("Deleted!", "The slot has been deleted.", "success");
       } catch (error) {
         console.error("Error deleting slot:", error);
-        Swal.fire("Error!", "An error occurred while deleting the slot.", "error");
+        Swal.fire(
+          "Error!",
+          "An error occurred while deleting the slot.",
+          "error"
+        );
       }
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+    const day = date.getDate();
+    const monthName = date.toLocaleDateString("en-US", { month: "long" });
+    const year = date.getFullYear();
+    return `${dayName}, ${day} ${monthName} ${year}`;
+  };
+
+  const formatTime = (timeString: string) => {
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(parseInt(hours, 10));
+    date.setMinutes(parseInt(minutes, 10));
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   };
 
   return (
@@ -121,13 +146,17 @@ const SchedulePage: React.FC = () => {
                 <th className="p-2 border-b"></th>
               </tr>
             </thead>
-            {slots.map((slot, index) => (
-              <tbody key={slot._id}>
-                <tr>
+            <tbody>
+              {slots.map((slot, index) => (
+                <tr key={slot._id}>
                   <td className="p-3 border-b">{index + 1}</td>
-                  <td className="p-3 border-b">{slot.consultationDate}</td>
                   <td className="p-3 border-b">
-                    {slot.consultationStartTime}-{slot.consultationEndTime}
+                    {formatDate(slot.consultationDate)}
+                  </td>
+                  <td className="p-3 border-b">
+                    {`${formatTime(slot.consultationStartTime)} - ${formatTime(
+                      slot.consultationEndTime
+                    )}`}
                   </td>
                   <td className="p-2 border-b text-green-600">
                     {slot.slotStatus}
@@ -141,8 +170,8 @@ const SchedulePage: React.FC = () => {
                     </button>
                   </td>
                 </tr>
-              </tbody>
-            ))}
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
@@ -193,7 +222,10 @@ const SchedulePage: React.FC = () => {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="time-to">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="time-to"
+            >
               Time To
             </label>
             <input

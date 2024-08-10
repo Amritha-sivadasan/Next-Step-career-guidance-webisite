@@ -11,6 +11,7 @@ import { expertGoogleAuth } from "../contollers/firebaseController";
 import upload from "../utils/multerConfig";
 import subCategoryController from "../contollers/subCategoryController";
 import slotController from "../contollers/slotController";
+import bookingController from "../contollers/bookingController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -84,5 +85,7 @@ expertRouter.get(
   slotController.getAllSlotByExpert
 );
 expertRouter.delete("/deleteSlot/:id",verifyAccessToken,verifyRole(role),slotController.deleteSlots);
-
+expertRouter.get('/allBookings',verifyAccessToken,verifyRole(role),bookingController.findAllExpertBooking)
+expertRouter.patch('/confirm-booking/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingStatus)
+expertRouter.get('/get-confirmBooking',verifyAccessToken,verifyRole(role),bookingController.findAllConfirmBooking)
 export default expertRouter;

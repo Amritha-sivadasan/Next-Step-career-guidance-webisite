@@ -8,5 +8,6 @@ export interface IBookingService {
     getBookingBystudentId(id:string):Promise<IBooking[]|null>
     updateBookingStatus(id:string,status:string):Promise<void>
     updateBookingPaymentStatus(id:string, status:string):Promise<void>
+    getConfirmBooking(id: string): Promise<IBooking[] | null>
 
 }

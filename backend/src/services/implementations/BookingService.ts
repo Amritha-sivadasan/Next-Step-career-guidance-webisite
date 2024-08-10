@@ -67,7 +67,7 @@ export default class BookingService implements IBookingService {
   }
   async getBookingByExpertId(id: string): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findAllById(id);
+      const result = await this.bookingRepository.findAllById(id,);
       return result;
     } catch (error) {
       throw error;
@@ -103,6 +103,14 @@ export default class BookingService implements IBookingService {
     try {
 
       await this.bookingRepository.updateBookingPaymentStatus(id,status)
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getConfirmBooking(id: string): Promise<IBooking []| null> {
+    try {
+      const result = await this.bookingRepository.findConfirmBooking(id);
+      return result;
     } catch (error) {
       throw error;
     }
