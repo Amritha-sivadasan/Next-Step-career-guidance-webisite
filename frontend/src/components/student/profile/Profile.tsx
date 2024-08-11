@@ -2,16 +2,19 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useTypeSelector";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import {
+  logoutStudent,
   updatePersonalInfo,
   uploadImage,
 } from "../../../services/api/studentApi";
-import { setUser } from "../../../features/student/authSlice";
+import { logout, setUser } from "../../../features/student/authSlice";
 import { IStudent } from "../../../@types/user";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user } = useAppSelector((state) => state.student);
-  const dispatch= useAppDispatch()
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [isEditingPersonal, setIsEditingPersonal] = useState<boolean>(false);
   const [isEditingEducation, setIsEditingEducation] = useState<boolean>(false);
@@ -140,11 +143,21 @@ const Profile = () => {
     formData.append("profile_picture", file);
     try {
       const response = await uploadImage(formData);
-      dispatch( setUser(response.data))
+      dispatch(setUser(response.data));
     } catch (error) {
       console.error("Error uploading profile picture", error);
     } finally {
       setUploading(false);
+    }
+  };
+  const handleLogout = async () => {
+    const response = await logoutStudent();
+    if (response.success) {
+      localStorage.removeItem("userAuth");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userAccess");
+      navigate("/");
+      dispatch(logout());
     }
   };
 
@@ -154,8 +167,14 @@ const Profile = () => {
         <h1 className="text-3xl text-white font-bold mt-10 text-center">
           Your Profile
         </h1>
+        <div className="flex justify-end me-11 ">
+          {" "}
+          <button onClick={handleLogout} className="bg-white p-2 rounded-lg ">
+            Logout
+          </button>
+        </div>
       </div>
-      <div className="relative -mt-32 flex justify-start ms-32">
+      <div className="relative -mt-32 flex justify-start ms-32 w-1/4">
         <div className="relative flex justify-center items-center">
           <img
             src={previewImage}

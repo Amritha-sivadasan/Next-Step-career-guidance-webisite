@@ -96,8 +96,6 @@ class BookingController {
         return;
       }
 
-
-
       const result = await this.bookingservice.getAllBookingByStudentId(id!,page,limit);
       res
         .status(200)

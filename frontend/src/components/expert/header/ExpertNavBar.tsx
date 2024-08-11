@@ -37,12 +37,12 @@ const ExpertNavbar: React.FC = () => {
           <nav className="flex items-center space-x-20 w-full">
             <ul className="flex space-x-8">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/expert/"
                   className="text-[#0B2149] font-thin hover:text-black"
                 >
                   Home
-                </a>
+                </Link>
               </li>
 
               <li>

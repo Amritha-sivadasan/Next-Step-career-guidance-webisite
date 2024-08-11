@@ -5,7 +5,7 @@ import {
   fetchExpertDetailsById,
   verifyExpert,
 } from "../../../services/api/adminApi";
-import LoadingPage from "../../common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 import { IExpert } from "../../../@types/expert";
 
 import { rejectExpert } from "../../../services/api/adminApi";

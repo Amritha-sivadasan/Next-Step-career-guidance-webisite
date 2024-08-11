@@ -55,7 +55,7 @@ const Sidebar: React.FC = () => {
     if (typeof expert?.profile_picture === "string") {
       return expert.profile_picture;
     }
-    if (expert?.profile_picture instanceof File) {
+    if (expert?.profile_picture) {
       return URL.createObjectURL(expert.profile_picture);
     }
     return "/path/to/placeholder-image.png";
@@ -83,7 +83,7 @@ const Sidebar: React.FC = () => {
       <div
         className={`fixed z-40 md:static md:z-auto transition-transform transform md:transform-none ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:w-72 bg-white p-4 shadow-lg`}
+        } md:w-80 bg-white p-4 shadow-lg`}
       >
         <div className="flex items-center space-x-4 p-3 w-full mb-5 border rounded-lg h-32 bg-[#F2F2F2]">
           <img

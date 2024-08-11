@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
-import { VerifyOtpExpert } from "../../features/expert/middleware/ExpertRegisterThunk";
-
+import { AppDispatch } from "../../../store/store";
+import { VerifyOtp } from "../../../features/student/middleware/StudentRegisterThunk";
+import {
+  registerExpert,
+  VerifyOtpExpert,
+} from "../../../features/expert/middleware/ExpertRegisterThunk";
+import { setUser, setAuthenticated } from "../../../features/student/authSlice";
 import { useNavigate } from "react-router-dom";
-import { forgotPassword } from "../../services/api/studentApi";
-import { forgotPasswordExpertOtp } from "../../services/api/ExpertApi";
+import { sendOtp } from "../../../services/api/studentApi";
+import { registerStudent } from "../../../features/student/middleware/StudentRegisterThunk";
+import { IStudent } from "../../../@types/user";
+import {
+  setExpert,
+  setExpertAuthenticated,
+} from "../../../features/expert/expertAuthSlice";
+import { IExpert } from "../../../@types/expert";
+import { sendOtpExpert } from "../../../services/api/ExpertApi";
 import LoadingPage from "./LoadingPage";
 
 interface OtpPageProps {
@@ -18,7 +28,7 @@ interface OtpFormInputs {
   otp: string;
 }
 
-const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
+const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [canResend, setCanResend] = useState(false);
@@ -45,61 +55,76 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   } = useForm<OtpFormInputs>();
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
-    setLoading(true);
     if (userType == "student") {
-      const storageData = sessionStorage.getItem("userEmail");
+      const storageData = sessionStorage.getItem("userdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
+        const email: string = parsedData.email;
+
         const verifyOtpResult = await dispatch(
           VerifyOtp({ email, otp: data.otp })
         ).unwrap();
 
         if (verifyOtpResult.success) {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/reset-password");
-          }, 1000);
+          setLoading(true);
+          const registerStudentResult = await dispatch(
+            registerStudent(parsedData)
+          ).unwrap();
+          if (registerStudentResult.success) {
+            const userData = registerStudentResult.data as IStudent;
+            if (userData && userData._id) {
+              dispatch(setUser(userData));
+              dispatch(setAuthenticated(true));
+              sessionStorage.removeItem("userdata");
+              localStorage.setItem("userId", userData._id);
+              localStorage.setItem(
+                "userAccess",
+                registerStudentResult.accessToken
+              );
+              localStorage.setItem("userAuth", "true");
+              setLoading(false);
+              navigate("/about-student");
+            } else {
+              console.error("User data is missing or malformed.");
+              setLoading(false);
+            }
+          }
         }
       }
     } else if (userType == "expert") {
-      const storageData = sessionStorage.getItem("expertEmail");
+      const storageData = sessionStorage.getItem("expertdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
+        const email: string = parsedData.email;
         const verifyOtpResult = await dispatch(
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success) {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/expert/reset-password");
-          });
+          setLoading(true);
+          const registerExpertResult = await dispatch(
+            registerExpert(parsedData)
+          ).unwrap();
+          if (registerExpertResult.success) {
+            const expetData = registerExpertResult.data as IExpert;
+            console.log("expertdata", expetData);
+
+            if (expetData && expetData._id) {
+              dispatch(setExpert(expetData));
+              dispatch(setExpertAuthenticated(true));
+              sessionStorage.removeItem("expertdata");
+              localStorage.setItem("expertId", expetData._id);
+              localStorage.setItem(
+                "expertAccess",
+                registerExpertResult.accessToken
+              );
+              localStorage.setItem("expertAuth", "true");
+              setLoading(false);
+              navigate("/expert/about-expert");
+            } else {
+              console.log("Expert data is missing or malformed.");
+            }
+          }
         }
-      }
-    }
-  };
-
-  const resendOtp = () => {
-    if (userType == "student") {
-      const storageData = sessionStorage.getItem("userEmail");
-      console.log("storagedata", storageData);
-
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
-        forgotPassword(email);
-        setTimer(10);
-        setCanResend(false);
-      }
-    } else if (userType === "expert") {
-      const storageData = sessionStorage.getItem("expertEmail");
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
-        forgotPasswordExpertOtp(email);
-        setTimer(10);
-        setCanResend(false);
       }
     }
   };
@@ -107,6 +132,28 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   if (loading) {
     return <LoadingPage />;
   }
+
+  const resendOtp = () => {
+    if (userType == "student") {
+      const storageData = sessionStorage.getItem("userdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
+        sendOtp(email);
+        setTimer(10);
+        setCanResend(false);
+      }
+    } else {
+      const storageData = sessionStorage.getItem("expertdata");
+      if (storageData) {
+        const parsedData = JSON.parse(storageData);
+        const email: string = parsedData.email;
+        sendOtpExpert(email);
+        setTimer(10);
+        setCanResend(false);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
@@ -187,4 +234,4 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   );
 };
 
-export default ForgotPasswordOtpPage;
+export default OtpPage;

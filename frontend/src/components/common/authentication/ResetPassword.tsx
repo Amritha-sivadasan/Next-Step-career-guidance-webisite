@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { resetPasssword } from "../../services/api/studentApi";
+import { resetPasssword } from "../../../services/api/studentApi";
 import { useNavigate } from "react-router-dom";
-import { resetPassswordExpert } from "../../services/api/ExpertApi";
+import { resetPassswordExpert } from "../../../services/api/ExpertApi";
 import { toast } from "react-toastify";
 import LoadingPage from "./LoadingPage";
 

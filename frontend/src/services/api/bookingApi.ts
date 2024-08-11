@@ -138,10 +138,10 @@ export  const refundPayment = async(id:string)=>{
 }
 
 
-export const getAllPaymentByUserId = async () => {
+export const getAllPaymentByUserId = async (page:number,limit:number) => {
   try {
     const response = await studentAxiosInstance.get(
-      `${API_URL}/student/all-payment`,
+      `${API_URL}/student/all-payment?page=${page}&limit=${limit}`,
       {
         withCredentials: true,
       }

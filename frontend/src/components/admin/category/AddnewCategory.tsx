@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { addCategory } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingPage from "../../../components/common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 
 interface IFormInput {
   catName: string;
@@ -62,7 +62,8 @@ const AddnewCategory: React.FC = () => {
                     {...register("catName", {
                       required: "Category Name is required",
                       validate: (value) =>
-                        value.trim().length > 0 || "Category Name cannot be empty",
+                        value.trim().length > 0 ||
+                        "Category Name cannot be empty",
                     })}
                   />
                   {errors.catName && (
@@ -82,7 +83,8 @@ const AddnewCategory: React.FC = () => {
                     {...register("description", {
                       required: "Category Description is required",
                       validate: (value) =>
-                        value.trim().length > 0 || "Category Description is empty",
+                        value.trim().length > 0 ||
+                        "Category Description is empty",
                     })}
                   />
                   {errors.description && (

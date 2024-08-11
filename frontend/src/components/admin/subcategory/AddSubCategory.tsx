@@ -6,7 +6,7 @@ import {
 } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingPage from "../../../components/common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 import { ICategory } from "../../../@types/dashboard";
 
 interface IFormInput {

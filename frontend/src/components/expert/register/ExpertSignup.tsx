@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
-import { sendOtpExpert } from "../../../services/api/ExpertApi"; 
+import { sendOtpExpert } from "../../../services/api/ExpertApi";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../../../config/firebase";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
-import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk"; 
+import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk";
 import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { IExpert } from "../../../@types/expert";
-import LoadingPage from "../../../components/common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 
 interface SignupFormInputs {
   user_name: string;
@@ -132,7 +132,8 @@ const ExpertSignup: React.FC = () => {
                 type="text"
                 {...register("user_name", {
                   required: "Username is required",
-                  validate: (value) => !/\s/.test(value) || "Username should not contain spaces"
+                  validate: (value) =>
+                    !/\s/.test(value) || "Username should not contain spaces",
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Username"

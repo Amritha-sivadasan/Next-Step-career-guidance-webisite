@@ -3,6 +3,7 @@ import { getAllBookingDetailsByStudentId } from "../../../services/api/bookingAp
 import { IBooking } from "../../../@types/booking";
 import { ISlot } from "../../../@types/slot";
 import { IExpert } from "../../../@types/expert";
+import { formatDate, formatTime } from "../../../utils/generalFuncions";
 const ScheduledSession = () => {
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,26 +27,8 @@ const ScheduledSession = () => {
     fetchAllBooking(currentPage);
   }, [currentPage]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const day = date.getDate();
-    const monthName = date.toLocaleDateString("en-US", { month: "long" });
-    const year = date.getFullYear();
-    return `${dayName}, ${day} ${monthName} ${year}`;
-  };
 
-  const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(":");
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
+ 
 
   const handleViewMore = () => {
     if (hasMore) {

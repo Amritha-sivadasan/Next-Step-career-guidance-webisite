@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../../features/student/authSlice";
 import { IStudent } from "../../../@types/user";
-import LoadingPage from "../../common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 
 interface FormInputs {
   education_level: string;

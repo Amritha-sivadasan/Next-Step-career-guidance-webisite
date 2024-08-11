@@ -6,7 +6,7 @@ import {
   fetchAllSubCategories,
 } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
-import LoadingPage from "../../../components/common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 import Swal from "sweetalert2";
 
 interface Pagination {

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { VerifyOtp } from "../../features/student/middleware/StudentRegisterThunk";
-import { VerifyOtpExpert } from "../../features/expert/middleware/ExpertRegisterThunk";
+import { AppDispatch } from "../../../store/store";
+import { VerifyOtp } from "../../../features/student/middleware/StudentRegisterThunk";
+import { VerifyOtpExpert } from "../../../features/expert/middleware/ExpertRegisterThunk";
 
 import { useNavigate } from "react-router-dom";
-import { forgotPassword } from "../../services/api/studentApi";
-import { forgotPasswordExpertOtp, upadateExpert } from "../../services/api/ExpertApi";
+import { forgotPassword } from "../../../services/api/studentApi";
+import {
+  forgotPasswordExpertOtp,
+  upadateExpert,
+} from "../../../services/api/ExpertApi";
 import LoadingPage from "./LoadingPage";
-import { useAppSelector } from "../../hooks/useTypeSelector";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 interface OtpPageProps {
   userType: "student" | "expert";
@@ -73,13 +76,12 @@ const UpdateWithOtp: React.FC<OtpPageProps> = ({ userType }) => {
           VerifyOtpExpert({ email, otp: data.otp })
         ).unwrap();
         if (verifyOtpResult.success && expert && expert._id) {
-          const response = await upadateExpert(expert._id,{email:email} );
-          if(response.success){
+          const response = await upadateExpert(expert._id, { email: email });
+          if (response.success) {
             setTimeout(() => {
               setLoading(false);
               navigate("/expert/profile");
             });
-
           }
         }
       }

@@ -3,14 +3,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { AppDispatch } from "../../../store/store";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { sendOtp } from "../../../services/api/studentApi";
 import { app } from "../../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../../features/student/authSlice";
 import { IStudent } from "../../../@types/user";
-import LoadingPage from "../../common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 import { validatePhoneNumber } from "../../../utils/validator/studentsingupvalidator";
 
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
@@ -111,10 +111,10 @@ const Signup: React.FC = () => {
 
   return (
     <div className="h-screen ">
-      <header className="p-4 flex items-center bg-white text-[#0B2149]">
+      <Link to='/' className="p-4 flex items-center bg-white text-[#0B2149]">
         <img src="/image.png" alt="Website Logo" className="h-6" />
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
-      </header>
+      </Link>
       <div className="flex flex-col md:flex-row w-full max-h-screen">
         <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
           <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">

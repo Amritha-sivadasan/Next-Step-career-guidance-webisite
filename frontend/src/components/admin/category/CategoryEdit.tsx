@@ -6,7 +6,7 @@ import {
   updateCategory,
 } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
-import LoadingPage from "../../../components/common/LoadingPage";
+import LoadingPage from "../../common/authentication/LoadingPage";
 import Swal from "sweetalert2";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 
@@ -161,8 +161,11 @@ const EditCategory = () => {
               <Controller
                 name="description"
                 control={control}
-                rules={{ required: "Description is required", validate: (value) =>
-                  value.trim() !== "" || "Description cannot be just spaces", }}
+                rules={{
+                  required: "Description is required",
+                  validate: (value) =>
+                    value.trim() !== "" || "Description cannot be just spaces",
+                }}
                 render={({ field }) => (
                   <textarea
                     id="description"

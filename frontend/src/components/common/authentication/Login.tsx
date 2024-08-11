@@ -1,27 +1,27 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   LoginResponse,
   loginUser,
-} from "../../features/student/middleware/StudentLoginThunk";
+} from "../../../features/student/middleware/StudentLoginThunk";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { setUser, setAuthenticated } from "../../features/student/authSlice";
+import { AppDispatch } from "../../../store/store";
+import { setUser, setAuthenticated } from "../../../features/student/authSlice";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { app } from "../../config/firebase";
-import { IStudent } from "../../@types/user";
-import { registerStudentWithGoogle } from "../../features/student/middleware/StudentRegisterThunk";
+import { app } from "../../../config/firebase";
+import { IStudent } from "../../../@types/user";
+import { registerStudentWithGoogle } from "../../../features/student/middleware/StudentRegisterThunk";
 import {
   Expertlogin,
   LoginResponseExpert,
-} from "../../features/expert/middleware/ExpertLoginThunk";
+} from "../../../features/expert/middleware/ExpertLoginThunk";
 import {
   setExpert,
   setExpertAuthenticated,
-} from "../../features/expert/expertAuthSlice";
-import { IExpert } from "../../@types/expert";
-import { registerExpertWithGoogle } from "../../features/expert/middleware/ExpertRegisterThunk";
+} from "../../../features/expert/expertAuthSlice";
+import { IExpert } from "../../../@types/expert";
+import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk";
 import LoadingPage from "./LoadingPage";
 
 interface LoginPageProps {
@@ -116,7 +116,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             localStorage.setItem("userId", userData._id);
             localStorage.setItem(
               "userAccess",
-        
+
               registerStudentResult.accessToken
             );
             localStorage.setItem("userAuth", "true");
@@ -172,11 +172,10 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
       <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
-
-        <div className="absolute top-6 left-8 flex items-center">
+        <Link to={userType=='student' ? '/':'/expert'} className="absolute top-6 left-8 flex items-center">
           <img src="/image.png" alt="Website Logo" className="h-6" />
           <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
-        </div>
+        </Link>
 
         <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
           <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">

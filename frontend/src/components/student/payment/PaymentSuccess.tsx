@@ -12,7 +12,7 @@ const PaymentSuccess: React.FC = () => {
       <img
         src="/payment.png"
         alt="Success"
-        className="w-64  h-50 object-cover mb-6" // Adjust size as needed
+        className="w-64  h-50 object-cover mb-6" 
       />
       <h1 className="text-3xl font-semibold text-green-600 mb-4">
         Payment Successful
