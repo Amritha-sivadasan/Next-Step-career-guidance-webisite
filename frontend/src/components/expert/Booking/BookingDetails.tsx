@@ -6,6 +6,8 @@ import { ISlot } from "../../../@types/slot";
 
 const BookingDetails = () => {
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
 
   useEffect(() => {
     const fetchConfirmBooking = async () => {
@@ -37,12 +39,23 @@ const BookingDetails = () => {
     });
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentBookings = bookingDetails.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const handleViewMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
   return (
-    <div className="p-4 min-h-screen  bg-white rounded-lg ">
+    <div className="p-4 min-h-screen bg-white rounded-lg">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
 
       <div className="space-y-4">
-        {bookingDetails.map((request) => {
+        {currentBookings.map((request) => {
           const student = request.studentId as IStudent;
           const slot = request.slotId as ISlot;
 
@@ -104,7 +117,17 @@ const BookingDetails = () => {
           );
         })}
       </div>
-     
+
+      {bookingDetails.length > currentBookings.length && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleViewMore}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+          >
+            View More
+          </button>
+        </div>
+      )}
     </div>
   );
 };

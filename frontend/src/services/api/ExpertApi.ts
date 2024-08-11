@@ -213,3 +213,23 @@ export const upadateExpert = async(expertId:string,updateData:Partial<IExpert>)=
     return (error as Error).response?.data;
   }
 }
+
+
+export const uploadExpertImage = async (formData: FormData) => {
+  try {
+    const response = await axiosInstance.put(
+      `${API_URL}/expert/uploadImage/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

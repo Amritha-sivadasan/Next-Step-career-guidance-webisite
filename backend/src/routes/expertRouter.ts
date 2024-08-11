@@ -84,6 +84,8 @@ expertRouter.get(
   verifyRole(role),
   slotController.getAllSlotByExpert
 );
+
+expertRouter.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single('profile_picture'),expertController.updateExpretImage)
 expertRouter.delete("/deleteSlot/:id",verifyAccessToken,verifyRole(role),slotController.deleteSlots);
 expertRouter.get('/allBookings',verifyAccessToken,verifyRole(role),bookingController.findAllExpertBooking)
 expertRouter.patch('/confirm-booking/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingStatus)

@@ -194,6 +194,7 @@ export default class ExpertService implements IExpertService {
         profile_picture,
         credential: credentialImage,
       };
+ 
       const updatedExpert = await this.expertRepository.update(id, updatedData);
       return updatedExpert ? excludePassword(updatedExpert) : null;
     } catch (error) {
@@ -219,6 +220,34 @@ export default class ExpertService implements IExpertService {
       const data = await this.expertRepository.findAllExpert()
         return data
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateExpertImage(id: string, student: Partial<IExpert>,  file?: Express.Multer.File): Promise<IExpert | null> {
+    try {
+      const existingExpert = await this.expertRepository.findById(id);
+      if (!existingExpert) {
+        throw new Error("User not found");
+      }
+      let profile_picture = existingExpert.profile_picture;
+      if(file){
+        const result = await cloudinary.uploader.upload(file.path);
+        profile_picture= result.secure_url;
+      }
+      const updatedData= {
+        ...student,
+        profile_picture
+      }
+      const updatedStudent= await this.expertRepository.update(id,updatedData)
+      if (updatedStudent) {
+        const updatedStudentObj = updatedStudent.toObject();
+        delete updatedStudentObj.password;
+        return updatedStudentObj;
+      }
+      return null;
+    } catch (error) {
+      console.log('error',error)
       throw error;
     }
   }

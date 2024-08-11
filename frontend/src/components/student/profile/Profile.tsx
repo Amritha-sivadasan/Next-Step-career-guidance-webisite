@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useEffect } from "react";
-import { useAppSelector } from "../../../hooks/useTypeSelector";
+import { useAppDispatch, useAppSelector } from "../../../hooks/useTypeSelector";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import {
   updatePersonalInfo,
@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 
 const Profile = () => {
   const { user } = useAppSelector((state) => state.student);
+  const dispatch= useAppDispatch()
 
   const [isEditingPersonal, setIsEditingPersonal] = useState<boolean>(false);
   const [isEditingEducation, setIsEditingEducation] = useState<boolean>(false);
@@ -139,7 +140,7 @@ const Profile = () => {
     formData.append("profile_picture", file);
     try {
       const response = await uploadImage(formData);
-      setUser(response.data);
+      dispatch( setUser(response.data))
     } catch (error) {
       console.error("Error uploading profile picture", error);
     } finally {

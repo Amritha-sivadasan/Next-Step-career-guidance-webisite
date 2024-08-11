@@ -15,6 +15,7 @@ export default class ExpertRepository implements IExpertRepository {
 
       existingExpert.set(expert);
       const updatedExpert = await existingExpert.save();
+   
       return updatedExpert;
     } catch (error) {
       console.log("Error occurred in update repository", error);

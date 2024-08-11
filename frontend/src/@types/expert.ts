@@ -4,7 +4,7 @@ export interface IExpert {
     email: string;
     password: string;
     phoneNumber: string;
-    profile_picture: File |string;
+    profile_picture: string;
     personal_bio: string;
     consultation_fee: number;
     credential: File |string;

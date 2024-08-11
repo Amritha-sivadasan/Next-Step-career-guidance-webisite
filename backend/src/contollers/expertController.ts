@@ -272,7 +272,28 @@ class ExpertController {
     }
    }
 
+   public  updateExpretImage = async(req:CustomRequest,res:Response)=>{
+    try {
+      const file = req.file;
+      const expert= req.body
+      const id = req.user?.userId;
 
+      const result= await this.expertService.updateExpertImage(id!,expert,file)
+      if (result) {
+        res.status(200).json({
+          success: true,
+          Message: "image updated successfully",
+          data: result,
+        });
+      } else {
+        res.status(404).json({ success: false, Message: "User not found" });
+      }
+    } catch (error) {
+      res
+      .status(500)
+      .json({ success: false, message: "Error occurred during update User" });
+  }
+    }
 
 }
 
