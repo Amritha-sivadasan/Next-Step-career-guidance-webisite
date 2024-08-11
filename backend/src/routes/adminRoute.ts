@@ -32,4 +32,7 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  adminRoute.patch('/rejectExpert/:id',verifyAccessToken,verifyRole(role),adminController.rejectExpert)
 
 
+ adminRoute.get('/allStudent',verifyAccessToken,verifyRole(role),adminController.getAllStudents)
+ adminRoute.get('/studentById/:id',verifyAccessToken,verifyRole(role),adminController.getStudentById)
+
 export default adminRoute

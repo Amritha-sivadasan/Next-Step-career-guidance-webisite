@@ -192,20 +192,4 @@ export const updateSubCategory = async (id: string, data: FormData) => {
   }
 };
 
-export const fetchAllExpert = async (page: number, limit: number) => {
-  try {
-    const response = await adminAxiosInstance.get(
-      `${API_URL}/admin/allExperts?page=${page}&limit=${limit}`,
-      {
-        withCredentials: true,
-      }
-    );
 
-    if (response.data.success) {
-
-      return response.data;
-    }
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-};

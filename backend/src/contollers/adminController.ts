@@ -5,15 +5,18 @@ import StudentService from "../services/implementations/StudentService";
 import ExpertService from "../services/implementations/ExpertService";
 import { IExpertService } from "../services/interface/IExpertService";
 import { CustomRequest } from "../entities/jwtEntity";
+import { IStudentService } from "../services/interface/IStudentService";
 
 
 class AdminController {
   private adminService: IAdminService;
   private expertService: IExpertService;
+  private studentService:IStudentService
 
   constructor() {
     this.adminService = new AdminService();
     this.expertService = new ExpertService();
+    this.studentService= new StudentService
   }
 
   public loginAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -68,7 +71,6 @@ class AdminController {
       const page: number = parseInt(req.query.page as string, 10) || 1;
       const limit: number = parseInt(req.query.limit as string, 10) || 10;
 
-      // Ensure valid page and limit
         if (page <= 0 || limit <= 0) {
           res.status(400).json({
             message: "Invalid page or limit value",
@@ -78,6 +80,46 @@ class AdminController {
         }
 
       const response = await this.expertService.getAllExperts(page, limit);
+
+
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: {
+          items: response.items,
+          pagination: {
+            totalCount: response.totalCount,
+            totalPages: response.totalPages,
+            currentPage: response.currentPage,
+            perPage: limit,
+          },
+        }
+      });
+    } catch (error) {
+      console.log("error during get all users");
+
+      res.status(500).json({
+        message: "something went wrong on get all users ",
+        success: false,
+      });
+    }
+  };
+
+
+  public getAllStudents = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const limit: number = parseInt(req.query.limit as string, 10) || 10;
+
+        if (page <= 0 || limit <= 0) {
+          res.status(400).json({
+            message: "Invalid page or limit value",
+            success: false,
+          });
+          return;
+        }
+
+      const response = await this.studentService.getAllStudents(page, limit);
 
 
       res.status(200).json({
@@ -117,6 +159,25 @@ class AdminController {
 
       res.status(500).json({
         message: "something went wrong on get expert by id ",
+        success: false,
+      });
+    }
+  };
+
+  public getStudentById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = req.params.id;
+      const response = await this.studentService.getStudentById(id);
+      res.status(200).json({
+        success: true,
+        message: "Student details here",
+        data: response,
+      });
+    } catch (error) {
+      console.log("error during get Student by id ");
+
+      res.status(500).json({
+        message: "something went wrong on get Student by id ",
         success: false,
       });
     }

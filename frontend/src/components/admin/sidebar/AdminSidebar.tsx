@@ -87,7 +87,7 @@ const Sidebar: React.FC = () => {
         </Link>
         <Link
           to="/admin/users"
-          className={getLinkClass(["/admin/users"])}
+          className={getLinkClass(["/admin/users","/admin/studentView"])}
           onClick={handleLinkClick}
         >
           <FaUsers className="mr-2" />

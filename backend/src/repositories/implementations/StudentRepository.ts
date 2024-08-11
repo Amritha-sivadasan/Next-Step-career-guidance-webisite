@@ -33,8 +33,9 @@ export default class StudentRepository implements IStudentRepository {
       throw error;
     }
   }
-  async findAll(): Promise<IStudent[]> {
-    return Student.find();
+  async findAll(page:number,limit:number): Promise<IStudent[]> {
+    const skip = (page - 1) * limit;
+    return Student.find().skip(skip).limit(limit).exec()
   }
   async findOne(email: string): Promise<IStudent | null> {
     return Student.findOne({ email });
@@ -42,6 +43,9 @@ export default class StudentRepository implements IStudentRepository {
   
   async findUserById(authentication_id: string): Promise<IStudent | null> {
     return Student.findOne({ authentication_id });
+  }
+  async countDocuments(): Promise<number> {
+    return Student.countDocuments().exec();
   }
 
   async create(student: Partial<IStudent>): Promise<IStudent> {

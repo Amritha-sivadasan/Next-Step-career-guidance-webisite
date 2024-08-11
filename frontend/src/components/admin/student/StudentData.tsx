@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import LoadingPage from "../../common/authentication/LoadingPage"; // Ensure you have a LoadingPage component
+import LoadingPage from "../../common/authentication/LoadingPage";
 import { useNavigate } from "react-router-dom";
-import { fetchAllExpert } from "../../../services/api/adminApi";
-import { IExpert } from "../../../@types/expert";
+import { fetchAllEStudent } from "../../../services/api/adminApi";
+import { IStudent } from "../../../@types/user";
 
 interface Pagination {
   totalCount: number;
@@ -12,16 +12,16 @@ interface Pagination {
   perPage: number;
 }
 
-interface ExpertsResponse {
+interface StduentResponse {
   data: {
-    items: IExpert[];
+    items: IStudent[];
     pagination: Pagination;
   };
   message?: string;
 }
 
-const Experts: React.FC = () => {
-  const [experts, setExperts] = useState<IExpert[]>([]);
+const StudentData = () => {
+  const [students, setStudents] = useState<IStudent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -31,18 +31,18 @@ const Experts: React.FC = () => {
   useEffect(() => {
     const loadExperts = async () => {
       try {
-        const response: ExpertsResponse = await fetchAllExpert(
+        const response: StduentResponse = await fetchAllEStudent(
           currentPage,
           itemsPerPage
         );
         if (response.data) {
-          setExperts(response.data.items);
+          setStudents(response.data.items);
           setTotalPages(response.data.pagination.totalPages);
         } else {
-          toast.error(response.message || "Failed to fetch experts");
+          toast.error(response.message || "Failed to fetch students");
         }
       } catch (err) {
-        toast.error("Failed to fetch experts");
+        toast.error("Failed to fetch students");
       } finally {
         setLoading(false);
       }
@@ -51,8 +51,8 @@ const Experts: React.FC = () => {
     loadExperts();
   }, [currentPage, itemsPerPage]);
 
-  const handleViewButton = (expertId: string) => {
-    navigate(`/admin/expertView/${expertId}`);
+  const handleViewButton = (studentId: string) => {
+    navigate(`/admin/studentView/${studentId}`);
   };
 
   const handlePageChange = (page: number) => {
@@ -72,85 +72,71 @@ const Experts: React.FC = () => {
   return (
     <main className="flex-1 p-6 bg-gray-100">
       <div className="bg-white p-4 shadow rounded-lg">
-        <div className="m-5 flex flex-col sm:flex-row sm:justify-between sm:items-center mb-12">
-          <h1 className="text-2xl sm:text-3xl font-bold">Experts List</h1>
+        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+          <h1 className="text-2xl sm:text-3xl font-bold">Students List</h1>
         </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white mt-4">
             <thead>
               <tr>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
                   No
                 </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
                   Profile
                 </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
-                  Expert Name
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
+                  Student Name
                 </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
-                  SubCategory Name
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
+                  Education Level
                 </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
                   Email Id
                 </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
+                  Subject
+                </th>
+                <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
                   Status
                 </th>
                 <th className="py-2 px-4 border-b text-left text-xs sm:text-sm md:text-center">
-                  Active
-                </th>
-                <th className="py-2 border-b text-left text-xs sm:text-sm md:text-center">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              {experts.map((expert, index) => (
-                <tr key={expert._id}>
-                  <td className="py-2 border-b text-center text-xs sm:text-sm md:text-center">
+              {students.map((student, index) => (
+                <tr key={student._id}>
+                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
                     {index + 1}
                   </td>
-                  <td className="py-2 border-b text-center">
-                    {typeof expert.profile_picture == "string" && (
+                  <td className="py-2 px-4 border-b text-center">
+                    {typeof student.profile_picture === "string" && (
                       <img
-                        src={expert.profile_picture}
+                        src={student.profile_picture}
                         alt="Profile"
                         className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
                       />
                     )}
                   </td>
-                  <td className="py-2 border-b text-center text-xs sm:text-sm md:text-center">
-                    {expert.user_name}
+                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+                    {student.user_name}
                   </td>
-                  <td className="py-2 border-b text-center text-xs sm:text-sm md:text-center">
-                    {expert.subCatName}
+                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+                    {student.education_level}
                   </td>
-                  <td className="py-2 border-b text-center text-xs sm:text-sm md:text-center">
-                    {expert.email}
+                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+                    {student.email}
                   </td>
-                  <td className="py-2 border-b text-center">
-                    <span
-                      className={`px-2 py-1 rounded-full text-white text-xs sm:text-sm md:text-center ${
-                        expert.is_credential_validate === "pending"
-                          ? "bg-yellow-500"
-                          : expert.is_credential_validate === "true"
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
-                    >
-                      {expert.is_credential_validate === "pending"
-                        ? "Pending"
-                        : expert.is_credential_validate === "true"
-                        ? "Validate"
-                        : "Rejected"}
-                    </span>
+                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+                    {student.education_background}
                   </td>
                   <td className="py-2 px-4 border-b text-center">
-                    {expert.is_active ? (
+                    {student.is_active ? (
                       <button
-                        className="px-3 py-1 bg-red-800 text-white rounded-full hover:bg-red-700"
+                        className="px-3 py-1 bg-red-800 text-white rounded hover:bg-red-700"
                         // onClick={() => handleBlockUnblock(student._id, "block")}
                       >
                         Block
@@ -166,10 +152,10 @@ const Experts: React.FC = () => {
                       </button>
                     )}
                   </td>
-                  <td className="py-2 border-b text-center">
+                  <td className="py-2 px-4 border-b text-center">
                     <button
-                      className="bg-gray-200 px-2 py-1 rounded text-xs sm:text-sm md:text-base"
-                      onClick={() => handleViewButton(expert._id)}
+                      className="bg-gray-200 px-4 py-1 rounded text-xs sm:text-sm md:text-center"
+                      onClick={() => handleViewButton(student._id)}
                     >
                       View
                     </button>
@@ -204,4 +190,4 @@ const Experts: React.FC = () => {
   );
 };
 
-export default Experts;
+export default StudentData;

@@ -7,19 +7,31 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
 
+
+function excludePassword(expert: any): IStudent {
+  const expertObj = expert.toObject();
+  delete expertObj.password;
+  return expertObj;
+}
+
 export default class StudentService implements IStudentService {
   private studentRepository: IStudentRepository;
   constructor() {
     this.studentRepository = new StudentRepository();
   }
 
-  async getAllStudents(): Promise<IStudent[]> {
-    const students = await this.studentRepository.findAll();
-    return students.map(student => {
-      const studentObj = student.toObject();
-      delete studentObj.password;
-      return studentObj;
-    });
+  async getAllStudents(page:number,limit:number): Promise<{items: IStudent[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;}> {
+    const students = await this.studentRepository.findAll(page,limit);
+    const totalCount = await this.studentRepository.countDocuments();
+    return {
+      items: students.map((students) => excludePassword(students)),
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    }
   }
 
   async getStudentById(id: string): Promise<IStudent | null> {

@@ -22,6 +22,8 @@ import Header from "../components/admin/header/AdminHeader";
 import Sidebar from "../components/admin/sidebar/AdminSidebar";
 import BookingDetails from "../components/admin/booking/BookingDetails";
 import BookingView from "../components/admin/booking/BookingView";
+import StudentDetails from "../pages/admin/StudentDetails";
+import StudentSingleView from "../pages/admin/StudentSingleView";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -85,6 +87,8 @@ const AdminRouter = () => {
               path="/expertView/:expertId"
               element={<ExpertDetailsView />}
             />
+            <Route path="/users" element={<StudentDetails />} />
+            <Route path="/studentView/:studentId" element={<StudentSingleView />} />
           </Route>
         </Route>
       </Routes>
