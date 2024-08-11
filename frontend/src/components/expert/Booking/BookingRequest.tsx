@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa"; // For Confirm and Cancel icons
 import {
   confirmBooking,
   getAllBookingByExpertId,
+  refundPayment,
 } from "../../../services/api/bookingApi";
 import { IBooking } from "../../../@types/booking";
 import { IStudent } from "../../../@types/user";
 import { ISlot } from "../../../@types/slot";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
+
 
 const BookingRequest = () => {
   const [bookingRequests, setBookingRequests] = useState<IBooking[]>([]);
@@ -54,9 +59,19 @@ const BookingRequest = () => {
     }
   };
 
-  const handleCancel = (id: string) => {
-    // Handle cancel action
-    console.log("Cancelled request with ID:", id);
+  const handleCancel =async (id: string) => {
+    const stripe = await stripePromise;
+    const response = await refundPayment(id)
+
+    const result = await stripe?.redirectToCheckout({
+      sessionId: response.data.sessionId,
+    });
+    if (result?.error) {
+      toast.error(
+        result.error.message ||
+          "An error occurred while redirecting to Stripe"
+      );
+    }
   };
 
   return (
@@ -135,8 +150,6 @@ const BookingRequest = () => {
             </div>
           );
         })}
-
-       
       </div>
     </div>
   );

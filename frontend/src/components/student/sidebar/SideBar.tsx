@@ -4,7 +4,11 @@ import { Link } from "react-router-dom";
 // Update with paths to your image assets or URLs
 const menuItems = [
   { title: "My Profile", imageUrl: "/profile.png", path: "/profile" },
-  { title: "Schedule Session", imageUrl: "/session.png", path: "/schedule" },
+  {
+    title: "Schedule Session",
+    imageUrl: "/session.png",
+    path: "/schedule-session",
+  },
   { title: "Psychometric Test", imageUrl: "/test.png", path: "/test" },
   { title: "Meeting History", imageUrl: "/meeting.png", path: "/history" },
   { title: "Payment History", imageUrl: "/payment-user.png", path: "/payment" },

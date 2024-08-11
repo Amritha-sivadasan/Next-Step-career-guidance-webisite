@@ -78,6 +78,25 @@ class BookingController {
     }
   };
 
+
+  public findAllStudentPayment = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+    const id = req.user?.userId;
+    try {
+      const result = await this.bookingservice.getAllBookingByStudentId(id!);
+      res
+        .status(200)
+        .json({ success: true, message: "successfull ", data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  finding Bookings",
+      });
+    }
+  };
+
   public updateBookingPaymentStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     const {status}=req.body
@@ -122,7 +141,18 @@ class BookingController {
   ): Promise<void> => {
     const id = req.user?.userId;
     try {
-      const result = await this.bookingservice.getConfirmBooking(id!);
+
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const limit: number = parseInt(req.query.limit as string, 10) || 10;
+      if (page <= 0 || limit <= 0) {
+        res.status(400).json({
+          message: "Invalid page or limit value",
+          success: false,
+        });
+        return;
+      }
+
+      const result = await this.bookingservice.getConfirmBooking(id!,page,limit);
       res
         .status(200)
         .json({ success: true, message: "successfull ", data: result });
@@ -133,6 +163,21 @@ class BookingController {
       });
     }
   };
+
+  public refundPayment = async(req:CustomRequest,res:Response)=>{
+    try {
+      const {id}=req.params
+
+      const response = await this.bookingservice.refundPayment(id)
+      res.status(200).json({message:'Refund success',data:response,success:true})
+      
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  refunding payment",
+      });
+    }
+  }
 
 }
 

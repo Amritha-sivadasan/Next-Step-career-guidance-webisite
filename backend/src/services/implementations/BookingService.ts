@@ -59,6 +59,52 @@ export default class BookingService implements IBookingService {
       throw new Error("Failed to create booking and Stripe session");
     }
   }
+
+  async refundPayment(id: string): Promise<{sessionId:string}> {
+    try {
+      const bookingDetails = await this.bookingRepository.findById(id);
+      if (!bookingDetails) {
+        throw new Error("Booking details not found");
+      }
+  
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "inr",
+              product_data: {
+                name: "Consultation Slot cancel",
+                description: ` Cancel Booking slot with expert ${bookingDetails.expertId}`,
+              },
+              unit_amount: bookingDetails.paymentAmount! * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `${process.env.FRONTEND_URL}/expert/booking-details`,
+        cancel_url: `${process.env.FRONTEND_URL}/expert/payment-cancel`,
+        metadata: {
+          bookingId: bookingDetails._id.toString(),
+        },
+      });
+
+    
+      await this.updateBookingStatus(id,'cancelled')
+      await this.updateBookingPaymentStatus(bookingDetails.transactionId,"refund")
+
+      return {
+        sessionId: session.id,
+      
+      };
+
+    } catch (error) {
+      console.error("Error creating booking and Stripe session:", error);
+      throw new Error("Failed to refund payment");
+    }
+  }
+
   async getAllBooking(): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findAll();
@@ -78,6 +124,15 @@ export default class BookingService implements IBookingService {
   async getAllBookingByExpertId(id: string): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findAllBookings(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllBookingByStudentId(id: string): Promise<IBooking[] | null> {
+    try {
+      const result = await this.bookingRepository.findAllBookingsByUserId(id);
       return result;
     } catch (error) {
       throw error;
@@ -110,7 +165,11 @@ export default class BookingService implements IBookingService {
 
       const email = studentId?.email;
       const subject = "Booking Status updated please check";
-      SendMail(subject, email, "Your Booking status update for you NextStep  Expert Booking ");
+      SendMail(
+        subject,
+        email,
+        "Your Booking status update for you NextStep  Expert Booking "
+      );
     } catch (error) {
       throw error;
     }
@@ -123,9 +182,9 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
-  async getConfirmBooking(id: string): Promise<IBooking[] | null> {
+  async getConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findConfirmBooking(id);
+      const result = await this.bookingRepository.findConfirmBooking(id,page,limit);
       return result;
     } catch (error) {
       throw error;

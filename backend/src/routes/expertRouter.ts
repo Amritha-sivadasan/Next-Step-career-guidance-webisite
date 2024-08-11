@@ -89,6 +89,7 @@ expertRouter.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single
 expertRouter.delete("/deleteSlot/:id",verifyAccessToken,verifyRole(role),slotController.deleteSlots);
 expertRouter.get('/allBookings',verifyAccessToken,verifyRole(role),bookingController.findAllExpertBooking)
 expertRouter.patch('/confirm-booking/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingStatus)
-expertRouter.get('/get-confirmBooking',verifyAccessToken,verifyRole(role),bookingController.findAllConfirmBooking)
+expertRouter.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllConfirmBooking)
 expertRouter.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllExpertPayment)
+expertRouter.patch('/refund/:id',verifyAccessToken,verifyRole(role),bookingController.refundPayment)
 export default expertRouter;

@@ -86,6 +86,12 @@ export const getAllPaymentByExpertId = async () => {
   }
 };
 
+
+
+
+
+
+
 export const confirmBooking = async (id:string,status:string) => {
   try {
     const response = await axiosInstance.patch(
@@ -101,10 +107,41 @@ export const confirmBooking = async (id:string,status:string) => {
   }
 };
 
-export const getConfirmBooking = async () => {
+export const getConfirmBooking = async (page:number,limit:number) => {
   try {
     const response = await axiosInstance.get(
-      `${API_URL}/expert/get-confirmBooking`,
+      `${API_URL}/expert/get-allBooking?page=${page}&limit=${limit}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export  const refundPayment = async(id:string)=>{
+  try {
+    const response = await axiosInstance.patch(
+      `${API_URL}/expert/refund/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+
+
+export const getAllPaymentByUserId = async () => {
+  try {
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/all-payment`,
       {
         withCredentials: true,
       }

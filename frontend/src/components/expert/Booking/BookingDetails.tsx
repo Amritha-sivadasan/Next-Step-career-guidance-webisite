@@ -7,16 +7,25 @@ import { ISlot } from "../../../@types/slot";
 const BookingDetails = () => {
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const [hasMore, setHasMore] = useState(true);
+  const itemsPerPage = 3;
+
+  const fetchConfirmBooking = async (page: number) => {
+    try {
+      const result = await getConfirmBooking(page, itemsPerPage);
+      if (result.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setBookingDetails((prev) => [...prev, ...result.data]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchConfirmBooking = async () => {
-      const result = await getConfirmBooking();
-      setBookingDetails(result.data);
-    };
-
-    fetchConfirmBooking();
-  }, []);
+    fetchConfirmBooking(currentPage);
+  }, [currentPage]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -39,15 +48,10 @@ const BookingDetails = () => {
     });
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentBookings = bookingDetails.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
   const handleViewMore = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (hasMore) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   return (
@@ -55,7 +59,7 @@ const BookingDetails = () => {
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
 
       <div className="space-y-4">
-        {currentBookings.map((request) => {
+        {bookingDetails.map((request) => {
           const student = request.studentId as IStudent;
           const slot = request.slotId as ISlot;
 
@@ -107,7 +111,17 @@ const BookingDetails = () => {
                     </strong>
                   </div>
                 </div>
-                <div className="flex border p-2 rounded-lg bg-green-600 text-white">
+                <div
+                  className={`flex border p-2 rounded-lg text-white ${
+                    request.bookingStatus === "confirmed"
+                      ? "bg-green-600"
+                      : request.bookingStatus === "cancelled"
+                      ? "bg-red-600"
+                      : request.bookingStatus === "rescheduled"
+                      ? "bg-yellow-600"
+                      : "bg-gray-600" 
+                  }`}
+                >
                   <p>
                     Booking Status : <span>{request.bookingStatus}</span>
                   </p>
@@ -118,11 +132,11 @@ const BookingDetails = () => {
         })}
       </div>
 
-      {bookingDetails.length > currentBookings.length && (
+      {hasMore && (
         <div className="flex justify-center mt-4">
           <button
             onClick={handleViewMore}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-950 text-white rounded-lg shadow hover:bg-blue-900"
           >
             View More
           </button>

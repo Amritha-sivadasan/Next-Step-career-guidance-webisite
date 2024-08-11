@@ -22,6 +22,7 @@ import UserSideBar from "../components/student/sidebar/SideBar";
 import StudentLayout from "../components/common/studentLayout/StudentLayout";
 
 import PaymentPage from "../pages/student/PaymentPage";
+import BookingDetailsPage from "../pages/student/BookingDetailsPage";
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
@@ -62,6 +63,7 @@ const StudentRouter = () => {
         <Route element={ <> <div className="flex ms-24 flex-grow mt-9">  <UserSideBar /> <Outlet /> </div>  </>  } >
          <Route path="/profile" element={<ProfilePage />} />
          <Route path="/payment" element={<PaymentPage />} />
+         <Route path='/schedule-session' element={<BookingDetailsPage/>}/>
 
         </Route>
         </Route>

@@ -67,7 +67,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
           sessionId: response.data.sessionId,
         });
 
-        console.log('result form the payment',result)
+      
 
         if (result?.error) {
           toast.error(
