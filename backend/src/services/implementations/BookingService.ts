@@ -3,6 +3,8 @@ import BookingRepository from "../../repositories/implementations/BookingReposit
 import { IBooking } from "../../entities/BookingEntity";
 import { IBookingService } from "../interface/IBookingService";
 import Stripe from "stripe";
+import { SendMail } from "../../utils/sendOtp";
+import { IStudent } from "../../entities/StudentEntity";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -37,7 +39,7 @@ export default class BookingService implements IBookingService {
         mode: "payment",
         success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
-          metadata: {
+        metadata: {
           bookingId: newBooking._id.toString(),
         },
       });
@@ -67,7 +69,15 @@ export default class BookingService implements IBookingService {
   }
   async getBookingByExpertId(id: string): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findAllById(id,);
+      const result = await this.bookingRepository.findAllById(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getAllBookingByExpertId(id: string): Promise<IBooking[] | null> {
+    try {
+      const result = await this.bookingRepository.findAllBookings(id);
       return result;
     } catch (error) {
       throw error;
@@ -92,8 +102,15 @@ export default class BookingService implements IBookingService {
 
   async updateBookingStatus(id: string, status: string): Promise<void> {
     try {
-      
-       await this.bookingRepository.updateBookingStatus(id,status)
+      const response = await this.bookingRepository.updateBookingStatus(
+        id,
+        status
+      );
+      const studentId = response?.studentId as IStudent;
+
+      const email = studentId?.email;
+      const subject = "Booking Status updated please check";
+      SendMail(subject, email, "Your Booking status update for you NextStep  Expert Booking ");
     } catch (error) {
       throw error;
     }
@@ -101,13 +118,12 @@ export default class BookingService implements IBookingService {
 
   async updateBookingPaymentStatus(id: string, status: string): Promise<void> {
     try {
-
-      await this.bookingRepository.updateBookingPaymentStatus(id,status)
+      await this.bookingRepository.updateBookingPaymentStatus(id, status);
     } catch (error) {
       throw error;
     }
   }
-  async getConfirmBooking(id: string): Promise<IBooking []| null> {
+  async getConfirmBooking(id: string): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findConfirmBooking(id);
       return result;

@@ -38,6 +38,12 @@ export default class BookingRepository implements IBookingRepository {
       .populate("slotId")
       .exec();
   }
+  async findAllBookings(id:string): Promise<IBooking[] | null>{
+    return Booking.find({ expertId: id})
+      .populate("studentId")
+      .populate("slotId")
+      .exec();
+  }
   async updateBookingPaymentStatus(
     transactionId: string,
     status: string
@@ -51,7 +57,10 @@ export default class BookingRepository implements IBookingRepository {
       console.log("eror", error);
     }
   }
-  async updateBookingStatus(bookingId: string, status: string): Promise<void> {
-    await Booking.findByIdAndUpdate(bookingId, { bookingStatus: status });
+  async updateBookingStatus(bookingId: string, status: string): Promise<IBooking|null> {
+   const result= await Booking.findByIdAndUpdate(bookingId, { bookingStatus: status }).populate('studentId')
+    return result
+
+    
   }
 }

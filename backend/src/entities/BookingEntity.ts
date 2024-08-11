@@ -1,10 +1,13 @@
 import { ObjectId, Document } from "mongoose";
+import { IStudent } from "./StudentEntity";
+import { IExpert } from "./ExpertEntity";
+import { ISlots } from "./SlotEntity";
 
 export interface IBooking extends Document {
   _id: ObjectId;
-  studentId: ObjectId;
-  expertId: ObjectId;
-  slotId:ObjectId,
+  studentId: ObjectId|IStudent;
+  expertId: ObjectId|IExpert;
+  slotId:ObjectId|ISlots ,
   bookingStatus: string;
   subCatName: string;
   paymentAmount: number;

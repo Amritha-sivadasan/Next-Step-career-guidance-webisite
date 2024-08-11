@@ -90,4 +90,5 @@ expertRouter.delete("/deleteSlot/:id",verifyAccessToken,verifyRole(role),slotCon
 expertRouter.get('/allBookings',verifyAccessToken,verifyRole(role),bookingController.findAllExpertBooking)
 expertRouter.patch('/confirm-booking/:id',verifyAccessToken,verifyRole(role),bookingController.updateBookingStatus)
 expertRouter.get('/get-confirmBooking',verifyAccessToken,verifyRole(role),bookingController.findAllConfirmBooking)
+expertRouter.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllExpertPayment)
 export default expertRouter;

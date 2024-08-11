@@ -59,6 +59,25 @@ class BookingController {
     }
   };
 
+
+  public findAllExpertPayment = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+    const id = req.user?.userId;
+    try {
+      const result = await this.bookingservice.getAllBookingByExpertId(id!);
+      res
+        .status(200)
+        .json({ success: true, message: "successfull ", data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  finding Bookings",
+      });
+    }
+  };
+
   public updateBookingPaymentStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     const {status}=req.body

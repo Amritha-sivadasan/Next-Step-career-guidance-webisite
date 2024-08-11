@@ -50,6 +50,6 @@ export default class ExpertRepository implements IExpertRepository {
     return Expert.find({ subCatName });
   }
   async findAllExpert(): Promise<IExpert[]> {
-    return Expert.find()
+    return Expert.find({is_credential_validate:true,is_active:true})
   }
 }

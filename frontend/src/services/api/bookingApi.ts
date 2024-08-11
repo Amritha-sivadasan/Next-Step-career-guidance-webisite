@@ -70,6 +70,22 @@ export const getAllBookingByExpertId = async () => {
   }
 };
 
+
+export const getAllPaymentByExpertId = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/all-payment`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
 export const confirmBooking = async (id:string,status:string) => {
   try {
     const response = await axiosInstance.patch(

@@ -9,5 +9,5 @@ export interface IBookingService {
     updateBookingStatus(id:string,status:string):Promise<void>
     updateBookingPaymentStatus(id:string, status:string):Promise<void>
     getConfirmBooking(id: string): Promise<IBooking[] | null>
-
+    getAllBookingByExpertId(id:string):Promise<IBooking[]|null>
 }
