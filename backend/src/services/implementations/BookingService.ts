@@ -130,9 +130,9 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async getAllBookingByStudentId(id: string): Promise<IBooking[] | null> {
+  async getAllBookingByStudentId(id: string,page:number, limit:number): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findAllBookingsByUserId(id);
+      const result = await this.bookingRepository.findAllBookingsByUserId(id,page,limit);
       return result;
     } catch (error) {
       throw error;
@@ -190,4 +190,5 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
+  
 }

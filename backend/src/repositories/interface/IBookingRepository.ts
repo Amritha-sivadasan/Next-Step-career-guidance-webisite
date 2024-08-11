@@ -10,6 +10,6 @@ export interface IBookingRepository{
     updateBookingStatus(bookingId:string, status:string):Promise<IBooking|null>
     findConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null>
     findAllBookings(id:string): Promise<IBooking[] | null>
-    findAllBookingsByUserId(id: string): Promise<IBooking[] | null>
+    findAllBookingsByUserId(id: string,page:number,limit:number): Promise<IBooking[] | null>
    
 }

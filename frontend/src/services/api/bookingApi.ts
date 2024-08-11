@@ -152,3 +152,19 @@ export const getAllPaymentByUserId = async () => {
     return (error as Error).response?.data;
   }
 };
+
+
+export const getAllBookingDetailsByStudentId = async (page:number,limit:number) => {
+  try {
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/get-allBooking?page=${page}&limit=${limit}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

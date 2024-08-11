@@ -1,7 +1,12 @@
 import { AiOutlineArrowRight } from "react-icons/ai"; // Import the arrow icon
-
+import { useNavigate } from "react-router-dom";
 
 const PaymentSuccess: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBooking = () => {
+    navigate("/schedule-session");
+  };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <img
@@ -20,7 +25,10 @@ const PaymentSuccess: React.FC = () => {
         </span>
       </p>
 
-      <button className="border p-4 mt-10 rounded-lg bg-[#0B2149] text-white flex items-center">
+      <button
+        onClick={handleBooking}
+        className="border p-4 mt-10 rounded-lg bg-[#0B2149] text-white flex items-center"
+      >
         View your Booking
         <AiOutlineArrowRight className="ml-2" /> {/* Arrow icon with margin */}
       </button>

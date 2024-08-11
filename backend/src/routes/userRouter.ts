@@ -91,8 +91,8 @@ router.put(
 router.put('/uploadImage',verifyAccessToken,
   verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
 router.put('/uploadPersonalInfo',verifyAccessToken,verifyRole(role),studentController.updateuserData)
-router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllStudentPayment)
-
+router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
+router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
 
 
 export default router;

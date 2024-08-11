@@ -1,12 +1,11 @@
-import ScheduledSession from "../../components/student/bookingDetails/ScheduledSession"
-
+import ScheduledSession from "../../components/student/bookingDetails/ScheduledSession";
 
 const BookingDetailsPage = () => {
   return (
-    <div>
-      <ScheduledSession/>
+    <div className="flex justify-center w-full  ">
+      <ScheduledSession />
     </div>
-  )
-}
+  );
+};
 
-export default BookingDetailsPage
+export default BookingDetailsPage;

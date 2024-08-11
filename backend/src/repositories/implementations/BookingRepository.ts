@@ -32,29 +32,41 @@ export default class BookingRepository implements IBookingRepository {
       .exec();
   }
 
-  async findConfirmBooking(id: string, page: number, limit: number): Promise<IBooking[] | null> {
+  async findConfirmBooking(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<IBooking[] | null> {
     const skip = (page - 1) * limit;
-    
-    return Booking.find({ 
-        expertId: id, 
-        bookingStatus: { $ne: 'pending' } 
-      })
+
+    return Booking.find({
+      expertId: id,
+      bookingStatus: { $ne: "pending" },
+    })
       .sort({ _id: -1 })
-      .skip(skip)  
-      .limit(limit) 
+      .skip(skip)
+      .limit(limit)
       .populate("studentId")
       .populate("slotId")
       .exec();
   }
-  
+
   async findAllBookings(id: string): Promise<IBooking[] | null> {
     return Booking.find({ expertId: id })
       .populate("studentId")
       .populate("slotId")
       .exec();
   }
-  async findAllBookingsByUserId(id: string): Promise<IBooking[] | null> {
+  async findAllBookingsByUserId(
+    id: string,
+    page: number,
+    limit:number
+  ): Promise<IBooking[] | null> {
+    const skip = (page - 1) * limit;
     return Booking.find({ studentId: id })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate("expertId")
       .populate("slotId")
       .exec();

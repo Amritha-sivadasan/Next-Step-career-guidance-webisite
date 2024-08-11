@@ -11,5 +11,5 @@ export interface IBookingService {
     getConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null>
     getAllBookingByExpertId(id:string):Promise<IBooking[]|null>
     refundPayment(id:string):Promise<{sessionId:string}>
-    getAllBookingByStudentId(id: string): Promise<IBooking[] | null>
+    getAllBookingByStudentId(id: string,page:number,limit:number): Promise<IBooking[] | null>
 }
