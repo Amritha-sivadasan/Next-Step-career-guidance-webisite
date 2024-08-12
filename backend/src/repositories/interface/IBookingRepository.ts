@@ -2,7 +2,7 @@ import { IBooking } from "../../entities/BookingEntity";
 
 export interface IBookingRepository{
     create(booking:Partial<IBooking>):Promise<IBooking>
-    findAll():Promise<IBooking[]>
+    findAll(page:number,limit:number):Promise<IBooking[]>
     findById(id:string):Promise<IBooking|null>
     findAllById(id:string):Promise<IBooking[]|null>
     updateBookingTransactionId(bookingId: string, transactionId: string): Promise<IBooking | null>
@@ -11,5 +11,6 @@ export interface IBookingRepository{
     findConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null>
     findAllBookings(id:string): Promise<IBooking[] | null>
     findAllBookingsByUserId(id: string,page:number,limit:number): Promise<IBooking[] | null>
+    countDocuments(): Promise<number>
    
 }

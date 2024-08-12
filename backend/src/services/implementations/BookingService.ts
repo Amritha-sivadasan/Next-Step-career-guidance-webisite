@@ -5,14 +5,19 @@ import { IBookingService } from "../interface/IBookingService";
 import Stripe from "stripe";
 import { SendMail } from "../../utils/sendOtp";
 import { IStudent } from "../../entities/StudentEntity";
+import { ISlotRepository } from "../../repositories/interface/ISlotRepository";
+import SlotRepository from "../../repositories/implementations/SlotRepository";
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 export default class BookingService implements IBookingService {
   private bookingRepository: IBookingRepository;
+  private slotRepository:ISlotRepository
   constructor() {
     this.bookingRepository = new BookingRepository();
+    this.slotRepository= new SlotRepository()
   }
 
   async create(
@@ -93,7 +98,8 @@ export default class BookingService implements IBookingService {
     
       await this.updateBookingStatus(id,'cancelled')
       await this.updateBookingPaymentStatus(bookingDetails.transactionId,"refund")
-
+    
+    
       return {
         sessionId: session.id,
       
@@ -105,14 +111,25 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async getAllBooking(): Promise<IBooking[] | null> {
+  async getAllBooking(page:number,limit:number): Promise<{items:IBooking [];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;}> {
     try {
-      const result = await this.bookingRepository.findAll();
-      return result;
+      const result = await this.bookingRepository.findAll(page,limit);
+      const totalCount = await this.bookingRepository.countDocuments();
+      return {
+        items: result,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        currentPage: page,
+      }
+    
     } catch (error) {
       throw error;
     }
   }
+
   async getBookingByExpertId(id: string): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findAllById(id);
@@ -121,6 +138,7 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
+
   async getAllBookingByExpertId(id: string): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findAllBookings(id);

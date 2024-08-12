@@ -78,7 +78,7 @@ const AdminRouter = () => {
             <Route path="/subCategory" element={<SubCategoryTable />} />
             <Route path="/addSubCategory" element={<AddSubCategory />} />
             <Route path="/booking-details" element={<BookingDetails />} />
-            <Route path="/booking-view" element={<BookingView />} />
+            <Route path="/booking-view/:bookingId" element={<BookingView />} />
             <Route
               path="/editSubCategory/:categoryId"
               element={<EditSubCategory />}

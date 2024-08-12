@@ -19,11 +19,20 @@ export default class BookingRepository implements IBookingRepository {
     );
   }
 
-  async findAll(): Promise<IBooking[]> {
-    return Booking.find();
+  async findAll(page: number, limit: number): Promise<IBooking[]> {
+    const skip = (page - 1) * limit;
+    return Booking.find()
+      .populate("expertId")
+      .populate("studentId")
+      .populate("slotId")
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
   }
   async findById(id: string): Promise<IBooking | null> {
-    return Booking.findById(id);
+    return Booking.findById(id).populate("expertId")
+    .populate("studentId")
+    .populate("slotId")
   }
   async findAllById(id: string): Promise<IBooking[] | null> {
     return Booking.find({ expertId: id, bookingStatus: "pending" })
@@ -31,7 +40,9 @@ export default class BookingRepository implements IBookingRepository {
       .populate("slotId")
       .exec();
   }
-
+  async countDocuments(): Promise<number> {
+    return Booking.countDocuments().exec();
+  }
   async findConfirmBooking(
     id: string,
     page: number,
@@ -60,7 +71,7 @@ export default class BookingRepository implements IBookingRepository {
   async findAllBookingsByUserId(
     id: string,
     page: number,
-    limit:number
+    limit: number
   ): Promise<IBooking[] | null> {
     const skip = (page - 1) * limit;
     return Booking.find({ studentId: id })

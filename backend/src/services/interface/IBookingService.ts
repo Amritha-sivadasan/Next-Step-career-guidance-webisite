@@ -1,7 +1,10 @@
 import { IBooking } from "../../entities/BookingEntity";
 
 export interface IBookingService {
-    getAllBooking():Promise<IBooking[]|null>
+    getAllBooking(page:number,limit:number):Promise<{items:IBooking [];
+        totalCount: number;
+        totalPages: number;
+        currentPage: number;}>
     getBookingById(id:string):Promise<IBooking|null>
     create(bookingData: Partial<IBooking>): Promise<{ sessionId: string; updatedBooking: IBooking | null }>
     getBookingByExpertId(id:string):Promise<IBooking[]|null>

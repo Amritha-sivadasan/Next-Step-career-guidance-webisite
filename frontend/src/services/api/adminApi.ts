@@ -124,3 +124,28 @@ export const fetchStudentDetailsById = async (studentId: string) => {
     return (error as Error).response?.data;
   }
 };
+
+export const fetchAllBookingByAdmin = async (page:number,limit:number) => {
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/all-bookings?page=${page}&limit=${limit}`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const fetchBookingByIdAdmin = async (id:string) => {
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/bookingById/${id}`,
+      { withCredentials: true }
+    );
+  console.log('response',response)
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

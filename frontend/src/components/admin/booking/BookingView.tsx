@@ -1,86 +1,86 @@
-import React from 'react';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchBookingByIdAdmin } from "../../../services/api/adminApi";
+import { IBooking } from "../../../@types/booking";
+import { IStudent } from "../../../@types/user";
+import { IExpert } from "../../../@types/expert";
+import { ISlot } from "../../../@types/slot";
+import { formatDate, formatTime } from "../../../utils/generalFuncions";
 
-const bookingDetails = {
-  id: 1,
-  studentImage: "/path/to/student1.jpg",
-  studentName: "John Doe",
-  educationLevel: "Undergraduate",
-  educationBackground: "Computer Science",
-  scheduleDate: "Monday, August 7, 2024",
-  scheduleTimeFrom: "2:00 PM",
-  scheduleTimeTo: "3:00 PM",
-  transactionId: "TX123456789",
-  amount: "$100.00",
-  paymentStatus: "Completed",
-};
+const BookingDetailsView = () => {
+  const { bookingId } = useParams();
+  const [booking, setBooking] = useState<IBooking | null>(null);
 
-const BookingView = () => {
-  const {
-    studentImage,
-    studentName,
-    educationLevel,
-    educationBackground,
-    scheduleDate,
-    scheduleTimeFrom,
-    scheduleTimeTo,
-    transactionId,
-    amount,
-    paymentStatus,
-  } = bookingDetails;
+  useEffect(() => {
+    const fetchBooking = async () => {
+      if (bookingId) {
+        const response = await fetchBookingByIdAdmin(bookingId);
+        setBooking(response.data);
+      }
+    };
+    fetchBooking();
+  }, [bookingId]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="bg-blue-600 p-6">
-          <h1 className="text-3xl font-bold text-white">Booking Details</h1>
-        </div>
-        <div className="p-6">
-          <div className="flex items-center mb-8">
-            <img
-              src={studentImage}
-              alt="Student"
-              className="h-24 w-24 rounded-full object-cover border-4 border-blue-600"
-            />
-            <div className="ml-6">
-              <h2 className="text-2xl font-bold text-gray-800">{studentName}</h2>
-              <p className="text-gray-600">{educationLevel}</p>
-              <p className="text-gray-600">{educationBackground}</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-100 flex w-full justify-center ">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mt-10">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          Booking Details
+        </h1>
 
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Schedule Details</h3>
-            <p className="text-gray-700">
-              <strong>Date:</strong> {scheduleDate}
+        <div className="bg-blue-50 p-4 rounded-lg h-60 flex flex-wrap justify-between space-y-4 sm:space-y-0 items-center">
+          <div className="w-full sm:w-1/3">
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Booking id :</span> {booking?._id}
             </p>
-            <p className="text-gray-700">
-              <strong>Time:</strong> {scheduleTimeFrom} - {scheduleTimeTo}
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">User Name:</span>{" "}
+              {booking?.studentId && (booking.studentId as IStudent).user_name}
+            </p>
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Expert Name:</span>{" "}
+              {booking?.expertId && (booking.expertId as IExpert).user_name}
             </p>
           </div>
-
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Payment Details</h3>
-            <p className="text-gray-700">
-              <strong>Transaction ID:</strong> {transactionId}
+          <div className="w-full sm:w-1/3">
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Category:</span>{" "}
+              {booking?.slotId && (booking.slotId as ISlot)._id}
             </p>
-            <p className="text-gray-700">
-              <strong>Amount:</strong> {amount}
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Amount:</span>
+              {booking?.paymentAmount}
             </p>
-            <p className="text-gray-700">
-              <strong>Status:</strong> 
-              <span className={`ml-2 px-3 py-1 rounded-full text-white ${paymentStatus === "Completed" ? "bg-green-500" : "bg-yellow-500"}`}>
-                {paymentStatus}
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Payment status:</span>{" "}
+              <span className="px-2 py-1 bg-green-500 text-white rounded-full">
+                {booking?.paymentStatus}
               </span>
             </p>
           </div>
-
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
-            View More Details
-          </button>
+          <div className="w-full sm:w-1/3 ">
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Sub-category:</span>{" "}
+              {booking?.expertId && (booking.expertId as IExpert).subCatName}
+            </p>
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Date:</span>
+              {booking?.slotId &&
+                formatDate((booking.slotId as ISlot).consultationDate)}
+            </p>
+            <p className="text-gray-600 mb-8">
+              <span className="font-semibold">Time:</span>
+              {booking?.slotId &&
+                formatTime((booking.slotId as ISlot).consultationStartTime)}
+              -
+              {booking?.slotId &&
+                formatTime((booking.slotId as ISlot).consultationEndTime)}
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default BookingView;
+export default BookingDetailsView;

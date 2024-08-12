@@ -5,6 +5,7 @@ import { verifyAccessToken, verifyRefreshToken, verifyRole } from "../middleware
 import categoryController from "../contollers/categoryController";
 import subCategoryController from "../contollers/subCategoryController";
 import upload from "../utils/multerConfig";
+import bookingController from "../contollers/bookingController";
 
 const adminRoute=Router()
 const role=process.env.ADMIN_ROLE as string
@@ -34,5 +35,8 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
 
  adminRoute.get('/allStudent',verifyAccessToken,verifyRole(role),adminController.getAllStudents)
  adminRoute.get('/studentById/:id',verifyAccessToken,verifyRole(role),adminController.getStudentById)
+
+ adminRoute.get('/all-bookings',verifyAccessToken,verifyRole(role),bookingController.findAllBookingForAdmin)
+ adminRoute.get('/bookingById/:id',verifyAccessToken,verifyRole(role),bookingController.findBookingByIdForAdmin)
 
 export default adminRoute
