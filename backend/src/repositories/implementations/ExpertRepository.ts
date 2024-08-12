@@ -24,7 +24,7 @@ export default class ExpertRepository implements IExpertRepository {
   }
   async findAll(page: number, limit: number): Promise<IExpert[]> {
     const skip = (page - 1) * limit;
-    return Expert.find().skip(skip).limit(limit).exec();
+    return Expert.find().sort({_id:-1}).skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IExpert | null> {
     return Expert.findOne({ email });

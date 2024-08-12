@@ -6,6 +6,7 @@ import { ISlot } from "../../../@types/slot";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
+import { useNavigate } from "react-router-dom";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
@@ -23,21 +24,27 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { user } = useAppSelector((state) => state.student);
+  const navigate= useNavigate()
 
   useEffect(() => {
     setExpertsData(expets.slice(0, 3));
-    
+  
    
     setTotalPages(Math.ceil(expets.length / 3));
   }, [expets]);
 
   const handleSelectExpert = async (expertId: string) => {
     try {
-      const response = await getAllSlotsByStudent(expertId);
-      if (response.success) {
-        setSlots(response.data);
-        setActiveExpert(activeExpert === expertId ? null : expertId);
-        setSelectedSlot(null);
+      if(user){
+        const response = await getAllSlotsByStudent(expertId);
+        if (response.success) {
+          setSlots(response.data);
+          setActiveExpert(activeExpert === expertId ? null : expertId);
+          setSelectedSlot(null);
+        }
+
+      }else{
+        navigate('/login')
       }
     } catch (error) {
       console.error("Failed to fetch slots:", error);
