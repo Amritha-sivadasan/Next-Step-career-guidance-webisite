@@ -110,7 +110,7 @@ const Navbar: React.FC = () => {
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } transition-transform duration-300 ease-in-out md:hidden`}
+        } transition-transform duration-300 ease-in-out md:hidden z-50`}
       >
         <div className="flex justify-end p-4">
           <button onClick={toggleSidebar} className="text-[#0B2149]">
@@ -175,13 +175,13 @@ const Navbar: React.FC = () => {
             </li>
             <li>
               {isAuthenticated ? (
-               <Link
-               to="/profile"
-               className="text-[#0B2149] font-thin hover:text-blue-800"
-               onClick={toggleSidebar}
-             >
-              Profile
-             </Link>
+                <Link
+                  to="/profile"
+                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  onClick={toggleSidebar}
+                >
+                  Profile
+                </Link>
               ) : (
                 <Link
                   to="/login"

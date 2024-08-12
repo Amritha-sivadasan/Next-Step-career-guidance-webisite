@@ -6,7 +6,7 @@ export default class CategoryRepository implements ICategoryRepository {
   async findAll(page:number,limit:number): Promise<ICategory[]> {
     const skip = (page - 1) * limit;
     try {
-      return Category.find({is_delete:false}).skip(skip).limit(limit).exec()
+      return Category.find({is_delete:false}).sort({_id:-1}).skip(skip).limit(limit).exec()
     } catch (error) {
       throw error;
     }

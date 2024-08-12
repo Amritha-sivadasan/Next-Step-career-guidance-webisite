@@ -32,7 +32,7 @@ const CareerOptionsPage: React.FC<CareerOptionsPageProps> = ({
   return (
     <div className="min-h-screen flex flex-col items-center">
       <h1 className="text-3xl font-bold my-8">All Career Options</h1>
-      <div className="flex flex-wrap justify-center gap-8">
+      <div className="flex flex-wrap justify-center gap-8 ">
         {displayedItems.map((option) => (
           <CareerOptionCard
             key={option._id}
@@ -75,7 +75,7 @@ const CareerOptionCard: React.FC<CareerOptionCardProps> = ({
  
   }
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 m-4 w-80 border cursor-pointer" onClick={()=>handleSubcategory(id)}>
+    <div className="bg-white rounded-lg shadow-xl p-6 m-4 w-80 border cursor-pointer  transition-transform transform hover:scale-105" onClick={()=>handleSubcategory(id)}>
       <img
         src={image}
         alt={title}

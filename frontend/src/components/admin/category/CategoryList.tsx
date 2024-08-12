@@ -48,7 +48,7 @@ function CategoryTable() {
       }
     };
     fetchCategories();
-  }, [currentPage]);
+  }, [currentPage, itemsPerPage]);
 
   const handleAddCategory = () => {
     navigate("/admin/addCategory");

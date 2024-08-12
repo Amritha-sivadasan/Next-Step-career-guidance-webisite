@@ -27,9 +27,6 @@ const ScheduledSession = () => {
     fetchAllBooking(currentPage);
   }, [currentPage]);
 
-
- 
-
   const handleViewMore = () => {
     if (hasMore) {
       setCurrentPage((prevPage) => prevPage + 1);

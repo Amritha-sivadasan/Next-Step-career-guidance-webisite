@@ -57,7 +57,7 @@ const FindYourPath: React.FC = () => {
   };
 
   return (
-    <section className="mt-10 h-auto md:h-[100vh]" >
+    <section className="mt-10 h-auto md:h-[100vh]">
       <div className="flex justify-center text-[#0B2149] ">
         <h1 className="font-bold text-3xl">Find Your Path</h1>
       </div>
@@ -77,14 +77,14 @@ const FindYourPath: React.FC = () => {
           <div className="relative flex overflow-hidden w-11/12 md:w-5/12">
             <ul
               ref={scrollRef}
-              className="flex space-x-4 md:space-x-6 overflow-x-hidden whitespace-nowrap items-center "
-              style={{ scrollBehavior: "smooth", width: "calc(100% + 200px)" }}
+              className="flex space-x-8 md:space-x-6 overflow-x-hidden whitespace-nowrap items-center gap-2 "
+              style={{ scrollBehavior: "smooth", width: "calc(100% + 300px)" }}
             >
               {categories.map((category) => (
                 <li
                   key={category._id}
                   onClick={() => handleSelectCategory(category.catName)}
-                  className={`p-2 md:p-4 cursor-pointer rounded-lg flex-shrink-0 w-1/3 md:w-1/4 transition-all text-center duration-300 ${
+                  className={`p-2  cursor-pointer rounded-lg flex-shrink-0 md:w-auto transition-all  duration-300 ${
                     selectedCategory === category.catName
                       ? "text-blue-900 border-b-2 border-blue-900"
                       : "text-[#0B2149]"
@@ -112,7 +112,7 @@ const FindYourPath: React.FC = () => {
           {subcategories.map((subcat) => (
             <div
               key={subcat._id}
-              className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer"
+              className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer transition-transform transform hover:scale-105"
               onClick={() => handleSubCategory(subcat._id)}
             >
               <h3 className="text-xl font-semibold mb-2">
@@ -131,8 +131,8 @@ const FindYourPath: React.FC = () => {
         </div>
         <div className="flex justify-center mt-10">
           <button
-            onClick={() => handleViewAllCategory(subcategories[0]?.catName)}
-            className="border text-xl border-gray-600 p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold"
+            onClick={() => handleViewAllCategory(selectedCategory!)}
+            className="border text-xl border-gray-400  shadow-lg  p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold transition-transform transform hover:scale-105"
           >
             View All
           </button>

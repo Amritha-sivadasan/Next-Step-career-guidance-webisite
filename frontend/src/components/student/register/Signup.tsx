@@ -129,8 +129,14 @@ const Signup: React.FC = () => {
                 type="text"
                 {...register("user_name", {
                   required: "Username is required",
-                  validate: (value) =>
-                    !/\s/.test(value) || "Username should not contain spaces",
+                  validate: {
+                    noSpaces: (value) => {
+                      return (
+                        value.trim().length > 0 ||
+                        "Name cannot be just spaces"
+                      );
+                    },
+                  },
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Username"

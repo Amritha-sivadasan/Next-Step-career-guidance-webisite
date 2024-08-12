@@ -18,7 +18,7 @@ const CategoryIntro: React.FC<CategoryProps> = ({ category }) => {
         </div>
 
         {/* Image Section */}
-        <div className="md:w-7/12 sm:w-2/12 lg:w-5/12 flex justify-center md:justify-end">
+        <div className=" md:w-7/12 w-full sm:w-6/12 lg:w-5/12 flex justify-center md:justify-end">
           <div className="w-full flex justify-center">
             <div className="w-full h-[300px] relative">
               <img

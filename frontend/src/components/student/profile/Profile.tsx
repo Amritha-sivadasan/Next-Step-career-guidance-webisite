@@ -65,7 +65,7 @@ const Profile = () => {
         education_background: user.education_background || "",
         education_level: user.education_level || "",
       });
-      setPreviewImage(user?.profile_picture);
+      setPreviewImage(user?.profile_picture || "/dummyprofile.jpg" );
       setPersonalInfo({
         user_name: user.user_name,
         email: user.email,
