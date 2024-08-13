@@ -11,7 +11,8 @@ const BookingSchema: Schema = new Schema({
     slotId: { type: Schema.Types.ObjectId,ref: 'Slot' },
     paymentMethod: { type: String },
     transactionId: { type: String },
-    meetingStatus: { type: String, default:'pending', enum: [ 'completed', 'pending' ] }
+    meetingStatus: { type: String, default:'pending', enum: [ 'completed', 'pending' ] },
+    cancelReason:{ type: String }
   },{timestamps:true});
   
   const Booking = model<IBooking & Document>('Booking', BookingSchema);

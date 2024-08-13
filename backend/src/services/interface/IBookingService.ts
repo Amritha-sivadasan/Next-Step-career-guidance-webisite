@@ -9,10 +9,10 @@ export interface IBookingService {
     create(bookingData: Partial<IBooking>): Promise<{ sessionId: string; updatedBooking: IBooking | null }>
     getBookingByExpertId(id:string):Promise<IBooking[]|null>
     getBookingBystudentId(id:string):Promise<IBooking[]|null>
-    updateBookingStatus(id:string,status:string):Promise<void>
+    updateBookingStatus(id:string,status:string,reason?:string):Promise<void>
     updateBookingPaymentStatus(id:string, status:string):Promise<void>
     getConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null>
     getAllBookingByExpertId(id:string):Promise<IBooking[]|null>
-    refundPayment(id:string):Promise<{sessionId:string}>
+    refundPayment(id:string,reason:string):Promise<{sessionId:string}>
     getAllBookingByStudentId(id: string,page:number,limit:number): Promise<IBooking[] | null>
 }

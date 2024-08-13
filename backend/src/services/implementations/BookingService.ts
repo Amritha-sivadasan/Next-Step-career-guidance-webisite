@@ -24,7 +24,11 @@ export default class BookingService implements IBookingService {
     bookingData: Partial<IBooking>
   ): Promise<{ sessionId: string; updatedBooking: IBooking | null }> {
     try {
-      const newBooking = await this.bookingRepository.create(bookingData);
+      const updateBookingData={
+        ...bookingData,
+        bookingStatus:"confirmed"
+      }
+      const newBooking = await this.bookingRepository.create(updateBookingData);
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -65,7 +69,7 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async refundPayment(id: string): Promise<{sessionId:string}> {
+  async refundPayment(id: string,reason:string): Promise<{sessionId:string}> {
     try {
       const bookingDetails = await this.bookingRepository.findById(id);
       if (!bookingDetails) {
@@ -96,8 +100,9 @@ export default class BookingService implements IBookingService {
       });
 
     
-      await this.updateBookingStatus(id,'cancelled')
+      await this.updateBookingStatus(id,'cancelled',reason)
       await this.updateBookingPaymentStatus(bookingDetails.transactionId,"refund")
+     
     
     
       return {
@@ -173,20 +178,22 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async updateBookingStatus(id: string, status: string): Promise<void> {
+  async updateBookingStatus(id: string, status: string,reason?:string): Promise<void> {
     try {
       const response = await this.bookingRepository.updateBookingStatus(
         id,
-        status
+        status,
+        reason
       );
       const studentId = response?.studentId as IStudent;
 
       const email = studentId?.email;
       const subject = "Booking Status updated please check";
+      const Reason= reason||""
       SendMail(
         subject,
         email,
-        "Your Booking status update for you NextStep  Expert Booking "
+        Reason
       );
     } catch (error) {
       throw error;

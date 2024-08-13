@@ -24,38 +24,35 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { user } = useAppSelector((state) => state.student);
-  const navigate= useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     setExpertsData(expets.slice(0, 3));
-  
-   
+
     setTotalPages(Math.ceil(expets.length / 3));
   }, [expets]);
 
   const handleSelectExpert = async (expertId: string) => {
     try {
-      if(user){
+      if (user) {
         const response = await getAllSlotsByStudent(expertId);
         if (response.success) {
           setSlots(response.data);
           setActiveExpert(activeExpert === expertId ? null : expertId);
           setSelectedSlot(null);
         }
-
-      }else{
-        navigate('/login')
+      } else {
+        navigate("/login");
       }
     } catch (error) {
       console.error("Failed to fetch slots:", error);
     }
   };
 
-  const handleSlotSelect = (slotId: string,consultationFee: number) => {
+  const handleSlotSelect = (slotId: string, consultationFee: number) => {
     setSelectedSlot(slotId);
     setPaymentAmount(consultationFee);
     setPaymentMethod("card");
-    
   };
 
   const handleBooking = async () => {
@@ -73,8 +70,6 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
         const result = await stripe?.redirectToCheckout({
           sessionId: response.data.sessionId,
         });
-
-      
 
         if (result?.error) {
           toast.error(
@@ -106,7 +101,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
         {expertsData.map((expert) => (
           <div
             key={expert._id}
-            className="relative border bg-white rounded-lg shadow-md p-4 w-10/12 mx-auto"
+            className="relative border bg-white rounded-lg shadow-xl p-4 w-10/12 mx-auto"
           >
             <div className="flex flex-col justify-between md:flex-row items-start">
               <img
@@ -116,22 +111,28 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                     : URL.createObjectURL(expert.profile_picture)
                 }
                 alt={expert.user_name}
-                className="w-40 h-32 object-cover rounded-lg mr-4"
+                className="w-40 h-40 object-cover rounded-lg mr-4"
               />
 
               <div className="flex-1 ms-4">
                 <h2 className="text-xl font-semibold mb-2">
                   {expert.user_name}
                 </h2>
-                <p className="text-gray-600 mb-1">{expert.personal_bio}</p>
-                <p className="text-gray-600 mb-1">
+                <p className="text-gray-600 mb-3">{expert.personal_bio}</p>
+                <p className="text-gray-600 mb-3">
+                  <span className="text-gray-800 font-semibold ">
+                    Education Background:
+                  </span>{" "}
                   {expert.educationBackground}
                 </p>
                 <p className="text-gray-600 mb-1">
-                  Specialized in {expert.subCatName}
+                  <span className="text-gray-800 font-semibold">
+                    Specialized in :
+                  </span>{" "}
+                  {expert.subCatName}
                 </p>
               </div>
-              <div className="flex flex-col  me-32 ">
+              <div className="flex flex-col  me-18 ms-4 ">
                 <p className="text-gray-600 font-semibold  mb-10">
                   Consultation Fee :{" "}
                   <span className="text-gray-800">
@@ -154,7 +155,10 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                   {slots.map((slot) => (
                     <button
                       key={slot._id}
-                      onClick={() => slot?._id && handleSlotSelect(slot._id,expert.consultation_fee)}
+                      onClick={() =>
+                        slot?._id &&
+                        handleSlotSelect(slot._id, expert.consultation_fee)
+                      }
                       className={`flex justify-between items-center block w-full text-left p-2 rounded-lg mb-4 ${
                         selectedSlot === slot._id
                           ? "bg-green-500 text-white"

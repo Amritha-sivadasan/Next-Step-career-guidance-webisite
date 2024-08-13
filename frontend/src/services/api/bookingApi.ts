@@ -92,20 +92,7 @@ export const getAllPaymentByExpertId = async () => {
 
 
 
-export const confirmBooking = async (id:string,status:string) => {
-  try {
-    const response = await axiosInstance.patch(
-      `${API_URL}/expert/confirm-booking/${id}`,{status},
-      {
-        withCredentials: true,
-      }
-    );
 
-    return response.data;
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-};
 
 export const getConfirmBooking = async (page:number,limit:number) => {
   try {
@@ -122,10 +109,10 @@ export const getConfirmBooking = async (page:number,limit:number) => {
   }
 };
 
-export  const refundPayment = async(id:string)=>{
+export  const refundPayment = async(id:string,reason:string)=>{
   try {
     const response = await axiosInstance.patch(
-      `${API_URL}/expert/refund/${id}`,
+      `${API_URL}/expert/refund/${id}`,{reason},
       {
         withCredentials: true,
       }

@@ -38,80 +38,81 @@ const ScheduledSession = () => {
         <h1 className="text-2xl font-bold mb-4 text-white">Booking Details</h1>
       </div>
       <div className="space-y-4 ">
-        {bookingDetails.map((request) => {
-          const Expert = request.expertId as IExpert;
-          const slot = request.slotId as ISlot;
+        {bookingDetails.length === 0 ? (
+          <p className="text-gray-600 text-center">No bookings here</p>
+        ) : (
+          bookingDetails.map((request) => {
+            const Expert = request.expertId as IExpert;
+            const slot = request.slotId as ISlot;
 
-          return (
-            <div
-              key={request._id}
-              className="flex flex-col border md:flex-row items-start md:items-center justify-between p-4 shadow-md rounded-lg h-auto"
-            >
-              <div className="flex items-center space-x-4 mb-4 md:mb-0">
-                <img
-                  src={Expert?.profile_picture}
-                  alt="Student"
-                  className="h-28 w-28 rounded-lg object-cover"
-                />
-                <div className="text-lg text-gray-800">
-                  <div className="font-semibold"> {Expert.user_name}</div>
-                  <div className="text-sm text-gray-600">
-                    <p>{Expert.subCatName}</p>
+            return (
+              <div
+                key={request._id}
+                className="flex flex-col border md:flex-row items-start md:items-center justify-between p-4 shadow-md rounded-lg h-auto"
+              >
+                <div className="flex items-center space-x-4 mb-4 md:mb-0">
+                  <img
+                    src={Expert?.profile_picture}
+                    alt="Student"
+                    className="h-28 w-28 rounded-lg object-cover"
+                  />
+                  <div className="text-lg text-gray-800">
+                    <div className="font-semibold"> {Expert.user_name}</div>
+                    <div className="text-sm text-gray-600">
+                      <p>{Expert.subCatName}</p>
+                    </div>
+
+                    <div className="text-sm text-gray-600">
+                      <p>{Expert.educationBackground}</p>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <p>₹{Expert.consultation_fee}</p>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    {" "}
-                    <p>{Expert.personal_bio}</p>
+                </div>
+                <div className="flex flex-col md:flex-col items-start md:items-center justify-between space-y-2 md:space-y-5">
+                  <div className="text-md text-gray-800 mb-2 md:mb-0">
+                    <div>
+                      Date:{" "}
+                      <strong className="text-gray-800">
+                        {formatDate(slot.consultationDate)}
+                      </strong>
+                    </div>
+                    <div>
+                      From:
+                      <strong className="text-gray-800">
+                        {" "}
+                        {formatTime(slot.consultationStartTime)}
+                      </strong>
+                    </div>
+                    <div>
+                      To:{" "}
+                      <strong className="text-gray-800">
+                        {" "}
+                        {formatTime(slot.consultationEndTime)}
+                      </strong>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    <p>{Expert.educationBackground}</p>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <p>₹{Expert.consultation_fee}</p>
+                  <div
+                    className={`flex border p-2 rounded-lg text-white ${
+                      request.bookingStatus === "confirmed"
+                        ? "bg-green-600"
+                        : request.bookingStatus === "cancelled"
+                        ? "bg-red-800"
+                        : request.bookingStatus === "rescheduled"
+                        ? "bg-yellow-600"
+                        : "bg-gray-600"
+                    }`}
+                  >
+                    <p>
+                      Booking Status : <span>{request.bookingStatus}</span>
+                    </p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col md:flex-col items-start md:items-center justify-between space-y-2 md:space-y-5">
-                <div className="text-md text-gray-800 mb-2 md:mb-0">
-                  <div>
-                    Date:{" "}
-                    <strong className="text-gray-800">
-                      {formatDate(slot.consultationDate)}
-                    </strong>
-                  </div>
-                  <div>
-                    From:
-                    <strong className="text-gray-800">
-                      {" "}
-                      {formatTime(slot.consultationStartTime)}
-                    </strong>
-                  </div>
-                  <div>
-                    To:{" "}
-                    <strong className="text-gray-800">
-                      {" "}
-                      {formatTime(slot.consultationEndTime)}
-                    </strong>
-                  </div>
-                </div>
-                <div
-                  className={`flex border p-2 rounded-lg text-white ${
-                    request.bookingStatus === "confirmed"
-                      ? "bg-green-600"
-                      : request.bookingStatus === "cancelled"
-                      ? "bg-red-800"
-                      : request.bookingStatus === "rescheduled"
-                      ? "bg-yellow-600"
-                      : "bg-gray-600"
-                  }`}
-                >
-                  <p>
-                    Booking Status : <span>{request.bookingStatus}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
       {hasMore && (

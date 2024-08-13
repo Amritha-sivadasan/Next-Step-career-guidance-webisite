@@ -125,24 +125,7 @@ class BookingController {
       });
     }
   };
-  public updateBookingStatus = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    try {
-      const response = await this.bookingservice.updateBookingStatus(
-        id!,
-        status
-      );
-      res
-        .status(200)
-        .json({ success: true, message: "successfull ", data: response });
-    } catch (error) {
-      res.status(500).json({
-        success: true,
-        message: "Update Booking status failed",
-      });
-    }
-  };
+
 
   public findAllConfirmBooking = async (
     req: CustomRequest,
@@ -179,7 +162,8 @@ class BookingController {
   public refundPayment = async (req: CustomRequest, res: Response) => {
     try {
       const { id } = req.params;
-      const response = await this.bookingservice.refundPayment(id);
+      const {reason}=req.body
+      const response = await this.bookingservice.refundPayment(id,reason);
       res
         .status(200)
         .json({ message: "Refund success", data: response, success: true });

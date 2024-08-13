@@ -30,9 +30,10 @@ export default class BookingRepository implements IBookingRepository {
       .limit(limit);
   }
   async findById(id: string): Promise<IBooking | null> {
-    return Booking.findById(id).populate("expertId")
-    .populate("studentId")
-    .populate("slotId")
+    return Booking.findById(id)
+      .populate("expertId")
+      .populate("studentId")
+      .populate("slotId");
   }
   async findAllById(id: string): Promise<IBooking[] | null> {
     return Booking.find({ expertId: id, bookingStatus: "pending" })
@@ -97,10 +98,12 @@ export default class BookingRepository implements IBookingRepository {
   }
   async updateBookingStatus(
     bookingId: string,
-    status: string
+    status: string,
+    reason: string
   ): Promise<IBooking | null> {
     const result = await Booking.findByIdAndUpdate(bookingId, {
       bookingStatus: status,
+      cancelReason:reason
     }).populate("studentId");
     return result;
   }
