@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { addCategory } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 interface IFormInput {
   catName: string;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 import { useNavigate } from "react-router-dom";
 import { fetchAllEStudent } from "../../../services/api/adminApi";
 import { IStudent } from "../../../@types/user";
@@ -115,7 +115,11 @@ const StudentData = () => {
                   <td className="py-2 px-4 border-b text-center">
                     {typeof student.profile_picture === "string" && (
                       <img
-                        src={student.profile_picture ? student.profile_picture:"/"}
+                        src={
+                          student.profile_picture
+                            ? student.profile_picture
+                            : "/"
+                        }
                         alt="Profile"
                         className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
                       />

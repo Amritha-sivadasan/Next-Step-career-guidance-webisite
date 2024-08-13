@@ -10,7 +10,7 @@ import { AppDispatch } from "../../../store/store";
 import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk";
 import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { IExpert } from "../../../@types/expert";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 interface SignupFormInputs {
   user_name: string;
@@ -135,8 +135,7 @@ const ExpertSignup: React.FC = () => {
                   validate: {
                     noSpaces: (value) => {
                       return (
-                        value.trim().length > 0 ||
-                        "Name cannot be just spaces"
+                        value.trim().length > 0 || "Name cannot be just spaces"
                       );
                     },
                   },

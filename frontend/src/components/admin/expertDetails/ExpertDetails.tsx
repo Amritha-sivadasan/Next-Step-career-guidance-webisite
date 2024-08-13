@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import LoadingPage from "../../common/authentication/LoadingPage"; // Ensure you have a LoadingPage component
+import LoadingPage from "../../common/Loading/LoadingPage"; // Ensure you have a LoadingPage component
 import { useNavigate } from "react-router-dom";
 import { fetchAllExpert } from "../../../services/api/adminApi";
 import { IExpert } from "../../../@types/expert";

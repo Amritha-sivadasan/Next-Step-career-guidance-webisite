@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Helvetica", "Arial", "sans-serif"],
+         sans: ["Lato", "Helvetica", "Arial", "sans-serif"],
       },
     },
   },

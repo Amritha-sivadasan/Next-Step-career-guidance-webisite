@@ -7,7 +7,7 @@ import { IExpert } from "../../../@types/expert";
 import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 import { toast } from "react-toastify";
 import { ISubCategory } from "../../../@types/dashboard";
 import { fetchAllSubCategoriesExpert } from "../../../services/api/ExpertApi";

@@ -8,7 +8,7 @@ import { VerifyOtpExpert } from "../../../features/expert/middleware/ExpertRegis
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../../../services/api/studentApi";
 import { forgotPasswordExpertOtp } from "../../../services/api/ExpertApi";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../Loading/LoadingPage";
 
 interface OtpPageProps {
   userType: "student" | "expert";

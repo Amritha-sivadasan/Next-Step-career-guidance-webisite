@@ -7,7 +7,7 @@ import {
   updateSubCategory,
 } from "../../../services/api/categoryApi";
 import { toast } from "react-toastify";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 

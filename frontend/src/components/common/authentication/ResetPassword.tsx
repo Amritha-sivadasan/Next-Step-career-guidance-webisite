@@ -4,7 +4,7 @@ import { resetPasssword } from "../../../services/api/studentApi";
 import { useNavigate } from "react-router-dom";
 import { resetPassswordExpert } from "../../../services/api/ExpertApi";
 import { toast } from "react-toastify";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../Loading/LoadingPage";
 
 interface ResetPasswordProps {
   userType: "student" | "expert";

@@ -18,7 +18,7 @@ import {
 } from "../../../features/expert/expertAuthSlice";
 import { IExpert } from "../../../@types/expert";
 import { sendOtpExpert } from "../../../services/api/ExpertApi";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../Loading/LoadingPage";
 
 interface OtpPageProps {
   userType: "student" | "expert";

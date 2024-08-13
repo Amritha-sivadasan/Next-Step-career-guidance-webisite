@@ -5,7 +5,7 @@ import { IBooking } from "../../../@types/booking";
 import { toast } from "react-toastify";
 import { IStudent } from "../../../@types/user";
 import { IExpert } from "../../../@types/expert";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 const BookingDetails = () => {
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
@@ -45,7 +45,6 @@ const BookingDetails = () => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
-   
   };
   if (loading) {
     return (

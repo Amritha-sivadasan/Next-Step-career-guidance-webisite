@@ -22,7 +22,7 @@ import {
 } from "../../../features/expert/expertAuthSlice";
 import { IExpert } from "../../../@types/expert";
 import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../Loading/LoadingPage";
 
 interface LoginPageProps {
   userType: "student" | "expert";
@@ -172,7 +172,10 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
       <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
-        <Link to={userType=='student' ? '/':'/expert'} className="absolute top-6 left-8 flex items-center">
+        <Link
+          to={userType == "student" ? "/" : "/expert"}
+          className="absolute top-6 left-8 flex items-center"
+        >
           <img src="/image.png" alt="Website Logo" className="h-6" />
           <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
         </Link>

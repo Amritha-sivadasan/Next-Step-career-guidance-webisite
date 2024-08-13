@@ -11,7 +11,7 @@ import {
   forgotPasswordExpertOtp,
   upadateExpert,
 } from "../../../services/api/ExpertApi";
-import LoadingPage from "./LoadingPage";
+import LoadingPage from "../Loading/LoadingPage";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 interface OtpPageProps {

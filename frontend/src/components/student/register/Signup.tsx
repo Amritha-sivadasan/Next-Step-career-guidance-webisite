@@ -10,7 +10,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { registerStudentWithGoogle } from "../../../features/student/middleware/StudentRegisterThunk";
 import { setUser } from "../../../features/student/authSlice";
 import { IStudent } from "../../../@types/user";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 import { validatePhoneNumber } from "../../../utils/validator/studentsingupvalidator";
 
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
@@ -111,7 +111,7 @@ const Signup: React.FC = () => {
 
   return (
     <div className="h-screen ">
-      <Link to='/' className="p-4 flex items-center bg-white text-[#0B2149]">
+      <Link to="/" className="p-4 flex items-center bg-white text-[#0B2149]">
         <img src="/image.png" alt="Website Logo" className="h-6" />
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
       </Link>
@@ -132,8 +132,7 @@ const Signup: React.FC = () => {
                   validate: {
                     noSpaces: (value) => {
                       return (
-                        value.trim().length > 0 ||
-                        "Name cannot be just spaces"
+                        value.trim().length > 0 || "Name cannot be just spaces"
                       );
                     },
                   },

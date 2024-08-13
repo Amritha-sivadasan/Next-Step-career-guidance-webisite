@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LoadingPage from "../../common/authentication/LoadingPage";
+import LoadingPage from "../../common/Loading/LoadingPage";
 import { IStudent } from "../../../@types/user";
 
 interface StudentProbs {

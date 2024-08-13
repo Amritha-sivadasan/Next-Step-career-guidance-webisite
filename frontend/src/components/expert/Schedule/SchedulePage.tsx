@@ -9,6 +9,7 @@ import {
 } from "../../../services/api/slotApi";
 import { ISlot } from "../../../@types/slot";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 interface IFormInput {
   date: string;
@@ -52,6 +53,18 @@ const SchedulePage: React.FC = () => {
 
   const handleAddSlot = async (data: IFormInput) => {
     if (expert) {
+      if (data.timeFrom > data.timeTo) {
+        toast.warn("Please add Valid Time");
+        return;
+      }
+      const selectedDate = new Date(data.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        toast.warn("Date cannot be in the past");
+        return ;
+      }
+
       const newSlot: ISlot = {
         expertId: expert._id,
         consultationDate: data.date,
@@ -195,8 +208,13 @@ const SchedulePage: React.FC = () => {
               className="border p-2 w-full rounded-md"
               {...register("date", {
                 required: "Date is required",
-                validate: (value) =>
-                  value.trim() !== "" || "Date cannot be only spaces",
+                validate: (value) => {
+                  if (value.trim() === "") {
+                    return "Date cannot be only spaces";
+                  }
+                 
+                  return true;
+                },
               })}
             />
             {errors.date && (
@@ -213,8 +231,12 @@ const SchedulePage: React.FC = () => {
               className="border p-2 w-full rounded-md"
               {...register("timeFrom", {
                 required: "Start time is required",
-                validate: (value) =>
-                  value.trim() !== "" || "Start time cannot be only spaces",
+                validate: (value) => {
+                  if (value.trim() == "") {
+                    return "Start time cannot be only spaces";
+                  }
+                  return true;
+                },
               })}
             />
             {errors.timeFrom && (
@@ -222,10 +244,7 @@ const SchedulePage: React.FC = () => {
             )}
           </div>
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              htmlFor="time-to"
-            >
+            <label className="block text-sm font-medium mb-1" htmlFor="time-to">
               Time To
             </label>
             <input
