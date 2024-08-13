@@ -175,7 +175,7 @@ const ExpertDetailsView: React.FC = () => {
               />
             )}
           </div>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 mb-6">
+          {!expert.is_credential_validate  && <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10 mb-6">
             <button
               onClick={handleVerifyExpert}
               className="bg-[#0B2149] text-white px-6 py-2 rounded-lg hover:bg-[#0a1d34] transition-colors duration-300"
@@ -188,7 +188,8 @@ const ExpertDetailsView: React.FC = () => {
             >
               Reject
             </button>
-          </div>
+          </div> }
+         
           {showRejectForm && (
             <div className="bg-white p-6 rounded-lg border shadow-md mt-6">
               <h2 className="text-lg font-semibold mb-4">Rejection Reason</h2>

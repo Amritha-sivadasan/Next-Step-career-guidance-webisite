@@ -11,4 +11,5 @@ export interface ISubCategeryRepository {
     countDocuments(): Promise<number>
     findSubcategoryByCatName(cateName:string):Promise<ISubCategory[]|null>
     
+    
 }

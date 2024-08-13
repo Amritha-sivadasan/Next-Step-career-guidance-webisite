@@ -184,6 +184,21 @@ export default class StudentService implements IStudentService {
         throw error;
       }
     }
-
+    
+    async hadleBlockStudent(id:string): Promise<IStudent|null> {
+      try {
+        const exist= await this.studentRepository.findById(id)
+        if(!exist){
+        throw new Error
+        }
+      exist.is_active=!exist.is_active
+      const response= await  this.studentRepository.update(id,exist)
+    
+       return response
+        
+      } catch (error) {
+        throw error;
+      }
+    }
   
 }

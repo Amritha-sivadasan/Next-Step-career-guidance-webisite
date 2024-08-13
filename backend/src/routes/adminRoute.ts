@@ -38,5 +38,8 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
 
  adminRoute.get('/all-bookings',verifyAccessToken,verifyRole(role),bookingController.findAllBookingForAdmin)
  adminRoute.get('/bookingById/:id',verifyAccessToken,verifyRole(role),bookingController.findBookingByIdForAdmin)
+ 
+ adminRoute.patch('/blockExpert/:id',verifyAccessToken,verifyRole(role),adminController.handleblockExpert)
+ adminRoute.patch('/blockStudent/:id',verifyAccessToken,verifyRole(role),adminController.handleblockStudent)
 
 export default adminRoute

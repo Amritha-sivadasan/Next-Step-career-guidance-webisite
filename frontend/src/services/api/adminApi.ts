@@ -149,3 +149,28 @@ export const fetchBookingByIdAdmin = async (id:string) => {
     return (error as Error).response?.data;
   }
 };
+
+export const handleBlockAndUnblockExpert = async(id:string)=>{
+  try {
+    const response = await adminAxiosInstance.patch(
+      `${API_URL}/admin/blockExpert/${id}`,
+      { withCredentials: true }
+    );
+  console.log('response',response)
+    return response.data
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+export const handleBlockAndUnblockStudent = async(id:string)=>{
+  try {
+    const response = await adminAxiosInstance.patch(
+      `${API_URL}/admin/blockStudent/${id}`,
+      { withCredentials: true }
+    );
+  console.log('response',response)
+    return response.data
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

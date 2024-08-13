@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import LoadingPage from "../../common/Loading/LoadingPage"; // Ensure you have a LoadingPage component
 import { useNavigate } from "react-router-dom";
-import { fetchAllExpert } from "../../../services/api/adminApi";
+import {
+  fetchAllExpert,
+  handleBlockAndUnblockExpert,
+} from "../../../services/api/adminApi";
 import { IExpert } from "../../../@types/expert";
-
 interface Pagination {
   totalCount: number;
   totalPages: number;
@@ -26,6 +28,7 @@ const Experts: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,6 +56,21 @@ const Experts: React.FC = () => {
 
   const handleViewButton = (expertId: string) => {
     navigate(`/admin/expertView/${expertId}`);
+  };
+  const handleBlockUnblock = async (expertId: string) => {
+    const response = await handleBlockAndUnblockExpert(expertId);
+    if (response.success) {
+      const updatedResponse: ExpertsResponse = await fetchAllExpert(
+        currentPage,
+        itemsPerPage
+      );
+      toast.success(response.message);
+      setExperts(updatedResponse.data.items);
+      setTotalPages(updatedResponse.data.pagination.totalPages);
+      console.log("expert response", response);
+    } else {
+      toast.error(response.message);
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -148,23 +166,14 @@ const Experts: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border-b text-center">
-                    {expert.is_active ? (
-                      <button
-                        className="px-3 py-1 bg-red-800 text-white rounded-full hover:bg-red-700"
-                        // onClick={() => handleBlockUnblock(student._id, "block")}
-                      >
-                        Block
-                      </button>
-                    ) : (
-                      <button
-                        className="px-3 py-1 bg-green-800 text-white rounded hover:bg-green-700"
-                        // onClick={() =>
-                        //   handleBlockUnblock(student._id, "unblock")
-                        // }
-                      >
-                        Unblock
-                      </button>
-                    )}
+                    <button
+                      className={`px-3 py-1  text-white rounded-full ${
+                        expert.is_active ? "bg-red-800" : "bg-yellow-500"
+                      }`}
+                      onClick={() => handleBlockUnblock(expert._id)}
+                    >
+                      {expert.is_active ? "Block" : "Unblock"}
+                    </button>
                   </td>
                   <td className="py-2 border-b text-center">
                     <button

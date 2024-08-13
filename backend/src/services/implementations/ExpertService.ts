@@ -7,7 +7,6 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
 import { SendMail } from "../../utils/sendOtp";
-import { resourceUsage } from "process";
 
 // Helper function to transform Mongoose documents to plain objects and exclude the password
 function excludePassword(expert: any): IExpert {
@@ -248,6 +247,21 @@ export default class ExpertService implements IExpertService {
       return null;
     } catch (error) {
       console.log('error',error)
+      throw error;
+    }
+  }
+  async hadleBlockExpert(id:string): Promise<IExpert|null> {
+    try {
+      const exist= await this.expertRepository.findById(id)
+      if(!exist){
+      throw new Error
+      }
+    exist.is_active=!exist.is_active
+    const response= await  this.expertRepository.update(id,exist)
+  
+     return response
+      
+    } catch (error) {
       throw error;
     }
   }

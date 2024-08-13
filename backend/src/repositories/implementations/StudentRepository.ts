@@ -33,16 +33,16 @@ export default class StudentRepository implements IStudentRepository {
       throw error;
     }
   }
-  async findAll(page:number,limit:number): Promise<IStudent[]> {
+  async findAll(page: number, limit: number): Promise<IStudent[]> {
     const skip = (page - 1) * limit;
-    return Student.find().skip(skip).limit(limit).exec()
+    return Student.find().skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IStudent | null> {
-    return Student.findOne({ email });
+    return Student.findOne({ email, is_active: true });
   }
-  
+
   async findUserById(authentication_id: string): Promise<IStudent | null> {
-    return Student.findOne({ authentication_id });
+    return Student.findOne({ authentication_id, is_active: true });
   }
   async countDocuments(): Promise<number> {
     return Student.countDocuments().exec();
@@ -50,7 +50,6 @@ export default class StudentRepository implements IStudentRepository {
 
   async create(student: Partial<IStudent>): Promise<IStudent> {
     try {
-  
       const newStudent = new Student(student);
       return newStudent.save();
     } catch (error) {

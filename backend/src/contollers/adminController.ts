@@ -213,11 +213,46 @@ class AdminController {
       });
     } catch (error) {
       res.status(500).json({
-        message: "something went wrong on verify expert",
+        message: "something went wrong on Reject expert",
         success: false,
       });
     }
   };
+
+  public handleblockExpert= async(req:Request,res:Response):Promise<void>=>{
+    try {
+      const id = req.params.id;
+      const response= await this.expertService.hadleBlockExpert(id)
+           
+      res.status(200).json({
+        success: true,
+        message: response?.is_active ? "Expert Unblocked successfully":"Expert blocked successfully",
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "something went wrong on Blocking the expert",
+        success: false,
+      });
+    }
+  }
+  public handleblockStudent= async(req:Request,res:Response):Promise<void>=>{
+    try {
+      const id = req.params.id;
+      const response= await this.studentService.hadleBlockStudent(id)
+           
+      res.status(200).json({
+        success: true,
+        message: response?.is_active ? "Expert Unblocked successfully":"Expert blocked successfully",
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "something went wrong on Blocking the expert",
+        success: false,
+      });
+    }
+  }
 }
 
 export default new AdminController();

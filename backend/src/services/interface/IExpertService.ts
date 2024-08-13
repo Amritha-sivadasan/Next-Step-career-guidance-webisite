@@ -12,4 +12,5 @@ export interface IExpertService{
   rejectExpert(id: string, reason: string):Promise<boolean>
   findExpertBySubCatName(subCatName:string): Promise<IExpert[] | null>;
   fetchAllExpert(): Promise<IExpert[] | null>
+  hadleBlockExpert(id:string):Promise<IExpert|null>
 }

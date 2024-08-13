@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import LoadingPage from "../../common/Loading/LoadingPage";
 import { useNavigate } from "react-router-dom";
-import { fetchAllEStudent } from "../../../services/api/adminApi";
+import {
+  fetchAllEStudent,
+  handleBlockAndUnblockStudent,
+} from "../../../services/api/adminApi";
 import { IStudent } from "../../../@types/user";
 
 interface Pagination {
@@ -29,7 +32,7 @@ const StudentData = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadExperts = async () => {
+    const loadStudent = async () => {
       try {
         const response: StduentResponse = await fetchAllEStudent(
           currentPage,
@@ -48,7 +51,7 @@ const StudentData = () => {
       }
     };
 
-    loadExperts();
+    loadStudent();
   }, [currentPage, itemsPerPage]);
 
   const handleViewButton = (studentId: string) => {
@@ -58,6 +61,20 @@ const StudentData = () => {
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
+    }
+  };
+  const handleBlockUnblock = async (studentId: string) => {
+    const response = await handleBlockAndUnblockStudent(studentId);
+    if (response.success) {
+      const updatedResponse: StduentResponse = await fetchAllEStudent(
+        currentPage,
+        itemsPerPage
+      );
+      toast.success(response.message);
+      setStudents(updatedResponse.data.items);
+      setTotalPages(updatedResponse.data.pagination.totalPages);
+    } else {
+      toast.error(response.message);
     }
   };
 
@@ -138,23 +155,14 @@ const StudentData = () => {
                     {student.education_background}
                   </td>
                   <td className="py-2 px-4 border-b text-center">
-                    {student.is_active ? (
-                      <button
-                        className="px-3 py-1 bg-red-800 text-white rounded hover:bg-red-700"
-                        // onClick={() => handleBlockUnblock(student._id, "block")}
-                      >
-                        Block
-                      </button>
-                    ) : (
-                      <button
-                        className="px-3 py-1 bg-green-800 text-white rounded hover:bg-green-700"
-                        // onClick={() =>
-                        //   handleBlockUnblock(student._id, "unblock")
-                        // }
-                      >
-                        Unblock
-                      </button>
-                    )}
+                    <button
+                      className={`px-3 py-1  text-white rounded-full ${
+                        student.is_active ? "bg-red-800" : "bg-yellow-500"
+                      }`}
+                      onClick={() => handleBlockUnblock(student._id)}
+                    >
+                      {student.is_active ? "Block" : "Unblock"}
+                    </button>
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     <button
