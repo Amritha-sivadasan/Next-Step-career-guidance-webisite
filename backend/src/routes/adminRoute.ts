@@ -46,5 +46,7 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
 
 
  adminRoute.post('/add-psychometric-test',verifyAccessToken,verifyRole(role),psychometricController.addNewQuestion)
+ adminRoute.get('/getAllpsychometric',verifyAccessToken,verifyRole(role),psychometricController.fetchAllQuestions)
+ adminRoute.delete('/deletepsychometric/:id',verifyAccessToken,verifyRole(role),psychometricController.deleteQuestion)
 
 export default adminRoute

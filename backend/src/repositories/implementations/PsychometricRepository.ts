@@ -18,4 +18,11 @@ export default class PsychometricRepository implements IPsychometricRepository {
       throw error;
     }
   }
+  async deletePsychometricQuestion(id: string): Promise<void> {
+      try {
+         await Psychometric.findByIdAndDelete(id)
+      } catch (error) {
+        throw error;
+      }
+  }
 }

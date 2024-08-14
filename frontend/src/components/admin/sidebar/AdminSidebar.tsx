@@ -135,7 +135,7 @@ const Sidebar: React.FC = () => {
         </Link>
         <Link
           to="/admin/psychometric-test"
-          className={getLinkClass(["/admin/psychometric-test"])}
+          className={getLinkClass(["/admin/psychometric-test","/admin/add-psychometric-test"])}
           onClick={handleLinkClick}
         >
           <GiBrain className="mr-2" />

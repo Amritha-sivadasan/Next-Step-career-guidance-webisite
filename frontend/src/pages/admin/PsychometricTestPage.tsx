@@ -1,11 +1,11 @@
-import PsychometricTest from "../../components/admin/PsychometricTest/PsychometricTest"
+import PsychometricTest from "../../components/admin/PsychometricTest/PsychometricTest";
 
 const PsychometricTestPage = () => {
   return (
-    <div>
-<PsychometricTest/>
+    <div className="w-full ">
+      <PsychometricTest />
     </div>
-  )
-}
+  );
+};
 
-export default PsychometricTestPage
+export default PsychometricTestPage;

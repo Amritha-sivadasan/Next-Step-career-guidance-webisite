@@ -6,7 +6,6 @@ export interface Score {
   score: number;     
 }
 
-
 export interface Option {
   text: string;      
   scores: Score[];   

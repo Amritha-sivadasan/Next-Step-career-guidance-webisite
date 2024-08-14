@@ -28,4 +28,11 @@ export default class PsychometricService implements IPsychometricService{
             throw error;
         }
     }
+    async deleteQuestion(id: string): Promise<void> {
+        try {
+            return  this.psychometricRepositry.deletePsychometricQuestion(id)
+        } catch (error) {
+            throw error;
+        }
+    }
 }

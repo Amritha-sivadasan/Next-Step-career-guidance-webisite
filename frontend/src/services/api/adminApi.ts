@@ -75,7 +75,6 @@ export const rejectExpert = async (expertId: string, reason: string) => {
   }
 };
 
-
 export const fetchAllExpert = async (page: number, limit: number) => {
   try {
     const response = await adminAxiosInstance.get(
@@ -86,7 +85,6 @@ export const fetchAllExpert = async (page: number, limit: number) => {
     );
 
     if (response.data.success) {
-
       return response.data;
     }
   } catch (error) {
@@ -104,7 +102,6 @@ export const fetchAllEStudent = async (page: number, limit: number) => {
     );
 
     if (response.data.success) {
-
       return response.data;
     }
   } catch (error) {
@@ -118,14 +115,14 @@ export const fetchStudentDetailsById = async (studentId: string) => {
       `${API_URL}/admin/studentById/${studentId}`,
       { withCredentials: true }
     );
-  console.log('response',response)
+    console.log("response", response);
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
 };
 
-export const fetchAllBookingByAdmin = async (page:number,limit:number) => {
+export const fetchAllBookingByAdmin = async (page: number, limit: number) => {
   try {
     const response = await adminAxiosInstance.get(
       `${API_URL}/admin/all-bookings?page=${page}&limit=${limit}`,
@@ -137,40 +134,67 @@ export const fetchAllBookingByAdmin = async (page:number,limit:number) => {
   }
 };
 
-export const fetchBookingByIdAdmin = async (id:string) => {
+export const fetchBookingByIdAdmin = async (id: string) => {
   try {
     const response = await adminAxiosInstance.get(
       `${API_URL}/admin/bookingById/${id}`,
       { withCredentials: true }
     );
-  console.log('response',response)
+    console.log("response", response);
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
 };
 
-export const handleBlockAndUnblockExpert = async(id:string)=>{
+export const handleBlockAndUnblockExpert = async (id: string) => {
   try {
     const response = await adminAxiosInstance.patch(
       `${API_URL}/admin/blockExpert/${id}`,
       { withCredentials: true }
     );
-  console.log('response',response)
-    return response.data
+
+    return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
-export const handleBlockAndUnblockStudent = async(id:string)=>{
+};
+export const handleBlockAndUnblockStudent = async (id: string) => {
   try {
     const response = await adminAxiosInstance.patch(
       `${API_URL}/admin/blockStudent/${id}`,
       { withCredentials: true }
     );
-  console.log('response',response)
-    return response.data
+
+    return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
+
+export const getPsychometricTests = async () => {
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/getAllpsychometric`,
+      { withCredentials: true }
+    );
+  
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const deletePsychometricTest = async (id: string) => {
+  try {
+  
+    const response = await adminAxiosInstance.delete(
+      `${API_URL}/admin/deletepsychometric/${id}`,
+      { withCredentials: true }
+    );
+  
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
