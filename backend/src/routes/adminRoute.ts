@@ -6,6 +6,8 @@ import categoryController from "../contollers/categoryController";
 import subCategoryController from "../contollers/subCategoryController";
 import upload from "../utils/multerConfig";
 import bookingController from "../contollers/bookingController";
+import psychometricControllet from "../contollers/psychometricController";
+import psychometricController from "../contollers/psychometricController";
 
 const adminRoute=Router()
 const role=process.env.ADMIN_ROLE as string
@@ -41,5 +43,8 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  
  adminRoute.patch('/blockExpert/:id',verifyAccessToken,verifyRole(role),adminController.handleblockExpert)
  adminRoute.patch('/blockStudent/:id',verifyAccessToken,verifyRole(role),adminController.handleblockStudent)
+
+
+ adminRoute.post('/add-psychometric-test',verifyAccessToken,verifyRole(role),psychometricController.addNewQuestion)
 
 export default adminRoute

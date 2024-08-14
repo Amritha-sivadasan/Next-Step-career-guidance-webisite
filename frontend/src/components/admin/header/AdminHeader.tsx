@@ -1,6 +1,9 @@
 import React from "react";
+import { IoIosNotifications } from "react-icons/io";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Header: React.FC = () => {
+  const { admin } = useAppSelector((state) => state.admin);
   return (
     <header className="sticky top-0 flex flex-col md:flex-row items-center h-14 w-full p-4 bg-white shadow border  z-50">
       {/* Centered on small screens */}
@@ -10,30 +13,17 @@ const Header: React.FC = () => {
           <h1 className="text-[#0B2149] text-xl font-bold">NextStep</h1>
         </div>
         {/* Hidden on small screens, visible on medium and larger screens */}
-        <div className="hidden md:flex items-center space-x-4 md:space-x-10 ml-auto">
-          <button className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.437L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
+        <div className="hidden md:flex items-center space-x-4 md:space-x-5 ml-auto me-8">
+          <button className="relative ">
+            <IoIosNotifications size={24} />
           </button>
           <div className="flex items-center space-x-2">
-            <span className="hidden sm:inline">Anika</span>
             <img
-              src="https://via.placeholder.com/150"
+              src="/dummyprofile.jpg"
               alt="User avatar"
               className="h-8 w-8 rounded-full"
             />
+            <span className="hidden sm:inline">{admin}</span>
           </div>
         </div>
       </div>

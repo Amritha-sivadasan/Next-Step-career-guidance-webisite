@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const ExpertNavbar: React.FC = () => {
@@ -75,10 +75,21 @@ const ExpertNavbar: React.FC = () => {
 
           {isAuthenticated ? (
             <>
-              <FaUser size={20} style={{ color: "#0B2149" }} />
-              <button className="font-bold w-32 " onClick={handleProfile}>
-                {expert?.user_name}
-              </button>
+              <div className="flex items-center ">
+                <img
+                  src={
+                    expert?.profile_picture
+                      ? expert?.profile_picture
+                      : "/dummyprofile.jpg"
+                  }
+                  alt="User avatar"
+                  className="h-8 w-8 rounded-full"
+                />
+                {/* <span className="hidden sm:inline">{admin}</span> */}
+                <button className="font-bold  w-24" onClick={handleProfile}>
+                  {expert?.user_name}
+                </button>
+              </div>
             </>
           ) : (
             <Link

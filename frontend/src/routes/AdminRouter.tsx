@@ -24,6 +24,7 @@ import BookingDetails from "../components/admin/booking/BookingDetails";
 import BookingView from "../components/admin/booking/BookingView";
 import StudentDetails from "../pages/admin/StudentDetails";
 import StudentSingleView from "../pages/admin/StudentSingleView";
+import PsychometricTestPage from "../pages/admin/PsychometricTestPage";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const AdminRouter = () => {
             />
             <Route path="/users" element={<StudentDetails />} />
             <Route path="/studentView/:studentId" element={<StudentSingleView />} />
+            <Route path="/psychometric-test" element={<PsychometricTestPage />} />
           </Route>
         </Route>
       </Routes>

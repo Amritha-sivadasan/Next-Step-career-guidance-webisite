@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Navbar: React.FC = () => {
@@ -90,10 +90,17 @@ const Navbar: React.FC = () => {
 
           {isAuthenticated ? (
             <>
-              <FaUser size={20} style={{ color: "#0B2149" }} />
-              <button className="font-bold ms-2  w-24" onClick={handleProfile}>
-                {user?.user_name}
-              </button>
+              <div className="flex items-center ">
+                <img
+                  src= {user?.profile_picture ?user?.profile_picture : "/dummyprofile.jpg"}
+                  alt="User avatar"
+                  className="h-8 w-8 rounded-full"
+                />
+                {/* <span className="hidden sm:inline">{admin}</span> */}
+                <button className="font-bold  w-24" onClick={handleProfile}>
+                  {user?.user_name}
+                </button>
+              </div>
             </>
           ) : (
             <Link
