@@ -1,20 +1,26 @@
 import { useState, useEffect } from "react";
 import { FcAlarmClock } from "react-icons/fc";
-import { getAllQuestions, submitTestAnswers } from "../../../services/api/psychometricApi";
+import {
+  getAllQuestions,
+  submitTestAnswers,
+} from "../../../services/api/psychometricApi";
 import { IPsychometricQuestion } from "../../../@types/psychometricTest";
-import { useAppSelector } from "../../../hooks/useTypeSelector";
+import { useAppDispatch, useAppSelector } from "../../../hooks/useTypeSelector";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../../../features/student/authSlice";
 
 const PsychometricTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes
   const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
   const [answers, setAnswers] = useState<Array<string | null>>([]);
-  const  {user}= useAppSelector(state=>state.student)
+  const { user } = useAppSelector((state) => state.student);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Timer logic
     if (timeRemaining <= 0) {
-      handleNextQuestion(); // Automatically move to next question
+      handleNextQuestion();
       return;
     }
 
@@ -26,12 +32,11 @@ const PsychometricTest = () => {
   }, [timeRemaining]);
 
   useEffect(() => {
-    // Fetch questions from the API
     const fetchQuestions = async () => {
       const response = await getAllQuestions();
       if (response.success) {
         setQuestions(response.data);
-        setAnswers(new Array(response.data.length).fill(null)); // Initialize answers based on number of questions
+        setAnswers(new Array(response.data.length).fill(null));
       }
     };
     fetchQuestions();
@@ -47,20 +52,21 @@ const PsychometricTest = () => {
     if (answers[currentQuestionIndex] !== null) {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex((prev) => prev + 1);
-        setTimeRemaining(1800); // Reset timer for the next question
+        setTimeRemaining(1800);
       } else {
-        handleSubmit(); // All questions answered, submit
+        handleSubmit();
       }
     }
   };
 
-  const handleSubmit = async() => {
-    console.log("Submitted Answers:", answers);
-   if(user){
-     const reponse = await submitTestAnswers(user?._id,answers)
-     console.log('results of psychomeric test',reponse)
-   }
-
+  const handleSubmit = async () => {
+    if (user) {
+      const reponse = await submitTestAnswers(user?._id, answers);
+      if (reponse.success) {
+        dispatch(setUser(reponse.data));
+        navigate("/test-result");
+      }
+    }
   };
 
   const isAnswerSelected = answers[currentQuestionIndex] !== null;
@@ -80,19 +86,24 @@ const PsychometricTest = () => {
           {questions[currentQuestionIndex]?.question || "Loading..."}
         </h2>
         <div className="flex flex-col space-y-2">
-          {questions[currentQuestionIndex]?.options.map((option, optionIndex) => (
-            <label key={optionIndex} className="flex items-center text-gray-600">
-              <input
-                type="radio"
-                name={`question-${currentQuestionIndex}`}
-                value={option.text} 
-                checked={answers[currentQuestionIndex] === option._id}
-                onChange={() => handleAnswerChange(option._id)}
-                className="mr-2 h-4 w-4 text-blue-500 border-gray-300 focus:ring-blue-500 cursor-pointer"
-              />
-              {option.text}
-            </label>
-          ))}
+          {questions[currentQuestionIndex]?.options.map(
+            (option, optionIndex) => (
+              <label
+                key={optionIndex}
+                className="flex items-center text-gray-600"
+              >
+                <input
+                  type="radio"
+                  name={`question-${currentQuestionIndex}`}
+                  value={option.text}
+                  checked={answers[currentQuestionIndex] === option._id}
+                  onChange={() => handleAnswerChange(option._id)}
+                  className="mr-2 h-4 w-4 text-blue-500 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                />
+                {option.text}
+              </label>
+            )
+          )}
         </div>
         <div className="flex justify-end items-center mt-4">
           <button

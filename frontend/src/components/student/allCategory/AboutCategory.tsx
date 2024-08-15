@@ -3,13 +3,15 @@ import { FaLaptopCode, FaUserGraduate } from "react-icons/fa"; // Importing Font
 import { useNavigate } from "react-router-dom";
 import { ICategory, ISubCategory } from "../../../@types/dashboard";
 import { getAllCategory } from "../../../services/api/studentApi";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 interface SubcategoryProps {
   subCategory: ISubCategory;
 }
 
 const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
-  const navigate = useNavigate();
   const [categories, setCategory] = useState<ICategory[]>([]);
+  const { user } = useAppSelector((state) => state.student);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCategory = async () => {
       const response = await getAllCategory(1, 3);
@@ -23,7 +25,12 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
     navigate(`/experts/${subCategory.subCatName}`);
   };
   const handleTest = () => {
-    navigate("/psychometric-test");
+    if (user?.psychometric_result) {
+      navigate("/test-result");
+    }else{
+
+      navigate("/psychometric-test");
+    }
   };
 
   return (

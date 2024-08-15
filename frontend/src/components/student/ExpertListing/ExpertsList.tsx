@@ -101,7 +101,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
         {expertsData.map((expert) => (
           <div
             key={expert._id}
-            className="relative border bg-white rounded-lg shadow-xl p-4 w-10/12 mx-auto"
+            className="relative border bg-white rounded-lg shadow-xl p-4 w-10/12 mx-auto "
           >
             <div className="flex flex-col justify-between md:flex-row items-start">
               <img

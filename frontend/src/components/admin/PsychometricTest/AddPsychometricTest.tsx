@@ -17,10 +17,8 @@ interface Option {
   scores: Score[];
 }
 
-
-
 const AddPsychometricTest: React.FC = () => {
-  const [categories,setCategorie]= useState<ICategory[]>([])
+  const [categories, setCategorie] = useState<ICategory[]>([]);
   const [question, setQuestion] = useState<string>("");
   const [options, setOptions] = useState<Option[]>([{ text: "", scores: [] }]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -29,16 +27,15 @@ const AddPsychometricTest: React.FC = () => {
     null
   );
   const [showOptionInput, setShowOptionInput] = useState<number | null>(null);
-const navigate= useNavigate()
+  const navigate = useNavigate();
 
-
-  useEffect(()=>{
-    const fetchCategory= async()=>{
-      const response= await fetchAllCategories(1,10)
-      setCategorie(response.data.items)
-    }
-    fetchCategory()
-  },[])
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const response = await fetchAllCategories(1, 10);
+      setCategorie(response.data.items);
+    };
+    fetchCategory();
+  }, []);
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuestion(e.target.value);
@@ -108,11 +105,10 @@ const navigate= useNavigate()
     }
   };
 
-  const deleteCategoryFromOption =async (
+  const deleteCategoryFromOption = async (
     optionIndex: number,
     categoryToDelete: string
   ) => {
-
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -122,8 +118,8 @@ const navigate= useNavigate()
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
-  
-    if(result.isConfirmed){
+
+    if (result.isConfirmed) {
       setOptions((prevOptions) =>
         prevOptions.map((option, i) => {
           if (i === optionIndex) {
@@ -136,7 +132,6 @@ const navigate= useNavigate()
         })
       );
     }
-    
   };
   const validateOptions = () => {
     return options.every(
@@ -144,7 +139,9 @@ const navigate= useNavigate()
         option.text.trim() !== "" &&
         option.scores.length > 0 &&
         option.scores.every(
-          (score) => categories.some(obj=>obj.catName ===score.category) && score.score >= 0
+          (score) =>
+            categories.some((obj) => obj.catName === score.category) &&
+            score.score >= 0
         )
     );
   };
@@ -180,16 +177,29 @@ const navigate= useNavigate()
 
       return;
     }
-    const newTest = prepareDataForSave();
-    console.log("Prepared Data for Save:", newTest);
-    try {
-      const response = await addPsychometricTest(newTest);
-      if(response.success){
-        navigate('/admin/psychometric-test')
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to save this test? You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, save it!",
+    });
+
+    if (result.isConfirmed) {
+      const newTest = prepareDataForSave();
+      console.log("Prepared Data for Save:", newTest);
+      try {
+        const response = await addPsychometricTest(newTest);
+        if (response.success) {
+          navigate("/admin/psychometric-test");
+        }
+        console.log("Response from API:", response);
+      } catch (error) {
+        console.error("Error saving psychometric test:", error);
       }
-      console.log("Response from API:", response);
-    } catch (error) {
-      console.error("Error saving psychometric test:", error);
     }
   };
 

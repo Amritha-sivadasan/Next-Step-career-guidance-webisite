@@ -1,5 +1,4 @@
-import { Suspense, lazy } from "react";
-
+import { Suspense, lazy,useEffect } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Signup from "../components/student/register/Signup";
 import Login from "../components/common/authentication/Login";
@@ -9,12 +8,12 @@ import ForgotPassword from "../components/common/authentication/ForgotPassword";
 import ResetPassword from "../components/common/authentication/ResetPassword";
 import StudentPrivateRoute from "./Privateroutes/StudentPrivateRoute";
 import { useDispatch } from "react-redux";
-import useFetchUserData from "../hooks/UseFetchUser";
-import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
-import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
+import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
-import PsychometricTestPage from "../pages/student/PsychometricTestPage";
+import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
+const  PsychometricTestPage =lazy(()=>import("../pages/student/PsychometricTestPage"))  ;
+const PsychometricTestResultPage=lazy(()=>import("../pages/student/PsychometricTestResultPage"))  ;
 
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
@@ -172,7 +171,8 @@ const StudentRouter = () => {
               }
             >
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/payment" element={<PaymentPage />} />
+              <Route path="/payment" element={<PaymentPage />} /> 
+              <Route path="/test-result" element={<PsychometricTestResultPage />} />
               <Route
                 path="/schedule-session"
                 element={<BookingDetailsPage />}

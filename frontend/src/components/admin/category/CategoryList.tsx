@@ -167,10 +167,10 @@ function CategoryTable() {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-10">
         <div className="flex gap-2">
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-900 disabled:opacity-50"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
@@ -180,7 +180,7 @@ function CategoryTable() {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-900 disabled:opacity-50"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >

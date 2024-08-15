@@ -35,9 +35,9 @@ const Testimonials: React.FC = () => {
                   (testimonial, index) => (
                     <div
                       key={index}
-                      className="scroll-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center"
+                      className="scroll-item bg-white p-6 rounded-lg shadow-md flex flex-col items-center max-w-72"
                     >
-                      {typeof testimonial.profile_picture == "string" && (
+                      {typeof testimonial.profile_picture === "string" && (
                         <img
                           src={testimonial.profile_picture}
                           alt={testimonial.user_name}
@@ -45,14 +45,14 @@ const Testimonials: React.FC = () => {
                         />
                       )}
 
-                      <p className="italic mb-4 flex-grow">
+                      <p className="italic mb-4 text-center max-w-full truncate overflow-hidden">
                         {testimonial.personal_bio}
                       </p>
-                      <p className="italic mb-4 flex-grow">
+                      <p className="italic mb-4 text-center max-w-full truncate overflow-hidden">
                         {testimonial.educationBackground}
                       </p>
 
-                      <div className="font-bold text-lg">
+                      <div className="font-bold text-lg text-center">
                         {testimonial.user_name}
                       </div>
                     </div>

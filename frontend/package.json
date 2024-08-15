@@ -16,11 +16,16 @@
     "@types/js-cookie": "^3.0.6",
     "@types/stripe-v3": "^3.1.33",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.4",
     "framer-motion": "^11.3.24",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.427.0",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.1",
@@ -29,7 +34,9 @@
     "react-router-dom": "^6.25.1",
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
-    "sweetalert2": "^11.12.3"
+    "sweetalert2": "^11.12.3",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

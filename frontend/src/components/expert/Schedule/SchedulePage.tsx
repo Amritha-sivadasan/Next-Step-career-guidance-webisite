@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Modal from "./Modal";
+import Modal from "../../common/modal/Modal";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import {
   addNewSlot,
