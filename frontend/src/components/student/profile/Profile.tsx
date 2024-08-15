@@ -161,6 +161,10 @@ const Profile = () => {
     }
   };
 
+  const handleChatList= ()=>{
+    navigate("/chat-list");
+  }
+
   return (
     <div className="w-11/12 p-6 bg-white rounded-lg">
       <div className="relative bg-[#0B2149] border h-40 rounded-2xl mb-8 shadow-md">
@@ -429,7 +433,7 @@ const Profile = () => {
                 </p>
                 <div className="flex gap-5">
                   <img src="/chat.png" alt="Chat" className="w-15 h-10" />
-                  <button className="bg-[#0B2149] text-white p-1 rounded-xl w-20">
+                  <button onClick={handleChatList} className="bg-[#0B2149] text-white p-1 rounded-xl w-20">
                     Chat
                   </button>
                 </div>

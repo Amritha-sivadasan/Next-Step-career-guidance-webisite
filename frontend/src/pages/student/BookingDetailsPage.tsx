@@ -2,7 +2,7 @@ import ScheduledSession from "../../components/student/bookingDetails/ScheduledS
 
 const BookingDetailsPage = () => {
   return (
-    <div className="flex justify-center w-9/12  ">
+    <div className="flex justify-center w-9/12 mt-5 ">
       <ScheduledSession />
     </div>
   );

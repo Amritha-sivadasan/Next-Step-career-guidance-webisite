@@ -5,7 +5,7 @@ const PaymentPage = () => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className="flex justify-center w-8/12    ms-10">
+    <div className="flex justify-center w-8/12   mt-8 ms-10">
       <PaymentHistory />
     </div>
   );

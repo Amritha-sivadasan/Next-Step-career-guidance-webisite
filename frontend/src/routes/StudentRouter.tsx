@@ -12,9 +12,12 @@ import { setAuthenticated, setUser } from "../features/student/authSlice";
 import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
+
+
+
+const StudentChatListPage= lazy(()=>import("../pages/student/StudentChatListPage"))  ;
 const  PsychometricTestPage =lazy(()=>import("../pages/student/PsychometricTestPage"))  ;
 const PsychometricTestResultPage=lazy(()=>import("../pages/student/PsychometricTestResultPage"))  ;
-
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
 const CategoryDetailsPage = lazy(
@@ -177,6 +180,8 @@ const StudentRouter = () => {
                 path="/schedule-session"
                 element={<BookingDetailsPage />}
               />
+              <Route path="/chat-list" element={<StudentChatListPage />} />
+
               
             </Route>
           </Route>

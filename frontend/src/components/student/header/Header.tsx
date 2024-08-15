@@ -20,8 +20,45 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const smoothScrollTo = (targetId: string, duration: number) => {
+    const targetElement = targetId ? document.getElementById(targetId) : null;
+    const start = window.scrollY;
+    const targetPosition = targetElement
+      ? targetElement.getBoundingClientRect().top + start
+      : 0; // Scroll to the top if no targetId is provided
+    const distance = targetPosition - start;
+    const startTime = performance.now();
+
+    const scroll = (currentTime: number) => {
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      window.scrollTo(0, start + distance * easeInOutQuad(progress));
+      if (timeElapsed < duration) {
+        requestAnimationFrame(scroll);
+      }
+    };
+
+    const easeInOutQuad = (t: number) => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    requestAnimationFrame(scroll);
+  };
+
+  const handleScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    e.preventDefault();
+    if (targetId === "") {
+      smoothScrollTo("", 1200);
+    } else {
+      smoothScrollTo(targetId, 1200);
+    }
+  };
+
   return (
-    <header className="bg-white shadow w-full">
+    <header className="bg-white shadow fixed top-0 left-0 w-full z-50">
       <div className="w-full px-4 py-3 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-3 md:space-x-2 ms-7">
           <img src="/image.png" alt="Website Logo" className="h-6" />
@@ -35,33 +72,36 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="hidden md:flex w-7/12 justify-between me-5">
-          <nav className="flex items-center space-x-20 w-full">
-            <ul className="flex space-x-8">
-              <li>
+          <nav className="flex items-center space-x-20 w-full ">
+            <ul className="flex space-x-8 ">
+              <li className="transition-transform duration-200 hover:scale-105">
                 <Link
                   to="/"
-                  className="text-[#0B2149] font-thin hover:text-black"
+                  className="text-[#0B2149] font-thin hover:text-black "
+                  onClick={(e) => handleScroll(e, "")}
                 >
                   Home
                 </Link>
               </li>
-              <li>
+              <li className="transition-transform duration-300 hover:scale-105">
                 <a
                   href="#find_path"
                   className="text-[#0B2149] font-thin hover:text-black"
+                  onClick={(e) => handleScroll(e, "find_path")}
                 >
                   Find Your Path
                 </a>
               </li>
-              <li>
+              <li className="transition-transform duration-300 hover:scale-105">
                 <a
                   href="#how_work"
                   className="text-[#0B2149] font-thin hover:text-black"
+                  onClick={(e) => handleScroll(e, "how_work")}
                 >
                   How it Works
                 </a>
               </li>
-              <li>
+              <li className="transition-transform duration-300 hover:scale-105">
                 <Link
                   to="/expert"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -69,7 +109,7 @@ const Navbar: React.FC = () => {
                   Professional
                 </Link>
               </li>
-              <li>
+              <li className="transition-transform duration-300 hover:scale-105">
                 <a
                   href="#"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -77,7 +117,7 @@ const Navbar: React.FC = () => {
                   Contact us
                 </a>
               </li>
-              <li>
+              <li className="transition-transform duration-300 hover:scale-105">
                 <a
                   href="#"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -92,7 +132,11 @@ const Navbar: React.FC = () => {
             <>
               <div className="flex items-center ">
                 <img
-                  src= {user?.profile_picture ?user?.profile_picture : "/dummyprofile.jpg"}
+                  src={
+                    user?.profile_picture
+                      ? user?.profile_picture
+                      : "/dummyprofile.jpg"
+                  }
                   alt="User avatar"
                   className="h-8 w-8 rounded-full"
                 />

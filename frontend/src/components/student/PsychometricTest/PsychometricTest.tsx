@@ -11,7 +11,7 @@ import { setUser } from "../../../features/student/authSlice";
 
 const PsychometricTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes
+  const [timeRemaining, setTimeRemaining] = useState(30); 
   const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
   const [answers, setAnswers] = useState<Array<string | null>>([]);
   const { user } = useAppSelector((state) => state.student);
@@ -61,9 +61,9 @@ const PsychometricTest = () => {
 
   const handleSubmit = async () => {
     if (user) {
-      const reponse = await submitTestAnswers(user?._id, answers);
-      if (reponse.success) {
-        dispatch(setUser(reponse.data));
+      const response = await submitTestAnswers(user._id, answers);
+      if (response.success) {
+        dispatch(setUser(response.data));
         navigate("/test-result");
       }
     }
@@ -72,45 +72,51 @@ const PsychometricTest = () => {
   const isAnswerSelected = answers[currentQuestionIndex] !== null;
 
   return (
-    <div className="mx-auto p-6 bg-blue-950 rounded-lg shadow-md max-w-screen-lg mt-11 mb-12 h-[80vh]">
-      <h1 className="text-3xl font-bold text-center  mb-8 text-white">
+    <div className="mx-auto p-6 bg-gradient-to-r bg-blue-950 rounded-lg shadow-md max-w-screen-lg mt-11 mb-12 h-[90vh]">
+      <h1 className="text-4xl font-bold text-center mb-8 text-white">
         Psychometric Test
       </h1>
-      <div className="bg-white rounded-lg shadow-sm p-4">
-        <div className="flex justify-end gap-3">
-          <FcAlarmClock size={24} />
-          {Math.floor(timeRemaining / 60)}:
-          {String(timeRemaining % 60).padStart(2, "0")}
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <FcAlarmClock size={24} />
+            <span className="text-lg font-semibold text-gray-700">
+              {Math.floor(timeRemaining / 60)}:
+              {String(timeRemaining % 60).padStart(2, "0")}
+            </span>
+          </div>
+          <span className="text-lg font-semibold text-gray-700">
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
         </div>
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           {questions[currentQuestionIndex]?.question || "Loading..."}
         </h2>
         <div className="flex flex-col space-y-2">
           {questions[currentQuestionIndex]?.options.map(
             (option, optionIndex) => (
-              <label
+              <div
                 key={optionIndex}
-                className="flex items-center text-gray-600"
+                className={`p-4 rounded-lg cursor-pointer transition-colors duration-300 ease-in-out w-80 border  ${
+                  answers[currentQuestionIndex] === option._id
+                    ? "bg-blue-950 text-white"
+                    : "bg-gray-100 hover:bg-gray-200"
+                }`}
+                onClick={() => handleAnswerChange(option._id)}
               >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestionIndex}`}
-                  value={option.text}
-                  checked={answers[currentQuestionIndex] === option._id}
-                  onChange={() => handleAnswerChange(option._id)}
-                  className="mr-2 h-4 w-4 text-blue-500 border-gray-300 focus:ring-blue-500 cursor-pointer"
-                />
                 {option.text}
-              </label>
+              </div>
             )
           )}
         </div>
-        <div className="flex justify-end items-center mt-4">
+        <div className="flex justify-end mt-6">
           <button
             onClick={handleNextQuestion}
             disabled={!isAnswerSelected}
-            className={`bg-[#0B2149] text-white py-2 px-4 rounded-lg shadow-lg transition duration-300 ${
-              !isAnswerSelected ? "opacity-50 cursor-not-allowed" : ""
+            className={`bg-blue-950 text-white py-2 px-6 rounded-lg shadow-md transition-colors duration-300 ease-in-out ${
+              !isAnswerSelected
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-blue-900"
             }`}
           >
             {currentQuestionIndex < questions.length - 1 ? "Next" : "Submit"}

@@ -25,7 +25,7 @@ const UserSideBar: React.FC = () => {
         <Link
           key={index}
           to={item.path}
-          className="flex flex-col items-center p-4 mb-4 bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer"
+          className="flex flex-col items-center p-4 mb-4 bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer "
         >
           <span className="text-lg">{item.title}</span>
           <img

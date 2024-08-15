@@ -9,8 +9,7 @@ const StudentLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <Navbar />
-
-      <main>{children}</main>
+      <main className="mt-14">{children}</main>
       <Footer />
     </>
   );

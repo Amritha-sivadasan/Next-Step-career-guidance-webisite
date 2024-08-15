@@ -24,6 +24,7 @@ import AvailableSchedule from "../pages/expert/AvailableSchedule";
 import BookingDetailsPage from "../pages/expert/BookingDetailsPage";
 import PaymentHistory from "../pages/expert/PaymentHistory";
 import ExpertLayout from "../components/common/expertLayout/ExpertLayout";
+import ExpertChatListPage from "../pages/expert/ExpertChatListPage";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -121,6 +122,7 @@ const ExpertRouter = () => {
           <Route path="/available-schedule" element={<AvailableSchedule />} />
           <Route path="/booking-details" element={<BookingDetailsPage />} />
           <Route path="/payment-history" element={<PaymentHistory />} />
+          <Route path="/chat-with-student" element={<ExpertChatListPage />} />
         </Route>
       </Route>
     </Routes>
