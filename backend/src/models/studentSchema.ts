@@ -16,7 +16,8 @@ const StudentSchema: Schema = new Schema(
     role: { type: String, default: "student" },
     authentication_id: { type: String},
     authentication_provider: { type: String },
-    is_data_entered:{type:Boolean,default:false}
+    is_data_entered:{type:Boolean,default:false},
+    psychometric_result: { type: Schema.Types.Mixed, default: {} }
   },
   { timestamps: true }
 );

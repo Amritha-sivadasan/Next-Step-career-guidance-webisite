@@ -1,4 +1,8 @@
+
 import { ObjectId ,Document} from "mongoose";
+export interface IPsychometricResult {
+  [category: string]: number; 
+}
 
 export interface IStudent extends Document  {
 
@@ -16,5 +20,7 @@ export interface IStudent extends Document  {
   authentication_id:string,
   authentication_provider:string
   role: string;
+  psychometric_result?: IPsychometricResult
+   
   
 }

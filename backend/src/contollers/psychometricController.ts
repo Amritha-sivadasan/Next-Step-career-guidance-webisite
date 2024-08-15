@@ -40,7 +40,7 @@ class PsychometricController {
       res.status(200).json({
         success: true,
         data: response,
-        message: "Slot created Successfully",
+        message: "fetch all questions",
       });
 
     } catch (error) {
@@ -75,6 +75,28 @@ class PsychometricController {
       });
     }
   };
+  public submitAnswer = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const {id}= req.params
+      const response = await this.psychometricService.submitAnswer(id,req.body)
+      res.status(200).json({
+        success: true,
+        data: response,
+        message: "",
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        message: "Unable to create Psychometric test",
+        success: false,
+        data: error,
+      });
+    }
+  };
+
 }
 
 

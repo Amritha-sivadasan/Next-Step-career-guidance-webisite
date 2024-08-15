@@ -9,7 +9,7 @@ const menuItems = [
     imageUrl: "/session.png",
     path: "/schedule-session",
   },
-  { title: "Psychometric Test", imageUrl: "/test.png", path: "/test" },
+  { title: "Psychometric Test", imageUrl: "/test.png", path: "/psychometric-test" },
   { title: "Meeting History", imageUrl: "/meeting.png", path: "/history" },
   { title: "Payment History", imageUrl: "/payment-user.png", path: "/payment" },
 ];

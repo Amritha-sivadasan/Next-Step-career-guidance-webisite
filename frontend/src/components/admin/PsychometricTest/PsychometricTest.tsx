@@ -3,7 +3,7 @@ import { IPsychometricQuestion } from "../../../@types/psychometricTest";
 import {
   getPsychometricTests,
   deletePsychometricTest,
-} from "../../../services/api/adminApi";
+} from "../../../services/api/psychometricApi";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";

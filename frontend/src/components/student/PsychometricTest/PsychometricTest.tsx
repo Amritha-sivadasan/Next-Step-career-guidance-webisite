@@ -1,62 +1,111 @@
-// src/components/PsychometricTest.js
-
-import  { useState } from 'react';
-
-const questions = [
-  {
-    question: "How often do you feel stressed?",
-    options: ["Never", "Rarely", "Sometimes", "Often", "Always"]
-  },
-  {
-    question: "How do you usually handle conflicts?",
-    options: ["Avoid them", "Face them", "Seek mediation", "Give in", "Compromise"]
-  },
-
-];
+import { useState, useEffect } from "react";
+import { FcAlarmClock } from "react-icons/fc";
+import { getAllQuestions, submitTestAnswers } from "../../../services/api/psychometricApi";
+import { IPsychometricQuestion } from "../../../@types/psychometricTest";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const PsychometricTest = () => {
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes
+  const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
+  const [answers, setAnswers] = useState<Array<string | null>>([]);
+  const  {user}= useAppSelector(state=>state.student)
 
-  const handleAnswerChange = (index:number, option:string) => {
+  useEffect(() => {
+    // Timer logic
+    if (timeRemaining <= 0) {
+      handleNextQuestion(); // Automatically move to next question
+      return;
+    }
+
+    const timerId = setInterval(() => {
+      setTimeRemaining((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [timeRemaining]);
+
+  useEffect(() => {
+    // Fetch questions from the API
+    const fetchQuestions = async () => {
+      const response = await getAllQuestions();
+      if (response.success) {
+        setQuestions(response.data);
+        setAnswers(new Array(response.data.length).fill(null)); // Initialize answers based on number of questions
+      }
+    };
+    fetchQuestions();
+  }, []);
+
+  const handleAnswerChange = (option: string) => {
     const newAnswers = [...answers];
-    newAnswers[index] = option;
+    newAnswers[currentQuestionIndex] = option;
     setAnswers(newAnswers);
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted Answers:", answers);
-    // Add further logic to handle form submission
+  const handleNextQuestion = () => {
+    if (answers[currentQuestionIndex] !== null) {
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setTimeRemaining(1800); // Reset timer for the next question
+      } else {
+        handleSubmit(); // All questions answered, submit
+      }
+    }
   };
 
+  const handleSubmit = async() => {
+    console.log("Submitted Answers:", answers);
+   if(user){
+     const reponse = await submitTestAnswers(user?._id,answers)
+     console.log('results of psychomeric test',reponse)
+   }
+
+  };
+
+  const isAnswerSelected = answers[currentQuestionIndex] !== null;
+
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">Psychometric Test</h1>
-      {questions.map((question, index) => (
-        <div key={index} className="mb-4">
-          <h2 className="text-lg font-semibold">{question.question}</h2>
-          <div className="mt-2">
-            {question.options.map((option, optionIndex) => (
-              <label key={optionIndex} className="block mb-1">
-                <input
-                  type="radio"
-                  name={`question-${index}`}
-                  value={option}
-                  checked={answers[index] === option}
-                  onChange={() => handleAnswerChange(index, option)}
-                  className="mr-2"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
+    <div className="mx-auto p-6 bg-blue-950 rounded-lg shadow-md max-w-screen-lg mt-11 mb-12 h-[80vh]">
+      <h1 className="text-3xl font-bold text-center  mb-8 text-white">
+        Psychometric Test
+      </h1>
+      <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="flex justify-end gap-3">
+          <FcAlarmClock size={24} />
+          {Math.floor(timeRemaining / 60)}:
+          {String(timeRemaining % 60).padStart(2, "0")}
         </div>
-      ))}
-      <button
-        onClick={handleSubmit}
-        className="bg-blue-500 text-white py-2 px-4 rounded mt-4 hover:bg-blue-700"
-      >
-        Submit
-      </button>
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          {questions[currentQuestionIndex]?.question || "Loading..."}
+        </h2>
+        <div className="flex flex-col space-y-2">
+          {questions[currentQuestionIndex]?.options.map((option, optionIndex) => (
+            <label key={optionIndex} className="flex items-center text-gray-600">
+              <input
+                type="radio"
+                name={`question-${currentQuestionIndex}`}
+                value={option.text} 
+                checked={answers[currentQuestionIndex] === option._id}
+                onChange={() => handleAnswerChange(option._id)}
+                className="mr-2 h-4 w-4 text-blue-500 border-gray-300 focus:ring-blue-500 cursor-pointer"
+              />
+              {option.text}
+            </label>
+          ))}
+        </div>
+        <div className="flex justify-end items-center mt-4">
+          <button
+            onClick={handleNextQuestion}
+            disabled={!isAnswerSelected}
+            className={`bg-[#0B2149] text-white py-2 px-4 rounded-lg shadow-lg transition duration-300 ${
+              !isAnswerSelected ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {currentQuestionIndex < questions.length - 1 ? "Next" : "Submit"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

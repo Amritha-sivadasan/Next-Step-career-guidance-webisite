@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
+import PsychometricTestPage from "../pages/student/PsychometricTestPage";
 
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
@@ -31,6 +32,7 @@ const StudentLayout = lazy(
 );
 
 const PaymentPage = lazy(() => import("../pages/student/PaymentPage"));
+
 const BookingDetailsPage = lazy(
   () => import("../pages/student/BookingDetailsPage")
 );
@@ -157,6 +159,7 @@ const StudentRouter = () => {
             }
           >
             <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            <Route path="/psychometric-test" element={<PsychometricTestPage />} />
             <Route
               element={
                 <>
@@ -174,6 +177,7 @@ const StudentRouter = () => {
                 path="/schedule-session"
                 element={<BookingDetailsPage />}
               />
+              
             </Route>
           </Route>
         </Route>

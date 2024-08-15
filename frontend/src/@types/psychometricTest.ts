@@ -4,6 +4,7 @@ interface Score {
   }
   
   interface Option {
+    _id:string;
     text: string;
     scores: Score[];
   }

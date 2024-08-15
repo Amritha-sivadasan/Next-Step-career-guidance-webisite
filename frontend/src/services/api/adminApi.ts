@@ -172,29 +172,4 @@ export const handleBlockAndUnblockStudent = async (id: string) => {
   }
 };
 
-export const getPsychometricTests = async () => {
-  try {
-    const response = await adminAxiosInstance.get(
-      `${API_URL}/admin/getAllpsychometric`,
-      { withCredentials: true }
-    );
-  
-    return response.data;
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-};
 
-export const deletePsychometricTest = async (id: string) => {
-  try {
-  
-    const response = await adminAxiosInstance.delete(
-      `${API_URL}/admin/deletepsychometric/${id}`,
-      { withCredentials: true }
-    );
-  
-    return response.data;
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-};

@@ -17,6 +17,7 @@ import expertController from "../contollers/expertController";
 import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
 import upload from "../utils/multerConfig";
+import psychometricController from "../contollers/psychometricController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -93,6 +94,8 @@ router.put('/uploadImage',verifyAccessToken,
 router.put('/uploadPersonalInfo',verifyAccessToken,verifyRole(role),studentController.updateuserData)
 router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
 router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
+router.get('/getAllpsychometric',verifyAccessToken,verifyRole(role),psychometricController.fetchAllQuestions)
+router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),psychometricController.submitAnswer)
 
 
 export default router;

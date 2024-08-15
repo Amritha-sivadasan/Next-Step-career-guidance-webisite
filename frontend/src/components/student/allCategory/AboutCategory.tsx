@@ -22,6 +22,9 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
   const handleMentorBooking = () => {
     navigate(`/experts/${subCategory.subCatName}`);
   };
+  const handleTest = () => {
+    navigate("/psychometric-test");
+  };
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -102,7 +105,10 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
         </div>
       </div>
       <div className="flex justify-center mt-12  mb-10">
-        <button className="border rounded-lg w-56 text-white p-3 bg-[#0B2149] transition-transform duration-300 transform hover:scale-105 hover:bg-[#0A1E3F] focus:outline-none focus:ring-2 focus:ring-[#0A1E3F] focus:ring-offset-2">
+        <button
+          onClick={handleTest}
+          className="border rounded-lg w-56 text-white p-3 bg-[#0B2149] transition-transform duration-300 transform hover:scale-105 hover:bg-[#0A1E3F] focus:outline-none focus:ring-2 focus:ring-[#0A1E3F] focus:ring-offset-2"
+        >
           Psychometric Test
         </button>
       </div>

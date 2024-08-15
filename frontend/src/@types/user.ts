@@ -1,3 +1,7 @@
+type IPsychometricResult ={
+  [category: string]: number; 
+}
+
 export interface IStudent {
   _id: string;
   user_name: string;
@@ -13,4 +17,6 @@ export interface IStudent {
   authentication_provider: string;
   is_data_entered:boolean;
   role: string;
+  psychometric_result?: IPsychometricResult;
 }
+
