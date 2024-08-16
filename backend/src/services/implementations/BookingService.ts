@@ -5,8 +5,8 @@ import { IBookingService } from "../interface/IBookingService";
 import Stripe from "stripe";
 import { SendMail } from "../../utils/sendOtp";
 import { IStudent } from "../../entities/StudentEntity";
-import { ISlotRepository } from "../../repositories/interface/ISlotRepository";
-import SlotRepository from "../../repositories/implementations/SlotRepository";
+import { IChatRepository } from "../../repositories/interface/IChatRepository";
+import ChatRepository from "../../repositories/implementations/ChatRepository";
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -14,10 +14,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 export default class BookingService implements IBookingService {
   private bookingRepository: IBookingRepository;
-  private slotRepository:ISlotRepository
+  private chatRepository :IChatRepository
+ 
   constructor() {
     this.bookingRepository = new BookingRepository();
-    this.slotRepository= new SlotRepository()
+    this.chatRepository= new ChatRepository()
+ 
   }
 
   async create(
@@ -58,6 +60,12 @@ export default class BookingService implements IBookingService {
           newBooking._id.toString(),
           session.id
         );
+        const newChat={
+          studentId:bookingData.studentId,
+          expertId:bookingData.expertId,
+          bookingId:newBooking._id
+        }
+       await this.chatRepository.createChat(newChat)
 
       return {
         sessionId: session.id,

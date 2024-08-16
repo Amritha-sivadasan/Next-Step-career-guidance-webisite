@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useStudentChat } from "../../../hooks/useStudentChat";
+import socket from "../../../config/socket";
+
+
+// import { IMessage } from "../../../@types/message";
 const messages = [
   {
     id: 1,
@@ -19,6 +23,38 @@ const messages = [
 
 const ChatWindow: React.FC = () => {
   const { selectedExpertId } = useStudentChat();
+  //   const [messages, setMessages] = useState<IMessage[]>([]);
+  //   const [newMessage, setNewMessage] = useState("");
+  //   useEffect(() => {
+  //     socket.on("connect", () => {
+  //       console.log("Connected to Socket.IO server with id:", socket.id);
+  //     });
+  //     socket.on("newMessage", (message) => {
+  //       console.log("Received new message:", message);
+
+  //     });
+
+  //     // Clean up on unmount
+  //     return () => {
+  //       socket.off("connect");
+  //       socket.off("newMessage");
+  //       socket.disconnect();
+  //     };
+  //   }, []);
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server with id:", socket.id);
+    });
+   
+
+    // Clean up on unmount
+    return () => {
+      socket.off("connect");
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="flex-1  flex flex-col  ">
       {selectedExpertId ? (

@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react";
-import { IBooking } from "../../../@types/booking";
-import { getConfirmBooking } from "../../../services/api/bookingApi";
+
+
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { IStudent } from "../../../@types/user";
+import { getChatByExpertId } from "../../../services/api/ChatApi";
+import { IChat } from "../../../@types/message";
 
 const ChatWithStudentList = () => {
-  const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
-  const [currentPage] = useState(1);
+  const [chatDetails, setChatDetails] = useState<IChat[]>([]);
   const { setSelectedStudentId } = useExpertChat();
 
-  const itemsPerPage = 3;
-
-  const fetchAllBooking = async (page: number) => {
+  const fetchAllBooking = async () => {
     try {
-      const result = await getConfirmBooking(page, itemsPerPage);
-      setBookingDetails((prev) => [...prev, ...result.data]);
+      const result = await getChatByExpertId();
+      setChatDetails((prev) => [...prev, ...result.data]);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
     }
   };
 
   useEffect(() => {
-    fetchAllBooking(currentPage);
-  }, [currentPage]);
+    fetchAllBooking();
+  }, []);
 
   return (
     <div className="w-1/4 bg-gray-100  p-4 mt-3 ">
@@ -32,8 +31,8 @@ const ChatWithStudentList = () => {
         className="w-full p-2 mb-4 border border-gray-300 rounded"
       />
       <ul>
-        {bookingDetails.map((booking) => {
-          const student = booking.studentId as IStudent;
+        {chatDetails.map((chat) => {
+          const student = chat.studentId as IStudent;
 
           return (
             <li

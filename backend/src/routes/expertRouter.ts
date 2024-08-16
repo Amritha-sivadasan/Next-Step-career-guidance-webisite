@@ -12,6 +12,7 @@ import upload from "../utils/multerConfig";
 import subCategoryController from "../contollers/subCategoryController";
 import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
+import ChatController from "../contollers/ChatController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -91,6 +92,7 @@ expertRouter.get('/allBookings',verifyAccessToken,verifyRole(role),bookingContro
 expertRouter.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllConfirmBooking)
 expertRouter.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllExpertPayment)
 expertRouter.patch('/refund/:id',verifyAccessToken,verifyRole(role),bookingController.refundPayment)
+expertRouter.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 
 
 export default expertRouter;
