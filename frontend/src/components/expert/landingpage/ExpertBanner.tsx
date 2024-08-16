@@ -1,6 +1,6 @@
 const ExpertBanner = () => {
   return (
-    <section className="bg-[#0B2149] text-white h-[80vh] py-20 rounded-b-3xl flex flex-col md:flex-row items-center">
+    <section className="bg-[#0B2149] text-white h-[80vh] py-20 rounded-b-3xl flex flex-col md:flex-row items-center mt-12">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
         {/* Text Section */}
         <div className="md:w-3/4 w-full text-center  md:text-left mb-8 md:mb-0">

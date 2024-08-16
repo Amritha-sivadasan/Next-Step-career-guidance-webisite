@@ -17,7 +17,7 @@ const ExpertNavbar: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow w-full">
+    <header className="bg-white  shadow fixed top-0 left-0 w-full z-50">
       <div className="w-full px-4 py-3 flex justify-between items-center">
         <Link
           to="/expert"
@@ -36,7 +36,7 @@ const ExpertNavbar: React.FC = () => {
         <div className="hidden md:flex w-5/12 justify-between me-5">
           <nav className="flex items-center space-x-20 w-full">
             <ul className="flex space-x-8">
-              <li>
+              <li className="transition-transform duration-200 hover:scale-105">
                 <Link
                   to="/expert/"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -45,7 +45,7 @@ const ExpertNavbar: React.FC = () => {
                 </Link>
               </li>
 
-              <li>
+              <li className="transition-transform duration-200 hover:scale-105">
                 <a
                   href="#"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -54,7 +54,7 @@ const ExpertNavbar: React.FC = () => {
                 </a>
               </li>
 
-              <li>
+              <li className="transition-transform duration-200 hover:scale-105">
                 <a
                   href="#"
                   className="text-[#0B2149] font-thin hover:text-black"
@@ -62,7 +62,7 @@ const ExpertNavbar: React.FC = () => {
                   Contact us
                 </a>
               </li>
-              <li>
+              <li className="transition-transform duration-200 hover:scale-105">
                 <a
                   href="#"
                   className="text-[#0B2149] font-thin hover:text-black"

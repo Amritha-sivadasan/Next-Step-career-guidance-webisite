@@ -1,4 +1,4 @@
-import { Suspense, lazy,useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Signup from "../components/student/register/Signup";
 import Login from "../components/common/authentication/Login";
@@ -13,11 +13,15 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 
-
-
-const StudentChatListPage= lazy(()=>import("../pages/student/StudentChatListPage"))  ;
-const  PsychometricTestPage =lazy(()=>import("../pages/student/PsychometricTestPage"))  ;
-const PsychometricTestResultPage=lazy(()=>import("../pages/student/PsychometricTestResultPage"))  ;
+const StudentChatListPage = lazy(
+  () => import("../pages/student/StudentChatListPage")
+);
+const PsychometricTestPage = lazy(
+  () => import("../pages/student/PsychometricTestPage")
+);
+const PsychometricTestResultPage = lazy(
+  () => import("../pages/student/PsychometricTestResultPage")
+);
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
 const CategoryDetailsPage = lazy(
@@ -152,6 +156,7 @@ const StudentRouter = () => {
               )
             }
           />
+
           <Route
             element={
               <StudentLayout>
@@ -161,12 +166,16 @@ const StudentRouter = () => {
             }
           >
             <Route path="/payment-success" element={<PaymentSuccessPage />} />
-            <Route path="/psychometric-test" element={<PsychometricTestPage />} />
+            <Route
+              path="/psychometric-test"
+              element={<PsychometricTestPage />}
+            />
+
             <Route
               element={
                 <>
                   {" "}
-                  <div className="flex ms-24 flex-grow mt-9">
+                  <div className="flex  flex-grow mt-9">
                     {" "}
                     <UserSideBar /> <Outlet />{" "}
                   </div>{" "}
@@ -174,15 +183,16 @@ const StudentRouter = () => {
               }
             >
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/payment" element={<PaymentPage />} /> 
-              <Route path="/test-result" element={<PsychometricTestResultPage />} />
+              <Route path="/payment" element={<PaymentPage />} />
+              <Route
+                path="/test-result"
+                element={<PsychometricTestResultPage />}
+              />
               <Route
                 path="/schedule-session"
                 element={<BookingDetailsPage />}
               />
               <Route path="/chat-list" element={<StudentChatListPage />} />
-
-              
             </Route>
           </Route>
         </Route>

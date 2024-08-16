@@ -88,12 +88,6 @@ export const getAllPaymentByExpertId = async () => {
 
 
 
-
-
-
-
-
-
 export const getConfirmBooking = async (page:number,limit:number) => {
   try {
     const response = await axiosInstance.get(
