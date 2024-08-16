@@ -6,12 +6,13 @@ import { IChat } from "../../../@types/message";
 
 const ChatWithExpertList = () => {
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
-  const { setSelectedExpertId } = useStudentChat();
+  const { setChatId } = useStudentChat();
 
   const fetchAllBooking = async () => {
     try {
       const result = await getChatByStudnetId();
       setChaDetails((prev) => [...prev, ...result.data]);
+     
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
     }
@@ -35,7 +36,7 @@ const ChatWithExpertList = () => {
             <li
               key={expert._id}
               className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
-              onClick={() => setSelectedExpertId(expert._id)}
+              onClick={() =>setChatId(chat._id)}
             >
               <img
                 src={expert.profile_picture}

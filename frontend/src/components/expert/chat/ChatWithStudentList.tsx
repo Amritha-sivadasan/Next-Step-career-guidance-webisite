@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { IStudent } from "../../../@types/user";
 import { getChatByExpertId } from "../../../services/api/ChatApi";
@@ -8,7 +7,7 @@ import { IChat } from "../../../@types/message";
 
 const ChatWithStudentList = () => {
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
-  const { setSelectedStudentId } = useExpertChat();
+  const { setChatId } = useExpertChat();
 
   const fetchAllBooking = async () => {
     try {
@@ -38,12 +37,12 @@ const ChatWithStudentList = () => {
             <li
               key={student._id}
               className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
-              onClick={() => setSelectedStudentId(student._id)}
+              onClick={() => setChatId(chat._id)}
             >
               <img
                 src={student.profile_picture}
                 alt={student.user_name}
-                className="w-10 h-10 rounded-full mr-3"
+                className="w-14 h-10 rounded-full mr-3"
               />
               <div className="flex justify-between w-full">
                 <span className="font-semibold">{student.user_name}</span>
