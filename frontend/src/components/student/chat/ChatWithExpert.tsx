@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useStudentChat } from "../../../hooks/useStudentChat";
 import { IExpert } from "../../../@types/expert";
 import { getChatByStudnetId } from "../../../services/api/ChatApi";
-import { IChat } from "../../../@types/message";
+import { IChat, IMessage } from "../../../@types/message";
 
 const ChatWithExpertList = () => {
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
-  const { setChatId } = useStudentChat();
+  const { setChatId,latestMessage } = useStudentChat();
 
   const fetchAllBooking = async () => {
     try {
@@ -30,6 +30,7 @@ const ChatWithExpertList = () => {
       <ul>
         {ChatDetials.map((chat) => {
           const expert = chat.expertId as IExpert;
+          const lastMessage = chat.latestMessage as IMessage;
 
           return (
             <li
@@ -42,9 +43,11 @@ const ChatWithExpertList = () => {
                 alt={expert.user_name}
                 className="w-10 h-10 rounded-full mr-3"
               />
-              <div className="flex justify-between w-full">
+              <div className="flex flex-col justify-between w-full">
                 <span className="font-semibold">{expert.user_name}</span>
-                <span className="text-sm text-gray-500">18:18</span>
+                <span className="text-sm text-gray-500">
+                  {latestMessage ? latestMessage: lastMessage.text}
+                </span>
               </div>
             </li>
           );

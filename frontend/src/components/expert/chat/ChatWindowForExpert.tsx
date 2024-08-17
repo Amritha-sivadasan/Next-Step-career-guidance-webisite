@@ -9,12 +9,15 @@ import {
   getMessageByChatIdExpert,
   sendMessageByExpert,
 } from "../../../services/api/ChatApi";
+import { IStudent } from "../../../@types/user";
+import { formatTime } from "../../../utils/generalFuncions";
 
 const ChatWindowExpert: React.FC = () => {
-  const { chatId } = useExpertChat();
+  const { chatId, setlatestMessage } = useExpertChat();
   const { expert } = useAppSelector((state) => state.expert);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [student, setStudent] = useState<IStudent>();
   const userId = expert?._id;
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -28,12 +31,16 @@ const ChatWindowExpert: React.FC = () => {
       if (chatId) {
         const response = await getMessageByChatIdExpert(chatId?.toString());
         setMessages(response.data.messages);
+        setStudent(response.data.studentId);
       }
     };
     fetchMessage();
     const handleReceiveMessage = (message: IMessage) => {
       if (message.senderId !== userId) {
         setMessages((prevMessages) => [...prevMessages, message]);
+        if (message.text) {
+          setlatestMessage(message.text);
+        }
       }
     };
     socket.on("connect", () => {
@@ -41,7 +48,7 @@ const ChatWindowExpert: React.FC = () => {
     });
 
     socket.on("receiveMessage", handleReceiveMessage);
-    
+
     if (chatId) {
       socket.emit("joinChat", { chatId, userId });
     }
@@ -62,6 +69,7 @@ const ChatWindowExpert: React.FC = () => {
     setMessages((prev) => [...prev, reponse.data]);
     socket.emit("sendMessage", { chatId, message });
     setNewMessage("");
+    setlatestMessage(newMessage);
   };
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -75,9 +83,20 @@ const ChatWindowExpert: React.FC = () => {
     <div className="flex-1 flex flex-col h-screen">
       {chatId ? (
         <div className="flex-1 flex flex-col">
-          <div className="mb-1 text-white cursor-pointer bg-blue-950 h-20">
-            user name
-          </div>
+          {student && (
+            <div className="flex items-center bg-blue-950 h-16 text-white p-4">
+              <div className="flex items-center max-w-11 h-11 rounded-full overflow-hidden ms-4">
+                <img
+                  src={student.profile_picture}
+                  alt="userProfile"
+                  className="w-11 h-11 object-cover rounded-full"
+                />
+              </div>
+              <span className="ms-4 text-lg font-semibold">
+                {student.user_name}
+              </span>
+            </div>
+          )}
 
           <div
             ref={chatContainerRef}
@@ -92,15 +111,15 @@ const ChatWindowExpert: React.FC = () => {
                 }`}
               >
                 <div
-                  className={`p-3 rounded-lg shadow ${
+                  className={`flex p-2 rounded-lg shadow mb-1 ${
                     message.senderId !== userId
                       ? "bg-green-200 text-right"
                       : "bg-gray-200 text-left"
                   }`}
                 >
                   <p>{message.text}</p>
-                  <span className="text-xs text-gray-500">
-                    {/* {message.timestamp.toString()} */}
+                  <span className="flex justify-end items-end mt-5 text-xs text-gray-500 ms-2">
+                    {formatTime(message.timestamp.toString())}
                   </span>
                 </div>
               </div>
@@ -108,7 +127,7 @@ const ChatWindowExpert: React.FC = () => {
             {/* Ref for scrolling */}
             <div ref={messagesEndRef} />
           </div>
-          <div className="p-4 bg-gray-100 border-t border-gray-300">
+          <div className="p-4 bg-blue-950 border-t border-gray-300">
             <div className="flex items-center">
               <input
                 type="text"

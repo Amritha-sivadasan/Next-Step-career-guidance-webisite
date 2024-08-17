@@ -18,7 +18,7 @@ export default class ChatRepository implements IChatRepository {
         $or: [{ studentId: id }, { expertId: id }],
       })
         .populate("studentId")
-        .populate("expertId");
+        .populate("expertId").populate("latestMessage")
       return result;
     } catch (error) {
       throw error;
@@ -30,6 +30,14 @@ export default class ChatRepository implements IChatRepository {
         $addToSet: { messages: messageId },
       });
       return chat;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async updateLatestMessge(id: string, message: string): Promise<void> {
+    try {
+     await Chat.findByIdAndUpdate(id,{latestMessage:message} );
+    
     } catch (error) {
       throw error;
     }

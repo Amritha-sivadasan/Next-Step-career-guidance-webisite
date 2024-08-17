@@ -5,5 +5,6 @@ export interface IChatRepository {
    fetchChatById(id:string):Promise<IChat[]>
    updateMesssage(id:string,message:string):Promise<IChat|null>
    fetOneChatByid(id:string):Promise<IChat|null>
+   updateLatestMessge(id:string,message:string):Promise<void>
 
 }

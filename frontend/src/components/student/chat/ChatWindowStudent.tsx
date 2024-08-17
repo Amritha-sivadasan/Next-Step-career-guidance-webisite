@@ -7,12 +7,15 @@ import {
   getMessageByChatIdByStudent,
   sendMessageByStudent,
 } from "../../../services/api/ChatApi";
+import { IExpert } from "../../../@types/expert";
+import { formatTime } from "../../../utils/generalFuncions";
 
 const ChatWindow: React.FC = () => {
-  const { chatId } = useStudentChat();
+  const { chatId, setlatestMessage } = useStudentChat();
   const { user } = useAppSelector((state) => state.student);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [Expert, setExprt] = useState<IExpert>();
   const userId = user?._id;
 
   // Ref for the messages container
@@ -26,6 +29,7 @@ const ChatWindow: React.FC = () => {
       try {
         const response = await getMessageByChatIdByStudent(chatId?.toString());
         setMessages(response.data.messages);
+        setExprt(response.data.expertId);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -36,6 +40,9 @@ const ChatWindow: React.FC = () => {
     const handleReceiveMessage = (message: IMessage) => {
       if (message.senderId !== userId) {
         setMessages((prevMessages) => [...prevMessages, message]);
+        if (message.text) {
+          setlatestMessage(message.text);
+        }
       }
     };
 
@@ -67,6 +74,7 @@ const ChatWindow: React.FC = () => {
       setMessages((prev) => [...prev, response.data]);
       socket.emit("sendMessage", { chatId, message });
       setNewMessage("");
+      setlatestMessage(newMessage);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -85,9 +93,20 @@ const ChatWindow: React.FC = () => {
     <div className="flex-1 flex flex-col h-screen">
       {chatId ? (
         <div className="flex-1 flex flex-col">
-          <div className=" text-white cursor-pointer bg-blue-950 h-16">
-            user name
-          </div>
+          {Expert && (
+            <div className="flex items-center bg-blue-950 h-16 text-white p-4">
+              <div className="flex items-center max-w-11 h-11 rounded-full overflow-hidden ms-4">
+                <img
+                  src={Expert.profile_picture}
+                  alt="userProfile"
+                  className="w-11 h-11 object-cover rounded-full"
+                />
+              </div>
+              <span className="ms-4 text-lg font-semibold">
+                {Expert.user_name}
+              </span>
+            </div>
+          )}
 
           <div
             ref={chatContainerRef}
@@ -97,20 +116,20 @@ const ChatWindow: React.FC = () => {
             {messages.map((message) => (
               <div
                 key={message._id}
-                className={`flex ${
+                className={`flex  ${
                   message.senderId === userId ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
-                  className={`p-3 rounded-lg shadow ${
+                  className={`flex p-2 rounded-lg shadow mb-1 ${
                     message.senderId !== userId
-                      ? "bg-green-200 text-right"
+                      ? "bg-green-200 text-right "
                       : "bg-gray-200 text-left"
                   }`}
                 >
                   <p>{message.text}</p>
-                  <span className="text-xs text-gray-500">
-                    {/* {message.timestamp.toString()} */}
+                  <span className="flex justify-end items-end mt-5  text-xs text-gray-500">
+                    {formatTime(message.timestamp.toString())}
                   </span>
                 </div>
               </div>
@@ -118,7 +137,7 @@ const ChatWindow: React.FC = () => {
             {/* Ref for scrolling */}
             <div ref={messagesEndRef} />
           </div>
-          <div className="p-4 bg-gray-100 border-t border-gray-300">
+          <div className="p-4 bg-blue-950 border-t border-gray-300 mt-7">
             <div className="flex items-center">
               <input
                 type="text"

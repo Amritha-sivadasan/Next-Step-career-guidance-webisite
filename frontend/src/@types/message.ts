@@ -17,6 +17,6 @@ export interface IChat {
   studentId: string|IStudent;
   expertId: string|IExpert;
   messages?: string[];
-  latestMessage?:string;
+  latestMessage?:string |IMessage;
   bookingId:string|IBooking
 }

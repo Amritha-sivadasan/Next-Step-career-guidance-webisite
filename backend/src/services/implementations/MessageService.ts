@@ -16,7 +16,8 @@ export default class MessageService implements IMessageService{
     async saveMessage(message: IMessage): Promise<IMessage> {
         try {
         const messageDetails = await this.messageRepository.saveMesssage(message)
-       await  this.chatRepository.updateMesssage(message.chatId.toString(),messageDetails._id.toString())   
+       await  this.chatRepository.updateMesssage(message.chatId.toString(),messageDetails._id.toString()) 
+       await this.chatRepository.updateLatestMessge(message.chatId.toString(),messageDetails._id.toString())  
          return messageDetails
             
         } catch (error) {
