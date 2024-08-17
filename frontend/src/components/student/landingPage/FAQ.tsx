@@ -1,11 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
+import { fetchQusion, sendQustion } from "../../../services/api/studentApi";
+import { toast } from "react-toastify";
+import { IFaq } from "../../../@types/faq";
 
 const Faq: React.FC = () => {
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
+  const [newquestion , setnewquestion]=  useState<string >("");
+  const [questions,setQuestions] = useState<IFaq>()
+  const {user}= useAppSelector(state=>state.student)
+  useEffect(()=>{
+
+    const fetchQuestion = async()=>{
+      const response= await fetchQusion()
+      setQuestions(response.data.slice(0,4))
+    }
+    fetchQuestion()
+
+  },[])
 
   const handleQuestionClick = (index: number) => {
     setActiveQuestion(activeQuestion === index ? null : index);
   };
+
+  const handleQuestion= async()=>{
+    const newQuestion ={
+      studentId:user?._id,
+      question :newquestion
+    }
+    const response=  await sendQustion(newQuestion)
+     if(response.success){
+      toast.success('Message send Successfully')
+     }
+  }
 
   return (
     <div className="p-8 container mx-auto">
@@ -24,9 +51,9 @@ const Faq: React.FC = () => {
           />
         </div>
 
-        {/* Right Side: FAQ Content */}
+
         <div className="w-full md:w-1/2 md:max-w-lg mx-auto">
-          {/* FAQ Questions and Answers */}
+      
           <div className="space-y-4">
             {["Question 1", "Question 2", "Question 3"].map(
               (question, index) => (
@@ -80,8 +107,9 @@ const Faq: React.FC = () => {
               type="text"
               placeholder="Enter your question here..."
               className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm bg-[#E7F1FF] focus:outline-none focus:ring-2 focus:ring-slate-400 transition-colors duration-300"
+              onChange={(e)=>setnewquestion(e.target.value)}
             />
-            <button className="mt-3 px-5 py-2 bg-[#0B2149] text-white rounded-lg shadow-md hover:bg-blue-950 transition-colors duration-300">
+            <button onClick={handleQuestion} className="mt-3 px-5 py-2 bg-[#0B2149] text-white rounded-lg shadow-md hover:bg-blue-950 transition-colors duration-300">
               Submit Question
             </button>
           </div>

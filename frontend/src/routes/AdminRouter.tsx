@@ -5,7 +5,6 @@ import Dashboard from "../components/admin/dashbord/AdimnDashboard";
 import AdmintPrivateRoute from "./Privateroutes/AdminPrivateRoute";
 import { useDispatch } from "react-redux";
 import useFetchAdminData from "../hooks/useFetchAdmin";
-// import { useAppSelector } from "../hooks/useTypeSelector";
 import { useEffect } from "react";
 import { setAdmin, setadminAuthenticated } from "../features/admin/adminSlice";
 import CategoryTable from "../components/admin/category/CategoryList";
@@ -16,7 +15,6 @@ import EditSubCategory from "../components/admin/subcategory/SubCategoryEdit";
 import AddSubCategory from "../components/admin/subcategory/AddSubCategory";
 import ExpertDetailsView from "../components/admin/expertDetails/ExpertView";
 import { useAppSelector } from "../hooks/useTypeSelector";
-// import Dashboard from "../pages/admin/Dashbord";
 import Experts from "../components/admin/expertDetails/ExpertDetails";
 import Header from "../components/admin/header/AdminHeader";
 import Sidebar from "../components/admin/sidebar/AdminSidebar";
@@ -26,6 +24,7 @@ import StudentDetails from "../pages/admin/StudentDetails";
 import StudentSingleView from "../pages/admin/StudentSingleView";
 import PsychometricTestPage from "../pages/admin/PsychometricTestPage";
 import AddPsychometricTestPage from "../pages/admin/AddPsychometricTestPage";
+import FaqPage from "../pages/admin/FaqPage";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -93,6 +92,7 @@ const AdminRouter = () => {
             <Route path="/studentView/:studentId" element={<StudentSingleView />} />
             <Route path="/psychometric-test" element={<PsychometricTestPage />} />
             <Route path="/add-psychometric-test" element={<AddPsychometricTestPage />} />
+            <Route path="/faq" element={<FaqPage />} />
           </Route>
         </Route>
       </Routes>

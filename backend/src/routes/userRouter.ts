@@ -20,6 +20,7 @@ import upload from "../utils/multerConfig";
 import psychometricController from "../contollers/psychometricController";
 import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
+import faqController from "../contollers/faqController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -102,5 +103,7 @@ router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetch
 router.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
+router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
+router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
 
 export default router;

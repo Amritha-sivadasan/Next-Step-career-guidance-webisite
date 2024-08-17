@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { IStudent } from "../../@types/user";
 import { studentAxiosInstance } from "../instance/userInstance";
+import { IFaq } from "../../@types/faq";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -282,4 +283,35 @@ export const updatePersonalInfo =async(data: Partial<IStudent>)=>{
   } catch (error) {
     return (error as Error).response?.data;
   }
+}
+
+export const sendQustion  =async(data: Partial<IFaq>)=>{
+  try {
+    const response = await studentAxiosInstance.post(
+      `${API_URL}/student/saveQuestion/`,data,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+
+export const fetchQusion = async()=>{
+try {
+  const response = await studentAxiosInstance.get(
+    `${API_URL}/student/fetchQustion`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+  
+} catch (error) {
+  return (error as Error).response?.data;
+}
 }
