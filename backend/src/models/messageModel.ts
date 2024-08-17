@@ -11,11 +11,7 @@ const MessageSchema: Schema = new Schema(
       url: String,
       duration: Number,
     },
-    senderType: {
-      type: String,
-      enum: ["student", "expert"],
-      required: true,
-    },
+  
     timestamp: {
       type: Date,
       default: Date.now,

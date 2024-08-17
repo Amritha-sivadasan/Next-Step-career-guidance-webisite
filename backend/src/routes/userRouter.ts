@@ -19,6 +19,7 @@ import bookingController from "../contollers/bookingController";
 import upload from "../utils/multerConfig";
 import psychometricController from "../contollers/psychometricController";
 import ChatController from "../contollers/ChatController";
+import messageController from "../contollers/messageController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -98,6 +99,8 @@ router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingControlle
 router.get('/getAllpsychometric',verifyAccessToken,verifyRole(role),psychometricController.fetchAllQuestions)
 router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),psychometricController.submitAnswer)
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
-
+router.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
+router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
+router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 
 export default router;

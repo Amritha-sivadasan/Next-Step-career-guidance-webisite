@@ -12,7 +12,6 @@ const ChatWithExpertList = () => {
     try {
       const result = await getChatByStudnetId();
       setChaDetails((prev) => [...prev, ...result.data]);
-     
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
     }
@@ -22,7 +21,7 @@ const ChatWithExpertList = () => {
   }, []);
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4 mt-3 ">
+    <div className="w-1/4 bg-gray-100 p-4  ">
       <input
         type="text"
         placeholder="Search"
@@ -36,7 +35,7 @@ const ChatWithExpertList = () => {
             <li
               key={expert._id}
               className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
-              onClick={() =>setChatId(chat._id)}
+              onClick={() => setChatId(chat._id)}
             >
               <img
                 src={expert.profile_picture}

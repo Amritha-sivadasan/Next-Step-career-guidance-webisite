@@ -6,6 +6,6 @@ export interface IMessage extends Document{
     senderId:ObjectId
     text?:string,
     audio:string,
-    timestamp:Date,
+    timestamp: Date,
     is_delete:Boolean
 }

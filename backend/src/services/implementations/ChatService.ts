@@ -19,4 +19,13 @@ export default class ChatService implements IChatService{
             throw error
         }
     }
+
+    async fetchChatById(id: string): Promise<IChat|null> {
+        try {
+            const result = await this.chatRepository.fetOneChatByid(id)
+            return result  
+          } catch (error) {
+              throw error
+          }
+    }
 }

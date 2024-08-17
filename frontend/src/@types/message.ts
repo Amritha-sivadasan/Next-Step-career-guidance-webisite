@@ -7,7 +7,7 @@ export interface IMessage {
   chatId: string;
   senderId: string;
   text?: string;
-  audio: string;
+  audio?: string;
   timestamp: Date;
   is_delete: boolean;
 }

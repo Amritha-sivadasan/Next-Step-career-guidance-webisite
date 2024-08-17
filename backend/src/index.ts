@@ -47,9 +47,9 @@ io.on("connection", (socket) => {
   
   });
   socket.on("sendMessage", async ({ chatId, message }) => {
-    console.log('new message',message)
+    console.log('new message', chatId)
 
-    io.to(chatId).emit("receiveMessage", message);
+    io.to(chatId).emit("receiveMessage",message);
   });
   socket.on("disconnect", () => {
     console.log("User disconnected");

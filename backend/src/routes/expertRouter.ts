@@ -13,6 +13,7 @@ import subCategoryController from "../contollers/subCategoryController";
 import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
 import ChatController from "../contollers/ChatController";
+import messageController from "../contollers/messageController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -93,6 +94,7 @@ expertRouter.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingCon
 expertRouter.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllExpertPayment)
 expertRouter.patch('/refund/:id',verifyAccessToken,verifyRole(role),bookingController.refundPayment)
 expertRouter.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
-
+expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
+expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 
 export default expertRouter;

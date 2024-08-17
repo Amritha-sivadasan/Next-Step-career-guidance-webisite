@@ -26,6 +26,26 @@ class ChatController {
         .json({ success: false, message: "cannot find any Chat", error });
     }
   };
+
+  public fetchChatByChatId = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+   const {id}=req.params
+    try {
+      const result = await this.chatService.fetchChatById(id!);
+      res
+        .status(200)
+        .json({ success: true, data: result, messsage: "successufull" });
+    } catch (error) {
+      console.log("error in finding Chat");
+      res
+        .status(500)
+        .json({ success: false, message: "cannot find any Chat", error });
+    }
+  }
+
+
 }
 
 export default new ChatController();

@@ -24,4 +24,24 @@ export default class ChatRepository implements IChatRepository {
       throw error;
     }
   }
+  async updateMesssage(id: string, messageId: string): Promise<IChat | null> {
+    try {
+      const chat = await Chat.findByIdAndUpdate(id, {
+        $addToSet: { messages: messageId },
+      });
+      return chat;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async fetOneChatByid(id: string): Promise<IChat | null> {
+    try {
+      return await Chat.findById(id)
+        .populate("studentId")
+        .populate("expertId")
+        .populate("messages");
+    } catch (error) {
+      throw error;
+    }
+  }
 }

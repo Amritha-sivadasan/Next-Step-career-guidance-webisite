@@ -23,7 +23,7 @@ const ChatWithStudentList = () => {
   }, []);
 
   return (
-    <div className="w-1/4 bg-gray-100  p-4 mt-3 ">
+    <div className="w-1/4 bg-gray-100  p-4  ">
       <input
         type="text"
         placeholder="Search"
