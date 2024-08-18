@@ -13,6 +13,10 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 
+import { generateToken ,messaging} from "../config/firebase";
+import { onMessage } from "firebase/messaging";
+import toast, { Toaster } from "react-hot-toast";
+
 const StudentChatListPage = lazy(
   () => import("../pages/student/StudentChatListPage")
 );
@@ -59,6 +63,18 @@ const StudentRouter = () => {
     }
   }, [dispatch, user, isAuthenticated]);
   console.log();
+
+
+  useEffect(() => {
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      if(payload.notification?.body){
+        toast(payload.notification?.body);
+
+      }
+    });
+  }, []);
   return (
     <Suspense fallback={<LoadingPage />}>
       <Routes>
@@ -122,6 +138,7 @@ const StudentRouter = () => {
         <Route
           element={
             <StudentLayout>
+                <Toaster/>
               {" "}
               <Outlet />{" "}
             </StudentLayout>
