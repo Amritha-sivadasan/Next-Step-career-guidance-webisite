@@ -15,6 +15,8 @@ const PsychometricTest: React.FC = () => {
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(3);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,13 @@ const PsychometricTest: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  // Calculate the current items to display
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = questions.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(questions.length / itemsPerPage);
 
   const handleQuestionClick = (id: string) => {
     setExpandedQuestionId((prevId) => (prevId === id ? null : id));
@@ -66,12 +75,17 @@ const PsychometricTest: React.FC = () => {
       setError("Failed to delete question");
     }
   };
+
   const handleAddnew = async () => {
     navigate("/admin/add-psychometric-test");
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="max-w-screen-lg mx-auto p-8 bg-white shadow-lg  rounded-lg mt-10 border ">
+    <div className="max-w-screen-lg mx-auto p-8 bg-white shadow-lg rounded-lg mt-10 border">
       <h1 className="text-2xl font-bold mb-6">Psychometric Questions</h1>
       <div className="flex justify-end mt-6 mb-5">
         <button
@@ -81,7 +95,7 @@ const PsychometricTest: React.FC = () => {
           Add New Question
         </button>
       </div>
-      {questions.map((question) => (
+      {currentItems.map((question) => (
         <div key={question._id} className="mb-6">
           {/* Question Card */}
           <div
@@ -128,6 +142,26 @@ const PsychometricTest: React.FC = () => {
           )}
         </div>
       ))}
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg mx-2 disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg mx-2 disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

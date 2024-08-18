@@ -20,4 +20,11 @@ export default class FaqRepository implements IFaqRepository {
       throw error;
     }
   }
+  async updateAnswer(id: string, answer: string): Promise<void> {
+    try {
+      await  FAQ.findByIdAndUpdate(id,{answer:answer})
+    } catch (error) {
+      throw error;
+    }
+  }
 }

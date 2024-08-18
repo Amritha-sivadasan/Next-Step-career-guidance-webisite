@@ -27,4 +27,13 @@ export default class  FaqService implements IFaqService{
         }
     }
 
+    async updateAnswer(id: string, answer: string): Promise<void> {
+        try {
+         await  this.faqRepository.updateAnswer(id,answer)
+            
+        } catch (error) {
+            throw error
+        }
+    }
+
 }

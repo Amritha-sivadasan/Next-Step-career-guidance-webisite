@@ -173,3 +173,28 @@ export const handleBlockAndUnblockStudent = async (id: string) => {
 };
 
 
+export const fetchAllFaq = async () => {
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/fetch-all-faq`,
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const submitAnswer = async(id:string,answer:string)=>{
+  try {
+    const response = await adminAxiosInstance.put(
+      `${API_URL}/admin/submit-answer/${id}`,{answer},
+      { withCredentials: true }
+    );
+    console.log("response", response);
+    return response.data;
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

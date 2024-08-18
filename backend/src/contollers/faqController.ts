@@ -34,7 +34,24 @@ class FaqController {
     } catch (error) {
         res
         .status(500)
-        .json({ success: false, message: "Error occurred during update User" });
+        .json({ success: false, message: "Error occurred during fetching question" });
+    }
+  }
+
+  public updateAnswer=async(req:Request,res:Response):Promise<void>=>{
+    const {id}= req.params
+    const {answer}= req.body
+    try {
+      const response= await this.faqService.updateAnswer(id,answer)
+      res.status(200).json({
+        success: true,
+        Message: "Question Send Successfully",
+        data: response,
+      });
+    } catch (error) {
+      res
+      .status(500)
+      .json({ success: false, message: "Error occurred during update Answer" });
     }
   }
 }
