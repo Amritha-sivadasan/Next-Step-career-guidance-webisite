@@ -43,16 +43,20 @@ io.on("connection", (socket) => {
 
   socket.on("joinChat",async ({ chatId, userId }) =>{
     socket.join(chatId);
-    console.log(`User ${userId} joined chat room ${chatId}`);
+    // console.log(`User ${userId} joined chat room ${chatId}`);
   
   });
   socket.on("sendMessage", async ({ chatId, message }) => {
-    console.log('new message', chatId)
+    // console.log('new message', chatId)
 
     io.to(chatId).emit("receiveMessage",message);
   });
   socket.on("disconnect", () => {
     console.log("User disconnected");
+  });
+  socket.on('deleteMessage', ({ chatId, messageId }) => {
+    console.log("deleteMessage",chatId,messageId);
+    io.to(chatId).emit('messageDeleted', messageId);
   });
 });
 

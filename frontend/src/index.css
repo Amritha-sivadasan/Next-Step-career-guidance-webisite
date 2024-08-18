@@ -13,3 +13,30 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+/* Custom styles for SweetAlert */
+.small-alert .swal2-popup {
+  width: 240px; /* Tailwind's w-60 */
+  padding: 16px; /* Tailwind's p-4 */
+  font-size: 0.875rem; /* Tailwind's text-sm */
+  border-radius: 0.5rem; /* Tailwind's rounded-lg */
+}
+
+.small-alert .swal2-title {
+  font-size: 1.125rem; /* Tailwind's text-lg */
+}
+
+.small-alert .swal2-content {
+  font-size: 1rem; /* Tailwind's text-base */
+}
+
+.small-alert .swal2-actions {
+  margin-top: 16px; /* Tailwind's mt-4 */
+}
+
+/* Positioning the alert (optional adjustments) */
+.small-alert .swal2-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}

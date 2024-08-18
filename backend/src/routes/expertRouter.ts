@@ -96,5 +96,6 @@ expertRouter.patch('/refund/:id',verifyAccessToken,verifyRole(role),bookingContr
 expertRouter.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
 expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
+expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 
 export default expertRouter;

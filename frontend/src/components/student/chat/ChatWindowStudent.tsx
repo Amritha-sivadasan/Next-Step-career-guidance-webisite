@@ -6,9 +6,13 @@ import { IMessage } from "../../../@types/message";
 import {
   getMessageByChatIdByStudent,
   sendMessageByStudent,
+  deleteMessageByStudent,
 } from "../../../services/api/ChatApi";
 import { IExpert } from "../../../@types/expert";
 import { formatTime } from "../../../utils/generalFuncions";
+import { FiTrash2 } from "react-icons/fi";
+import ConfirmationModal from "../../common/modal/ConfirmationModal";
+import { MdOutlineDoNotDisturb } from "react-icons/md";
 
 const ChatWindow: React.FC = () => {
   const { chatId, setlatestMessage } = useStudentChat();
@@ -16,6 +20,11 @@ const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [Expert, setExprt] = useState<IExpert>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
+    null
+  );
+  const [lastMessage, setLastMessage] = useState<string>("");
   const userId = user?._id;
 
   // Ref for the messages container
@@ -30,6 +39,7 @@ const ChatWindow: React.FC = () => {
         const response = await getMessageByChatIdByStudent(chatId?.toString());
         setMessages(response.data.messages);
         setExprt(response.data.expertId);
+        setLastMessage(response.data.latestMessage);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -45,19 +55,44 @@ const ChatWindow: React.FC = () => {
         }
       }
     };
+    const handleDeleteMessage = (messageId: string) => {
+      if (messageId == lastMessage) {
+        setlatestMessage("Deleted message");
+      }
+
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message._id == messageId ? { ...message, is_delete: true } : message
+        )
+      );
+    };
 
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server with id:", socket.id);
     });
 
     socket.on("receiveMessage", handleReceiveMessage);
+    socket.on("messageDeleted", handleDeleteMessage);
 
     socket.emit("joinChat", { chatId, userId });
 
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
+      socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [chatId, user, userId]);
+  }, [chatId, messages, setlatestMessage, user, userId]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
 
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -75,8 +110,44 @@ const ChatWindow: React.FC = () => {
       socket.emit("sendMessage", { chatId, message });
       setNewMessage("");
       setlatestMessage(newMessage);
+      setLastMessage(response.data._id);
     } catch (error) {
       console.error("Error sending message:", error);
+    }
+  };
+
+  const openDeleteConfirmationModal = (messageId: string) => {
+    setSelectedMessageId(messageId);
+    setIsModalOpen(true);
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    try {
+      if (messageId == lastMessage) {
+        setlatestMessage("Deleted message");
+      }
+      await deleteMessageByStudent(messageId);
+      socket.emit("deleteMessage", { chatId, messageId });
+      setMessages((prevMessages) => {
+        const updatedMessages = prevMessages.map((message) =>
+          message._id == messageId ? { ...message, is_delete: true } : message
+        );
+        if (
+          updatedMessages.length === 1 &&
+          updatedMessages[0]._id === messageId
+        ) {
+          return [
+            {
+              ...updatedMessages[0],
+              text: "This message was deleted",
+              is_delete: true,
+            },
+          ];
+        }
+        return updatedMessages;
+      });
+    } catch (error) {
+      console.error("Error deleting message:", error);
     }
   };
 
@@ -110,32 +181,67 @@ const ChatWindow: React.FC = () => {
 
           <div
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-4  no-scrollbar"
+            className="flex-1 overflow-y-auto p-4 no-scrollbar"
             style={{ maxHeight: "calc(80vh - 120px)" }}
           >
             {messages.map((message) => (
               <div
                 key={message._id}
-                className={`flex  ${
+                className={`group flex ${
                   message.senderId === userId ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
-                  className={`flex p-2 rounded-lg shadow mb-1 ${
+                  className={`relative flex p-2 rounded-lg shadow mb-1 ${
                     message.senderId !== userId
-                      ? "bg-green-200 text-right "
+                      ? "bg-green-200 text-right"
                       : "bg-gray-200 text-left"
                   }`}
                 >
-                  <p>{message.text}</p>
-                  <span className="flex justify-end items-end mt-5  text-xs text-gray-500">
+                  <p>
+                    {message.is_delete ? (
+                      <>
+                        {" "}
+                        <span className="flex text-gray-500 gap-1">
+                          <span className="mt-1">
+                            {" "}
+                            <MdOutlineDoNotDisturb size={18} />
+                          </span>
+                          This message was deleted
+                        </span>
+                      </>
+                    ) : (
+                      message.text
+                    )}
+                  </p>
+                  <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
                     {formatTime(message.timestamp.toString())}
                   </span>
+
+                  {/* Delete Button only for current user's messages */}
+                  {message.senderId === userId && !message.is_delete && (
+                    <button
+                      className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => openDeleteConfirmationModal(message._id)}
+                    >
+                      <FiTrash2 />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
-            {/* Ref for scrolling */}
             <div ref={messagesEndRef} />
+            <ConfirmationModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              onConfirm={() => {
+                if (selectedMessageId) {
+                  deleteMessage(selectedMessageId);
+                }
+                setIsModalOpen(false);
+              }}
+              messageId={selectedMessageId || ""}
+            />
           </div>
           <div className="p-4 bg-blue-950 border-t border-gray-300 mt-7">
             <div className="flex items-center">

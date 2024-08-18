@@ -14,56 +14,22 @@ interface Error {
 
 export const getChatByStudnetId = async () => {
   try {
-    const response = await studentAxiosInstance.get(`${API_URL}/student/fetAllChat`, {
-      withCredentials: true,
-    });
-
-    return response.data;
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-};
-
-export const getChatByExpertId  = async()=>{
-    try {
-        const response = await axiosInstance.get(`${API_URL}/expert/fetAllChat`, {
-          withCredentials: true,
-        });
-    
-        return response.data;
-      } catch (error) {
-        return (error as Error).response?.data;
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/fetAllChat`,
+      {
+        withCredentials: true,
       }
-}
+    );
 
-export const sendMessageByStudent = async(message:Partial<IMessage>)=>{
-  try {
-    const response = await studentAxiosInstance.post(`${API_URL}/student/saveMessage`,message ,{
-      withCredentials: true,
-    });
-    console.log(response.data)
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
 
-export const sendMessageByExpert = async(message:Partial<IMessage>)=>{
+export const getChatByExpertId = async () => {
   try {
-    const response = await axiosInstance.post(`${API_URL}/expert/saveMessage`,message ,{
-      withCredentials: true,
-    });
-    console.log(response.data)
-    return response.data;
-  } catch (error) {
-    return (error as Error).response?.data;
-  }
-}
-
-
-export const getMessageByChatIdByStudent= async (id:string) => {
-  try {
-    const response = await studentAxiosInstance.get(`${API_URL}/student/fetchChatById/${id}`, {
+    const response = await axiosInstance.get(`${API_URL}/expert/fetAllChat`, {
       withCredentials: true,
     });
 
@@ -73,12 +39,93 @@ export const getMessageByChatIdByStudent= async (id:string) => {
   }
 };
 
-
-export const getMessageByChatIdExpert= async (id:string) => {
+export const sendMessageByStudent = async (message: Partial<IMessage>) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/expert/fetchChatById/${id}`, {
-      withCredentials: true,
-    });
+    const response = await studentAxiosInstance.post(
+      `${API_URL}/student/saveMessage`,
+      message,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const sendMessageByExpert = async (message: Partial<IMessage>) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/expert/saveMessage`,
+      message,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const getMessageByChatIdByStudent = async (id: string) => {
+  try {
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/fetchChatById/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const getMessageByChatIdExpert = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/fetchChatById/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const deleteMessageByStudent = async (id: string) => {
+  try {
+    const response = await studentAxiosInstance.delete(
+      `${API_URL}/student/deleteMessage/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+
+
+export const deleteMessageByExpert = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${API_URL}/expert/deleteMessage/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {

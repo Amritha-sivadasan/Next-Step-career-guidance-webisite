@@ -7,7 +7,7 @@ import { IChat, IMessage } from "../../../@types/message";
 
 const ChatWithStudentList = () => {
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
-  const { setChatId ,latestMessage} = useExpertChat();
+  const { setChatId, latestMessage } = useExpertChat();
 
   const fetchAllBooking = async () => {
     try {
@@ -32,7 +32,7 @@ const ChatWithStudentList = () => {
       <ul>
         {chatDetails.map((chat) => {
           const student = chat.studentId as IStudent;
-          const lastMessage= chat.latestMessage as IMessage;
+          const lastMessage = chat.latestMessage as IMessage;
 
           return (
             <li
@@ -47,7 +47,19 @@ const ChatWithStudentList = () => {
               />
               <div className="flex flex-col justify-between w-full">
                 <span className="font-semibold">{student.user_name}</span>
-                <span className="text-sm text-gray-500">{latestMessage?latestMessage:lastMessage.text}</span>
+                <span className="text-sm text-gray-500">
+                  {latestMessage ? (
+                    latestMessage
+                  ) : (
+                    <>
+                      {lastMessage
+                        ? lastMessage.is_delete
+                          ? "Deleted message"
+                          : lastMessage.text
+                        : ""}
+                    </>
+                  )}
+                </span>
               </div>
             </li>
           );

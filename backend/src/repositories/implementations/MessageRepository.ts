@@ -13,4 +13,22 @@ export default class MessageRepository implements IMessageRepository{
             throw error
         }
     }
+    async deleteMessage(messageId: string): Promise<void> {
+        try {
+        const res= await Message.findByIdAndUpdate(messageId,{is_delete:true})
+            
+        } catch (error) {
+            throw error 
+        }
+    }
+
+    async getMessageById(id: string): Promise<IMessage|null> {
+        try {
+            return await Message.findById(id)
+           
+            
+        } catch (error) {
+            throw error 
+        }
+    }
 }

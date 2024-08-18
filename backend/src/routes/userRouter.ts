@@ -105,5 +105,6 @@ router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetch
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
 router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
+router.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 
 export default router;
