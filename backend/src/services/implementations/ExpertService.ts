@@ -89,6 +89,9 @@ export default class ExpertService implements IExpertService {
     if (!expert) {
       throw new Error("Invalid email or password");
     }
+    if(!expert.is_active){
+      throw new Error("You are blocked please try with another email");
+    }
     const isPasswordValid = bcrypt.compareSync(password, expert.password);
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
@@ -265,4 +268,15 @@ export default class ExpertService implements IExpertService {
       throw error;
     }
   }
+
+  async checkEexpertStatus(id: string): Promise<IExpert|null> {
+    try {
+      const response= await this.expertRepository.checkExpertStatus(id)
+      return response
+      
+    } catch (error) {
+      throw error
+    }
+  }
+
 }

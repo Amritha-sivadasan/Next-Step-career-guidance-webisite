@@ -60,10 +60,19 @@ class ExpertController {
           accessToken,
           data: expert,
         });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "User not found", error, success: false });
+    } catch (error:any) {
+      if (error.message === "You are blocked please try with another email") {
+        res.status(403).json({ message: error.message, success: false });
+      } else if (error.message === "Invalid email or password") {
+        res.status(401).json({ message: error.message, success: false });
+      } else {
+        res
+          .status(500)
+          .json({
+            message: "An internal server error occurred",
+            success: false,
+          });
+      }
     }
   };
 
@@ -272,7 +281,7 @@ class ExpertController {
     }
    }
 
-   public  updateExpretImage = async(req:CustomRequest,res:Response)=>{
+  public  updateExpretImage = async(req:CustomRequest,res:Response)=>{
     try {
       const file = req.file;
       const expert= req.body
@@ -294,6 +303,25 @@ class ExpertController {
       .json({ success: false, message: "Error occurred during update User" });
   }
     }
+
+    public checkExpertStatus = async (req: Request, res: Response) => {
+      try {
+        const { expertId } = req.params;
+        const response = await this.expertService.checkEexpertStatus(expertId!);
+       
+
+          res.status(200).json({
+            success: true,
+            Message: "student is not blocked",
+            data: response,
+          });
+        
+      } catch (error) {
+        res
+          .status(500)
+          .json({ success: false, message: "Error occurred finding user" });
+      }
+    };
 
 }
 

@@ -1,5 +1,6 @@
 import axios from "axios";
-// import { checkIfUserIsBlocked } from "./studentApi";
+import { checkIfUserIsBlocked } from "../api/studentApi";
+import { setAuthenticated } from "../../features/student/authSlice";
 
 const API_URL = process.env.VITE_API_URL;
 export const studentAxiosInstance = axios.create({
@@ -9,17 +10,25 @@ export const studentAxiosInstance = axios.create({
 
 //request interceptor
 studentAxiosInstance.interceptors.request.use(async (config) => {
-  // const isUserAllowed = await checkIfUserIsBlocked();
+  // try {
+  const isUserAllowed = await checkIfUserIsBlocked();
+  console.log("isUserAllowed", isUserAllowed);
 
-  // if (!isUserAllowed) {
-  //   window.location.href = "/";
-  //   return Promise.reject("user is blocked");
+  if (!isUserAllowed.data.is_active) {
+    setAuthenticated(false);
+    localStorage.removeItem("userAuth");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userAccess");
+    window.location.replace('/login');
+    return Promise.reject("User is blocked");
+  }
+  // } catch (error) {
+  //   // Handle error from checkIfUserIsBlocked function
+  //   return Promise.reject(error);
   // }
 
   const token = localStorage.getItem("userAccess");
   // console.log('log from request user api', token);
-
-  
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

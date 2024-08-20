@@ -16,4 +16,5 @@ export interface IStudentService {
     findUserById(id:string):Promise<IStudent|null>
     updateStudentData(id:string,student: Partial<IStudent>,file?: Express.Multer.File):Promise<IStudent | null>
      hadleBlockStudent(id:string): Promise<IStudent|null>
+     checkUserStatus(id:string):Promise<IStudent|null>
   }

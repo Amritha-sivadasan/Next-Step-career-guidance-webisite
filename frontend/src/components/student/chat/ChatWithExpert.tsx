@@ -7,6 +7,7 @@ import { IChat, IMessage } from "../../../@types/message";
 const ChatWithExpertList = () => {
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
   const { setChatId, latestMessage } = useStudentChat();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchAllBooking = async () => {
     try {
@@ -20,15 +21,22 @@ const ChatWithExpertList = () => {
     fetchAllBooking();
   }, []);
 
+  const filteredChats = ChatDetials.filter((chat: IChat) => {
+    const expert = chat.expertId as IExpert;
+    return expert.user_name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
-    <div className="w-1/4 bg-gray-100 p-4  ">
+    <div className="w-1/4 bg-gray-100 p-4">
       <input
-        type="text"
+        type="search"
         placeholder="Search"
         className="w-full p-2 mb-4 border border-gray-300 rounded"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
       <ul>
-        {ChatDetials.map((chat) => {
+        {filteredChats.map((chat) => {
           const expert = chat.expertId as IExpert;
           const lastMessage = chat.latestMessage as IMessage;
 

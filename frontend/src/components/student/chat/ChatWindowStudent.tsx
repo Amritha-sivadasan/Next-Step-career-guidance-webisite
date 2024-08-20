@@ -30,6 +30,7 @@ const ChatWindow: React.FC = () => {
   // Ref for the messages container
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const isAutoScroll = useRef(true);
 
   useEffect(() => {
     if (!user || !chatId) return;
@@ -80,7 +81,7 @@ const ChatWindow: React.FC = () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [chatId, messages, setlatestMessage, user, userId]);
+  }, [chatId, lastMessage, messages, setlatestMessage, user, userId]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -152,13 +153,27 @@ const ChatWindow: React.FC = () => {
   };
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      chatContainerRef.current?.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && isAutoScroll.current) {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
         behavior: "smooth",
       });
+      isAutoScroll.current = false;
     }
   }, [messages]);
+
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+      if (scrollHeight - scrollTop > clientHeight + 50) {
+        isAutoScroll.current = false;
+      } else {
+        isAutoScroll.current = true;
+      }
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col h-screen">
@@ -183,6 +198,7 @@ const ChatWindow: React.FC = () => {
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-4 no-scrollbar"
             style={{ maxHeight: "calc(80vh - 120px)" }}
+            onScroll={handleScroll}
           >
             {messages.map((message) => (
               <div

@@ -9,7 +9,6 @@ const Testimonials: React.FC = () => {
   useEffect(() => {
     const fetchExpert = async () => {
       const response = await getAllExperts();
-      console.log("response", response);
       setTestimonials(response.data);
     };
 

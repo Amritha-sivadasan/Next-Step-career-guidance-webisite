@@ -73,6 +73,8 @@ expertRouter.put(
   ]),
   expertController.updateExpert
 );
+expertRouter.get('/check-report-user/:expertId',expertController.checkExpertStatus)
+
 
 expertRouter.post(
   "/addSlot",

@@ -1,5 +1,6 @@
 import axios from "axios";
-// import { checkIfUserIsBlocked } from "./studentApi";
+import { checkIfExpertIsBlocked } from "../api/ExpertApi";
+import { setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
 
 const API_URL = process.env.VITE_API_URL;
 export const axiosInstance = axios.create({
@@ -9,12 +10,17 @@ export const axiosInstance = axios.create({
 
 //request interceptor
 axiosInstance.interceptors.request.use(async (config) => {
-  // const isUserAllowed = await checkIfUserIsBlocked();
+  const isUserAllowed = await checkIfExpertIsBlocked();
+  console.log("isUserAllowed", isUserAllowed);
 
-  // if (!isUserAllowed) {
-  //   window.location.href = "/";
-  //   return Promise.reject("user is blocked");
-  // }
+  if (!isUserAllowed.data.is_active) {
+    setExpertAuthenticated(false);
+    localStorage.removeItem("expertAccess");
+    localStorage.removeItem("expertId");
+    localStorage.removeItem("expertAuth");
+    window.location.replace("/expert/login");
+    return Promise.reject("User is blocked");
+  }
 
   const token = localStorage.getItem("expertAccess");
 

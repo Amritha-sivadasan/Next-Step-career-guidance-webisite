@@ -21,22 +21,32 @@ interface LoginPayload {
   password: string;
 }
 
-export const loginUser = createAsyncThunk<
+   export const loginUser = createAsyncThunk<
   LoginResponse,
   LoginPayload,
   { rejectValue: ThunkError }
->("login/user", async (payload: LoginPayload, thunkAPI) => {
+> ("login/user", async (payload: LoginPayload, thunkAPI) => {
   const { email, password } = payload;
   try {
     const response = await loginStudent(email, password);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue({
-        message: error.response?.data?.message || "An error occurred",
-        success: error.response?.data?.success || false,
-        data: error.response?.data || {}
-      });
+      const status = error.response?.status;
+
+      if (status === 403) {
+        return thunkAPI.rejectWithValue({
+          message: "You are blocked. Please try with another email.",
+          success: false,
+          data: {}
+        });
+      } else {
+        return thunkAPI.rejectWithValue({
+          message: error.response?.data?.message || "An error occurred",
+          success: error.response?.data?.success || false,
+          data: error.response?.data || {}
+        });
+      }
     } else {
       return thunkAPI.rejectWithValue({
         message: "An unexpected error occurred",

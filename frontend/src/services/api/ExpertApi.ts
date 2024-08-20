@@ -18,16 +18,18 @@ interface ForgotPasswordResponse {
   data: string;
 }
 
-export async function checkIfUserIsBlocked() {
+export async function checkIfExpertIsBlocked() {
   try {
-    const response = await axios.get(`${API_URL}/check-report-user`, {
-      withCredentials: true,
-    });
-
-    if (response.status === 403) {
+    const expertId = localStorage.getItem("expertId");
+    if (!expertId) {
+      console.error("User ID not found in localStorage.");
       return false;
     }
-    return true;
+    const response = await axios.get(`${API_URL}/expert/check-report-user/${expertId}`, {
+        withCredentials: true,
+    });
+    
+    return response.data
   } catch (error) {
     console.error("Error checking if user is blocked:", error);
     return false;

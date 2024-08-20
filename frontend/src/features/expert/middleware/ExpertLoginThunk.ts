@@ -32,11 +32,21 @@ LoginResponseExpert,
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      return thunkAPI.rejectWithValue({
-        message: error.response?.data?.message || "An error occurred",
-        success: error.response?.data?.success || false,
-        data: error.response?.data || {}
-      });
+      const status = error.response?.status;
+
+      if (status === 403) {
+        return thunkAPI.rejectWithValue({
+          message: "You are blocked. Please try with another email.",
+          success: false,
+          data: {}
+        });
+      } else {
+        return thunkAPI.rejectWithValue({
+          message: error.response?.data?.message || "An error occurred",
+          success: error.response?.data?.success || false,
+          data: error.response?.data || {}
+        });
+      }
     } else {
       return thunkAPI.rejectWithValue({
         message: "An unexpected error occurred",

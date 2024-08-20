@@ -15,18 +15,21 @@ interface Error {
 
 export async function checkIfUserIsBlocked() {
   try {
-    const response = await axios.get(`${API_URL}/check-report-user`, {
-      withCredentials: true,
-    });
 
-    if (response.status === 403) {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("User ID not found in localStorage.");
       return false;
     }
-    return true;
-  } catch (error) {
-    console.error("Error checking if user is blocked:", error);
-    return false;
-  }
+    const response = await axios.get(`${API_URL}/student/check-report-user/${userId}`, {
+        withCredentials: true,
+    });
+    
+    return response.data
+} catch (error) {
+    console.error('Error checking if user is blocked:', error);
+    return false; 
+}
 }
 
 export const sendOtp = async (email: string) => {

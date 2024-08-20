@@ -92,6 +92,9 @@ export default class StudentService implements IStudentService {
     if (!student) {
       throw new Error("Invalid email or password");
     }
+    if(!student.is_active){
+      throw new Error("You are blocked please try with another email");
+    }
     const isPasswordValid = bcrypt.compareSync(password, student.password);
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
@@ -198,6 +201,15 @@ export default class StudentService implements IStudentService {
         
       } catch (error) {
         throw error;
+      }
+    }
+    async checkUserStatus(id: string): Promise<IStudent|null> {
+      try {
+        const response= await this.studentRepository.chechUserStatus(id)
+        return response
+        
+      } catch (error) {
+        throw error
       }
     }
   

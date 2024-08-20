@@ -5,6 +5,7 @@ import { useExpertChat } from "../../../hooks/useExpertChat";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { IMessage } from "../../../@types/message";
 import socket from "../../../config/socket";
+
 import {
   getMessageByChatIdExpert,
   sendMessageByExpert,
@@ -31,6 +32,7 @@ const ChatWindowExpert: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const isAutoScroll = useRef(true);
 
   useEffect(() => {
     if (!expert) return;
@@ -55,7 +57,6 @@ const ChatWindowExpert: React.FC = () => {
     };
 
     const handleDeleteMessage = (messageId: string) => {
-    
       if (messageId == lastMessage) {
         setlatestMessage("Deleted message");
       }
@@ -64,7 +65,6 @@ const ChatWindowExpert: React.FC = () => {
           message._id == messageId ? { ...message, is_delete: true } : message
         )
       );
-  
     };
 
     socket.on("connect", () => {
@@ -82,9 +82,12 @@ const ChatWindowExpert: React.FC = () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [chatId, expert, messages, setlatestMessage, userId]);
+  }, [chatId, expert, lastMessage, messages, setlatestMessage, userId]);
 
   const sendMessage = async () => {
+    if(newMessage.trim()==""){
+      return
+    }
     const message = {
       chatId: chatId?.toString(),
       text: newMessage,
@@ -111,7 +114,7 @@ const ChatWindowExpert: React.FC = () => {
       if (messageId == lastMessage) {
         setlatestMessage("Deleted message");
       }
-      
+
       socket.emit("deleteMessage", { chatId, messageId });
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
@@ -124,13 +127,27 @@ const ChatWindowExpert: React.FC = () => {
   };
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      chatContainerRef.current?.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer && isAutoScroll.current) {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
         behavior: "smooth",
       });
+      isAutoScroll.current = false;
     }
   }, [messages]);
+
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainer;
+      if (scrollHeight - scrollTop > clientHeight + 50) {
+        isAutoScroll.current = false;
+      } else {
+        isAutoScroll.current = true;
+      }
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col h-screen">
@@ -155,6 +172,7 @@ const ChatWindowExpert: React.FC = () => {
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto p-4 no-scrollbar"
             style={{ maxHeight: "calc(80vh - 120px)" }}
+            onScroll={handleScroll}
           >
             {messages.map((message) => (
               <div

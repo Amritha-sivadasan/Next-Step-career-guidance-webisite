@@ -80,12 +80,22 @@ class StudentController {
         accessToken,
         message: "User logged successfully",
       });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Invalid Email or password", success: false });
+    } catch (error: any) {
+      if (error.message === "You are blocked please try with another email") {
+        res.status(403).json({ message: error.message, success: false });
+      } else if (error.message === "Invalid email or password") {
+        res.status(401).json({ message: error.message, success: false });
+      } else {
+        res
+          .status(500)
+          .json({
+            message: "An internal server error occurred",
+            success: false,
+          });
+      }
     }
   };
+
   public resetPassword = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     try {
@@ -177,14 +187,17 @@ class StudentController {
     }
   };
 
-
-  public  updateuserImage = async(req:CustomRequest,res:Response)=>{
+  public updateuserImage = async (req: CustomRequest, res: Response) => {
     try {
       const file = req.file;
-      const student= req.body
+      const student = req.body;
       const id = req.user?.userId;
 
-      const result= await this.studentService.updateStudentData(id!,student,file)
+      const result = await this.studentService.updateStudentData(
+        id!,
+        student,
+        file
+      );
       if (result) {
         res.status(200).json({
           success: true,
@@ -196,40 +209,51 @@ class StudentController {
       }
     } catch (error) {
       res
-      .status(500)
-      .json({ success: false, message: "Error occurred during update User" });
-  }
-    }
-
-
-    public  updateuserData = async(req:CustomRequest,res:Response)=>{
-      try {
-     
-        const student= req.body
-        const id = req.user?.userId;
-  
-        const result= await this.studentService.updateStudentData(id!,student)
-        if (result) {
-          res.status(200).json({
-            success: true,
-            Message: "image updated successfully",
-            data: result,
-          });
-        } else {
-          res.status(404).json({ success: false, Message: "User not found" });
-        }
-      } catch (error) {
-        res
         .status(500)
         .json({ success: false, message: "Error occurred during update User" });
     }
+  };
+
+  public updateuserData = async (req: CustomRequest, res: Response) => {
+    try {
+      const student = req.body;
+      const id = req.user?.userId;
+
+      const result = await this.studentService.updateStudentData(id!, student);
+      if (result) {
+        res.status(200).json({
+          success: true,
+          Message: "image updated successfully",
+          data: result,
+        });
+      } else {
+        res.status(404).json({ success: false, Message: "User not found" });
       }
-  }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ success: false, message: "Error occurred during update User" });
+    }
+  };
 
+  public checkUserStatus = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const response = await this.studentService.checkUserStatus(userId!);
+     
 
-
-
-
-
+        res.status(200).json({
+          success: true,
+          Message: "student is not blocked",
+          data: response,
+        });
+      
+    } catch (error) {
+      res
+        .status(500)
+        .json({ success: false, message: "Error occurred finding user" });
+    }
+  };
+}
 
 export default new StudentController();

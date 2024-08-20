@@ -160,7 +160,7 @@ const SchedulePage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {slots.map((slot, index) => (
+              {slots && slots.map((slot, index) => (
                 <tr key={slot._id}>
                   <td className="p-3 border-b">{index + 1}</td>
                   <td className="p-3 border-b">

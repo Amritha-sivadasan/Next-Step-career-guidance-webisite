@@ -13,4 +13,5 @@ export interface IExpertService{
   findExpertBySubCatName(subCatName:string): Promise<IExpert[] | null>;
   fetchAllExpert(): Promise<IExpert[] | null>
   hadleBlockExpert(id:string):Promise<IExpert|null>
+  checkEexpertStatus(id:string):Promise<IExpert|null>
 }

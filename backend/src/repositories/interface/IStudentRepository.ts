@@ -8,4 +8,5 @@ export interface IStudentRepository {
   findOne(email:string):Promise<IStudent|null>;
   findUserById( authentication_id:string,):Promise<IStudent|null>
   countDocuments(): Promise<number>
+  chechUserStatus(id:string):Promise<IStudent|null>
 }

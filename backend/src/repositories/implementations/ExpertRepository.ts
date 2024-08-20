@@ -26,7 +26,7 @@ export default class ExpertRepository implements IExpertRepository {
     return Expert.find().sort({ _id: -1 }).skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IExpert | null> {
-    return Expert.findOne({ email, is_active: true });
+    return Expert.findOne({ email });
   }
 
   async create(expert: IExpert): Promise<IExpert> {
@@ -50,5 +50,15 @@ export default class ExpertRepository implements IExpertRepository {
   }
   async findAllExpert(): Promise<IExpert[]> {
     return Expert.find({ is_credential_validate: true, is_active: true });
+  }
+  async checkExpertStatus(id: string): Promise<IExpert | null> {
+    try {
+
+      const student = await Expert.findById(id);
+      return student
+      
+    } catch (error) {
+      throw error
+    }
   }
 }

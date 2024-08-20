@@ -38,7 +38,7 @@ export default class StudentRepository implements IStudentRepository {
     return Student.find().skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IStudent | null> {
-    return Student.findOne({ email, is_active: true });
+    return Student.findOne({ email });
   }
 
   async findUserById(authentication_id: string): Promise<IStudent | null> {
@@ -54,6 +54,16 @@ export default class StudentRepository implements IStudentRepository {
       return newStudent.save();
     } catch (error) {
       console.log("Error occur in create repository", error);
+      throw error;
+    }
+  }
+
+  async chechUserStatus(id: string): Promise<IStudent|null> {
+    try {
+      const student = await Student.findById(id);
+      return student
+  
+    } catch (error) {
       throw error;
     }
   }

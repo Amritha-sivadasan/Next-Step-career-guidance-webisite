@@ -10,5 +10,5 @@ export interface IExpertRepository {
   countDocuments(): Promise<number>
   findExpertBySubCatName(subCatName:string):Promise<IExpert[]|null>
   findAllExpert(): Promise<IExpert[]>;
- 
+  checkExpertStatus(id:string):Promise<IExpert|null>
 }

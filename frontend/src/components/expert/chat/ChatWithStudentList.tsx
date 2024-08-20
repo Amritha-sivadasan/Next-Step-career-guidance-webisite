@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { IStudent } from "../../../@types/user";
 import { getChatByExpertId } from "../../../services/api/ChatApi";
@@ -7,12 +6,13 @@ import { IChat, IMessage } from "../../../@types/message";
 
 const ChatWithStudentList = () => {
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const { setChatId, latestMessage } = useExpertChat();
 
   const fetchAllBooking = async () => {
     try {
       const result = await getChatByExpertId();
-      setChatDetails((prev) => [...prev, ...result.data]);
+      setChatDetails(result.data);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
     }
@@ -22,15 +22,23 @@ const ChatWithStudentList = () => {
     fetchAllBooking();
   }, []);
 
+  // Filter chats based on the search term
+  const filteredChats = chatDetails.filter((chat) => {
+    const student = chat.studentId as IStudent;
+    return student.user_name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
-    <div className="w-1/4 bg-gray-100  p-4  ">
+    <div className="w-1/4 bg-gray-100 p-4">
       <input
-        type="text"
+        type="search"
         placeholder="Search"
         className="w-full p-2 mb-4 border border-gray-300 rounded"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
       <ul>
-        {chatDetails.map((chat) => {
+        {filteredChats.map((chat) => {
           const student = chat.studentId as IStudent;
           const lastMessage = chat.latestMessage as IMessage;
 

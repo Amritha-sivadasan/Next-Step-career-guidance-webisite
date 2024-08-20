@@ -91,6 +91,7 @@ router.put(
   bookingController.updateBookingPaymentStatus
 );
 
+router.get('/check-report-user/:userId',studentController.checkUserStatus)
 
 router.put('/uploadImage',verifyAccessToken,
   verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
