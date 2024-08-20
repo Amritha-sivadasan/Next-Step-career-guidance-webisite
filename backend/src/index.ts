@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
   socket.on("joinChat",async ({ chatId, userId }) =>{
     socket.join(chatId);
     // console.log(`User ${userId} joined chat room ${chatId}`);
-  
+    socket.emit("connected");
   });
   socket.on("sendMessage", async ({ chatId, message }) => {
     // console.log('new message', chatId)

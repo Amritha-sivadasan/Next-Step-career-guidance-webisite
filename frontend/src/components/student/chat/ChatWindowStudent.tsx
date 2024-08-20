@@ -25,6 +25,7 @@ const ChatWindow: React.FC = () => {
     null
   );
   const [lastMessage, setLastMessage] = useState<string>("");
+  const [socketConnected, setSocketConnected] = useState(false);
   const userId = user?._id;
 
   // Ref for the messages container
@@ -76,6 +77,7 @@ const ChatWindow: React.FC = () => {
     socket.on("messageDeleted", handleDeleteMessage);
 
     socket.emit("joinChat", { chatId, userId });
+    socket.on("connected", () => setSocketConnected(true));
 
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
@@ -112,6 +114,10 @@ const ChatWindow: React.FC = () => {
       setNewMessage("");
       setlatestMessage(newMessage);
       setLastMessage(response.data._id);
+
+      if (!socketConnected) {
+        console.log("expert is not in online");
+      }
     } catch (error) {
       console.error("Error sending message:", error);
     }

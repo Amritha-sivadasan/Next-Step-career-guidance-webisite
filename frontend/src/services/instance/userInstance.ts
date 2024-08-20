@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios ,{CancelTokenSource}from "axios";
 import { checkIfUserIsBlocked } from "../api/studentApi";
 import { setAuthenticated } from "../../features/student/authSlice";
 
@@ -8,18 +8,21 @@ export const studentAxiosInstance = axios.create({
   withCredentials: true,
 });
 
+let cancelTokenSource: CancelTokenSource |null;
 //request interceptor
 studentAxiosInstance.interceptors.request.use(async (config) => {
   // try {
-  const isUserAllowed = await checkIfUserIsBlocked();
-  console.log("isUserAllowed", isUserAllowed);
+  if (cancelTokenSource) {
+    cancelTokenSource.cancel("Operation canceled due to a new request.");
+  }
 
+  const isUserAllowed = await checkIfUserIsBlocked();
   if (!isUserAllowed.data.is_active) {
     setAuthenticated(false);
     localStorage.removeItem("userAuth");
     localStorage.removeItem("userId");
     localStorage.removeItem("userAccess");
-    window.location.replace('/login');
+    window.location.replace("/login");
     return Promise.reject("User is blocked");
   }
   // } catch (error) {
@@ -39,9 +42,14 @@ studentAxiosInstance.interceptors.request.use(async (config) => {
 //response interceptor
 studentAxiosInstance.interceptors.response.use(
   (response) => {
+    cancelTokenSource = null;
     return response;
   },
   async (error) => {
+    if (axios.isCancel(error)) {
+      console.log("Request canceled:", error.message);
+      return Promise.reject(error);
+    }
     const originalRequest = error.config;
 
     // console.log(error.response.status, "----------", originalRequest, "--------", refreshToken);
