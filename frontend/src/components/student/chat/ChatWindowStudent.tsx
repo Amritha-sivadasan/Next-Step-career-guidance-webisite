@@ -57,6 +57,20 @@ const ChatWindow: React.FC = () => {
         }
       }
     };
+    const handleUserOnlineStatus = (Id: string) => {
+      if (Id && Id !== userId) {
+        setSocketConnected(true);
+      } else {
+        setSocketConnected(false);
+      }
+    };
+    const handleUserOfflineStatus = (user: string) => {
+      console.log("id", user);
+      if (user !== userId) {
+        // Update UI to show that this user is offline
+        setSocketConnected(false);
+      }
+    };
     const handleDeleteMessage = (messageId: string) => {
       if (messageId == lastMessage) {
         setlatestMessage("Deleted message");
@@ -77,11 +91,15 @@ const ChatWindow: React.FC = () => {
     socket.on("messageDeleted", handleDeleteMessage);
 
     socket.emit("joinChat", { chatId, userId });
-    socket.on("connected", () => setSocketConnected(true));
+    socket.on("online", (userId) => handleUserOnlineStatus(userId));
+    socket.on("offline", (user) => handleUserOfflineStatus(user));
 
     return () => {
+      socket.emit("leaveChat", { chatId, userId });
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
+      socket.off("online", handleUserOnlineStatus);
+      socket.off("offline", handleUserOfflineStatus);
     };
   }, [chatId, lastMessage, messages, setlatestMessage, user, userId]);
 
@@ -186,7 +204,7 @@ const ChatWindow: React.FC = () => {
       {chatId ? (
         <div className="flex-1 flex flex-col">
           {Expert && (
-            <div className="flex items-center bg-blue-950 h-16 text-white p-4">
+            <div className="flex  items-center bg-blue-950 h-16 text-white p-4">
               <div className="flex items-center max-w-11 h-11 rounded-full overflow-hidden ms-4">
                 <img
                   src={Expert.profile_picture}
@@ -194,9 +212,12 @@ const ChatWindow: React.FC = () => {
                   className="w-11 h-11 object-cover rounded-full"
                 />
               </div>
-              <span className="ms-4 text-lg font-semibold">
-                {Expert.user_name}
-              </span>
+              <div className="ms-4 flex flex-col">
+                <span className=" text-lg font-semibold">
+                  {Expert.user_name}
+                </span>
+                <span>{socketConnected && "online"}</span>
+              </div>
             </div>
           )}
 

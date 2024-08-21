@@ -40,23 +40,39 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("A user connected");
-
-  socket.on("joinChat",async ({ chatId, userId }) =>{
+  let user: string | undefined;
+  socket.on("joinChat", async ({ chatId, userId }) => {
+    user = userId;
     socket.join(chatId);
-    // console.log(`User ${userId} joined chat room ${chatId}`);
+    socket.to(chatId).emit("online", userId);
+    console.log(`user connct ChatId ${chatId} user Id ${userId}`);
     socket.emit("connected");
   });
   socket.on("sendMessage", async ({ chatId, message }) => {
     // console.log('new message', chatId)
 
-    io.to(chatId).emit("receiveMessage",message);
+    io.to(chatId).emit("receiveMessage", message);
   });
+
+  socket.on("deleteMessage", ({ chatId, messageId }) => {
+    console.log("deleteMessage", chatId, messageId);
+    io.to(chatId).emit("messageDeleted", messageId);
+  });
+
+  socket.on("leaveChat", ({ chatId, userId }) => {
+    socket.leave(chatId);
+    socket.to(chatId).emit("offline", userId);
+  });
+  
+
   socket.on("disconnect", () => {
     console.log("User disconnected");
-  });
-  socket.on('deleteMessage', ({ chatId, messageId }) => {
-    console.log("deleteMessage",chatId,messageId);
-    io.to(chatId).emit('messageDeleted', messageId);
+    if (user) {
+      const rooms = Array.from(socket.rooms);
+      rooms.forEach((room) => {
+        socket.to(room).emit("offline", user);
+      });
+    }
   });
 });
 
