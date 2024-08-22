@@ -1,5 +1,3 @@
-// src/components/ChatWindowExpert.tsx
-
 import React, { useEffect, useState, useRef } from "react";
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
@@ -18,7 +16,7 @@ import ConfirmationModal from "../../common/modal/ConfirmationModal";
 import { MdOutlineDoNotDisturb } from "react-icons/md";
 
 const ChatWindowExpert: React.FC = () => {
-  const { chatId, setlatestMessage } = useExpertChat();
+  const { chatId, setlatestMessage, setNotificationCount } = useExpertChat();
   const { expert } = useAppSelector((state) => state.expert);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -28,6 +26,8 @@ const ChatWindowExpert: React.FC = () => {
     null
   );
   const [lastMessage, setLastMessage] = useState<string>("");
+  const [isChatActive, setIsChatActive] = useState(false);
+
   const userId = expert?._id;
   
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -52,6 +52,9 @@ const ChatWindowExpert: React.FC = () => {
         setMessages((prevMessages) => [...prevMessages, message]);
         if (message.text) {
           setlatestMessage(message.text);
+        }
+        if (!isChatActive) {
+          setNotificationCount((prev: number) => prev + 1);
         }
       }
     };
@@ -86,13 +89,18 @@ const ChatWindowExpert: React.FC = () => {
       socket.emit("leaveChat", { chatId, userId });
     
     };
-  }, [chatId, expert, lastMessage, messages, setlatestMessage, userId]);
+  }, [chatId, expert, isChatActive, lastMessage, messages, setNotificationCount, setlatestMessage, userId]);
 
-  
- 
+  useEffect(() => {
+    if (chatId) {
+      setIsChatActive(true);
+    } else {
+      setIsChatActive(false);
+    }
+  }, [chatId]);
 
   const sendMessage = async () => {
-    if (newMessage.trim() == "") {
+    if (newMessage.trim() === "") {
       return;
     }
     const message = {
@@ -108,6 +116,7 @@ const ChatWindowExpert: React.FC = () => {
     setNewMessage("");
     setlatestMessage(newMessage);
     setLastMessage(response.data._id);
+    isAutoScroll.current = true; // Ensure auto-scroll is enabled
   };
 
   const openDeleteConfirmationModal = (messageId: string) => {
@@ -118,7 +127,7 @@ const ChatWindowExpert: React.FC = () => {
   const deleteMessage = async (messageId: string) => {
     try {
       await deleteMessageByExpert(messageId);
-      if (messageId == lastMessage) {
+      if (messageId === lastMessage) {
         setlatestMessage("Deleted message");
       }
 
@@ -140,7 +149,6 @@ const ChatWindowExpert: React.FC = () => {
         top: chatContainer.scrollHeight,
         behavior: "smooth",
       });
-      isAutoScroll.current = false;
     }
   }, [messages]);
 
@@ -247,12 +255,17 @@ const ChatWindowExpert: React.FC = () => {
                 type="text"
                 placeholder="Type a message..."
                 value={newMessage}
-                className="flex-1 p-2 border rounded-lg focus:outline-none"
+                className="flex-1 py-2 px-4 rounded-lg border border-gray-300 focus:outline-none"
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                  }
+                }}
               />
               <button
                 onClick={sendMessage}
-                className="ml-2 p-2 bg-blue-500 text-white rounded-lg"
+                className="ml-4 py-2 px-4 bg-blue-600 text-white rounded-lg"
               >
                 Send
               </button>
@@ -260,7 +273,9 @@ const ChatWindowExpert: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div>Please select a user to chat with</div>
+        <div className="flex items-center justify-center h-full">
+          <p className="text-gray-600">Select a chat to start messaging</p>
+        </div>
       )}
     </div>
   );

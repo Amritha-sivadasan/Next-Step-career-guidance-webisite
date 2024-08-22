@@ -28,7 +28,7 @@ export default class ChatNotificationRepository
     }
   }
 
-  async updateNotification(
+  async incrementNotificationCount(
     notification: IChatNotification
   ): Promise<IChatNotification | null> {
     try {
@@ -41,6 +41,24 @@ export default class ChatNotificationRepository
       return result;
     } catch (error) {
         throw error
+    }
+  }
+ 
+  async updateNotificationCount(
+    userId: string,
+    chatId: string,
+    count: number
+  ): Promise<IChatNotification | null> {
+    try {
+      const result = await ChatNotification.findOneAndUpdate(
+        { userId, chatId },
+        { count },
+        { new: true }
+      ).exec();
+
+      return result;
+    } catch (error) {
+      throw error;
     }
   }
 }

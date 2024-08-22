@@ -24,7 +24,10 @@ async addNotification(notification: Partial<IChatNotification>): Promise<IChatNo
       }
   }
 
-  async updateNotification(notification: IChatNotification): Promise<IChatNotification | null> {
-    return this.chatNotificationRepository.updateNotification(notification);
+  async incrementNotificationCount(notification: IChatNotification): Promise<IChatNotification | null> {
+    return this.chatNotificationRepository.incrementNotificationCount(notification);
   }
+   async updateNotificationCount(userId: string, chatId: string, count: number): Promise<IChatNotification | null> {
+    return this.chatNotificationRepository.updateNotificationCount(userId,chatId,count);
+   }
 }

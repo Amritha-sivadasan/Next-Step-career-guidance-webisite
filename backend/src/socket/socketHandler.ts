@@ -7,7 +7,7 @@ import { IStudent } from "../entities/StudentEntity";
 import { IExpert } from "../entities/ExpertEntity";
 
 interface OnlineUsers {
-  [userId: string]: string; // Maps userId to socketId
+  [userId: string]: string; 
 }
 
 const onlineUsers: OnlineUsers = {};
@@ -26,10 +26,15 @@ export const createSocketServer = (server: http.Server) => {
   io.on("connection", (socket) => {
     console.log("A user connected");
 
-    socket.on("joinChat", ({ chatId, userId }) => {
+    socket.on("joinChat", async({ chatId, userId }) => {
       socket.join(chatId);
       onlineUsers[userId] = socket.id;
-      //   console.log(`User connected: ChatId ${chatId}, UserId ${userId}`);
+      if (chatId) {
+        const notification = await notificationService.findOne(userId, chatId);
+        if (notification) {
+          await notificationService.updateNotificationCount(userId, chatId, 0);
+        }
+      }
     });
 
     socket.on("sendMessage", async ({ chatId, message }) => {
@@ -51,7 +56,7 @@ export const createSocketServer = (server: http.Server) => {
           );
 
           if (notification) {
-            await notificationService.updateNotification(
+            await notificationService.incrementNotificationCount(
               notification.toObject() as IChatNotification
             );
           } else {

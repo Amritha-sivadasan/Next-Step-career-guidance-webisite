@@ -14,6 +14,7 @@ import slotController from "../contollers/slotController";
 import bookingController from "../contollers/bookingController";
 import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
+import notificationController from "../contollers/notificationController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -99,5 +100,6 @@ expertRouter.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController
 expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
 expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
+expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
 
 export default expertRouter;

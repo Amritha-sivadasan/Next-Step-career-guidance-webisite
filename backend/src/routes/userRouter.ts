@@ -108,6 +108,6 @@ router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatControlle
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
 router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
 router.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
-router.post('/add-notification',verifyAccessToken,verifyRole(role),notificationController.addNotification)
+router.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
 
 export default router;
