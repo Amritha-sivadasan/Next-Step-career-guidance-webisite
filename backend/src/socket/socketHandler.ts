@@ -5,6 +5,7 @@ import ChatNotificationService from "../services/implementations/ChatNotificatio
 import { IChatNotification } from "../entities/NotificationEntity";
 import { IStudent } from "../entities/StudentEntity";
 import { IExpert } from "../entities/ExpertEntity";
+// import { sendPushNotification } from "../utils/google-auth-token";
 
 interface OnlineUsers {
   [userId: string]: string; 
@@ -50,6 +51,8 @@ export const createSocketServer = (server: http.Server) => {
             : student._id.toString();
 
         if (!Object.keys(onlineUsers).includes(recipientId)) {
+          // sendPushNotification(chatId,message)
+
           const notification = await notificationService.findOne(
             recipientId,
             chatId

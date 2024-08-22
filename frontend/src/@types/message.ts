@@ -18,7 +18,8 @@ export interface IChat {
   expertId: string|IExpert;
   messages?: string[];
   latestMessage?:string |IMessage;
-  bookingId:string|IBooking
+  bookingId:string|IBooking;
+  createdAt:string
 }
 
 

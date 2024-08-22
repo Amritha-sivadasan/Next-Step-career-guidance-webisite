@@ -9,10 +9,14 @@ import {
   deleteMessageByStudent,
 } from "../../../services/api/ChatApi";
 import { IExpert } from "../../../@types/expert";
-import { formatTime } from "../../../utils/generalFuncions";
+// import { formatTime } from "../../../utils/generalFuncions";
 import { FiTrash2 } from "react-icons/fi";
+import moment from "moment";
 import ConfirmationModal from "../../common/modal/ConfirmationModal";
 import { MdOutlineDoNotDisturb } from "react-icons/md";
+import { messaging, generateToken } from "../../../config/firebase";
+import { getToken, onMessage } from "firebase/messaging";
+import { sendPushNotification } from "../../../utils/sendPushNotification";
 
 const ChatWindow: React.FC = () => {
   const { chatId, setlatestMessage, setNotificationCount } = useStudentChat();
@@ -33,6 +37,16 @@ const ChatWindow: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScroll = useRef(true);
+
+  useEffect(() => {
+    generateToken();
+  }, []);
+
+  useEffect(() => {
+    onMessage(messaging, (payload) => {
+      console.log("Message received. ", payload);
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -125,6 +139,11 @@ const ChatWindow: React.FC = () => {
       setNewMessage("");
       setlatestMessage(newMessage);
       setLastMessage(response.data._id);
+
+      const recipientToken = await getToken(messaging);
+      if (recipientToken) {
+        await sendPushNotification(recipientToken, newMessage);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -188,12 +207,21 @@ const ChatWindow: React.FC = () => {
     }
   };
 
+  const groupedMessages = messages.reduce((acc, message) => {
+    const date = moment(message.timestamp).format("YYYY-MM-DD");
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(message);
+    return acc;
+  }, {} as Record<string, IMessage[]>);
+
   return (
     <div className="flex-1 flex flex-col h-screen">
       {chatId ? (
         <div className="flex-1 flex flex-col">
           {Expert && (
-            <div className="flex  items-center bg-blue-950 h-16 text-white p-4">
+            <div className="flex items-center bg-blue-950 h-16 text-white p-4">
               <div className="flex items-center max-w-11 h-11 rounded-full overflow-hidden ms-4">
                 <img
                   src={Expert.profile_picture}
@@ -202,7 +230,7 @@ const ChatWindow: React.FC = () => {
                 />
               </div>
               <div className="ms-4 flex flex-col">
-                <span className=" text-lg font-semibold">
+                <span className="text-lg font-semibold">
                   {Expert.user_name}
                 </span>
               </div>
@@ -215,50 +243,59 @@ const ChatWindow: React.FC = () => {
             style={{ maxHeight: "calc(80vh - 120px)" }}
             onScroll={handleScroll}
           >
-            {messages.map((message) => (
-              <div
-                key={message._id}
-                className={`group flex ${
-                  message.senderId === userId ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`relative flex p-2 rounded-lg shadow mb-1 ${
-                    message.senderId !== userId
-                      ? "bg-green-200 text-right"
-                      : "bg-gray-200 text-left"
-                  }`}
-                >
-                  <p>
-                    {message.is_delete ? (
-                      <>
-                        {" "}
-                        <span className="flex text-gray-500 gap-1">
-                          <span className="mt-1">
-                            {" "}
-                            <MdOutlineDoNotDisturb size={18} />
-                          </span>
-                          This message was deleted
-                        </span>
-                      </>
-                    ) : (
-                      message.text
-                    )}
-                  </p>
-                  <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
-                    {formatTime(message.timestamp.toString())}
-                  </span>
-
-                  {/* Delete Button only for current user's messages */}
-                  {message.senderId === userId && !message.is_delete && (
-                    <button
-                      className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => openDeleteConfirmationModal(message._id)}
-                    >
-                      <FiTrash2 />
-                    </button>
-                  )}
+            {Object.keys(groupedMessages).map((date) => (
+              <div key={date}>
+                <div className="text-gray-500 text-center my-4">
+                  {moment(date).format("MMMM D, YYYY")}
                 </div>
+                {groupedMessages[date].map((message) => (
+                  <div
+                    key={message._id}
+                    className={`group flex ${
+                      message.senderId === userId
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`relative flex p-2 rounded-lg shadow mb-1 ${
+                        message.senderId !== userId
+                          ? "bg-green-200 text-right"
+                          : "bg-gray-200 text-left"
+                      }`}
+                    >
+                      <p>
+                        {message.is_delete ? (
+                          <>
+                            <span className="flex text-gray-500 gap-1">
+                              <span className="mt-1">
+                                <MdOutlineDoNotDisturb size={18} />
+                              </span>
+                              This message was deleted
+                            </span>
+                          </>
+                        ) : (
+                          message.text
+                        )}
+                      </p>
+                      <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
+                        {moment(message.timestamp).fromNow()}
+                      </span>
+
+                      {/* Delete Button only for current user's messages */}
+                      {message.senderId === userId && !message.is_delete && (
+                        <button
+                          className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() =>
+                            openDeleteConfirmationModal(message._id)
+                          }
+                        >
+                          <FiTrash2 />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
             <div ref={messagesEndRef} />
@@ -293,7 +330,9 @@ const ChatWindow: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div>Please select a user to chat with</div>
+        <div className="flex-1 flex justify-center items-center">
+          <p>Select a chat to start messaging</p>
+        </div>
       )}
     </div>
   );
