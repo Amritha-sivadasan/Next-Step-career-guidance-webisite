@@ -1,6 +1,7 @@
 import { studentAxiosInstance } from "../instance/userInstance";
 import { axiosInstance } from "../instance/expertInstance";
 import { IMessage } from "../../@types/message";
+import { IChatNotification } from "../../@types/notification";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -116,12 +117,25 @@ export const deleteMessageByStudent = async (id: string) => {
   }
 };
 
-
-
 export const deleteMessageByExpert = async (id: string) => {
   try {
     const response = await axiosInstance.delete(
       `${API_URL}/expert/deleteMessage/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const addNotification = async (notification:Partial<IChatNotification> ) => {
+  try {
+    const response = await studentAxiosInstance.post(
+      `${API_URL}/student/add-notification`,notification,
       {
         withCredentials: true,
       }

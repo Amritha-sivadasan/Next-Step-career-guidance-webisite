@@ -8,6 +8,7 @@ import expertRouter from "./routes/expertRouter";
 import adminRoute from "./routes/adminRoute";
 import http from "http";
 import { Server } from "socket.io";
+import { createSocketServer } from "./socket/socketHandler";
 
 dotenv.config();
 const app: Express = express();
@@ -30,52 +31,7 @@ app.use("/api/admin", adminRoute);
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("A user connected");
-  let user: string | undefined;
-  socket.on("joinChat", async ({ chatId, userId }) => {
-    user = userId;
-    socket.join(chatId);
-    socket.to(chatId).emit("online", userId);
-    console.log(`user connct ChatId ${chatId} user Id ${userId}`);
-    socket.emit("connected");
-  });
-  socket.on("sendMessage", async ({ chatId, message }) => {
-    // console.log('new message', chatId)
-
-    io.to(chatId).emit("receiveMessage", message);
-  });
-
-  socket.on("deleteMessage", ({ chatId, messageId }) => {
-    console.log("deleteMessage", chatId, messageId);
-    io.to(chatId).emit("messageDeleted", messageId);
-  });
-
-  socket.on("leaveChat", ({ chatId, userId }) => {
-    socket.leave(chatId);
-    socket.to(chatId).emit("offline", userId);
-  });
-  
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-    if (user) {
-      const rooms = Array.from(socket.rooms);
-      rooms.forEach((room) => {
-        socket.to(room).emit("offline", user);
-      });
-    }
-  });
-});
-
+createSocketServer(server);
 server.listen(port, () => {
   console.log(`server is running on the ${port}`);
 });

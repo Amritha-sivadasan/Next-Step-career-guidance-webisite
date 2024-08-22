@@ -6,7 +6,7 @@ import { IChat, IMessage } from "../../../@types/message";
 
 const ChatWithExpertList = () => {
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
-  const { setChatId, latestMessage } = useStudentChat();
+  const { setChatId, latestMessage ,notificationCount } = useStudentChat();
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchAllBooking = async () => {
@@ -53,6 +53,7 @@ const ChatWithExpertList = () => {
               />
               <div className="flex flex-col justify-between w-full">
                 <span className="font-semibold">{expert.user_name}</span>
+                <span className="font-semibold">{notificationCount}</span>
                 <span className="text-sm text-gray-500">
                   {latestMessage ? (
                     latestMessage

@@ -29,7 +29,7 @@ const ChatWindowExpert: React.FC = () => {
   );
   const [lastMessage, setLastMessage] = useState<string>("");
   const userId = expert?._id;
-  const [socketConnected, setSocketConnected] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScroll = useRef(true);
@@ -55,13 +55,7 @@ const ChatWindowExpert: React.FC = () => {
         }
       }
     };
-    const handleUserOnlineStatus = (Id: string) => {
-      if (Id && Id !== userId) {
-        setSocketConnected(true);
-      } else {
-        setSocketConnected(false);
-      }
-    };
+  
     const handleDeleteMessage = (messageId: string) => {
       if (messageId == lastMessage) {
         setlatestMessage("Deleted message");
@@ -72,6 +66,7 @@ const ChatWindowExpert: React.FC = () => {
         )
       );
     };
+ 
 
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server with id:", socket.id);
@@ -79,7 +74,7 @@ const ChatWindowExpert: React.FC = () => {
 
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messageDeleted", handleDeleteMessage);
-    socket.on("online", (userId) => handleUserOnlineStatus(userId));
+   
 
     if (chatId) {
       socket.emit("joinChat", { chatId, userId });
@@ -88,9 +83,13 @@ const ChatWindowExpert: React.FC = () => {
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
-      socket.off("online", handleUserOnlineStatus);
+      socket.emit("leaveChat", { chatId, userId });
+    
     };
   }, [chatId, expert, lastMessage, messages, setlatestMessage, userId]);
+
+  
+ 
 
   const sendMessage = async () => {
     if (newMessage.trim() == "") {
@@ -173,7 +172,7 @@ const ChatWindowExpert: React.FC = () => {
               <span className="ms-4 text-lg font-semibold">
                 {student.user_name}
               </span>
-              <span>{socketConnected ? "online" : "offline"}</span>
+            
             </div>
           )}
 

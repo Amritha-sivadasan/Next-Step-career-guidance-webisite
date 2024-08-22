@@ -15,7 +15,7 @@ import ConfirmationModal from "../../common/modal/ConfirmationModal";
 import { MdOutlineDoNotDisturb } from "react-icons/md";
 
 const ChatWindow: React.FC = () => {
-  const { chatId, setlatestMessage } = useStudentChat();
+  const { chatId, setlatestMessage, setNotificationCount } = useStudentChat();
   const { user } = useAppSelector((state) => state.student);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -25,23 +25,26 @@ const ChatWindow: React.FC = () => {
     null
   );
   const [lastMessage, setLastMessage] = useState<string>("");
-  const [socketConnected, setSocketConnected] = useState(false);
+  const [isChatActive, setIsChatActive] = useState(false);
+  // const [notificationCount, setNotificationCount] = useState(0);
+
   const userId = user?._id;
 
-  // Ref for the messages container
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScroll = useRef(true);
 
   useEffect(() => {
-    if (!user || !chatId) return;
+    if (!user) return;
 
     const fetchMessages = async () => {
       try {
+        if (!chatId) return;
         const response = await getMessageByChatIdByStudent(chatId?.toString());
         setMessages(response.data.messages);
         setExprt(response.data.expertId);
         setLastMessage(response.data.latestMessage);
+        setNotificationCount(0);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -49,28 +52,19 @@ const ChatWindow: React.FC = () => {
 
     fetchMessages();
 
-    const handleReceiveMessage = (message: IMessage) => {
+    const handleReceiveMessage = async (message: IMessage) => {
       if (message.senderId !== userId) {
         setMessages((prevMessages) => [...prevMessages, message]);
         if (message.text) {
           setlatestMessage(message.text);
         }
+
+        if (!isChatActive) {
+          setNotificationCount((prev: number) => prev + 1);
+        }
       }
     };
-    const handleUserOnlineStatus = (Id: string) => {
-      if (Id && Id !== userId) {
-        setSocketConnected(true);
-      } else {
-        setSocketConnected(false);
-      }
-    };
-    const handleUserOfflineStatus = (user: string) => {
-      console.log("id", user);
-      if (user !== userId) {
-        // Update UI to show that this user is offline
-        setSocketConnected(false);
-      }
-    };
+
     const handleDeleteMessage = (messageId: string) => {
       if (messageId == lastMessage) {
         setlatestMessage("Deleted message");
@@ -82,26 +76,25 @@ const ChatWindow: React.FC = () => {
         )
       );
     };
-
-    socket.on("connect", () => {
-      console.log("Connected to Socket.IO server with id:", socket.id);
-    });
-
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messageDeleted", handleDeleteMessage);
 
     socket.emit("joinChat", { chatId, userId });
-    socket.on("online", (userId) => handleUserOnlineStatus(userId));
-    socket.on("offline", (user) => handleUserOfflineStatus(user));
 
     return () => {
       socket.emit("leaveChat", { chatId, userId });
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
-      socket.off("online", handleUserOnlineStatus);
-      socket.off("offline", handleUserOfflineStatus);
     };
-  }, [chatId, lastMessage, messages, setlatestMessage, user, userId]);
+  }, [chatId, lastMessage, setlatestMessage, user, userId]);
+
+  useEffect(() => {
+    if (chatId) {
+      setIsChatActive(true);
+    } else {
+      setIsChatActive(false);
+    }
+  }, [chatId]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -132,10 +125,6 @@ const ChatWindow: React.FC = () => {
       setNewMessage("");
       setlatestMessage(newMessage);
       setLastMessage(response.data._id);
-
-      if (!socketConnected) {
-        console.log("expert is not in online");
-      }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -216,7 +205,6 @@ const ChatWindow: React.FC = () => {
                 <span className=" text-lg font-semibold">
                   {Expert.user_name}
                 </span>
-                <span>{socketConnected && "online"}</span>
               </div>
             </div>
           )}

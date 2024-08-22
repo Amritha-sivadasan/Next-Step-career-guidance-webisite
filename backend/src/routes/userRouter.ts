@@ -21,6 +21,7 @@ import psychometricController from "../contollers/psychometricController";
 import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
 import faqController from "../contollers/faqController";
+import notificationController from "../contollers/notificationController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -107,5 +108,6 @@ router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatControlle
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
 router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
 router.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
+router.post('/add-notification',verifyAccessToken,verifyRole(role),notificationController.addNotification)
 
 export default router;

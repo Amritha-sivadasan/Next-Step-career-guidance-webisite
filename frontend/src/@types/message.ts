@@ -20,3 +20,5 @@ export interface IChat {
   latestMessage?:string |IMessage;
   bookingId:string|IBooking
 }
+
+
