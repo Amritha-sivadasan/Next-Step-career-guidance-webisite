@@ -3,13 +3,13 @@ import { useStudentChat } from "../../../hooks/useStudentChat";
 import socket from "../../../config/socket";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { IMessage } from "../../../@types/message";
+import { motion } from "framer-motion";
 import {
   getMessageByChatIdByStudent,
   sendMessageByStudent,
   deleteMessageByStudent,
 } from "../../../services/api/ChatApi";
 import { IExpert } from "../../../@types/expert";
-// import { formatTime } from "../../../utils/generalFuncions";
 import { FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 import ConfirmationModal from "../../common/modal/ConfirmationModal";
@@ -17,12 +17,17 @@ import { MdOutlineDoNotDisturb } from "react-icons/md";
 import { messaging, generateToken } from "../../../config/firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import { sendPushNotification } from "../../../utils/sendPushNotification";
+import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
+import { FaImage } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 
 const ChatWindow: React.FC = () => {
   const { chatId, setlatestMessage, setNotificationCount } = useStudentChat();
   const { user } = useAppSelector((state) => state.student);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
   const [Expert, setExprt] = useState<IExpert>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
@@ -30,13 +35,16 @@ const ChatWindow: React.FC = () => {
   );
   const [lastMessage, setLastMessage] = useState<string>("");
   const [isChatActive, setIsChatActive] = useState(false);
-  // const [notificationCount, setNotificationCount] = useState(0);
+  const [recordingUrl, setRecordingUrl] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
   const userId = user?._id;
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScroll = useRef(true);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     generateToken();
@@ -100,7 +108,15 @@ const ChatWindow: React.FC = () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [chatId, lastMessage, setlatestMessage, user, userId]);
+  }, [
+    chatId,
+    isChatActive,
+    lastMessage,
+    setNotificationCount,
+    setlatestMessage,
+    user,
+    userId,
+  ]);
 
   useEffect(() => {
     if (chatId) {
@@ -123,22 +139,39 @@ const ChatWindow: React.FC = () => {
   }, [isModalOpen]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim()) return;
+    setRecordingUrl("");
+    const formData = new FormData();
+    formData.append("text", newMessage);
+    formData.append("senderId", userId || "");
+    formData.append("chatId", chatId?.toString() || "");
+    formData.append("timestamp", new Date().toISOString());
+    if (audioBlob) {
+      formData.append("audio", audioBlob, "audio.wav");
+    }
+
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+    }
 
     const message = {
       chatId: chatId?.toString(),
       text: newMessage,
+      audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
+      file: selectedFile ? URL.createObjectURL(selectedFile) : null,
       senderId: userId,
       timestamp: new Date(),
     };
 
     try {
-      const response = await sendMessageByStudent(message);
+      const response = await sendMessageByStudent(formData);
       setMessages((prev) => [...prev, response.data]);
       socket.emit("sendMessage", { chatId, message });
       setNewMessage("");
       setlatestMessage(newMessage);
+      setAudioBlob(null);
+      setSelectedFile(null);
       setLastMessage(response.data._id);
+      setImagePreviewUrl("");
 
       const recipientToken = await getToken(messaging);
       if (recipientToken) {
@@ -206,6 +239,49 @@ const ChatWindow: React.FC = () => {
       }
     }
   };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.size < 5000000) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.error("File is too large or of an invalid type.");
+    }
+  };
+
+  const handleAudioRecording = async () => {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    } else {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+
+        const audioChunks: BlobPart[] = [];
+        mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks);
+          setAudioBlob(audioBlob);
+          setRecordingUrl(URL.createObjectURL(audioBlob));
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+      } catch (error) {
+        console.error("Error accessing media devices.", error);
+      }
+    }
+  };
+
+  const shouldShowSendIcon = newMessage || audioBlob || selectedFile;
 
   const groupedMessages = messages.reduce((acc, message) => {
     const date = moment(message.timestamp).format("YYYY-MM-DD");
@@ -275,7 +351,21 @@ const ChatWindow: React.FC = () => {
                             </span>
                           </>
                         ) : (
-                          message.text
+                          <>
+                            {message.text}
+                            {message.audio && (
+                              <audio controls>
+                                <source
+                                  src={message.audio.url}
+                                  type="audio/wav"
+                                />
+                                Your browser does not support the audio element.
+                              </audio>
+                            )}
+                            {message.file && (
+                              <img src={message.file} alt={message.file} />
+                            )}
+                          </>
                         )}
                       </p>
                       <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
@@ -311,21 +401,107 @@ const ChatWindow: React.FC = () => {
               messageId={selectedMessageId || ""}
             />
           </div>
-          <div className="p-4 bg-blue-950 border-t border-gray-300 mt-7">
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Type a message..."
-                value={newMessage}
-                className="flex-1 p-2 border rounded-lg focus:outline-none"
-                onChange={(e) => setNewMessage(e.target.value)}
-              />
-              <button
-                onClick={sendMessage}
-                className="ml-2 p-2 bg-blue-500 text-white rounded-lg"
+          <div className="relative w-5/12">
+            {imagePreviewUrl && (
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 p-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3 }}
               >
-                Send
+                <img
+                  src={imagePreviewUrl}
+                  alt="Image Preview"
+                  className="max-w-full max-h-60 object-cover rounded-lg border"
+                />
+                <button
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setImagePreviewUrl("");
+                  }}
+                  className="absolute top-0 right-0 mt-2 mr-2 h-6 text-white w-6 rounded-lg bg-red-500"
+                >
+                  X
+                </button>
+              </motion.div>
+            )}
+          </div>
+          <div className="flex items-center bg-blue-950 p-4">
+            {!isRecording && !recordingUrl && (
+              <div className="">
+                <label htmlFor="file-upload">
+                  <FaImage
+                    className="text-gray-500 cursor-pointer"
+                    size={24}
+                    color="white"
+                  />
+                </label>
+                <input
+                  type="file"
+                  accept="image/*, .pdf, .doc, .docx, .xlsx"
+                  onChange={handleFileChange}
+                  id="file-upload"
+                  className="absolute opacity-0 cursor-pointer"
+                  key={imagePreviewUrl}
+                />
+              </div>
+            )}
+
+            <div className="flex items-center flex-1 ms-2">
+              {!recordingUrl && (
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type a message"
+                  className="flex-1 border border-gray-300 rounded-lg p-2 mr-2"
+                />
+              )}
+
+              <button
+                onClick={handleAudioRecording}
+                className={`mr-2  ${
+                  isRecording ? "text-red-500" : "text-white"
+                }`}
+              >
+                {isRecording ? (
+                  <motion.div
+                    className="relative flex items-center justify-center"
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    <AiOutlineAudio size={24} />
+                    <div className="absolute border-2 border-red-500 rounded-full w-6 h-6 animate-pulse"></div>
+                  </motion.div>
+                ) : (
+                  <>
+                    {!recordingUrl && !newMessage && !imagePreviewUrl && (
+                      <AiOutlineAudio size={24} />
+                    )}
+                  </>
+                )}
               </button>
+                {recordingUrl && (
+              <div className="flex justify-end w-full">
+             
+                <button className="p-3" onClick={()=>{setRecordingUrl(''),setAudioBlob(null)}}>
+                  <MdDeleteForever size={24} color="white" />
+                </button>
+                  <audio controls src={recordingUrl} className="mr-2">
+                    Your browser does not support the audio element.
+                  </audio>
+              </div>
+                )}
+
+              {shouldShowSendIcon && (
+                <button
+                  onClick={sendMessage}
+                  className="bg-blue-500 text-white p-2 rounded-full"
+                >
+                  <AiOutlineSend />
+                </button>
+              )}
             </div>
           </div>
         </div>

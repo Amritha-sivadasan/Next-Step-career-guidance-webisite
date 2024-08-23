@@ -2,7 +2,6 @@ import { studentAxiosInstance } from "../instance/userInstance";
 import { axiosInstance } from "../instance/expertInstance";
 import { IMessage } from "../../@types/message";
 
-
 const API_URL = process.env.VITE_API_URL;
 
 interface Error {
@@ -40,12 +39,15 @@ export const getChatByExpertId = async () => {
   }
 };
 
-export const sendMessageByStudent = async (message: Partial<IMessage>) => {
+export const sendMessageByStudent = async (message: FormData) => {
   try {
     const response = await studentAxiosInstance.post(
       `${API_URL}/student/saveMessage`,
       message,
       {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         withCredentials: true,
       }
     );
@@ -166,7 +168,6 @@ export const getNotificationsByChatId = async (
     return (error as Error).response?.data;
   }
 };
-
 
 export const getNotificationsByExpert = async (
   chatId: string,

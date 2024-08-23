@@ -2,12 +2,17 @@ import { IBooking } from "./booking";
 import { IExpert } from "./expert";
 import { IStudent } from "./user";
 
+interface IAudio {
+  url: string; 
+  duration?: number;
+}
 export interface IMessage {
   _id: string;
   chatId: string;
   senderId: string;
   text?: string;
-  audio?: string;
+  audio?: IAudio;
+  file?:string|null
   timestamp: Date;
   is_delete: boolean;
 }
