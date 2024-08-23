@@ -17,7 +17,7 @@ export default class MessageService implements IMessageService {
 
   async saveMessage(message: IMessage, files: { [fieldname: string]: Express.Multer.File[]}): Promise<IMessage> {
     try {
-      console.log('files ',files)
+
       if (files.file && files.file[0]) {
         const fileUploadResult = await cloudinary.uploader.upload(files.file[0].path, {
           folder: 'file', 
@@ -30,11 +30,8 @@ export default class MessageService implements IMessageService {
           folder: 'audio', 
           resource_type: 'video', 
         });
-        console.log('audioUploadResult',audioUploadResult.secure_url)
         message.audio = { url: audioUploadResult.secure_url, duration: audioUploadResult.duration }
       }
-       
-      console.log('Updated message object:', message);
 
       const messageDetails = await this.messageRepository.saveMesssage(message);
       await this.chatRepository.updateMesssage(

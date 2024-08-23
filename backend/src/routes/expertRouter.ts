@@ -97,7 +97,7 @@ expertRouter.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingCon
 expertRouter.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllExpertPayment)
 expertRouter.patch('/refund/:id',verifyAccessToken,verifyRole(role),bookingController.refundPayment)
 expertRouter.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
-expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
+expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),upload.fields([{ name: 'file', maxCount: 1 }, { name: 'audio', maxCount: 1 }]),messageController.saveMessage)
 expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)

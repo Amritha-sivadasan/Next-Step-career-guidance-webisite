@@ -11,7 +11,6 @@ export const axiosInstance = axios.create({
 //request interceptor
 axiosInstance.interceptors.request.use(async (config) => {
   const isUserAllowed = await checkIfExpertIsBlocked();
-  console.log("isUserAllowed", isUserAllowed);
 
   if (!isUserAllowed.data.is_active) {
     setExpertAuthenticated(false);

@@ -1,6 +1,5 @@
 import { studentAxiosInstance } from "../instance/userInstance";
 import { axiosInstance } from "../instance/expertInstance";
-import { IMessage } from "../../@types/message";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -58,12 +57,15 @@ export const sendMessageByStudent = async (message: FormData) => {
   }
 };
 
-export const sendMessageByExpert = async (message: Partial<IMessage>) => {
+export const sendMessageByExpert = async (message: FormData) => {
   try {
     const response = await axiosInstance.post(
       `${API_URL}/expert/saveMessage`,
       message,
       {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         withCredentials: true,
       }
     );

@@ -139,6 +139,9 @@ const ChatWindow: React.FC = () => {
   }, [isModalOpen]);
 
   const sendMessage = async () => {
+      if(newMessage && newMessage.trim()=="") return
+    
+
     setRecordingUrl("");
     const formData = new FormData();
     formData.append("text", newMessage);
@@ -153,19 +156,23 @@ const ChatWindow: React.FC = () => {
       formData.append("file", selectedFile);
     }
 
-    const message = {
-      chatId: chatId?.toString(),
-      text: newMessage,
-      audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
-      file: selectedFile ? URL.createObjectURL(selectedFile) : null,
-      senderId: userId,
-      timestamp: new Date(),
-    };
+    // const message = {
+    //   chatId: chatId?.toString(),
+    //   text: newMessage,
+    //   audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
+    //   file: selectedFile ? URL.createObjectURL(selectedFile) : null,
+    //   senderId: userId,
+    //   timestamp: new Date(),
+    // };
 
     try {
       const response = await sendMessageByStudent(formData);
+      console.log("response to send message", response);
+      if (response.success) {
+        const message = response.data;
+        socket.emit("sendMessage", { chatId, message });
+      }
       setMessages((prev) => [...prev, response.data]);
-      socket.emit("sendMessage", { chatId, message });
       setNewMessage("");
       setlatestMessage(newMessage);
       setAudioBlob(null);
@@ -363,12 +370,16 @@ const ChatWindow: React.FC = () => {
                               </audio>
                             )}
                             {message.file && (
-                              <img src={message.file} alt={message.file} />
+                              <img
+                                src={message.file}
+                                alt={message.file}
+                                className="w-32 h-32"
+                              />
                             )}
                           </>
                         )}
                       </p>
-                      <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
+                      <span className="ms-2 flex justify-end items-end mt-5 text-xs text-gray-500">
                         {moment(message.timestamp).fromNow()}
                       </span>
 
@@ -482,17 +493,21 @@ const ChatWindow: React.FC = () => {
                   </>
                 )}
               </button>
-                {recordingUrl && (
-              <div className="flex justify-end w-full">
-             
-                <button className="p-3" onClick={()=>{setRecordingUrl(''),setAudioBlob(null)}}>
-                  <MdDeleteForever size={24} color="white" />
-                </button>
+              {recordingUrl && (
+                <div className="flex justify-end w-full">
+                  <button
+                    className="p-3"
+                    onClick={() => {
+                      setRecordingUrl(""), setAudioBlob(null);
+                    }}
+                  >
+                    <MdDeleteForever size={24} color="white" />
+                  </button>
                   <audio controls src={recordingUrl} className="mr-2">
                     Your browser does not support the audio element.
                   </audio>
-              </div>
-                )}
+                </div>
+              )}
 
               {shouldShowSendIcon && (
                 <button
