@@ -102,7 +102,8 @@ router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingControlle
 router.get('/getAllpsychometric',verifyAccessToken,verifyRole(role),psychometricController.fetchAllQuestions)
 router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),psychometricController.submitAnswer)
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
-router.post('/saveMessage',verifyAccessToken,verifyRole(role),messageController.saveMessage)
+
+router.post('/saveMessage',verifyAccessToken,verifyRole(role), upload.fields([{ name: 'file', maxCount: 1 }, { name: 'audio', maxCount: 1 }]),messageController.saveMessage)
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)

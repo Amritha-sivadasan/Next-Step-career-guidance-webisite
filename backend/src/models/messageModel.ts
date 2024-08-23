@@ -11,6 +11,7 @@ const MessageSchema: Schema = new Schema(
       url: String,
       duration: Number,
     },
+    file:{type:String},
   
     timestamp: {
       type: Date,

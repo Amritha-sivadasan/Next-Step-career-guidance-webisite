@@ -12,10 +12,10 @@ class MessageController {
 
     public saveMessage= async(req:Request,res:Response)=>{
         try {
-            
-         const resposne= await this.messageService.saveMessage(req.body)
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+         const resposne= await this.messageService.saveMessage(req.body,files)
             res.status(200).json({
-                success: true,
+                success: true,  
                 message: 'Message send successfully',
                 data: resposne,
               });
