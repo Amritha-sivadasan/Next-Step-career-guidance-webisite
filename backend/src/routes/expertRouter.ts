@@ -15,6 +15,7 @@ import bookingController from "../contollers/bookingController";
 import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
 import notificationController from "../contollers/notificationController";
+import videoCallController from "../contollers/videoCallController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -101,5 +102,6 @@ expertRouter.post('/saveMessage',verifyAccessToken,verifyRole(role),upload.field
 expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
+expertRouter.post('/createVideocall',verifyAccessToken,verifyRole(role),videoCallController.createVideoCall)
 
 export default expertRouter;

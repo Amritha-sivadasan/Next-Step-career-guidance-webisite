@@ -75,6 +75,8 @@ const ChatWindow: React.FC = () => {
     fetchMessages();
 
     const handleReceiveMessage = async (message: IMessage) => {
+     
+
       if (message.senderId !== userId) {
         setMessages((prevMessages) => [...prevMessages, message]);
         if (message.text) {
@@ -167,7 +169,6 @@ const ChatWindow: React.FC = () => {
 
     try {
       const response = await sendMessageByStudent(formData);
-      console.log("response to send message", response);
       if (response.success) {
         const message = response.data;
         socket.emit("sendMessage", { chatId, message });

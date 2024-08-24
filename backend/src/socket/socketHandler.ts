@@ -8,7 +8,7 @@ import { IExpert } from "../entities/ExpertEntity";
 // import { sendPushNotification } from "../utils/google-auth-token";
 
 interface OnlineUsers {
-  [userId: string]: string; 
+  [userId: string]: string;
 }
 
 const onlineUsers: OnlineUsers = {};
@@ -27,7 +27,7 @@ export const createSocketServer = (server: http.Server) => {
   io.on("connection", (socket) => {
     console.log("A user connected");
 
-    socket.on("joinChat", async({ chatId, userId }) => {
+    socket.on("joinChat", async ({ chatId, userId }) => {
       socket.join(chatId);
       onlineUsers[userId] = socket.id;
       if (chatId) {
@@ -94,6 +94,28 @@ export const createSocketServer = (server: http.Server) => {
         console.log(`User disconnected: UserId ${userId}`);
       }
     });
+
+    socket.on("offer", (data) => {
+      socket.to(data.room).emit("offer", data);
+    });
+
+    socket.on("answer", (data) => {
+      socket.to(data.room).emit("answer", data);
+    });
+
+    socket.on("ice-candidate", (data) => {
+      socket.to(data.room).emit("ice-candidate", data);
+    });
+
+
+    socket.on("joinRoom", (room) => {
+      socket.join(room);
+    });
+
+    socket.on("leaveRoom", (room) => {
+      socket.leave(room);
+    });
+
   });
 
   return io;

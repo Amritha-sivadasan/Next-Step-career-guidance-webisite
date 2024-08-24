@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { CustomRequest } from "../entities/jwtEntity";
+
 import SubCategoryService from "../services/implementations/SubCategoryService";
 import { ISubCategoryService } from "../services/interface/ISubCategoryService";
 

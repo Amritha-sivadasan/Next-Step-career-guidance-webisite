@@ -17,6 +17,7 @@ import { generateToken ,messaging} from "../config/firebase";
 import { onMessage } from "firebase/messaging";
 import toast, { Toaster } from "react-hot-toast";
 
+
 const StudentChatListPage = lazy(
   () => import("../pages/student/StudentChatListPage")
 );
@@ -210,6 +211,7 @@ const StudentRouter = () => {
                 element={<BookingDetailsPage />}
               />
               <Route path="/chat-list" element={<StudentChatListPage />} />
+              
             </Route>
           </Route>
         </Route>

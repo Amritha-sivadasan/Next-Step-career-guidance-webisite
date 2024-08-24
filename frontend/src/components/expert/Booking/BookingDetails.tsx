@@ -9,16 +9,20 @@ import { ISlot } from "../../../@types/slot";
 import { FaTimesCircle } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "react-toastify";
+import { useAppSelector } from "../../../hooks/useTypeSelector";
+import { createVideoCall } from "../../../services/api/videoCallApi";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
 const BookingDetails = () => {
+  const {expert}= useAppSelector(state=>state.expert)
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [showCancelForm, setShowCancelForm] = useState(false);
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
+  const [urlToSend, setUrlToSend] = useState("");
   const itemsPerPage = 3;
 
   const fetchConfirmBooking = async (page: number) => {
@@ -95,6 +99,22 @@ const BookingDetails = () => {
       }
     }
   };
+  const handleSendUrl = async(id:string) => {
+    if (urlToSend) {
+     const videocallDetails={
+      expertId:expert?._id,
+      bookingId:id,
+      url:urlToSend,
+
+     }
+
+     const response= await createVideoCall(videocallDetails)
+     console.log(response)
+      
+      console.log("URL to send:", urlToSend, id);
+      setUrlToSend(""); 
+    }
+  };
 
   return (
     <div className="p-4 min-h-screen bg-white rounded-lg">
@@ -130,6 +150,21 @@ const BookingDetails = () => {
                     <div className="text-sm text-gray-600">
                       Education Background :{" "}
                       <strong>{student.education_background}</strong>
+                    </div>
+                    <div className="mt-4 flex items-center space-x-3">
+                      <input
+                        type="text"
+                        placeholder="Enter URL"
+                        value={urlToSend}
+                        onChange={(e) => setUrlToSend(e.target.value)}
+                        className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <button
+                        onClick={() => handleSendUrl(request._id)}
+                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
+                      >
+                        Send URL
+                      </button>
                     </div>
                   </div>
                 </div>
