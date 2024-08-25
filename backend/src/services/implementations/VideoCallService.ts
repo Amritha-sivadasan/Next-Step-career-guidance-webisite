@@ -3,46 +3,51 @@ import { IVideoCallRepository } from "../../repositories/interface/IVideoCallRep
 import VideoCallRepository from "../../repositories/implementations/VideoCallRepository";
 import { IVideoCall } from "../../entities/VideoCallEntity";
 
+export default class VideoCallService implements IVideoCallService {
+  private videoCallRepository: IVideoCallRepository;
 
-export default class VideoCallService implements IVideoCallService{
-     private videoCallRepository :IVideoCallRepository
+  constructor() {
+    this.videoCallRepository = new VideoCallRepository();
+  }
 
-     constructor(){
-        this.videoCallRepository= new VideoCallRepository()
-     }
+  async createNewvideoCall(
+    videoCallDetails: Partial<IVideoCall>
+  ): Promise<IVideoCall> {
+    try {
+      const result = await this.videoCallRepository.createvideoCall(
+        videoCallDetails
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-   async createNewvideoCall(videoCallDetails: Partial<IVideoCall>): Promise<IVideoCall> {
-       try {
-       const result = await this.videoCallRepository.createvideoCall(videoCallDetails)
-       return result
-        
-       } catch (error) {
-        throw error
-       }
-   }
+  async findVideoCallById(id: string): Promise<IVideoCall | null> {
+    try {
+      const result = await this.videoCallRepository.findById(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-   async findVideoCallById(id: string): Promise<IVideoCall> {
-       try {
-         const result = await this.videoCallRepository.findById(id)
-         return result
-       } catch (error) {
-        throw error
+  async updateVideoCall(
+    id: string,
+    data: Partial<IVideoCall>
+  ): Promise<IVideoCall | null> {
+    try {
+      const existvideoCall = await this.videoCallRepository.findById(id);
 
-       }
-   }
+      if (!existvideoCall) {
+        throw new Error("Video Category is not found ");
+      }
 
-   async updateVideoCall(id: string, data: Partial<IVideoCall>): Promise<IVideoCall|null> {
-       try {
-          const existvideoCall= await this.videoCallRepository.findById(id)
-          if(!existvideoCall){
-            throw new Error("Video Category is not found ")
-          }
+      const details = await this.videoCallRepository.updatedetails(id, data);
 
-         const details = await this.videoCallRepository.updateVideoCall(id,data)
-         return details
-
-       } catch (error) {
-        throw error
-       }
-   }
+      return details;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

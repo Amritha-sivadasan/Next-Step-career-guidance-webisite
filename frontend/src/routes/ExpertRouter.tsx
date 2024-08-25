@@ -26,6 +26,7 @@ import PaymentHistory from "../pages/expert/PaymentHistory";
 import ExpertLayout from "../components/common/expertLayout/ExpertLayout";
 import ExpertChatListPage from "../pages/expert/ExpertChatListPage";
 import VideoCallPage from "../pages/expert/VideoCallPage";
+import MeetingPage from "../components/common/videocall/CreateUrl";
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -124,7 +125,8 @@ const ExpertRouter = () => {
           <Route path="/booking-details" element={<BookingDetailsPage />} />
           <Route path="/payment-history" element={<PaymentHistory />} />
           <Route path="/chat-with-student" element={<ExpertChatListPage />} />
-          <Route path="/meeting-start" element={<VideoCallPage />} />
+          <Route path="/meeting-start/:meetingId" element={<VideoCallPage />} />
+          <Route path="/meeting-start" element={<MeetingPage />} />
         </Route>
       </Route>
     </Routes>

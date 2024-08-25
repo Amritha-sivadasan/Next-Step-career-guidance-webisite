@@ -10,19 +10,53 @@ interface Error {
     };
   };
 }
-export const createVideoCall= async(videoCallDetails:Partial<IvidoeCall>)=>{
-    try {
-        const response = await axiosInstance.post(
-            `${API_URL}/expert/createVideocall`,
-            videoCallDetails,
-            {
-              withCredentials: true,
-            }
-          );
-      
-          return response.data;
-        
-    } catch (error) {
-        return (error as Error).response?.data;
-    }
-}
+export const createVideoCall = async (
+  videoCallDetails: Partial<IvidoeCall>
+) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/expert/createVideocall`,
+      videoCallDetails,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const updateVideoCall = async (
+  id: string,
+  data: Partial<IvidoeCall>
+) => {
+  try {
+    const response = await axiosInstance.put(
+      `${API_URL}/expert/updateVideoCall/${id}`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const getVideoCallDetails = async (
+  id: string
+) => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/videoCall/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch video call details:", error);
+    throw error;
+  }
+};

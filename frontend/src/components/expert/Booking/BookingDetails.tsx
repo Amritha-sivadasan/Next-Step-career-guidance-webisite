@@ -10,12 +10,17 @@ import { FaTimesCircle } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "react-toastify";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
-import { createVideoCall } from "../../../services/api/videoCallApi";
+import {
+  createVideoCall,
+  updateVideoCall,
+  getVideoCallDetails,
+} from "../../../services/api/videoCallApi";
+import { IvidoeCall } from "../../../@types/videoCall";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
 const BookingDetails = () => {
-  const {expert}= useAppSelector(state=>state.expert)
+  const { expert } = useAppSelector((state) => state.expert);
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -23,6 +28,14 @@ const BookingDetails = () => {
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [urlToSend, setUrlToSend] = useState("");
+  // const [currentVideoCall, setCurrentVideoCall] = useState<IvidoeCall | null>(
+  //   null
+  // );
+  const [videoCallDetails, setVideoCallDetails] = useState<
+    Record<string, IvidoeCall>
+  >({});
+
+  const [isEditing, setIsEditing] = useState(false);
   const itemsPerPage = 3;
 
   const fetchConfirmBooking = async (page: number) => {
@@ -32,6 +45,22 @@ const BookingDetails = () => {
         setHasMore(false);
       } else {
         setBookingDetails((prev) => [...prev, ...result.data]);
+        const bookingIds = result.data.map((booking: IBooking) => booking._id);
+        bookingIds.forEach(async (bookingId: string) => {
+          try {
+            const videoCallResult = await getVideoCallDetails(bookingId);
+
+            setVideoCallDetails((prev) => ({
+              ...prev,
+              [bookingId]: videoCallResult.data,
+            }));
+          } catch (error) {
+            console.error(
+              `Failed to fetch video call details for ${bookingId}:`,
+              error
+            );
+          }
+        });
       }
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
@@ -99,21 +128,58 @@ const BookingDetails = () => {
       }
     }
   };
-  const handleSendUrl = async(id:string) => {
+
+  const handleCreateVideoCall = async (bookingId: string) => {
     if (urlToSend) {
-     const videocallDetails={
-      expertId:expert?._id,
-      bookingId:id,
-      url:urlToSend,
+      const videocallDetails = {
+        expertId: expert?._id,
+        bookingId: bookingId,
+        url: urlToSend,
+      };
 
-     }
-
-     const response= await createVideoCall(videocallDetails)
-     console.log(response)
-      
-      console.log("URL to send:", urlToSend, id);
-      setUrlToSend(""); 
+      try {
+        const response = await createVideoCall(videocallDetails);
+        const newVideoCallDetails = response.data;
+        setVideoCallDetails((prevDetails) => ({
+          ...prevDetails,
+          [bookingId]: newVideoCallDetails,
+        }));
+        // setCurrentVideoCall(response.data);
+        toast.success("Video call URL created successfully.");
+        setUrlToSend("");
+      } catch (error) {
+        console.error("Failed to create video call:", error);
+        toast.error("Failed to create video call. Please try again.");
+      }
     }
+  };
+
+  const handleUpdateVideoCall = async (id: string) => {
+    if (videoCallDetails && urlToSend) {
+      const update = {
+        url: urlToSend,
+      };
+
+      try {
+        const response = await updateVideoCall(id, update);
+        const newVideoCallDetails = response.data;
+        setVideoCallDetails((prevDetails) => ({
+          ...prevDetails,
+          [id]: newVideoCallDetails,
+        }));
+        toast.success("Video call URL updated successfully.");
+        setIsEditing(false);
+        setUrlToSend("");
+      } catch (error) {
+        console.error("Failed to update video call:", error);
+        toast.error("Failed to update video call. Please try again.");
+      }
+    }
+  };
+
+  const handleEdit = (id: string) => {
+    setIsEditing(true);
+    setUrlToSend(videoCallDetails[id]?.url || "");
   };
 
   return (
@@ -151,20 +217,41 @@ const BookingDetails = () => {
                       Education Background :{" "}
                       <strong>{student.education_background}</strong>
                     </div>
+
                     <div className="mt-4 flex items-center space-x-3">
-                      <input
-                        type="text"
-                        placeholder="Enter URL"
-                        value={urlToSend}
-                        onChange={(e) => setUrlToSend(e.target.value)}
-                        className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                      <button
-                        onClick={() => handleSendUrl(request._id)}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
-                      >
-                        Send URL
-                      </button>
+                      {videoCallDetails[request._id] && !isEditing ? (
+                        <>
+                          <span className="text-sm text-gray-700">
+                            {videoCallDetails[request._id].url}
+                          </span>
+                          <button
+                            onClick={() => handleEdit(request._id)}
+                            className="px-4 py-2 bg-gray-300 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
+                          >
+                            Edit URL
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Enter URL"
+                            value={urlToSend}
+                            onChange={(e) => setUrlToSend(e.target.value)}
+                            className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                          <button
+                            onClick={() =>
+                              isEditing
+                                ? handleUpdateVideoCall(request._id)
+                                : handleCreateVideoCall(request._id)
+                            }
+                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
+                          >
+                            {isEditing ? "Update URL" : "Send URL"}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -183,42 +270,23 @@ const BookingDetails = () => {
                     </div>
                     <div>
                       Date:{" "}
-                      <strong className="text-gray-800">
+                      <strong className="text-blue-600">
                         {formatDate(slot.consultationDate)}
                       </strong>
                     </div>
                     <div>
-                      From:
-                      <strong className="text-gray-800">
-                        {" "}
+                      Time:{" "}
+                      <strong className="text-blue-600">
+                        {formatTime(slot.consultationStartTime)} -{" "}
                         {formatTime(slot.consultationStartTime)}
                       </strong>
                     </div>
                     <div>
-                      To:{" "}
-                      <strong className="text-gray-800">
-                        {" "}
-                        {formatTime(slot.consultationEndTime)}
+                      Fee:{" "}
+                      <strong className="text-blue-600">
+                        {/* {request.} */}
                       </strong>
                     </div>
-                  </div>
-                  <div>
-                    <p>
-                      Booking Status :{" "}
-                      <span
-                        className={` border p-2 rounded-lg text-white ${
-                          request.bookingStatus === "confirmed"
-                            ? "bg-green-600"
-                            : request.bookingStatus === "cancelled"
-                            ? "bg-red-800"
-                            : request.bookingStatus === "rescheduled"
-                            ? "bg-yellow-600"
-                            : "bg-gray-600"
-                        }`}
-                      >
-                        {request.bookingStatus}
-                      </span>
-                    </p>
                   </div>
                 </div>
               </div>
@@ -226,12 +294,11 @@ const BookingDetails = () => {
           })
         )}
       </div>
-
-      {hasMore && (
-        <div className="flex justify-center mt-4">
+      {hasMore && bookingDetails.length > 0 && (
+        <div className="text-center mt-4">
           <button
             onClick={handleViewMore}
-            className="px-4 py-2 bg-blue-950 text-white rounded-lg shadow hover:bg-blue-900"
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
           >
             View More
           </button>
@@ -239,37 +306,30 @@ const BookingDetails = () => {
       )}
 
       {showCancelForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-md w-1/3">
-            <h2 className="text-xl font-semibold mb-4">Cancel Booking</h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
             <form onSubmit={handleCancelSubmit}>
               <div className="mb-4">
                 <label
                   htmlFor="cancelReason"
-                  className="block text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700"
                 >
-                  Cancellation Reason
+                  Reason for Cancellation:
                 </label>
                 <textarea
                   id="cancelReason"
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={4}
-                  className="w-full border border-gray-300 rounded-lg p-2"
                   required
-                />
+                ></textarea>
               </div>
-              <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCancelForm(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
                 >
                   Submit
                 </button>

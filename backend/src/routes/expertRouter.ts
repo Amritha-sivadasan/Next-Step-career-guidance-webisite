@@ -103,5 +103,7 @@ expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatCon
 expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
 expertRouter.post('/createVideocall',verifyAccessToken,verifyRole(role),videoCallController.createVideoCall)
+expertRouter.put('/updateVideoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.updateVideoCall)
+expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBookin)
 
 export default expertRouter;

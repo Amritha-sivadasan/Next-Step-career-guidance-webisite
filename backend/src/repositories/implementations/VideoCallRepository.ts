@@ -4,9 +4,10 @@ import { VideoCall } from "../../models/videoCallSchema";
 
 
 export default class VideoCallRepository implements IVideoCallRepository{
-  async findById(bookingId: string): Promise<IVideoCall> {
+  async findById(bookingId: string): Promise<IVideoCall|null> {
       try {
-    const result = await this.findById(bookingId)
+       
+    const result = await VideoCall.findOne({bookingId})
     return  result
 
       } catch (error) {
@@ -24,10 +25,11 @@ export default class VideoCallRepository implements IVideoCallRepository{
   }
 
 
-  async updateVideoCall(bookingId: string, data: Partial<IVideoCall>): Promise<IVideoCall | null> {
+  async updatedetails(bookingId: string, data: Partial<IVideoCall>): Promise<IVideoCall | null> {
       try {
-
-        const result= await VideoCall.findByIdAndUpdate(bookingId,data)
+    
+        const result = await VideoCall.findOneAndUpdate({bookingId},{$set:data}, { new: true } ).exec()
+       
         return result
         
       } catch (error) {
