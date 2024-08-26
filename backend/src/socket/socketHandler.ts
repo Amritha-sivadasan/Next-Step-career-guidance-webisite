@@ -96,6 +96,7 @@ export const createSocketServer = (server: http.Server) => {
     });
 
     socket.on("offer", (data) => {
+      console.log('data',data.room)
       socket.to(data.room).emit("offer", data);
     });
 
@@ -110,6 +111,8 @@ export const createSocketServer = (server: http.Server) => {
 
     socket.on("joinRoom", (room) => {
       socket.join(room);
+      console.log(`user is joined the room ${room}`);
+      
     });
 
     socket.on("leaveRoom", (room) => {

@@ -256,7 +256,7 @@ const BookingDetails = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-col items-start md:items-center justify-between space-y-2 md:space-y-5">
-                  <div className="text-md text-gray-800 mb-2 md:mb-0">
+                <div className="text-md text-gray-800 mb-2 md:mb-0">
                     <div className="flex justify-end mb-2">
                       {request.bookingStatus == "confirmed" && (
                         <button
@@ -270,24 +270,45 @@ const BookingDetails = () => {
                     </div>
                     <div>
                       Date:{" "}
-                      <strong className="text-blue-600">
+                      <strong className="text-gray-800">
                         {formatDate(slot.consultationDate)}
                       </strong>
                     </div>
                     <div>
-                      Time:{" "}
-                      <strong className="text-blue-600">
-                        {formatTime(slot.consultationStartTime)} -{" "}
+                      From:
+                      <strong className="text-gray-800">
+                        {" "}
                         {formatTime(slot.consultationStartTime)}
                       </strong>
                     </div>
                     <div>
-                      Fee:{" "}
-                      <strong className="text-blue-600">
-                        {/* {request.} */}
+                      To:{" "}
+                      <strong className="text-gray-800">
+                        {" "}
+                        {formatTime(slot.consultationEndTime)}
                       </strong>
                     </div>
                   </div>
+                  <div>
+                    <p>
+                      Booking Status :{" "}
+                      <span
+                        className={` border p-2 rounded-lg text-white ${
+                          request.bookingStatus === "completed"
+                            ? "bg-green-600"
+                            : request.bookingStatus === "confirmed"
+                            ? "bg-blue-600"
+                            : request.bookingStatus === "canceled"
+                            ? "bg-red-600"
+                            : "bg-yellow-600"
+                        }`}
+                      >
+                        {" "}
+                        {request.bookingStatus}{" "}
+                      </span>
+                    </p>
+                  </div>
+               
                 </div>
               </div>
             );
@@ -305,39 +326,47 @@ const BookingDetails = () => {
         </div>
       )}
 
-      {showCancelForm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
-            <form onSubmit={handleCancelSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="cancelReason"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Reason for Cancellation:
-                </label>
-                <textarea
-                  id="cancelReason"
-                  value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={4}
-                  required
-                ></textarea>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
+{showCancelForm && (
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
+      <form onSubmit={handleCancelSubmit}>
+        <div className="mb-4">
+          <label
+            htmlFor="cancelReason"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Reason for Cancellation:
+          </label>
+          <textarea
+            id="cancelReason"
+            value={cancelReason}
+            onChange={(e) => setCancelReason(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+            required
+          ></textarea>
         </div>
-      )}
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={() => setShowCancelForm(false)}  // Hide the form on cancel
+            className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

@@ -27,9 +27,8 @@ export default class VideoCallRepository implements IVideoCallRepository{
 
   async updatedetails(bookingId: string, data: Partial<IVideoCall>): Promise<IVideoCall | null> {
       try {
-    
         const result = await VideoCall.findOneAndUpdate({bookingId},{$set:data}, { new: true } ).exec()
-       
+
         return result
         
       } catch (error) {
