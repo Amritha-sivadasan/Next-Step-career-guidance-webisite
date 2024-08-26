@@ -223,5 +223,15 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
+
+  async updatemeetingstatus(id: string, status: string): Promise<void> {
+    try {
+      const result = await this.bookingRepository.updatemeetingStatus(id,status);
+      return result;
+      
+    } catch (error) {
+      throw error
+    }
+  }
   
 }

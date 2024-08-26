@@ -8,6 +8,7 @@ import {
   FaVideoSlash,
   FaMicrophoneSlash,
 } from "react-icons/fa";
+import { updatemeetingStatus } from "../../../services/api/bookingApi";
 
 const VideoCall: React.FC = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -16,10 +17,13 @@ const VideoCall: React.FC = () => {
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [callStarted, setCallStarted] = useState<boolean>(false);
+  const [callStartTime, setCallStartTime] = useState<number | null>(null);
+  const [, setCallDuration] = useState<string>("00:00");
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleConnect = () => {
@@ -36,7 +40,7 @@ const VideoCall: React.FC = () => {
 
     const configuration = {
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" }, // Google STUN server
+        { urls: "stun:stun.l.google.com:19302" }, 
       ],
     };
 
@@ -146,55 +150,18 @@ const VideoCall: React.FC = () => {
       const offer = await peerConnectionRef.current.createOffer();
       await peerConnectionRef.current.setLocalDescription(offer);
       socket.emit("offer", { room: meetingId, sdp: offer, sender: socket.id });
-      setCallStarted(true)
+      setCallStarted(true);
+      setCallStartTime(Date.now());
+
+
+      intervalRef.current = setInterval(() => {
+        const elapsed = Date.now() - (callStartTime || 0);
+        const minutes = Math.floor(elapsed / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        setCallDuration(`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`);
+      }, 1000);
     }
   };
-
-  // const toggleCamera = async () => {
-  //   setIsCameraOn((prev) => {
-  //     const newCameraState = !prev;
-
-  //     if (localStream) {
-  //       // Stop and remove old video track if present
-  //       const videoTracks = localStream.getVideoTracks();
-  //       if (videoTracks.length > 0) {
-  //         const oldVideoTrack = videoTracks[0];
-  //         oldVideoTrack.stop();
-
-  //         // Remove the old video track from the peer connection
-  //         peerConnectionRef.current?.getSenders().forEach((sender) => {
-  //           if (sender.track === oldVideoTrack) {
-  //             peerConnectionRef.current?.removeTrack(sender);
-  //           }
-  //         });
-  //       }
-
-  //       if (newCameraState) {
-  //         // Add the new video track
-  //         navigator.mediaDevices.getUserMedia({ video: true, audio: isMicOn })
-  //           .then((newStream) => {
-  //             setLocalStream(newStream);
-  //             if (localVideoRef.current) {
-  //               localVideoRef.current.srcObject = newStream;
-  //             }
-  //             newStream.getTracks().forEach((track) => {
-  //               peerConnectionRef.current?.addTrack(track, newStream);
-  //             });
-  //           })
-  //           .catch((error) => console.error("Error accessing media devices:", error));
-  //       } else {
-  //         // Create a new empty stream with no video tracks
-  //         const emptyStream = new MediaStream();
-  //         setLocalStream(emptyStream);
-  //         if (localVideoRef.current) {
-  //           localVideoRef.current.srcObject = emptyStream;
-  //         }
-  //       }
-  //     }
-
-  //     return newCameraState;
-  //   });
-  // };
 
   const toggleCamera = () => {
     setIsCameraOn((prev) => !prev);
@@ -226,6 +193,17 @@ const VideoCall: React.FC = () => {
     }
   };
 
+  const updateBookingStatus=async()=>{
+  const bookingId= localStorage.getItem('bookingId')
+  const status= 'completed'
+  if(bookingId){
+  const result= await updatemeetingStatus(bookingId,status)
+  if(result.success){
+    localStorage.removeItem('bookingId')                                                           
+  }
+  }
+  }
+
   const leaveCall = () => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
@@ -240,61 +218,65 @@ const VideoCall: React.FC = () => {
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = null;
     }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    updateBookingStatus()
   };
 
   return (
     <div className="flex flex-col h-screen w-screen bg-gray-100">
-    <div className="p-6 bg-gray-100 flex-shrink-0">
-      <h2 className="text-xl font-semibold mb-4">Your ID: {myId}</h2>
-      <div className="mb-4 flex space-x-2">
-        {!callStarted && (
+      <div className="p-6 bg-gray-100 flex-shrink-0">
+        <h2 className="text-xl font-semibold mb-4">Your ID: {myId}</h2>
+        <div className="mb-4 flex space-x-2">
+          {!callStarted && (
+            <button
+              onClick={startCall}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+            >
+              Start Call
+            </button>
+          )}
           <button
-            onClick={startCall}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+            onClick={toggleCamera}
+            className="bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-600"
           >
-            Start Call
+            {isCameraOn ? <FaVideo /> : <FaVideoSlash />}
           </button>
-        )}
-        <button
-          onClick={toggleCamera}
-          className="bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-600"
-        >
-          {isCameraOn ? <FaVideo /> : <FaVideoSlash />}
-        </button>
-        <button
-          onClick={toggleMic}
-          className="bg-yellow-500 text-white p-2 rounded-md shadow-md hover:bg-yellow-600"
-        >
-          {isMicOn ? <FaMicrophone /> : <FaMicrophoneSlash />}
-        </button>
-        <button
-          onClick={leaveCall}
-          className="bg-red-500 text-white p-2 rounded-md shadow-md hover:bg-red-600"
-        >
-          <FaPhoneAlt />
-        </button>
+          <button
+            onClick={toggleMic}
+            className="bg-yellow-500 text-white p-2 rounded-md shadow-md hover:bg-yellow-600"
+          >
+            {isMicOn ? <FaMicrophone /> : <FaMicrophoneSlash />}
+          </button>
+          <button
+            onClick={leaveCall}
+            className="bg-red-500 text-white p-2 rounded-md shadow-md hover:bg-red-600"
+          >
+            <FaPhoneAlt />
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-grow">
+        <div className="relative flex flex-col items-center flex-shrink-0 w-1/3 p-2">
+          <p className="mb-2 font-medium">Your video</p>
+          <video
+            ref={localVideoRef}
+            autoPlay
+            muted
+            className="w-full h-auto border border-gray-300 rounded-md"
+          />
+        </div>
+        <div className="relative flex flex-col items-center flex-grow p-2">
+          <p className="mb-2 font-medium">Remote video</p>
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            className="w-full h-full border border-gray-300 rounded-md"
+          />
+        </div>
       </div>
     </div>
-    <div className="flex flex-grow">
-      <div className="relative flex flex-col items-center flex-shrink-0 w-1/3 p-2">
-        <p className="mb-2 font-medium">Your video</p>
-        <video
-          ref={localVideoRef}
-          autoPlay
-          muted
-          className="w-full h-auto border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="relative flex flex-col items-center flex-grow p-2">
-        <p className="mb-2 font-medium">Remote video</p>
-        <video
-          ref={remoteVideoRef}
-          autoPlay
-          className="w-full h-full border border-gray-300 rounded-md"
-        />
-      </div>
-    </div>
-  </div>
   );
 };
 

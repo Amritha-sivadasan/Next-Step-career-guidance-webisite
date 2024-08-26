@@ -105,5 +105,6 @@ expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificat
 expertRouter.post('/createVideocall',verifyAccessToken,verifyRole(role),videoCallController.createVideoCall)
 expertRouter.put('/updateVideoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.updateVideoCall)
 expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBookin)
+expertRouter.patch('/updateVideo/:id',verifyAccessToken,verifyRole(role),bookingController.updatemeetingstatus)
 
 export default expertRouter;

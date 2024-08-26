@@ -3,7 +3,7 @@
   import Modal from "react-modal";
   import { toast } from "react-toastify";
 
-  // Set the app element for accessibility
+  
   Modal.setAppElement("#root");
 
   const MeetingPage: React.FC = () => {
@@ -11,28 +11,26 @@
     const [inputMeetingId, setInputMeetingId] = useState<string>("");
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
-
-    // Function to create a new meeting
     const createMeeting = () => {
-      // Generate a unique meeting ID
+    
       const newMeetingId = `meeting-${Math.random()
         .toString(36)
         .substring(2, 9)}`;
       const meetingUrl = `${window.location.origin}/meeting-start/${newMeetingId}`;
 
-      // Set the meeting ID and update the input field
+    
       setMeetingId(meetingUrl);
       setInputMeetingId(meetingUrl);
-      setModalIsOpen(true); // Show the modal with the meeting link
+      setModalIsOpen(true); 
     };
 
-    // Function to copy meeting link to clipboard
+
     const copyToClipboard = () => {
       navigator.clipboard.writeText(meetingId);
       toast("Meeting link copied to clipboard!");
     };
 
-    // Function to join an existing meeting
+   
     const joinMeeting = () => {
       if (inputMeetingId.startsWith("http")) {
 
@@ -47,7 +45,7 @@
       <div className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center bg-[url('https://example.com/your-background-image.jpg')]  p-4">
         <h2 className="text-3xl font-bold mb-6">Create or Join a Meeting</h2>
 
-        {/* Section for creating a meeting */}
+     
         <div className="mb-6">
           <button
             onClick={createMeeting}
@@ -59,7 +57,7 @@
 
         <hr className="border-white mb-6" />
 
-        {/* Section for joining a meeting */}
+
         <div className="mb-6">
           <input
             type="text"
@@ -76,7 +74,7 @@
           </button>
         </div>
 
-        {/* Modal for showing the generated meeting link */}
+    
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}
@@ -93,8 +91,8 @@
               maxWidth: "400px",
               width: "100%",
               borderRadius: "8px",
-              backgroundColor: "#333", // Tailwind color might be applied here
-              color: "#fff", // Tailwind text color
+              backgroundColor: "#333", 
+              color: "#fff",
             },
             overlay: {
               backgroundColor: "rgba(0, 0, 0, 0.75)",

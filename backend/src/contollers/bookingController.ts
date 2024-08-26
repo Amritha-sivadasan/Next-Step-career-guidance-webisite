@@ -211,6 +211,25 @@ class BookingController {
     }
   };
 
+  public updatemeetingstatus= async(req:Request,res:Response)=>{
+    try {
+      const {id}= req.params
+      const {status}=req.body
+      const response= await this.bookingservice.updatemeetingstatus(id!,status)
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: response,
+      });
+      
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error during the update meeting status",
+      });
+    }
+  }
+
   public findBookingByIdForAdmin = async (
     req: Request,
     res: Response
@@ -230,6 +249,8 @@ class BookingController {
       });
     }
   };
+
+
 }
 
 export default new BookingController();

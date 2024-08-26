@@ -107,4 +107,12 @@ export default class BookingRepository implements IBookingRepository {
     }).populate("studentId");
     return result;
   }
+  async updatemeetingStatus(id: string, status: string): Promise<void> {
+  try {
+     await Booking.findByIdAndUpdate(id,{meetingStatus:status})
+  } catch (error) {
+    throw error
+  }
+}
+  
 }

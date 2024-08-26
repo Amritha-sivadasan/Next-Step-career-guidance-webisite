@@ -140,6 +140,7 @@ const BookingDetails = () => {
       try {
         const response = await createVideoCall(videocallDetails);
         const newVideoCallDetails = response.data;
+        localStorage.setItem('bookingId',bookingId)
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,
           [bookingId]: newVideoCallDetails,
@@ -162,6 +163,7 @@ const BookingDetails = () => {
 
       try {
         const response = await updateVideoCall(id, update);
+       localStorage.setItem('bookingId',id)
         const newVideoCallDetails = response.data;
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,

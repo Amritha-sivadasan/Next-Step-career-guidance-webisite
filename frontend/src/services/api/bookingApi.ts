@@ -149,3 +149,19 @@ export const getAllBookingDetailsByStudentId = async (page:number,limit:number) 
     return (error as Error).response?.data;
   }
 };
+
+
+
+export const updatemeetingStatus= async(id:string,status:string)=>{
+  try {
+    const response = await axiosInstance.patch(
+      `${API_URL}/expert/updateVideo/${id}`,{status},
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
