@@ -22,6 +22,8 @@ import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
 import faqController from "../contollers/faqController";
 import notificationController from "../contollers/notificationController";
+import videoCallController from "../contollers/videoCallController";
+import reviewAndRatingController from "../contollers/reviewAndRatingController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -110,5 +112,8 @@ router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.sav
 router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
 router.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 router.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
+router.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCallController.findMeetingDetailsById)
+router.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)
+router.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
 
 export default router;

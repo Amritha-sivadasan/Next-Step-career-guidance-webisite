@@ -3,8 +3,15 @@ import { getAllBookingDetailsByStudentId } from "../../../services/api/bookingAp
 import { IBooking } from "../../../@types/booking";
 import { ISlot } from "../../../@types/slot";
 import { IExpert } from "../../../@types/expert";
-import { formatDate, formatTime } from "../../../utils/generalFuncions";
+// import { formatDate, formatTime } from "../../../utils/generalFuncions";
+import moment from "moment";
+const formatDateToIST = (dateString: string) => {
+  return moment(dateString).format("DD/MM/YYYY");
+};
 
+const formatTimeToIST = (timeString: string) => {
+  return moment(timeString, "HH:mm:ss").format("hh:mm A");
+};
 
 
 
@@ -81,21 +88,21 @@ const ScheduledSession = () => {
                     <div>
                       Date:{" "}
                       <strong className="text-gray-800">
-                        {formatDate(slot.consultationDate)}
+                        {formatDateToIST(slot.consultationDate)}
                       </strong>
                     </div>
                     <div>
                       From:
                       <strong className="text-gray-800">
                         {" "}
-                        {formatTime(slot.consultationStartTime)}
+                        {formatTimeToIST(slot.consultationStartTime)}
                       </strong>
                     </div>
                     <div>
                       To:{" "}
                       <strong className="text-gray-800">
                         {" "}
-                        {formatTime(slot.consultationEndTime)}
+                        {formatTimeToIST(slot.consultationEndTime)}
                       </strong>
                     </div>
                   </div>

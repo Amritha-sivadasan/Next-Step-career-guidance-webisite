@@ -14,7 +14,7 @@ const menuItems = [
     imageUrl: "/test.png",
     path: "/test-result",
   },
-  { title: "Meeting History", imageUrl: "/meeting.png", path: "/history" },
+  { title: "Meeting History", imageUrl: "/meeting.png", path: "/meeting-history" },
   { title: "Payment History", imageUrl: "/payment-user.png", path: "/payment" },
 ];
 

@@ -35,7 +35,7 @@ const ExpertMeetingHistory = () => {
 
   return (
     <div className="p-4 min-h-screen bg-white rounded-lg">
-      <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Meeting Details</h1>
       <div className="space-y-4">
         {meetingDetails.length === 0 ? (
           <p className="text-gray-600 text-center">No bookings here</p>

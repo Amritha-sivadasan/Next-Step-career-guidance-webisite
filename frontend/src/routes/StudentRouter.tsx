@@ -13,10 +13,10 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 
-import { generateToken ,messaging} from "../config/firebase";
+import { generateToken, messaging } from "../config/firebase";
 import { onMessage } from "firebase/messaging";
 import toast, { Toaster } from "react-hot-toast";
-
+import MeetingHistoryPage from "../pages/student/MeetingHistoryPage";
 
 const StudentChatListPage = lazy(
   () => import("../pages/student/StudentChatListPage")
@@ -65,14 +65,12 @@ const StudentRouter = () => {
   }, [dispatch, user, isAuthenticated]);
   console.log();
 
-
   useEffect(() => {
     generateToken();
     onMessage(messaging, (payload) => {
       console.log(payload);
-      if(payload.notification?.body){
+      if (payload.notification?.body) {
         toast(payload.notification?.body);
-
       }
     });
   }, []);
@@ -139,9 +137,7 @@ const StudentRouter = () => {
         <Route
           element={
             <StudentLayout>
-                <Toaster/>
-              {" "}
-              <Outlet />{" "}
+              <Toaster /> <Outlet />{" "}
             </StudentLayout>
           }
         >
@@ -211,7 +207,7 @@ const StudentRouter = () => {
                 element={<BookingDetailsPage />}
               />
               <Route path="/chat-list" element={<StudentChatListPage />} />
-              
+              <Route path="/meeting-history" element={<MeetingHistoryPage />} />
             </Route>
           </Route>
         </Route>

@@ -1,5 +1,6 @@
 import { IvidoeCall } from "../../@types/videoCall";
 import { axiosInstance } from "../instance/expertInstance";
+import { studentAxiosInstance } from "../instance/userInstance";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -61,6 +62,15 @@ export const getVideoCallDetails = async (id: string) => {
 export const findAllvideoCallByExpert = async () => {
   try {
     const response = await axiosInstance.get(`${API_URL}/expert/get-all-meeting-history`);
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const findAllvideoCallStudent = async () => {
+  try {
+    const response = await studentAxiosInstance.get(`${API_URL}/student/get-all-meeting-history`);
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
