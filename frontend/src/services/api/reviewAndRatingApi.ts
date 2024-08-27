@@ -1,4 +1,4 @@
-// import { axiosInstance } from "../instance/expertInstance";
+import { axiosInstance } from "../instance/expertInstance";
 import { studentAxiosInstance } from "../instance/userInstance";
 import { IReviewAndRating } from "../../@types/reviewAndRating";
 
@@ -29,7 +29,7 @@ export const submitReviewByStudent = async (
     return (error as Error).response?.data;
   }
 };
-export const findAllReviewsByStudent = async (meetingId:string) => {
+export const findAllReviewsByStudent = async (meetingId: string) => {
   try {
     const response = await studentAxiosInstance.get(
       `${API_URL}/student/fetchReviewAndRating/${meetingId}`,
@@ -38,7 +38,37 @@ export const findAllReviewsByStudent = async (meetingId:string) => {
         withCredentials: true,
       }
     );
-   
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+export const submitReviewByExpert = async (data: Partial<IReviewAndRating>) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/expert/submit-review-rate`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+export const findAllReviewsByExpert = async (meetingId: string) => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/fetchReviewAndRating/${meetingId}`,
+
+      {
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {

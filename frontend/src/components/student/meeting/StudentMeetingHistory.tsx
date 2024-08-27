@@ -55,14 +55,12 @@ const StudentMeetingHistory = () => {
       const reviewsMap = reviewsResults.reduce(
         (acc: Record<string, IReviewAndRating>, reviewResult) => {
           const { data } = reviewResult;
-          console.log("Review data:", data);
 
           acc[data.meetingId] = data;
           return acc;
         },
         {}
       );
-      // console.log('Review map:', reviewsMap);
 
       setReviewDetails(reviewsMap);
     } catch (error) {
@@ -104,6 +102,12 @@ const StudentMeetingHistory = () => {
     };
     try {
       const response = await submitReviewByStudent(data);
+      setReviewDetails((prev) => ({
+        ...prev,
+        [meetingId]: {
+          ...response.data, 
+        },
+      }));
       console.log("Response for review and rating:", response);
     } catch (error) {
       console.error("Failed to submit review:", error);
@@ -125,11 +129,7 @@ const StudentMeetingHistory = () => {
             const slot = booking.slotId as ISlot;
             const meetingId = meeting._id;
 
-            // Get existing review details
-            // const existingReview = reviewDetails[meetingId!] || {
-            //   review: "",
-            //   rating: 0,
-            // };
+        
 
             return (
               <div key={meetingId} className="border p-4 shadow-md rounded-lg">

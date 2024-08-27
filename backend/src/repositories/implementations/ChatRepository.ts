@@ -52,4 +52,13 @@ export default class ChatRepository implements IChatRepository {
       throw error;
     }
   }
+  async checkUserExist(studentId: string, expertId: string): Promise<IChat | null> {
+    try {
+      const  result= await Chat.findOne({studentId:studentId,expertId:expertId})
+      return result
+      
+    } catch (error) {
+      throw error;
+    }
+  }
 }

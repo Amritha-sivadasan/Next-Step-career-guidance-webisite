@@ -158,15 +158,7 @@ const ChatWindow: React.FC = () => {
       formData.append("file", selectedFile);
     }
 
-    // const message = {
-    //   chatId: chatId?.toString(),
-    //   text: newMessage,
-    //   audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
-    //   file: selectedFile ? URL.createObjectURL(selectedFile) : null,
-    //   senderId: userId,
-    //   timestamp: new Date(),
-    // };
-
+ 
     try {
       const response = await sendMessageByStudent(formData);
       if (response.success) {

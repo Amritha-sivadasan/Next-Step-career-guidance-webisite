@@ -76,7 +76,7 @@ export default class BookingRepository implements IBookingRepository {
     limit: number
   ): Promise<IBooking[] | null> {
     const skip = (page - 1) * limit;
-    return Booking.find({ studentId: id })
+    return Booking.find({ studentId: id, meetingStatus:'pending'})
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)

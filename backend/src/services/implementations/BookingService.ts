@@ -65,7 +65,17 @@ export default class BookingService implements IBookingService {
           expertId:bookingData.expertId,
           bookingId:newBooking._id
         }
-       await this.chatRepository.createChat(newChat)
+      
+         const studentId = newBooking.studentId.toString()
+          const expertId =newBooking.expertId.toString()
+          const existChat= await this.chatRepository.checkUserExist(studentId,expertId)
+          if(!existChat){
+
+            await this.chatRepository.createChat(newChat)
+          }
+
+        
+
 
       return {
         sessionId: session.id,

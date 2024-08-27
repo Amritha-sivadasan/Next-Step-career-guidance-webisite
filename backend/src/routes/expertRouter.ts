@@ -16,6 +16,7 @@ import ChatController from "../contollers/ChatController";
 import messageController from "../contollers/messageController";
 import notificationController from "../contollers/notificationController";
 import videoCallController from "../contollers/videoCallController";
+import reviewAndRatingController from "../contollers/reviewAndRatingController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -107,5 +108,7 @@ expertRouter.put('/updateVideoCall/:id',verifyAccessToken,verifyRole(role),video
 expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBookin)
 expertRouter.patch('/updateVideo/:id',verifyAccessToken,verifyRole(role),bookingController.updatemeetingstatus)
 expertRouter.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCallController.findMeetingDetailsById)
+expertRouter.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)
+expertRouter.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
 
 export default expertRouter;

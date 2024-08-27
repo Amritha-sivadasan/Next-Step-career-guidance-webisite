@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { Dispatch, SetStateAction } from 'react';
+
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,15 +18,24 @@ const app = initializeApp(firebaseConfig);
 
 export { app, messaging };
 
-export const generateToken = async () => {
-  const permission = await Notification.requestPermission();
-  console.log(permission);
-
-  if (permission === "granted") {
-    const token = await getToken(messaging, {
-      vapidKey:
-        "BJp5U5AxvxBayCrRe8DytyDzotYyO0VKWpWznMtaVS2kPTbutxIkp2YrZp1HRazg3dhTKN-Jnf61BmTTA5hJ8cE",
-    });
-    console.log(token);
+export const generateToken = async (setTokenFound:Dispatch<SetStateAction<boolean>>) => {
+  try {
+    const currentToken = await getToken(messaging, { vapidKey: "BMfoHTrp2NRbSLaUMdBABSU172AVD_JMuGlOuHpVGqp4SegURkMyqDgUm5FkXt-dXwVdhV8xScloaD8XlKpjwnk" });
+    if (currentToken) {
+      console.log("Current Token: ", currentToken);
+      setTokenFound(true);
+    } else {
+      console.log("No registration token available.");
+      setTokenFound(false);
+    }
+  } catch (error) {
+    console.log("An error occurred while retrieving token.", error);
   }
 };
+
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      resolve(payload);
+    });
+  });
