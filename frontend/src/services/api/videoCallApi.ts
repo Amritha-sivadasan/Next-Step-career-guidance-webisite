@@ -47,20 +47,22 @@ export const updateVideoCall = async (
   }
 };
 
-export const getVideoCallDetails = async (
-  id: string
-) => {
+export const getVideoCallDetails = async (id: string) => {
   try {
     const response = await axiosInstance.get(
       `${API_URL}/expert/videoCall/${id}`
     );
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch video call details:", error);
-    throw error;
+    return (error as Error).response?.data;
   }
 };
 
-
-
-
+export const findAllvideoCallByExpert = async () => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}/expert/get-all-meeting-history`);
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

@@ -28,9 +28,7 @@ const BookingDetails = () => {
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [urlToSend, setUrlToSend] = useState("");
-  // const [currentVideoCall, setCurrentVideoCall] = useState<IvidoeCall | null>(
-  //   null
-  // );
+
   const [videoCallDetails, setVideoCallDetails] = useState<
     Record<string, IvidoeCall>
   >({});
@@ -129,18 +127,19 @@ const BookingDetails = () => {
     }
   };
 
-  const handleCreateVideoCall = async (bookingId: string) => {
+  const handleCreateVideoCall = async (bookingId: string,studenId:string) => {
     if (urlToSend) {
       const videocallDetails = {
         expertId: expert?._id,
         bookingId: bookingId,
+        studentId:studenId,
         url: urlToSend,
       };
 
       try {
         const response = await createVideoCall(videocallDetails);
         const newVideoCallDetails = response.data;
-        localStorage.setItem('bookingId',bookingId)
+        localStorage.setItem("bookingId", bookingId);
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,
           [bookingId]: newVideoCallDetails,
@@ -163,7 +162,7 @@ const BookingDetails = () => {
 
       try {
         const response = await updateVideoCall(id, update);
-       localStorage.setItem('bookingId',id)
+        localStorage.setItem("bookingId", id);
         const newVideoCallDetails = response.data;
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,
@@ -198,7 +197,7 @@ const BookingDetails = () => {
             return (
               <div
                 key={request._id}
-                className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-gray-200 shadow-md rounded-lg h-auto"
+                className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-[#F2F2F2] shadow-md rounded-lg h-auto"
               >
                 <div className="flex items-center space-x-4 mb-4 md:mb-0">
                   <img
@@ -246,7 +245,7 @@ const BookingDetails = () => {
                             onClick={() =>
                               isEditing
                                 ? handleUpdateVideoCall(request._id)
-                                : handleCreateVideoCall(request._id)
+                                : handleCreateVideoCall(request._id,student._id)
                             }
                             className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
                           >
@@ -258,7 +257,7 @@ const BookingDetails = () => {
                   </div>
                 </div>
                 <div className="flex flex-col md:flex-col items-start md:items-center justify-between space-y-2 md:space-y-5">
-                <div className="text-md text-gray-800 mb-2 md:mb-0">
+                  <div className="text-md text-gray-800 mb-2 md:mb-0">
                     <div className="flex justify-end mb-2">
                       {request.bookingStatus == "confirmed" && (
                         <button
@@ -290,6 +289,13 @@ const BookingDetails = () => {
                         {formatTime(slot.consultationEndTime)}
                       </strong>
                     </div>
+                    <div>
+                      Meetign Status:{" "}
+                      <strong className="text-gray-800">
+                        {" "}
+                        {request.meetingStatus}
+                      </strong>
+                    </div>
                   </div>
                   <div>
                     <p>
@@ -299,7 +305,7 @@ const BookingDetails = () => {
                           request.bookingStatus === "completed"
                             ? "bg-green-600"
                             : request.bookingStatus === "confirmed"
-                            ? "bg-blue-600"
+                            ? "bg-green-600"
                             : request.bookingStatus === "canceled"
                             ? "bg-red-600"
                             : "bg-yellow-600"
@@ -310,7 +316,6 @@ const BookingDetails = () => {
                       </span>
                     </p>
                   </div>
-               
                 </div>
               </div>
             );
@@ -328,47 +333,46 @@ const BookingDetails = () => {
         </div>
       )}
 
-{showCancelForm && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-      <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
-      <form onSubmit={handleCancelSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="cancelReason"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Reason for Cancellation:
-          </label>
-          <textarea
-            id="cancelReason"
-            value={cancelReason}
-            onChange={(e) => setCancelReason(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
-            required
-          ></textarea>
+      {showCancelForm && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
+            <form onSubmit={handleCancelSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="cancelReason"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Reason for Cancellation:
+                </label>
+                <textarea
+                  id="cancelReason"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={4}
+                  required
+                ></textarea>
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelForm(false)} // Hide the form on cancel
+                  className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => setShowCancelForm(false)}  // Hide the form on cancel
-            className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };

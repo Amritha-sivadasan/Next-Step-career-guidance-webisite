@@ -1,6 +1,7 @@
 import { IVideoCallService } from "../services/interface/IVideoCallService";
 import VideoCallService from "../services/implementations/VideoCallService";
 import { Request,Response } from "express";
+import { CustomRequest } from "../entities/jwtEntity";
 
 
 class VideoCallController {
@@ -46,6 +47,19 @@ class VideoCallController {
         res
         .status(500)
         .json({ success: false, message: "something went wrong on updating a vidoeCall", error });
+    }
+   }
+
+
+   public  findMeetingDetailsById= async(req:CustomRequest,res:Response)=>{
+    try {
+      const id= req.user?.userId
+      const response= await this.videoCallServive.findAllMeetingDetails(id!)
+      res.status(200).json({message:'Success full find the meetign details',data:response,success:true})
+    } catch (error) {
+        res
+        .status(500)
+        .json({ success: false, message: "something went wrong on finding videocall details", error });
     }
    }
 }

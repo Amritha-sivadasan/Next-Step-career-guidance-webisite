@@ -54,6 +54,7 @@ export default class BookingRepository implements IBookingRepository {
     return Booking.find({
       expertId: id,
       bookingStatus: { $ne: "pending" },
+    meetingStatus:'pending'
     })
       .sort({ _id: -1 })
       .skip(skip)
