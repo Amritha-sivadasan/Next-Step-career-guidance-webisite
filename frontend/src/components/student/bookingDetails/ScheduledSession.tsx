@@ -3,7 +3,6 @@ import { getAllBookingDetailsByStudentId } from "../../../services/api/bookingAp
 import { IBooking } from "../../../@types/booking";
 import { ISlot } from "../../../@types/slot";
 import { IExpert } from "../../../@types/expert";
-// import { formatDate, formatTime } from "../../../utils/generalFuncions";
 import moment from "moment";
 const formatDateToIST = (dateString: string) => {
   return moment(dateString).format("DD/MM/YYYY");
@@ -12,10 +11,6 @@ const formatDateToIST = (dateString: string) => {
 const formatTimeToIST = (timeString: string) => {
   return moment(timeString, "HH:mm:ss").format("hh:mm A");
 };
-
-
-
-
 
 const ScheduledSession = () => {
   const [bookingDetails, setBookingDetails] = useState<IBooking[]>([]);
@@ -46,7 +41,7 @@ const ScheduledSession = () => {
     }
   };
   return (
-    <div className="p-4 min-h-screen bg-white rounded-lg w-10/12">
+    <div className="p-4 min-h-screen bg-white rounded-lg w-full lg:w-10/12 md:w-10/12  ">
       <div className="bg-blue-950 h-32 mb-9 rounded-xl flex items-center justify-center">
         <h1 className="text-2xl font-bold mb-4 text-white">Booking Details</h1>
       </div>

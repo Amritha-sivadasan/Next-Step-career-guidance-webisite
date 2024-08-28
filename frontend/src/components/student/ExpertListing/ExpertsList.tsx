@@ -7,6 +7,7 @@ import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
@@ -23,6 +24,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const [slots, setSlots] = useState<ISlot[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const { user } = useAppSelector((state) => state.student);
   const navigate = useNavigate();
 
@@ -58,6 +60,7 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
   const handleBooking = async () => {
     if (selectedSlot && activeExpert && user) {
       try {
+        setLoading(true);
         const stripe = await stripePromise;
         const response = await bookSlot(
           user._id,
@@ -80,6 +83,8 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
       } catch (error) {
         console.error("Booking failed:", error);
         toast.error("An error occurred while booking. Please try again.");
+      }finally {
+        setLoading(false); 
       }
     }
   };
@@ -178,9 +183,14 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                   {selectedSlot && (
                     <button
                       onClick={handleBooking}
-                      className="bg-[#0B2149] text-white p-2 rounded-lg w-full mt-2"
+                      className="bg-[#0B2149] text-white p-2 rounded-lg w-full mt-2 flex justify-center items-center"
+                      disabled={loading}
                     >
-                      Book Now
+                      {loading ? (
+                        <ClipLoader size={20} color="#fff" />
+                      ) : (
+                        "Book Now"
+                      )}
                     </button>
                   )}
                 </div>

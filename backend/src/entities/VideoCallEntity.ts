@@ -4,7 +4,7 @@ import { IExpert } from "./ExpertEntity";
 
 export interface IVideoCall extends Document{
     _id:ObjectId
-    bookindId:ObjectId
+    bookingId:ObjectId
     expertId:ObjectId
     studentId:ObjectId,
     url:String

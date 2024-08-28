@@ -50,7 +50,7 @@ const PsychometricTestResult: React.FC = () => {
   useEffect(() => {
     if (user && user.psychometric_result) {
       setPsychometricResults(user.psychometric_result);
-    } else {
+    } else if (user && !user.psychometric_result) {
       navigate("/psychometric-test");
     }
   }, [navigate, user]);
@@ -107,7 +107,7 @@ const PsychometricTestResult: React.FC = () => {
   };
 
   return (
-    <div className="mt-14 ms-24">
+    <div className="md:mt-14 md:ms-24 lg:mt-14 mt-14 ms-12 lg:ms-24">
       <div className="mb-6">
         <h2 className="text-3xl font-bold">Psychometric Test Results</h2>
       </div>

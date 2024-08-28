@@ -37,67 +37,25 @@ router.post("/resend-otp", otpController.createOtp);
 router.post("/forgot-password", studentController.forgotPassword);
 router.post("/reset-password", studentController.resetPassword);
 
-router.get(
-  "/",
-  verifyAccessToken,
-  verifyRole(role),
-  studentController.fetchUserById
-);
+router.get("/",verifyAccessToken,verifyRole(role),studentController.fetchUserById);
 
 router.post("/refresh-token", verifyRefreshToken(token), refreshTokens(token));
 router.post("/login", studentController.loginUser);
-
 router.post("/google-login", studentGoogleAuth);
-router.put(
-  "/update/:id",
-  verifyAccessToken,
-  verifyRole(role),
-  studentController.updateStudent
-);
+router.put("/update/:id",verifyAccessToken,verifyRole(role),studentController.updateStudent);
 
-router.get(
-  "/logout/",
-  verifyAccessToken,
-  verifyRole(role),
-  studentController.logoutStuent
-);
-
+router.get("/logout/",verifyAccessToken,verifyRole(role),studentController.logoutStuent);
 router.get("/getAllcategory", categoryController.findAllCategroy);
-router.get(
-  "/getAllSubCategory/:catName",
-  subCategoryController.findSubCategoryBycatname
-);
-router.get(
-  "/getCategoryByName/:catName",
-  categoryController.findCategoryByName
-);
+router.get("/getAllSubCategory/:catName",subCategoryController.findSubCategoryBycatname);
+router.get("/getCategoryByName/:catName",categoryController.findCategoryByName);
 router.get("/subCategoryById/:id", subCategoryController.findSubCategoryById);
 router.get("/experts/:subCatName", expertController.findExpertBySubCategory);
 router.get("/experts",expertController.fetchAllExperts);
-router.get(
-  "/getAllSlot/:expertId",
-  verifyAccessToken,
-  verifyRole(role),
-  slotController.getAllSlotByExpert
-);
-
-router.post(
-  "/bookSlot",
-  verifyAccessToken,
-  verifyRole(role),
-  bookingController.createBooking
-);
-router.put(
-  "/updatePayment/:id",
-  verifyAccessToken,
-  verifyRole(role),
-  bookingController.updateBookingPaymentStatus
-);
-
+router.get("/getAllSlot/:expertId",verifyAccessToken,verifyRole(role),slotController.getAllSlotByExpert);
+router.post("/bookSlot",verifyAccessToken,verifyRole(role),bookingController.createBooking);
+router.put("/updatePayment/:id",verifyAccessToken,verifyRole(role),bookingController.updateBookingPaymentStatus);
 router.get('/check-report-user/:userId',studentController.checkUserStatus)
-
-router.put('/uploadImage',verifyAccessToken,
-  verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
+router.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
 router.put('/uploadPersonalInfo',verifyAccessToken,verifyRole(role),studentController.updateuserData)
 router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
 router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)

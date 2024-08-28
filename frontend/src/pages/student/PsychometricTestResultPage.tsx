@@ -5,8 +5,9 @@ const PsychometricTestResultPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return (
-    <div className="w-screen max-w-screen-md">
+    <div className="w-full max-w-screen-md  ">
       <PsychometricTestResult />
     </div>
   );

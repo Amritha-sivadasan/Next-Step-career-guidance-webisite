@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { IStudent } from "../../../@types/user";
-import { getChatByExpertId, getNotificationsByExpert } from "../../../services/api/ChatApi";
+import {
+  getChatByExpertId,
+  getNotificationsByExpert,
+} from "../../../services/api/ChatApi";
 import { IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const ChatWithStudentList = () => {
-  const {expert}= useAppSelector(state=>state.expert)
+  const { expert } = useAppSelector((state) => state.expert);
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { chatId,setChatId, latestMessage, } = useExpertChat();
+  const { chatId, setChatId, latestMessage } = useExpertChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -25,14 +28,13 @@ const ChatWithStudentList = () => {
   };
   const fetchNotifications = async (chats: IChat[]) => {
     for (const chat of chats) {
-
       try {
-        if(!expert) return
+        if (!expert) return;
         const notificationData = await getNotificationsByExpert(
           chat._id,
-          expert?._id,
+          expert?._id
         );
-        if(!notificationData.data) return 
+        if (!notificationData.data) return;
         setNotifications((prev) => ({
           ...prev,
           [chat._id]: notificationData.data.count,
@@ -49,7 +51,6 @@ const ChatWithStudentList = () => {
   useEffect(() => {
     fetchAllBooking();
   }, []);
-
 
   const filteredChats = chatDetails.filter((chat) => {
     const student = chat.studentId as IStudent;
@@ -80,14 +81,15 @@ const ChatWithStudentList = () => {
               <img
                 src={student.profile_picture}
                 alt={student.user_name}
-                className="w-14 h-10 rounded-full mr-3"
+                className="w-14 h-12 rounded-full mr-3"
               />
+
               <div className="flex flex-col justify-between w-full">
-              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
                   <span className="font-semibold text-lg">
                     {student.user_name}
                   </span>
-                  {count>0 && chat._id !== chatId && (
+                  {count > 0 && chat._id !== chatId && (
                     <span className="relative flex items-center justify-center w-8 h-8 bg-green-600 text-white font-bold rounded-full shadow-lg">
                       {chat._id === chatId
                         ? ""
@@ -103,7 +105,7 @@ const ChatWithStudentList = () => {
                   )}
                 </div>
                 <span className="text-sm text-gray-500">
-                  {latestMessage ? (
+                  {latestMessage && lastMessage.chatId==chat._id ? (
                     latestMessage
                   ) : (
                     <>

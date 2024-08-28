@@ -65,7 +65,7 @@ const Profile = () => {
         education_background: user.education_background || "",
         education_level: user.education_level || "",
       });
-      setPreviewImage(user?.profile_picture || "/dummyprofile.jpg" );
+      setPreviewImage(user?.profile_picture || "/dummyprofile.jpg");
       setPersonalInfo({
         user_name: user.user_name,
         email: user.email,
@@ -161,29 +161,29 @@ const Profile = () => {
     }
   };
 
-  const handleChatList= ()=>{
+  const handleChatList = () => {
     navigate("/chat-list");
-  }
+  };
 
   return (
-    <div className="w-11/12 p-6 bg-white rounded-lg">
+    <div className="md:w-11/12 lg:w-11/12 sm:w-full p-6 bg-white rounded-lg">
       <div className="relative bg-[#0B2149] border h-40 rounded-2xl mb-8 shadow-md">
         <h1 className="text-3xl text-white font-bold mt-10 text-center">
           Your Profile
         </h1>
-        <div className="flex justify-end me-11 ">
+        <div className="flex justify-end me-11 mt-5 ">
           {" "}
           <button onClick={handleLogout} className="bg-white p-2 rounded-lg ">
             Logout
           </button>
         </div>
       </div>
-      <div className="relative -mt-32 flex justify-start ms-32 w-1/4">
+      <div className="relative -mt-32 flex justify-start ms-8 w-1/4">
         <div className="relative flex justify-center items-center">
           <img
             src={previewImage}
             alt="Profile"
-            className="w-32 h-32 object-cover rounded-full border-2 border-white shadow-lg cursor-pointer"
+            className="w-24 h-24 mt-8 md:ms-14 md:w-32 md:h-32 object-cover rounded-full border-2 border-white shadow-lg cursor-pointer"
             onClick={handleImageClick}
           />
           <input
@@ -200,6 +200,7 @@ const Profile = () => {
           )}
         </div>
       </div>
+
       <div className="border p-4 rounded-lg mt-24">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Left Side */}
@@ -433,7 +434,10 @@ const Profile = () => {
                 </p>
                 <div className="flex gap-5">
                   <img src="/chat.png" alt="Chat" className="w-15 h-10" />
-                  <button onClick={handleChatList} className="bg-[#0B2149] text-white p-1 rounded-xl w-20">
+                  <button
+                    onClick={handleChatList}
+                    className="bg-[#0B2149] text-white p-1 rounded-xl w-20"
+                  >
                     Chat
                   </button>
                 </div>

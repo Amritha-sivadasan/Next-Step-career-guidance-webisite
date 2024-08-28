@@ -16,7 +16,7 @@ import {
   getVideoCallDetails,
 } from "../../../services/api/videoCallApi";
 import { IvidoeCall } from "../../../@types/videoCall";
-import { generateToken, onMessageListener } from "../../../config/firebase";
+// import { generateToken, onMessageListener } from "../../../config/firebase";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
@@ -29,8 +29,8 @@ const BookingDetails = () => {
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [urlToSend, setUrlToSend] = useState("");
-  const [notification, setNotification] = useState({ title: "", body: "" });
-  const [isTokenFound, setTokenFound] = useState(false);
+  // const [notification, setNotification] = useState({ title: "", body: "" });
+  // const [isTokenFound, setTokenFound] = useState(false);
 
   const [videoCallDetails, setVideoCallDetails] = useState<
     Record<string, IvidoeCall>
@@ -39,18 +39,18 @@ const BookingDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const itemsPerPage = 3;
    
-  useEffect(() => {
-    generateToken(setTokenFound);
+  // useEffect(() => {
+  //   generateToken(setTokenFound);
 
-    onMessageListener()
-      .then((payload) => {
-        setNotification({
-          title: payload.notification.title,
-          body: payload.notification.body,
-        });
-      })
-      .catch((err) => console.log("failed: ", err));
-  }, []);
+  //   onMessageListener()
+  //     .then((payload) => {
+  //       setNotification({
+  //         title: payload.notification.title,
+  //         body: payload.notification.body,
+  //       });
+  //     })
+  //     .catch((err) => console.log("failed: ", err));
+  // }, []);
 
 
   const fetchConfirmBooking = async (page: number) => {
@@ -203,12 +203,12 @@ const BookingDetails = () => {
   return (
     <div className="p-4 min-h-screen bg-white rounded-lg">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
-      {notification?.title && (
+      {/* {notification?.title && (
         <div className="notification-popup">
           <h4>{notification.title}</h4>
           <p>{notification.body}</p>
         </div>
-      )}
+      )} */}
       <div className="space-y-4">
         {bookingDetails.length === 0 ? (
           <p className="text-gray-600 text-center">No bookings here</p>

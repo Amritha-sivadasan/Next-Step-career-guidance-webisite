@@ -58,7 +58,9 @@ const ChatWithExpertList = () => {
   });
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4">
+    <div
+      className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto`}
+    >
       <input
         type="search"
         placeholder="Search"
@@ -75,7 +77,7 @@ const ChatWithExpertList = () => {
           return (
             <li
               key={expert._id}
-              className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
+              className="flex items-center  p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
               onClick={() => setChatId(chat._id)}
             >
               <img
@@ -88,7 +90,7 @@ const ChatWithExpertList = () => {
                   <span className="font-semibold text-lg">
                     {expert.user_name}
                   </span>
-                  {count>0 && chat._id !== chatId && (
+                  {count > 0 && chat._id !== chatId && (
                     <span className="relative flex items-center justify-center w-8 h-8 bg-green-600 text-white font-bold rounded-full shadow-lg">
                       {chat._id === chatId
                         ? ""

@@ -13,7 +13,7 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 
-import { generateToken, messaging } from "../config/firebase";
+import {  messaging } from "../config/firebase";
 import { onMessage } from "firebase/messaging";
 import toast, { Toaster } from "react-hot-toast";
 import MeetingHistoryPage from "../pages/student/MeetingHistoryPage";
@@ -66,7 +66,7 @@ const StudentRouter = () => {
   console.log();
 
   useEffect(() => {
-    generateToken();
+    // generateToken();
     onMessage(messaging, (payload) => {
       console.log(payload);
       if (payload.notification?.body) {

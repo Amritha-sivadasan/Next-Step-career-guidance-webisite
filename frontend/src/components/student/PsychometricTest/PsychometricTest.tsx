@@ -11,7 +11,7 @@ import { setUser } from "../../../features/student/authSlice";
 
 const PsychometricTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(30); 
+  const [timeRemaining, setTimeRemaining] = useState(15); 
   const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
   const [answers, setAnswers] = useState<Array<string | null>>([]);
   const { user } = useAppSelector((state) => state.student);
@@ -19,16 +19,15 @@ const PsychometricTest = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (timeRemaining <= 0) {
+    if (timeRemaining > 0) {
+      const timerId = setInterval(() => {
+        setTimeRemaining((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    } else {
       handleNextQuestion();
-      return;
     }
-
-    const timerId = setInterval(() => {
-      setTimeRemaining((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timerId);
   }, [timeRemaining]);
 
   useEffect(() => {
@@ -49,13 +48,13 @@ const PsychometricTest = () => {
   };
 
   const handleNextQuestion = () => {
-    if (answers[currentQuestionIndex] !== null) {
+
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex((prev) => prev + 1);
-        setTimeRemaining(1800);
+        setTimeRemaining(15)
       } else {
         handleSubmit();
-      }
+      
     }
   };
 

@@ -7,7 +7,7 @@ const ProfilePage: React.FC = () => {
   }, []);
   return (
     <>
-      <div className="flex justify-center w-8/12   ms-10">
+      <div className="flex justify-center md:w-8/12 lg:w-8/12 sm:w-full md:ms-10 lg:ms-10">
         <Profile />
       </div>
     </>

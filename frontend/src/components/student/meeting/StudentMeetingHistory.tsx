@@ -105,7 +105,7 @@ const StudentMeetingHistory = () => {
       setReviewDetails((prev) => ({
         ...prev,
         [meetingId]: {
-          ...response.data, 
+          ...response.data,
         },
       }));
       console.log("Response for review and rating:", response);
@@ -115,7 +115,7 @@ const StudentMeetingHistory = () => {
   };
 
   return (
-    <div className="p-4 min-h-screen bg-white rounded-lg w-10/12">
+    <div className="p-4 min-h-screen bg-white rounded-lg ms-2 md:w-10/12 lg:w-10/12 w-full">
       <div className="bg-blue-950 h-32 mb-9 rounded-xl flex items-center justify-center">
         <h1 className="text-2xl font-bold mb-4 text-white">Meeting Details</h1>
       </div>
@@ -128,8 +128,6 @@ const StudentMeetingHistory = () => {
             const booking = meeting.bookingId as IBooking;
             const slot = booking.slotId as ISlot;
             const meetingId = meeting._id;
-
-        
 
             return (
               <div key={meetingId} className="border p-4 shadow-md rounded-lg">

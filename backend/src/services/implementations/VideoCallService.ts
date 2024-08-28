@@ -23,10 +23,11 @@ export default class VideoCallService implements IVideoCallService {
       const result = await this.videoCallRepository.createvideoCall(
         videoCallDetails
       );
-      if(videoCallDetails.bookindId){
-        const bookingDetails= await this.bookingRepository.findById(videoCallDetails.bookindId.toString())
+      if(videoCallDetails.bookingId){
+        const bookingDetails= await this.bookingRepository.findById(videoCallDetails.bookingId.toString())
         const student= bookingDetails?.studentId as IStudent
-        SendMail('Your VideoCall Link For NextStep',student.email,`your videoCall link is ${videoCallDetails.url}`)
+        
+        await  SendMail('Your VideoCall Link For NextStep',student.email,`your videoCall link is ${videoCallDetails.url}`)
       }
 
       return result;
@@ -54,9 +55,11 @@ export default class VideoCallService implements IVideoCallService {
       if (!existvideoCall) {
         throw new Error("Video Category is not found ");
       }
-
       const details = await this.videoCallRepository.updatedetails(id, data);
-
+      const bookingDetails= await this.bookingRepository.findById(id)
+      const student= bookingDetails?.studentId as IStudent
+      await  SendMail('Your VideoCall Link For NextStep',student.email,`your videoCall link is ${data.url}`)
+      
       return details;
     } catch (error) {
       throw error;
