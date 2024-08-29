@@ -70,6 +70,31 @@ class ReviewAndRatingController {
     });
   }
  }
+
+public findAllReview = async(req:Request,res:Response)=>{
+  try {
+    const response= await this.reviewAndRatingService.findAllReviews()
+    res.status(200).json({
+        success: true,
+        data: response,
+        message: "",
+      });
+    
+    
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong in fetching review",
+      success: false,
+      data: error,
+    });
+  }
 }
+
+
+
+
+}
+
+
 
 export default new ReviewAndRatingController()

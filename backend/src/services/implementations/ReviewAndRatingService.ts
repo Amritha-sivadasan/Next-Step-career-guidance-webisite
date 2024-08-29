@@ -38,4 +38,14 @@ export default class ReviewAndRatingService implements IReviewAndRatingService{
             throw error
         }
     }
+
+    async findAllReviews(): Promise<IReviewAndRating[]> {
+        try {
+            const result = await this.reviewAndReviewRepository.fetchAllReview()
+            return result
+            
+        } catch (error) {
+            throw error
+        }
+    }
 }

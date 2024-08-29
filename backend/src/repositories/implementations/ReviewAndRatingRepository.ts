@@ -50,4 +50,17 @@ export default class ReviewAndRatingRepository
       throw error;
     }
   }
+
+ async fetchAllReview(): Promise<IReviewAndRating[]> {
+     try {
+
+    const response= await ReviewAndRating.find({is_delete:false}).populate('meetingId').populate('studentId').populate('expertId')
+    return response
+        
+     } catch (error) {
+        throw error;
+     }
+ }
+
+  
 }

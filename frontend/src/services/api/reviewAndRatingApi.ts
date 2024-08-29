@@ -1,6 +1,8 @@
 import { axiosInstance } from "../instance/expertInstance";
 import { studentAxiosInstance } from "../instance/userInstance";
 import { IReviewAndRating } from "../../@types/reviewAndRating";
+import { adminAxiosInstance } from "../instance/adminInstance";
+
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -102,6 +104,23 @@ export const deleteReviewByStudent= async(meetingId: string)=>{
       }
     );
     return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+
+
+export const fetchAllReviews = async()=>{
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/fetchAllReview`,
+
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+    
   } catch (error) {
     return (error as Error).response?.data;
   }

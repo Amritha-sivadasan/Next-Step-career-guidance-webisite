@@ -25,6 +25,7 @@ import StudentSingleView from "../pages/admin/StudentSingleView";
 import PsychometricTestPage from "../pages/admin/PsychometricTestPage";
 import AddPsychometricTestPage from "../pages/admin/AddPsychometricTestPage";
 import FaqPage from "../pages/admin/FaqPage";
+import ReviewAndRatingPage from "../pages/admin/ReviewAndRatingPage";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -89,10 +90,20 @@ const AdminRouter = () => {
               element={<ExpertDetailsView />}
             />
             <Route path="/users" element={<StudentDetails />} />
-            <Route path="/studentView/:studentId" element={<StudentSingleView />} />
-            <Route path="/psychometric-test" element={<PsychometricTestPage />} />
-            <Route path="/add-psychometric-test" element={<AddPsychometricTestPage />} />
+            <Route
+              path="/studentView/:studentId"
+              element={<StudentSingleView />}
+            />
+            <Route
+              path="/psychometric-test"
+              element={<PsychometricTestPage />}
+            />
+            <Route
+              path="/add-psychometric-test"
+              element={<AddPsychometricTestPage />}
+            />
             <Route path="/faq" element={<FaqPage />} />
+            <Route path="/review-rating" element={<ReviewAndRatingPage />} />
           </Route>
         </Route>
       </Routes>
