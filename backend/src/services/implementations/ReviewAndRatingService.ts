@@ -28,4 +28,14 @@ export default class ReviewAndRatingService implements IReviewAndRatingService{
             throw error
         }
     }
+
+    async deleteReview(userId: string, meetingId: string): Promise<IReviewAndRating | null> {
+        try {
+            const result = await this.reviewAndReviewRepository.deleteReview(userId,meetingId)
+            return result
+            
+        } catch (error) {
+            throw error
+        }
+    }
 }

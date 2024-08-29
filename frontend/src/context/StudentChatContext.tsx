@@ -5,8 +5,12 @@ interface LatestMessage {
   expertId: string;
   lastMessage: string;
 }
+interface Notification {
+  chatId: string;
+  count: number;
+}
 
-// Updated interface for the context
+
 export interface IStudentContext {
   selectedExpertId: string | null;
   setSelectedExpertId: (id: string) => void;
@@ -14,8 +18,8 @@ export interface IStudentContext {
   setChatId: (id: string | null) => void;
   latestMessage: LatestMessage | null;
   setLatestMessage: (value: LatestMessage | null) => void;
-  notificationCount: number;
-  setNotificationCount: (num: number | ((prev: number) => number)) => void;
+  notificationCount: Notification|null;
+  setNotificationCount:  (value: Notification | null) => void;
 }
 
 export const StudentContext = createContext<IStudentContext | undefined>(undefined);
@@ -24,7 +28,7 @@ export const StudentProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [selectedExpertId, setSelectedExpertId] = useState<string | null>(null);
   const [chatId, setChatId] = useState<string | null>(null);
   const [latestMessage, setLatestMessage] = useState<LatestMessage | null>(null);
-  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [notificationCount, setNotificationCount] = useState<Notification|null>(null);
 
   return (
     <StudentContext.Provider value={{

@@ -187,3 +187,17 @@ export const getNotificationsByExpert = async (
     return (error as Error).response?.data;
   }
 };
+
+export  const updateNotification= async(chatId:string, userId:string)=>{
+  try {
+    const response = await studentAxiosInstance.patch(
+      `${API_URL}/student/updateNotification?chatId=${chatId}&userId=${userId}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

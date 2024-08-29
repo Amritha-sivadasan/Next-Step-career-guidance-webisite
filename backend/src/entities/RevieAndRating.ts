@@ -3,5 +3,6 @@ export interface IReviewAndRating {
   rating: number;
   review: string;
   studentId:string,
-  expertId:string
+  expertId:string,
+  is_delete:boolean
 }

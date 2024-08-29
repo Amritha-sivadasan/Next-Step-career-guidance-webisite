@@ -12,7 +12,7 @@ const ChatWithStudentList = () => {
   const { expert } = useAppSelector((state) => state.expert);
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { chatId, setChatId, latestMessage } = useExpertChat();
+  const { chatId, setChatId, latestMessage,notificationCount } = useExpertChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -48,6 +48,16 @@ const ChatWithStudentList = () => {
     }
   };
 
+  useEffect(()=>{
+
+    if(notificationCount){
+      setNotifications((prev) => ({
+        ...prev,
+        [notificationCount.chatId]: notificationCount.count,
+      }));
+    }
+  },[notificationCount])
+
   useEffect(() => {
     fetchAllBooking();
   }, []);
@@ -58,7 +68,11 @@ const ChatWithStudentList = () => {
   });
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4">
+    <div
+    className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
+      chatId ? "sm:hidden md:block" : ""
+    }`}
+  >
       <input
         type="search"
         placeholder="Search"
@@ -104,9 +118,13 @@ const ChatWithStudentList = () => {
                     </span>
                   )}
                 </div>
-                <span className="text-sm text-gray-500">
-                  {latestMessage && lastMessage.chatId==chat._id ? (
-                    latestMessage
+              
+                <span className="text-sm text-gray-500 mt-1">
+                  {latestMessage &&latestMessage.studentId == student._id  ? (
+                    <>
+                      {latestMessage.studentId == student._id &&
+                        latestMessage.lastMessage}
+                    </>
                   ) : (
                     <>
                       {lastMessage

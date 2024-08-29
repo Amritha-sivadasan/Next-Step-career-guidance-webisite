@@ -154,13 +154,23 @@ const ExpertNavbar: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/expert/login"
-                className="text-[#0B2149] font-thin hover:text-blue-800"
-                onClick={toggleSidebar}
-              >
-                Login
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  to="/expert/profile"
+                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  onClick={toggleSidebar}
+                >
+                  Profile
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-[#0B2149] font-thin hover:text-blue-800"
+                  onClick={toggleSidebar}
+                >
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

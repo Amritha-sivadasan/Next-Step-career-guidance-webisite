@@ -41,7 +41,7 @@ export default class VideoCallRepository implements IVideoCallRepository {
 
   async findAllById(id: string): Promise<IVideoCall[]> {
     try {
-      const result = await VideoCall.find({ $or: [{studentId:id}, { expertId: id }] }).populate('studentId').populate('expertId').populate({
+      const result = await VideoCall.find({ $or: [{studentId:id}, { expertId: id }] }).sort({_id:-1}).populate('studentId').populate('expertId').populate({
         path: 'bookingId',
         populate: {
           path: 'slotId'

@@ -75,3 +75,34 @@ export const findAllReviewsByExpert = async (meetingId: string) => {
     return (error as Error).response?.data;
   }
 };
+
+
+export const deleteReviewByExpert= async(meetingId: string)=>{
+  try {
+    const response = await axiosInstance.patch(
+      `${API_URL}/expert/deleteReview/${meetingId}`,
+
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
+
+export const deleteReviewByStudent= async(meetingId: string)=>{
+  try {
+    const response = await studentAxiosInstance.patch(
+      `${API_URL}/student/deleteReview/${meetingId}`,
+
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

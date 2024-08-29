@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 
 const menuItems = [
@@ -24,22 +24,24 @@ const menuItems = [
 
 const UserSideBar: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
   useEffect(() => {
-    // Handle body overflow when the dropdown is open
     document.body.style.overflow = isDropdownOpen ? "hidden" : "auto";
 
-    // Cleanup on component unmount
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isDropdownOpen]);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  console.log("Current Path:", location.pathname); // Debugging line
+
   return (
     <div className="relative md:w-1/3 lg:w-1/4 p-4 border-gray-300">
-      {/* Toggle Button */}
       <button
         onClick={toggleDropdown}
         className="block md:hidden absolute top-4 left-4 p-2 mb-4 text-white rounded-lg shadow-lg border border-gray-200 bg-white z-50"
@@ -63,7 +65,9 @@ const UserSideBar: React.FC = () => {
               <Link
                 key={index}
                 to={item.path}
-                className="flex items-center p-4 border-b border-gray-200 hover:bg-gray-100"
+                className={`flex items-center p-4 border-b border-gray-200 hover:bg-gray-100 ${
+                  location.pathname === item.path ? "bg-blue-100" : ""
+                }`}
                 onClick={() => setDropdownOpen(false)}
               >
                 <img
@@ -84,7 +88,9 @@ const UserSideBar: React.FC = () => {
           <Link
             key={index}
             to={item.path}
-            className="flex flex-col items-center p-4 mb-4 bg-white rounded-lg shadow-lg border border-gray-200 cursor-pointer"
+            className={`flex flex-col items-center p-4 mb-4 rounded-lg shadow-lg border border-gray-200 cursor-pointer ${
+              location.pathname === item.path ? "bg-gray-200" : ""
+            }`}
           >
             <span className="text-lg">{item.title}</span>
             <img

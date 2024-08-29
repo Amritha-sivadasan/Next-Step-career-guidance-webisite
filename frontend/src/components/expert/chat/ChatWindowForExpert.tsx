@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useExpertChat } from "../../../hooks/useExpertChat";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
-import { IMessage } from "../../../@types/message";
+import { IChat, IMessage } from "../../../@types/message";
 import socket from "../../../config/socket";
 
 import {
@@ -18,9 +18,11 @@ import { MdDeleteForever } from "react-icons/md";
 import moment from "moment";
 import { motion } from "framer-motion";
 import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 const ChatWindowExpert: React.FC = () => {
-  const { chatId, setlatestMessage, setNotificationCount } = useExpertChat();
+  const { chatId, setLatestMessage, setChatId, setNotificationCount } =
+    useExpertChat();
   const { expert } = useAppSelector((state) => state.expert);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -48,11 +50,19 @@ const ChatWindowExpert: React.FC = () => {
     if (!expert) return;
 
     const fetchMessage = async () => {
-      if (chatId) {
+      try {
+        if (!chatId) return;
         const response = await getMessageByChatIdExpert(chatId?.toString());
+        const notification = {
+          chatId,
+          count: 0,
+        };
         setMessages(response.data.messages);
         setStudent(response.data.studentId);
         setLastMessage(response.data.latestMessage);
+        setNotificationCount(notification);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
       }
     };
     fetchMessage();
@@ -61,17 +71,21 @@ const ChatWindowExpert: React.FC = () => {
       if (message.senderId !== userId) {
         setMessages((prevMessages) => [...prevMessages, message]);
         if (message.text) {
-          setlatestMessage(message.text);
+          const latest = {
+            studentId: message.senderId,
+            lastMessage: message.text,
+          };
+          setLatestMessage(latest);
         }
-        if (!isChatActive) {
-          setNotificationCount((prev: number) => prev + 1);
-        }
+        // if (!isChatActive) {
+        //   setNotificationCount((prev: number) => prev + 1);
+        // }
       }
     };
 
     const handleDeleteMessage = (messageId: string) => {
       if (messageId == lastMessage) {
-        setlatestMessage("Deleted message");
+        setLastMessage("Deleted message");
       }
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
@@ -101,9 +115,8 @@ const ChatWindowExpert: React.FC = () => {
     expert,
     isChatActive,
     lastMessage,
-    messages,
     setNotificationCount,
-    setlatestMessage,
+    setLatestMessage,
     userId,
   ]);
 
@@ -116,6 +129,7 @@ const ChatWindowExpert: React.FC = () => {
   }, [chatId]);
 
   const sendMessage = async () => {
+    if (newMessage && newMessage.trim() == "") return;
     setRecordingUrl("");
     const formData = new FormData();
     formData.append("text", newMessage);
@@ -130,15 +144,6 @@ const ChatWindowExpert: React.FC = () => {
       formData.append("file", selectedFile);
     }
 
-    // const message = {
-    //   chatId: chatId?.toString(),
-    //   text: newMessage,
-    //   audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
-    //   file: selectedFile ? URL.createObjectURL(selectedFile) : null,
-    //   senderId: userId,
-    //   timestamp: new Date(),
-    // };
-
     try {
       const response = await sendMessageByExpert(formData);
       setMessages((prev) => [...prev, response.data]);
@@ -146,8 +151,13 @@ const ChatWindowExpert: React.FC = () => {
         const message = response.data;
         socket.emit("sendMessage", { chatId, message });
       }
+      const chat = response.data.chatId as IChat;
+      const latest = {
+        studentId: chat.studentId as string,
+        lastMessage: newMessage,
+      };
       setNewMessage("");
-      setlatestMessage(newMessage);
+      setLatestMessage(latest);
       setAudioBlob(null);
       setSelectedFile(null);
       setLastMessage(response.data._id);
@@ -170,7 +180,7 @@ const ChatWindowExpert: React.FC = () => {
   const deleteMessage = async (messageId: string) => {
     try {
       if (messageId == lastMessage) {
-        setlatestMessage("Deleted message");
+        setLastMessage("Deleted message");
       }
       await deleteMessageByExpert(messageId);
       socket.emit("deleteMessage", { chatId, messageId });
@@ -270,8 +280,20 @@ const ChatWindowExpert: React.FC = () => {
     acc[date].push(message);
     return acc;
   }, {} as Record<string, IMessage[]>);
+
+  const handleChatId = () => {
+    setChatId(null);
+  };
+
   return (
-    <div className="flex-1 flex flex-col h-screen ">
+    <div
+      className={`flex-1 flex flex-col   ${
+        !chatId ? "sm:hidden  md:block" : ""
+      }`}
+    >
+      <div className="md:hidden lg:hidden mb-3 cursor-pointer  ">
+        <FaArrowAltCircleLeft size={24} onClick={handleChatId} />
+      </div>
       {chatId ? (
         <div className="flex-1 flex flex-col">
           {student && (
@@ -318,7 +340,7 @@ const ChatWindowExpert: React.FC = () => {
                           : "bg-gray-200 text-left"
                       }`}
                     >
-                      <p>
+                      <div>
                         {message.is_delete ? (
                           <>
                             <span className="flex text-gray-500 gap-1">
@@ -355,7 +377,7 @@ const ChatWindowExpert: React.FC = () => {
                             )}
                           </>
                         )}
-                      </p>
+                      </div>
                       <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
                         {moment(message.timestamp).fromNow()}
                       </span>

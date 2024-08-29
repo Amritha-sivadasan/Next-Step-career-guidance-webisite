@@ -28,7 +28,8 @@ const BookingDetails = () => {
   const [showCancelForm, setShowCancelForm] = useState(false);
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
-  const [urlToSend, setUrlToSend] = useState("");
+  const [urlInputs, setUrlInputs] = useState<Record<string, string>>({});
+  const [isEditing, setIsEditing] = useState<string | null>(null);
   // const [notification, setNotification] = useState({ title: "", body: "" });
   // const [isTokenFound, setTokenFound] = useState(false);
 
@@ -36,9 +37,9 @@ const BookingDetails = () => {
     Record<string, IvidoeCall>
   >({});
 
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
   const itemsPerPage = 3;
-   
+
   // useEffect(() => {
   //   generateToken(setTokenFound);
 
@@ -51,7 +52,6 @@ const BookingDetails = () => {
   //     })
   //     .catch((err) => console.log("failed: ", err));
   // }, []);
-
 
   const fetchConfirmBooking = async (page: number) => {
     try {
@@ -144,26 +144,34 @@ const BookingDetails = () => {
     }
   };
 
-  const handleCreateVideoCall = async (bookingId: string, studenId: string) => {
-    if (urlToSend) {
+  const handleCreateVideoCall = async (
+    bookingId: string,
+    studentId: string
+  ) => {
+    const url = urlInputs[bookingId];
+    if (url) {
       const videocallDetails = {
         expertId: expert?._id,
         bookingId: bookingId,
-        studentId: studenId,
-        url: urlToSend,
+        studentId: studentId,
+        url: url,
       };
+     await localStorage.setItem('bookingId',bookingId)
 
       try {
         const response = await createVideoCall(videocallDetails);
         const newVideoCallDetails = response.data;
-        localStorage.setItem("bookingId", bookingId);
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,
           [bookingId]: newVideoCallDetails,
         }));
-        // setCurrentVideoCall(response.data);
+        setUrlInputs((prevInputs) => ({
+          ...prevInputs,
+          [bookingId]: url,
+        }));
+        
         toast.success("Video call URL created successfully.");
-        setUrlToSend("");
+        setUrlInputs((prevInputs) => ({ ...prevInputs, [bookingId]: "" }));
       } catch (error) {
         console.error("Failed to create video call:", error);
         toast.error("Failed to create video call. Please try again.");
@@ -172,22 +180,21 @@ const BookingDetails = () => {
   };
 
   const handleUpdateVideoCall = async (id: string) => {
-    if (videoCallDetails && urlToSend) {
+    const url = urlInputs[id];
+    if (url) {
       const update = {
-        url: urlToSend,
+        url: url,
       };
 
       try {
         const response = await updateVideoCall(id, update);
-        localStorage.setItem("bookingId", id);
         const newVideoCallDetails = response.data;
         setVideoCallDetails((prevDetails) => ({
           ...prevDetails,
           [id]: newVideoCallDetails,
         }));
         toast.success("Video call URL updated successfully.");
-        setIsEditing(false);
-        setUrlToSend("");
+        setIsEditing(null);
       } catch (error) {
         console.error("Failed to update video call:", error);
         toast.error("Failed to update video call. Please try again.");
@@ -196,8 +203,11 @@ const BookingDetails = () => {
   };
 
   const handleEdit = (id: string) => {
-    setIsEditing(true);
-    setUrlToSend(videoCallDetails[id]?.url || "");
+    setIsEditing(id);
+    setUrlInputs((prevInputs) => ({
+      ...prevInputs,
+      [id]: videoCallDetails[id]?.url || "",
+    }));
   };
 
   return (
@@ -260,8 +270,13 @@ const BookingDetails = () => {
                           <input
                             type="text"
                             placeholder="Enter URL"
-                            value={urlToSend}
-                            onChange={(e) => setUrlToSend(e.target.value)}
+                            value={urlInputs[request._id] || ""}
+                            onChange={(e) =>
+                              setUrlInputs((prevInputs) => ({
+                                ...prevInputs,
+                                [request._id]: e.target.value,
+                              }))
+                            }
                             className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <button
@@ -284,10 +299,10 @@ const BookingDetails = () => {
                 </div>
                 <div className="flex flex-col md:flex-col items-start md:items-center justify-between space-y-2 md:space-y-5">
                   <div className="text-md text-gray-800 mb-2 md:mb-0">
-                    <div className="flex justify-end mb-2">
+                    <div className="flex sm:just justify-end mb-2">
                       {request.bookingStatus == "confirmed" && (
                         <button
-                          className="flex items-center px-4 py-1 bg-gray-400 text-white rounded-lg hover:bg-red-700"
+                          className="flex  items-center px-4 py-1 bg-gray-400 text-white rounded-lg hover:bg-red-700"
                           onClick={() => handleCancel(request._id)}
                         >
                           Cancel
@@ -380,11 +395,11 @@ const BookingDetails = () => {
                   required
                 ></textarea>
               </div>
-              <div className="flex justify-end space-x-4">
+              <div className="flex justify-end space-x-4  ">
                 <button
                   type="button"
-                  onClick={() => setShowCancelForm(false)} // Hide the form on cancel
-                  className="px-4 py-2 bg-gray-300 text-gray-700 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
+                  onClick={() => setShowCancelForm(false)}
+                  className="px-4 py-2 bg-gray-300   text-gray-700 text-sm font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300 ease-in-out"
                 >
                   Cancel
                 </button>

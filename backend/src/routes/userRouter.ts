@@ -64,6 +64,7 @@ router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),p
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 
 router.post('/saveMessage',verifyAccessToken,verifyRole(role), upload.fields([{ name: 'file', maxCount: 1 }, { name: 'audio', maxCount: 1 }]),messageController.saveMessage)
+// router.patch('/updateNotification',verifyAccessToken,verifyRole(role), notificationController)
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
@@ -73,5 +74,6 @@ router.get('/getNotification',verifyAccessToken,verifyRole(role),notificationCon
 router.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCallController.findMeetingDetailsById)
 router.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)
 router.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
+router.patch('/deleteReview/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.deleteReviewAndRating)
 
 export default router;

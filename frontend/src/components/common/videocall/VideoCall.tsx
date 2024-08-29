@@ -212,6 +212,7 @@ const VideoCall: React.FC = () => {
       peerConnectionRef.current.close();
     }
     socket.disconnect();
+    updateBookingStatus()
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = null;
     }
@@ -221,7 +222,7 @@ const VideoCall: React.FC = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    updateBookingStatus()
+   
   };
 
   return (

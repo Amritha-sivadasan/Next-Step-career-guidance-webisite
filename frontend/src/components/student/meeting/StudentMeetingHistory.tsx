@@ -7,11 +7,14 @@ import { findAllvideoCallStudent } from "../../../services/api/videoCallApi";
 import {
   submitReviewByStudent,
   findAllReviewsByStudent,
+  deleteReviewByStudent,
 } from "../../../services/api/reviewAndRatingApi";
 import StarRatings from "react-star-ratings";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import { IvidoeCall } from "../../../@types/videoCall";
 import { IReviewAndRating } from "../../../@types/reviewAndRating";
+import { MdDelete } from "react-icons/md";
+import Swal from "sweetalert2";
 
 type Review = {
   review: string;
@@ -114,6 +117,40 @@ const StudentMeetingHistory = () => {
     }
   };
 
+  const handleDeleteReview = async (meetingId: string) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you really want to delete this review?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, keep it",
+      });
+
+      if (result.isConfirmed) {
+        const response = await deleteReviewByStudent(meetingId);
+        console.log("Response for the delete", response);
+
+        setReviewDetails((prev) => ({
+          ...prev,
+          [meetingId]: response.data,
+        }));
+    
+        Swal.fire("Deleted!", "The review has been deleted.", "success");
+      }
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      Swal.fire(
+        "Error!",
+        "Failed to delete the review. Please try again later.",
+        "error"
+      );
+    }
+  };
+
   return (
     <div className="p-4 min-h-screen bg-white rounded-lg ms-2 md:w-10/12 lg:w-10/12 w-full">
       <div className="bg-blue-950 h-32 mb-9 rounded-xl flex items-center justify-center">
@@ -201,14 +238,25 @@ const StudentMeetingHistory = () => {
                   </div>
                 </div>
 
-                <div className="w-full mt-4 flex flex-col">
-                  {/* Check if a review already exists */}
-                  {reviewDetails[meetingId!] ? (
+                <div
+                  className={`flex flex-col mt-4 p-4 bg-white shadow-md rounded-lg ${
+                    reviewDetails[meeting._id!]?.is_delete && "hidden"
+                  }`}
+                >
+                  {reviewDetails[meeting._id!] &&
+                  !reviewDetails[meeting._id!].is_delete ? (
                     <div className="border p-4 rounded-lg bg-gray-100">
-                      <p className="font-semibold text-lg">Your Review:</p>
-                      <p>{reviewDetails[meetingId!].review}</p>
+                      <div className="flex justify-between">
+                        <p className="font-semibold text-lg">Your Review:</p>
+                        <button
+                          onClick={() => handleDeleteReview(meeting._id!)}
+                        >
+                          <MdDelete size={24} />
+                        </button>
+                      </div>
+                      <p>{reviewDetails[meeting._id!].review}</p>
                       <StarRatings
-                        rating={reviewDetails[meetingId!].rating}
+                        rating={reviewDetails[meeting._id!].rating}
                         starRatedColor="gold"
                         numberOfStars={5}
                         starDimension="30px"
@@ -217,34 +265,36 @@ const StudentMeetingHistory = () => {
                       />
                     </div>
                   ) : (
-                    <>
-                      <textarea
-                        value={reviews[meetingId!]?.review || ""}
-                        onChange={(e) =>
-                          handleReviewChange(meetingId!, e.target.value)
-                        }
-                        placeholder="Write your review here..."
-                        className="border rounded-lg p-2 w-full mb-4"
-                      />
-                      <StarRatings
-                        rating={reviews[meetingId!]?.rating || 0}
-                        starRatedColor="gold"
-                        changeRating={(rating: number) =>
-                          handleRatingChange(meetingId!, rating)
-                        }
-                        numberOfStars={5}
-                        name="rating"
-                        starDimension="30px"
-                        starSpacing="5px"
-                        starEmptyColor="gray"
-                      />
-                      <button
-                        onClick={() => handleSubmitReview(meetingId!)}
-                        className="bg-blue-950 text-white rounded-lg p-2 w-44 mt-7"
-                      >
-                        Submit Review
-                      </button>
-                    </>
+                    !reviewDetails[meeting._id!]?.is_delete && (
+                      <>
+                        <textarea
+                          value={reviews[meeting._id!]?.review || ""}
+                          onChange={(e) =>
+                            handleReviewChange(meeting._id!, e.target.value)
+                          }
+                          placeholder="Write your review here..."
+                          className="border rounded-lg p-2 w-full mb-4"
+                        />
+                        <StarRatings
+                          rating={reviews[meeting._id!]?.rating || 0}
+                          starRatedColor="gold"
+                          changeRating={(rating: number) =>
+                            handleRatingChange(meeting._id!, rating)
+                          }
+                          numberOfStars={5}
+                          name="rating"
+                          starDimension="30px"
+                          starSpacing="5px"
+                          starEmptyColor="gray"
+                        />
+                        <button
+                          onClick={() => handleSubmitReview(meeting._id!)}
+                          className="bg-blue-950 text-white p-2 rounded-lg mt-5 w-3/12"
+                        >
+                          Submit Review
+                        </button>
+                      </>
+                    )
                   )}
                 </div>
               </div>

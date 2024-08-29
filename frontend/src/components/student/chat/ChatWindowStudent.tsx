@@ -64,11 +64,16 @@ const ChatWindow: React.FC = () => {
     const fetchMessages = async () => {
       try {
         if (!chatId) return;
+        console.log('chatId',chatId)
         const response = await getMessageByChatIdByStudent(chatId?.toString());
+      const notification ={
+        chatId,
+        count:0
+      }
+      setNotificationCount(notification);
         setMessages(response.data.messages);
         setExprt(response.data.expertId);
         setLastMessage(response.data.latestMessage);
-        setNotificationCount(0);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -87,9 +92,13 @@ const ChatWindow: React.FC = () => {
           setLatestMessage(latest);
         }
 
-        if (!isChatActive) {
-          setNotificationCount((prev: number) => prev + 1);
-        }
+        // if (!isChatActive) {
+        //   const notification ={
+        //     chatId:message.chatId,
+        //     count:
+        //   }
+        //   setNotificationCount((prev: number) => prev + 1);
+        // }
       }
     };
 
@@ -97,7 +106,6 @@ const ChatWindow: React.FC = () => {
       if (messageId == lastMessage) {
         setLastMessage("Deleted message");
       }
-
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
           message._id == messageId ? { ...message, is_delete: true } : message
@@ -115,12 +123,12 @@ const ChatWindow: React.FC = () => {
       socket.off("messageDeleted", handleDeleteMessage);
     };
   }, [
+    user,
     chatId,
     isChatActive,
     lastMessage,
     setNotificationCount,
-    setLastMessage,
-    user,
+    setLatestMessage,
     userId,
   ]);
 

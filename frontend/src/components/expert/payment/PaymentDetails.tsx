@@ -24,31 +24,33 @@ const PaymentDetails = () => {
   };
 
   return (
-    <div className="p-6 bg-white border border-gray-300 shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Payment Details</h1>
-      <div className="flex justify-center mb-10">
-        <img src="/pay.png" alt="details" className="w-3/4" />
+    <div className="p-4 sm:p-6 bg-white border border-gray-300 shadow-lg rounded-lg">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+        Payment Details
+      </h1>
+      <div className="flex justify-center mb-6 sm:mb-10">
+        <img src="/pay.png" alt="details" className="w-full sm:w-3/4" />
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg">
           <thead className="bg-gray-100 border-b">
             <tr>
-              <th className="py-3 px-4 text-left text-gray-600  max-w-5 w-1/12">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-5 w-1/12">
                 No
               </th>
-              <th className="py-3 px-4 text-left text-gray-600  max-w-10 w-2/6">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-10 w-2/6">
                 Transaction ID
               </th>
-              <th className="py-3 px-4 text-left text-gray-600 w-1/4 truncate">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
                 Date
               </th>
-              <th className="py-3 px-4 text-left text-gray-600 w-1/4 truncate">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
                 Student Name
               </th>
-              <th className="py-3 px-4 text-left text-gray-600 w-1/4 truncate">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden lg:table-cell">
                 Amount
               </th>
-              <th className="py-3 px-4 text-left text-gray-600 w-1/6 truncate">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/6 truncate">
                 Status
               </th>
             </tr>
@@ -59,24 +61,24 @@ const PaymentDetails = () => {
 
               return (
                 <tr key={payment._id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 text-gray-800 max-w-5 truncate ">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 max-w-5 truncate ">
                     {index + 1}
                   </td>
-                  <td className="py-3 px-4 text-gray-800 truncate max-w-10">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate max-w-10">
                     {payment.transactionId}
                   </td>
-                  <td className="py-3 px-4 text-gray-800 truncate ">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate hidden sm:table-cell ">
                     {formatDate(payment.createdAt)}
                   </td>
-                  <td className="py-3 px-4 text-gray-800 truncate">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  md:table-cell">
                     {student.user_name}
                   </td>
-                  <td className="py-3 px-4 text-gray-800 truncate">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate hidden lg:table-cell">
                     ₹{payment.paymentAmount}
                   </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  <td className="py-2 sm:py-3 px-2 sm:px-4">
+                  <span
+                      className={`px-2 sm:px-3 py-1 text-xs sm:text-xs font-medium rounded-full ${
                         payment.paymentStatus === "completed"
                           ? "bg-green-500 text-white"
                           : payment.paymentStatus === "pending"

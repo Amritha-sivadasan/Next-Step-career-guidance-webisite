@@ -11,7 +11,8 @@ import { useAppSelector } from "../../../hooks/useTypeSelector";
 const ChatWithExpertList = () => {
   const { user } = useAppSelector((state) => state.student);
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
-  const { chatId, setChatId, latestMessage } = useStudentChat();
+  const { chatId, setChatId, latestMessage, notificationCount } =
+    useStudentChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -20,7 +21,7 @@ const ChatWithExpertList = () => {
   const fetchAllBooking = async () => {
     try {
       const result = await getChatByStudnetId();
-      setChaDetails((prev) => [...prev, ...result.data]);
+      setChaDetails(result.data);
       await fetchNotifications(result.data);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
@@ -47,6 +48,14 @@ const ChatWithExpertList = () => {
       }
     }
   };
+  useEffect(() => {
+    if (notificationCount) {
+      setNotifications((prev) => ({
+        ...prev,
+        [notificationCount.chatId]: notificationCount.count,
+      }));
+    }
+  }, [notificationCount]);
 
   useEffect(() => {
     fetchAllBooking();
@@ -59,7 +68,7 @@ const ChatWithExpertList = () => {
 
   return (
     <div
-      className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
+      className={`w-full md:w-2/6   bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
         chatId ? "sm:hidden md:block" : ""
       }`}
     >
@@ -79,7 +88,7 @@ const ChatWithExpertList = () => {
           return (
             <li
               key={expert._id}
-              className="flex items-center  p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
+              className="flex items-center rounded-lg px-2 mb-2 bg-white  shadow cursor-pointer hover:bg-gray-200"
               onClick={() => setChatId(chat._id)}
             >
               <img
@@ -92,6 +101,7 @@ const ChatWithExpertList = () => {
                   <span className="font-semibold text-lg">
                     {expert.user_name}
                   </span>
+
                   {count > 0 && chat._id !== chatId && (
                     <span className="relative flex items-center justify-center w-8 h-8 bg-green-600 text-white font-bold rounded-full shadow-lg">
                       {chat._id === chatId
@@ -109,7 +119,7 @@ const ChatWithExpertList = () => {
                 </div>
 
                 <span className="text-sm text-gray-500 mt-1">
-                  {latestMessage &&latestMessage.expertId == expert._id  ? (
+                  {latestMessage && latestMessage.expertId == expert._id ? (
                     <>
                       {latestMessage.expertId == expert._id &&
                         latestMessage.lastMessage}

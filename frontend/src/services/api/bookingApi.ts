@@ -154,6 +154,7 @@ export const getAllBookingDetailsByStudentId = async (page:number,limit:number) 
 
 export const updatemeetingStatus= async(id:string,status:string)=>{
   try {
+    console.log('meeting update, ',id,status)
     const response = await axiosInstance.patch(
       `${API_URL}/expert/updateVideo/${id}`,{status},
       {

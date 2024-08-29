@@ -49,6 +49,27 @@ class ReviewAndRatingController {
           });
     }
  }
+
+
+ public deleteReviewAndRating = async(req:CustomRequest,res:Response)=>{
+  try {
+    const id= req.user?.userId
+    const {meetingId}= req.params
+    const response= await this.reviewAndRatingService.deleteReview(id!,meetingId)
+    res.status(200).json({
+        success: true,
+        data: response,
+        message: "",
+      });
+    
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong in fetching review",
+      success: false,
+      data: error,
+    });
+  }
+ }
 }
 
 export default new ReviewAndRatingController()
