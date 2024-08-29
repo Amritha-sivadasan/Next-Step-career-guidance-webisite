@@ -8,7 +8,7 @@ interface IAudio {
 }
 export interface IMessage {
   _id: string;
-  chatId: string;
+  chatId: string|IChat;
   senderId: string;
   text?: string;
   audio?: IAudio;

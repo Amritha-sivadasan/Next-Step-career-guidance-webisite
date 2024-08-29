@@ -4,7 +4,7 @@ import { IMessage } from "../entities/MessageEntity";
 
 const MessageSchema: Schema = new Schema(
   {
-    chatId: { type: mongoose.Types.ObjectId, required: true },
+    chatId: { type: mongoose.Types.ObjectId, required: true, ref:'Chat' },
     senderId: { type: mongoose.Types.ObjectId, required: true },
     text: { type: String, trim: true },
     audio: {

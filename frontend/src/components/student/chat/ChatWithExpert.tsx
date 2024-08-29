@@ -59,7 +59,9 @@ const ChatWithExpertList = () => {
 
   return (
     <div
-      className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto`}
+      className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
+        chatId ? "sm:hidden md:block" : ""
+      }`}
     >
       <input
         type="search"
@@ -107,8 +109,11 @@ const ChatWithExpertList = () => {
                 </div>
 
                 <span className="text-sm text-gray-500 mt-1">
-                  {latestMessage ? (
-                    latestMessage
+                  {latestMessage &&latestMessage.expertId == expert._id  ? (
+                    <>
+                      {latestMessage.expertId == expert._id &&
+                        latestMessage.lastMessage}
+                    </>
                   ) : (
                     <>
                       {lastMessage

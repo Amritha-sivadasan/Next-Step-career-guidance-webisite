@@ -271,7 +271,7 @@ const ChatWindowExpert: React.FC = () => {
     return acc;
   }, {} as Record<string, IMessage[]>);
   return (
-    <div className="flex-1 flex flex-col h-screen">
+    <div className="flex-1 flex flex-col h-screen ">
       {chatId ? (
         <div className="flex-1 flex flex-col">
           {student && (

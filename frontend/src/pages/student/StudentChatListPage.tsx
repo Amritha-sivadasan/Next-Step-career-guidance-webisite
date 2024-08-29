@@ -9,8 +9,9 @@ const StudentChatListPage = () => {
   }, []);
   return (
     <StudentProvider>
-      <div className=" ms-10 md:ms-0 lg:ms-0 flex h-[90vh] font-sans w-10/12 mt-5 border p-3 rounded-lg  ">
+      <div className=" ms-10 md:ms-0 lg:ms-0 flex h-[90vh] font-sans w-10/12 md:mt-5 lg:mt-5 sm:border-0 border p-3 rounded-lg  ">
         <ChatWithExpertList />
+
         <ChatWindow />
       </div>
     </StudentProvider>

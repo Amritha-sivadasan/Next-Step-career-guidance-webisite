@@ -7,7 +7,11 @@ export default class MessageRepository implements IMessageRepository{
     async saveMesssage(message: Partial<IMessage>): Promise<IMessage> {
         try {
             const newMessage= new Message(message)
-             return await newMessage.save()
+            const savedMessage = await newMessage.save();
+             const populatedMessage = await Message.findById(savedMessage._id).populate('chatId').exec();
+    
+
+             return populatedMessage!;
             
         } catch (error) {
             throw error
