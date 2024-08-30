@@ -14,13 +14,13 @@ import { FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 import ConfirmationModal from "../../common/modal/ConfirmationModal";
 import { MdOutlineDoNotDisturb } from "react-icons/md";
-import { messaging } from "../../../config/firebase";
-import { getToken, onMessage } from "firebase/messaging";
-// import { sendPushNotification } from "../../../utils/sendPushNotification";
+
 import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { toast } from "react-toastify";
+// import {  sendNotificationUser } from "../../../services/api/videoCallApi";
 
 const ChatWindow: React.FC = () => {
   const { chatId, setLatestMessage, setChatId, setNotificationCount } =
@@ -47,24 +47,30 @@ const ChatWindow: React.FC = () => {
   const isAutoScroll = useRef(true);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // const [fcmToken, setFcmToken] = useState<string | null>(null);
+
+
+ 
+
+  // useEffect(() => {
+  //   const fetchFcmToken = async () => {
+  //     try {
+  //       const token = await requestFCMToken();
+  //       setFcmToken(token!);
+  //       console.log("token:->", token);
+  //     } catch (error) {
+  //       console.log("error during fetch fcm token", error);
+  //     }
+  //   };
+  //   fetchFcmToken();
+  // }, []);
 
   useEffect(() => {
-    // generateToken();
-  }, []);
-
-  useEffect(() => {
-    onMessage(messaging, (payload) => {
-      console.log("Message received. ", payload);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!user) return;
-
+    if (!user || !chatId) return;
     const fetchMessages = async () => {
       try {
         if (!chatId) return;
-        console.log('chatId',chatId)
+
         const response = await getMessageByChatIdByStudent(chatId?.toString());
       const notification ={
         chatId,
@@ -92,13 +98,19 @@ const ChatWindow: React.FC = () => {
           setLatestMessage(latest);
         }
 
-        // if (!isChatActive) {
-        //   const notification ={
-        //     chatId:message.chatId,
-        //     count:
-        //   }
-        //   setNotificationCount((prev: number) => prev + 1);
-        // }
+        if (!isChatActive) {
+      //     const title = "Next Step meeting Link";
+      //   const body = "Your meeeting link is share to  email ";
+      //   const role = "student";
+      //  await sendNotificationUser(title, body, fcmToken!, role);
+      console.log('chat id is not here');
+      
+      toast('New Message Received')
+      
+        }else{
+          console.log('chat id here');
+          
+        }
       }
     };
 
@@ -190,10 +202,7 @@ const ChatWindow: React.FC = () => {
       setLatestMessage(latest);
       setImagePreviewUrl("");
 
-      const recipientToken = await getToken(messaging);
-      if (recipientToken) {
-        // await sendPushNotification(recipientToken, newMessage);
-      }
+   
     } catch (error) {
       console.error("Error sending message:", error);
     }

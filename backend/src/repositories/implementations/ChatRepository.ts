@@ -16,7 +16,8 @@ export default class ChatRepository implements IChatRepository {
     try {
       const result = await Chat.find({
         $or: [{ studentId: id }, { expertId: id }],
-      })
+      }).sort({updatedAt
+        :-1})
         .populate("studentId")
         .populate("expertId").populate("latestMessage")
       return result;

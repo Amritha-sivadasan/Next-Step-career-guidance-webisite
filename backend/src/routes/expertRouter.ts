@@ -17,6 +17,7 @@ import messageController from "../contollers/messageController";
 import notificationController from "../contollers/notificationController";
 import videoCallController from "../contollers/videoCallController";
 import reviewAndRatingController from "../contollers/reviewAndRatingController";
+import { sendFirebaseNotification } from "../contollers/firebaseNotificationController";
 
 const expertRouter = Router();
 const role = process.env.EXPERT_ROLE as string;
@@ -56,6 +57,9 @@ expertRouter.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatCon
 expertRouter.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 expertRouter.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
 expertRouter.post('/createVideocall',verifyAccessToken,verifyRole(role),videoCallController.createVideoCall)
+
+expertRouter.post('/sendfirbaseNotification',verifyAccessToken,verifyRole(role),sendFirebaseNotification)
+
 expertRouter.put('/updateVideoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.updateVideoCall)
 expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBookin)
 expertRouter.patch('/updateVideo/:id',verifyAccessToken,verifyRole(role),bookingController.updatemeetingstatus)

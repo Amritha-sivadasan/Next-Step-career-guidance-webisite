@@ -5,6 +5,8 @@ import ChatNotificationService from "../services/implementations/ChatNotificatio
 import { IChatNotification } from "../entities/NotificationEntity";
 import { IStudent } from "../entities/StudentEntity";
 import { IExpert } from "../entities/ExpertEntity";
+import { sendFirebaseNotification } from "../contollers/firebaseNotificationController";
+import NotificationService from "../utils/NotificationService";
 // import { sendPushNotification } from "../utils/google-auth-token";
 
 interface OnlineUsers {
@@ -26,10 +28,10 @@ export const createSocketServer = (server: http.Server) => {
 
   io.on("connection", (socket) => {
     console.log("A user connected");
-
     socket.on("joinChat", async ({ chatId, userId }) => {
       socket.join(chatId);
       onlineUsers[userId] = socket.id;
+      console.log("online user", onlineUsers);
       if (chatId) {
         const notification = await notificationService.findOne(userId, chatId);
         if (notification) {
@@ -49,26 +51,31 @@ export const createSocketServer = (server: http.Server) => {
           student._id.toString() === message.senderId
             ? expert._id.toString()
             : student._id.toString();
+            
+           
+
 
         if (!Object.keys(onlineUsers).includes(recipientId)) {
-          // sendPushNotification(chatId,message)
-
-          const notification = await notificationService.findOne(
+          
+          const notificationExist = await notificationService.findOne(
             recipientId,
             chatId
           );
-
-          if (notification) {
-            await notificationService.incrementNotificationCount(
-              notification.toObject() as IChatNotification
+          let notification;
+          if (notificationExist) {
+            notification = await notificationService.incrementNotificationCount(
+              notificationExist.toObject() as IChatNotification
             );
           } else {
-            await notificationService.addNotification({
+            notification = await notificationService.addNotification({
               userId: recipientId,
               chatId: chatId,
               count: 1,
             });
           }
+      
+          io.emit("notification", notification);
+         
         }
       }
     });
@@ -96,7 +103,7 @@ export const createSocketServer = (server: http.Server) => {
     });
 
     socket.on("offer", (data) => {
-      console.log('data',data.room)
+      console.log("data", data.room);
       socket.to(data.room).emit("offer", data);
     });
 
@@ -108,17 +115,14 @@ export const createSocketServer = (server: http.Server) => {
       socket.to(data.room).emit("ice-candidate", data);
     });
 
-
     socket.on("joinRoom", (room) => {
       socket.join(room);
       console.log(`user is joined the room ${room}`);
-      
     });
 
     socket.on("leaveRoom", (room) => {
       socket.leave(room);
     });
-
   });
 
   return io;

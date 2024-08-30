@@ -24,6 +24,7 @@ import faqController from "../contollers/faqController";
 import notificationController from "../contollers/notificationController";
 import videoCallController from "../contollers/videoCallController";
 import reviewAndRatingController from "../contollers/reviewAndRatingController";
+import { sendFirebaseNotification } from "../contollers/firebaseNotificationController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -64,7 +65,8 @@ router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),p
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 
 router.post('/saveMessage',verifyAccessToken,verifyRole(role), upload.fields([{ name: 'file', maxCount: 1 }, { name: 'audio', maxCount: 1 }]),messageController.saveMessage)
-// router.patch('/updateNotification',verifyAccessToken,verifyRole(role), notificationController)
+router.post('/sendfirbaseNotification',verifyAccessToken,verifyRole(role),sendFirebaseNotification)
+
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)

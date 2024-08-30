@@ -7,6 +7,8 @@ import {
 } from "../../../services/api/ChatApi";
 import { IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
+import socket from "../../../config/socket";
+import { IChatNotification } from "../../../@types/notification";
 
 const ChatWithExpertList = () => {
   const { user } = useAppSelector((state) => state.student);
@@ -16,7 +18,23 @@ const ChatWithExpertList = () => {
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
+
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handleNotification = (notification: IChatNotification) => {
+      setNotifications((prev) => ({
+        ...prev,
+        [notification.chatId]: notification.count,
+      }));
+    };
+
+    socket.on("notification", handleNotification);
+
+    return () => {
+      socket.off("notification", handleNotification);
+    };
+  }, [socket]);
 
   const fetchAllBooking = async () => {
     try {
@@ -27,6 +45,7 @@ const ChatWithExpertList = () => {
       console.error("Failed to fetch bookings:", error);
     }
   };
+
   const fetchNotifications = async (chats: IChat[]) => {
     for (const chat of chats) {
       try {
@@ -48,6 +67,7 @@ const ChatWithExpertList = () => {
       }
     }
   };
+
   useEffect(() => {
     if (notificationCount) {
       setNotifications((prev) => ({
@@ -60,6 +80,13 @@ const ChatWithExpertList = () => {
   useEffect(() => {
     fetchAllBooking();
   }, []);
+
+  useEffect(() => {
+    const sortedChats = ChatDetials.slice().sort((a, b) =>
+      a._id === chatId ? -1 : b._id === chatId ? 1 : 0
+    );
+    setChaDetails(sortedChats);
+  }, [chatId]);
 
   const filteredChats = ChatDetials.filter((chat: IChat) => {
     const expert = chat.expertId as IExpert;

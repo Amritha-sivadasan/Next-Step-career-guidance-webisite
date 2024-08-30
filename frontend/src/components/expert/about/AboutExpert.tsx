@@ -11,6 +11,8 @@ import LoadingPage from "../../common/Loading/LoadingPage";
 import { toast } from "react-toastify";
 import { ISubCategory } from "../../../@types/dashboard";
 import { fetchAllSubCategoriesExpert } from "../../../services/api/ExpertApi";
+import { sendNotification } from "../../../services/api/videoCallApi";
+import { requestFCMToken } from "../../../config/firebase";
 
 type FormValues = {
   personal_bio: string;
@@ -28,12 +30,26 @@ const AboutExpert: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const expert = useAppSelector((state) => state.expert.expert);
   const [categories, setCategories] = useState<ISubCategory[]>([]);
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
+
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        setFcmToken(token!);
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
+      }
+    };
+    fetchFcmToken();
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setLoading(true);
@@ -56,6 +72,10 @@ const AboutExpert: React.FC = () => {
       if (response.payload?.data) {
         const data = response.payload.data as IExpert;
         dispatch(setExpert(data));
+        const title = "Expert register";
+        const body = 'New Expert is  registered' ;
+        const role = "admin";
+        await sendNotification(title, body, fcmToken!, role);
         setTimeout(() => {
           setLoading(false);
           navigate("/expert");

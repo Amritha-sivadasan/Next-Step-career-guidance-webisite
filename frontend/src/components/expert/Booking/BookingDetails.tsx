@@ -14,8 +14,10 @@ import {
   createVideoCall,
   updateVideoCall,
   getVideoCallDetails,
+  sendNotification,
 } from "../../../services/api/videoCallApi";
 import { IvidoeCall } from "../../../@types/videoCall";
+import { requestFCMToken } from "../../../config/firebase";
 // import { generateToken, onMessageListener } from "../../../config/firebase";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
@@ -30,28 +32,26 @@ const BookingDetails = () => {
   const [cancelReason, setCancelReason] = useState("");
   const [urlInputs, setUrlInputs] = useState<Record<string, string>>({});
   const [isEditing, setIsEditing] = useState<string | null>(null);
-  // const [notification, setNotification] = useState({ title: "", body: "" });
-  // const [isTokenFound, setTokenFound] = useState(false);
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   const [videoCallDetails, setVideoCallDetails] = useState<
     Record<string, IvidoeCall>
   >({});
 
-  // const [isEditing, setIsEditing] = useState(false);
   const itemsPerPage = 3;
 
-  // useEffect(() => {
-  //   generateToken(setTokenFound);
-
-  //   onMessageListener()
-  //     .then((payload) => {
-  //       setNotification({
-  //         title: payload.notification.title,
-  //         body: payload.notification.body,
-  //       });
-  //     })
-  //     .catch((err) => console.log("failed: ", err));
-  // }, []);
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        setFcmToken(token!);
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
+      }
+    };
+    fetchFcmToken();
+  }, []);
 
   const fetchConfirmBooking = async (page: number) => {
     try {
@@ -156,7 +156,7 @@ const BookingDetails = () => {
         studentId: studentId,
         url: url,
       };
-     await localStorage.setItem('bookingId',bookingId)
+      await localStorage.setItem("bookingId", bookingId);
 
       try {
         const response = await createVideoCall(videocallDetails);
@@ -169,9 +169,13 @@ const BookingDetails = () => {
           ...prevInputs,
           [bookingId]: url,
         }));
-        
         toast.success("Video call URL created successfully.");
         setUrlInputs((prevInputs) => ({ ...prevInputs, [bookingId]: "" }));
+        const title = "Next Step meeting Link";
+        const body = "Your meeeting link is share to  email ";
+        const role = "student";
+        const result = await sendNotification(title, body, fcmToken!, role);
+        console.log("result for notification ", result);
       } catch (error) {
         console.error("Failed to create video call:", error);
         toast.error("Failed to create video call. Please try again.");
@@ -193,6 +197,7 @@ const BookingDetails = () => {
           ...prevDetails,
           [id]: newVideoCallDetails,
         }));
+
         toast.success("Video call URL updated successfully.");
         setIsEditing(null);
       } catch (error) {

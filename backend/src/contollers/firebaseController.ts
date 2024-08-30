@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import StudentService from "../services/implementations/StudentService";
 import { IStudentService } from "../services/interface/IStudentService";
@@ -8,23 +7,12 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import ExpertService from "../services/implementations/ExpertService";
 import { IExpertService } from "../services/interface/IExpertService";
 import { IExpert } from "../entities/ExpertEntity";
-
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: "next-step-cc5ea",
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-};
+import { app } from "../config/firebaseConfig";
 
 
-  
-
-const app = initializeApp(firebaseConfig);
 const studentService: IStudentService = new StudentService();
 const expertService:IExpertService=new ExpertService()
+
 
 export const  studentGoogleAuth =async (req: Request, res: Response) => {
   try {

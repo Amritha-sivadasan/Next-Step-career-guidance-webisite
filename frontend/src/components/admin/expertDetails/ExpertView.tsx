@@ -9,6 +9,8 @@ import LoadingPage from "../../common/Loading/LoadingPage";
 import { IExpert } from "../../../@types/expert";
 
 import { rejectExpert } from "../../../services/api/adminApi";
+import { sendNotification } from "../../../services/api/videoCallApi";
+import { requestFCMToken } from "../../../config/firebase";
 
 const ExpertDetailsView: React.FC = () => {
   const { expertId } = useParams<{ expertId: string }>();
@@ -16,7 +18,22 @@ const ExpertDetailsView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        setFcmToken(token!);
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
+      }
+    };
+    fetchFcmToken();
+  }, []);
 
   useEffect(() => {
     const getExpertDetails = async () => {
@@ -45,6 +62,11 @@ const ExpertDetailsView: React.FC = () => {
       const result = await verifyExpert(expertId);
       if (result.success) {
         toast.success("Expert verified successfully");
+        const title = "Next Step Registration";
+        const body = 'Your Ceritificate is Validate' ;
+        const role = "expert";
+        await sendNotification(title, body, fcmToken!, role);
+
         navigate("/admin/experts");
       }
     } catch (error) {
@@ -62,6 +84,10 @@ const ExpertDetailsView: React.FC = () => {
       if (result.success) {
         console.log(result);
         toast.success("Expert rejected successfully");
+        const title = "Next Step Registration";
+        const body =  rejectionReason ;
+        const role = "expert";
+        await sendNotification(title, body, fcmToken!, role);
         navigate("/admin/experts");
       }
     } catch (error) {

@@ -7,12 +7,15 @@ import {
 } from "../../../services/api/ChatApi";
 import { IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
+import socket from "../../../config/socket";
+import { IChatNotification } from "../../../@types/notification";
 
 const ChatWithStudentList = () => {
   const { expert } = useAppSelector((state) => state.expert);
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { chatId, setChatId, latestMessage,notificationCount } = useExpertChat();
+  const { chatId, setChatId, latestMessage, notificationCount } =
+    useExpertChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -48,19 +51,40 @@ const ChatWithStudentList = () => {
     }
   };
 
-  useEffect(()=>{
-
-    if(notificationCount){
+  useEffect(() => {
+    if (notificationCount) {
       setNotifications((prev) => ({
         ...prev,
         [notificationCount.chatId]: notificationCount.count,
       }));
     }
-  },[notificationCount])
+  }, [notificationCount]);
 
   useEffect(() => {
     fetchAllBooking();
   }, []);
+
+  useEffect(() => {
+    const handleNotification = (notification: IChatNotification) => {
+      setNotifications((prev) => ({
+        ...prev,
+        [notification.chatId]: notification.count,
+      }));
+    };
+
+    socket.on("notification", handleNotification);
+
+    return () => {
+      socket.off("notification", handleNotification);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    const sortedChats = chatDetails
+      .slice()
+      .sort((a, b) => (a._id === chatId ? -1 : b._id === chatId ? 1 : 0));
+    setChatDetails(sortedChats);
+  }, [chatId]);
 
   const filteredChats = chatDetails.filter((chat) => {
     const student = chat.studentId as IStudent;
@@ -69,10 +93,10 @@ const ChatWithStudentList = () => {
 
   return (
     <div
-    className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
-      chatId ? "sm:hidden md:block" : ""
-    }`}
-  >
+      className={`w-full md:w-1/4 bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
+        chatId ? "sm:hidden md:block" : ""
+      }`}
+    >
       <input
         type="search"
         placeholder="Search"
@@ -118,9 +142,9 @@ const ChatWithStudentList = () => {
                     </span>
                   )}
                 </div>
-              
+
                 <span className="text-sm text-gray-500 mt-1">
-                  {latestMessage &&latestMessage.studentId == student._id  ? (
+                  {latestMessage && latestMessage.studentId == student._id ? (
                     <>
                       {latestMessage.studentId == student._id &&
                         latestMessage.lastMessage}

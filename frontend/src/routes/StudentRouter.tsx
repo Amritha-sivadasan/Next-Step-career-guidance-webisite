@@ -13,10 +13,11 @@ import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
 import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 
-import {  messaging } from "../config/firebase";
-import { onMessage } from "firebase/messaging";
-import toast, { Toaster } from "react-hot-toast";
+import { onMessageListener, requestFCMToken } from "../config/firebase";
+
+import { Toaster } from "react-hot-toast";
 import MeetingHistoryPage from "../pages/student/MeetingHistoryPage";
+import { toast } from "react-toastify";
 
 const StudentChatListPage = lazy(
   () => import("../pages/student/StudentChatListPage")
@@ -41,15 +42,23 @@ const UserSideBar = lazy(() => import("../components/student/sidebar/SideBar"));
 const StudentLayout = lazy(
   () => import("../components/common/studentLayout/StudentLayout")
 );
-
 const PaymentPage = lazy(() => import("../pages/student/PaymentPage"));
-
 const BookingDetailsPage = lazy(
   () => import("../pages/student/BookingDetailsPage")
 );
 const LoadingPage = lazy(
   () => import("../components/common/Loading/LoadingPage")
 );
+
+interface NotificationPayload {
+  notification: {
+    title: string;
+    body: string;
+  };
+  data?: {
+    role: string;
+  };
+}
 const StudentRouter = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useFetchUserData();
@@ -63,17 +72,37 @@ const StudentRouter = () => {
       dispatch(setAuthenticated(false));
     }
   }, [dispatch, user, isAuthenticated]);
-  console.log();
 
   useEffect(() => {
-    // generateToken();
-    onMessage(messaging, (payload) => {
-      console.log(payload);
-      if (payload.notification?.body) {
-        toast(payload.notification?.body);
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
       }
-    });
+    };
+    fetchFcmToken();
   }, []);
+
+  onMessageListener()
+    .then((payload: NotificationPayload) => {
+      if (payload.notification && payload.data?.role.trim()=='student') {
+        toast(
+          <div>
+            <strong>{payload.notification.title}</strong>
+            <p>{payload.notification.body}</p>
+          </div>,
+          {
+            position: "top-right",
+          }
+        );
+        console.log("Received foreground message:", payload);
+      }
+    })
+    .catch((err) => console.log("Error in receiving foreground message:", err));
+
   return (
     <Suspense fallback={<LoadingPage />}>
       <Routes>

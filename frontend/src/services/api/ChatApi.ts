@@ -50,7 +50,7 @@ export const sendMessageByStudent = async (message: FormData) => {
         withCredentials: true,
       }
     );
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
@@ -188,7 +188,7 @@ export const getNotificationsByExpert = async (
   }
 };
 
-export  const updateNotification= async(chatId:string, userId:string)=>{
+export const updateNotification = async (chatId: string, userId: string) => {
   try {
     const response = await studentAxiosInstance.patch(
       `${API_URL}/student/updateNotification?chatId=${chatId}&userId=${userId}`,
@@ -200,4 +200,4 @@ export  const updateNotification= async(chatId:string, userId:string)=>{
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};

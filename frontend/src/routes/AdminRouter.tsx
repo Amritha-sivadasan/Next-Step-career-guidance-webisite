@@ -26,6 +26,8 @@ import PsychometricTestPage from "../pages/admin/PsychometricTestPage";
 import AddPsychometricTestPage from "../pages/admin/AddPsychometricTestPage";
 import FaqPage from "../pages/admin/FaqPage";
 import ReviewAndRatingPage from "../pages/admin/ReviewAndRatingPage";
+import { onMessageListener, requestFCMToken } from "../config/firebase";
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -41,6 +43,49 @@ const AdminRouter = () => {
       console.log("isauth", isAuthenticated);
     }
   }, [dispatch, admin, isAuthenticated]);
+
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
+      }
+    };
+    fetchFcmToken();
+  }, []);
+  interface NotificationPayload {
+    notification: {
+      title: string;
+      body: string;
+     
+    };
+    data?: {
+      role:string
+    };
+  }
+ 
+    onMessageListener()
+      .then((payload: NotificationPayload) => {
+        if (payload.notification && payload.data?.role=='admin' ) {
+          toast(
+            <div>
+              <strong>{payload.notification.title}</strong>
+              <p>{payload.notification.body}</p>
+            </div>,
+            { position: 'top-right' }
+          );
+          console.log("Received foreground message:", payload);
+        }
+      })
+      .catch((err) => console.log("Error in receiving foreground message:", err));
+
+
+
+
+
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Routes>
@@ -61,6 +106,7 @@ const AdminRouter = () => {
               <>
                 <div className="flex flex-col w-full">
                   <Header />
+                  <Toaster/>
                   <div className="flex-1 flex bg-white ">
                     <Sidebar />
                     <Outlet />

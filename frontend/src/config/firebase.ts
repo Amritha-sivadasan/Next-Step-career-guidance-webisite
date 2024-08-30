@@ -1,7 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { Dispatch, SetStateAction } from 'react';
-
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,28 +12,42 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
- const messaging = getMessaging(app);
+const messaging = getMessaging(app);
 
 export { app, messaging };
 
-export const generateToken = async (setTokenFound:Dispatch<SetStateAction<boolean>>) => {
-  try {
-    const currentToken = await getToken(messaging, { vapidKey: "BMfoHTrp2NRbSLaUMdBABSU172AVD_JMuGlOuHpVGqp4SegURkMyqDgUm5FkXt-dXwVdhV8xScloaD8XlKpjwnk" });
-    if (currentToken) {
-      console.log("Current Token: ", currentToken);
-      setTokenFound(true);
-    } else {
-      console.log("No registration token available.");
-      setTokenFound(false);
-    }
-  } catch (error) {
-    console.log("An error occurred while retrieving token.", error);
-  }
-};
+interface NotificationPayload {
+  notification: {
+    title: string;
+    body: string;
+  
+  };
+  data?: {
+    role:string
+  };
+}
 
-export const onMessageListener = () =>
+const vapidKey =
+  "BHh7MINkknxbCGDzFTm6zWQSPicOx1CTX0XMVXq3I1-M10MsK4xwu_Av0-afQtEEJd03Hrnb5iZMX99EeyTMt0Y";
+
+export const onMessageListener = ():Promise<NotificationPayload>  =>
   new Promise((resolve) => {
     onMessage(messaging, (payload) => {
-      resolve(payload);
+      if (payload.notification) {
+        resolve(payload as unknown as NotificationPayload);
+      } 
     });
   });
+
+export const requestFCMToken = async () => {
+  return Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      return getToken(messaging, { vapidKey });
+    } else {
+      throw new Error("Notification is not granded");
+    }
+  }).catch((err)=>{
+    console.log('error occur during  fcm token',err)
+    throw err
+  });
+};

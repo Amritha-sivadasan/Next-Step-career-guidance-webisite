@@ -28,6 +28,23 @@ import ExpertChatListPage from "../pages/expert/ExpertChatListPage";
 import VideoCallPage from "../pages/expert/VideoCallPage";
 import MeetingPage from "../components/common/videocall/CreateUrl";
 import MeetingHistoryPage from "../pages/expert/MeetingHistoryPage";
+import { onMessageListener, requestFCMToken } from "../config/firebase";
+import  { Toaster } from "react-hot-toast";
+import { toast } from "react-toastify";
+
+
+
+
+interface NotificationPayload {
+  notification: {
+    title: string;
+    body: string;
+   
+  };
+  data?: {
+    role:string
+  };
+}
 
 const ExpertRouter = () => {
   const dispatch = useDispatch();
@@ -43,6 +60,38 @@ const ExpertRouter = () => {
       console.log("isauth", isAuthenticated);
     }
   }, [dispatch, expert, isAuthenticated]);
+
+
+  useEffect(() => {
+    const fetchFcmToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        console.log("token:->", token);
+      } catch (error) {
+        console.log("error during fetch fcm token", error);
+      }
+    };
+    fetchFcmToken();
+  }, []);
+  onMessageListener()
+  .then((payload: NotificationPayload) => {
+    if (payload.notification && payload.data?.role.trim()==='expert') {
+      toast(
+        <div>
+          <strong>{payload.notification.title}</strong>
+          <p>{payload.notification.body}</p>
+        </div>,
+        { position: 'top-right' }
+      );
+      console.log("Received foreground message:", payload);
+    }
+  })
+  .catch((err) => console.log("Error in receiving foreground message:", err));
+
+ 
+   
+
+
   return (
     <Routes>
       <Route
@@ -117,7 +166,7 @@ const ExpertRouter = () => {
         <Route
           element={
             <ExpertLayout>
-              <Outlet />
+           <Toaster/>   <Outlet />
             </ExpertLayout>
           }
         >
