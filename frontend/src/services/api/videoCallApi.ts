@@ -51,7 +51,10 @@ export const updateVideoCall = async (
 export const getVideoCallDetails = async (id: string) => {
   try {
     const response = await axiosInstance.get(
-      `${API_URL}/expert/videoCall/${id}`
+      `${API_URL}/expert/videoCall/${id}`,
+      {
+        withCredentials: true,
+      }
     );
     return response.data;
   } catch (error) {
@@ -62,7 +65,10 @@ export const getVideoCallDetails = async (id: string) => {
 export const findAllvideoCallByExpert = async () => {
   try {
     const response = await axiosInstance.get(
-      `${API_URL}/expert/get-all-meeting-history`
+      `${API_URL}/expert/get-all-meeting-history`,
+      {
+        withCredentials: true,
+      }
     );
     return response.data;
   } catch (error) {

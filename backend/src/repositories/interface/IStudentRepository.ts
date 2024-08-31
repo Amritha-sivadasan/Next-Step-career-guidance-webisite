@@ -9,4 +9,5 @@ export interface IStudentRepository {
   findUserById( authentication_id:string,):Promise<IStudent|null>
   countDocuments(): Promise<number>
   chechUserStatus(id:string):Promise<IStudent|null>
+  fetchAllDetails(): Promise<IStudent[]>;
 }

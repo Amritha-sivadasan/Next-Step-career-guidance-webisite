@@ -10,6 +10,7 @@ import psychometricControllet from "../contollers/psychometricController";
 import psychometricController from "../contollers/psychometricController";
 import faqController from "../contollers/faqController";
 import reviewAndRatingController from "../contollers/reviewAndRatingController";
+import videoCallController from "../contollers/videoCallController";
 
 const adminRoute=Router()
 const role=process.env.ADMIN_ROLE as string
@@ -53,5 +54,7 @@ adminRoute.post('/refresh-token',verifyRefreshToken(token),verifyRole(role), ref
  adminRoute.get('/fetch-all-faq',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
  adminRoute.put('/submit-answer/:id',verifyAccessToken,verifyRole(role),faqController.updateAnswer)
  adminRoute.get('/fetchAllReview',verifyAccessToken,verifyRole(role),reviewAndRatingController.findAllReview)
+
+ adminRoute.get('/fetchAllDetails',verifyAccessToken,verifyRole(role),adminController.fetchAllDetails)
 
 export default adminRoute

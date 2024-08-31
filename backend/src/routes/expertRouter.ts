@@ -61,7 +61,7 @@ expertRouter.post('/createVideocall',verifyAccessToken,verifyRole(role),videoCal
 expertRouter.post('/sendfirbaseNotification',verifyAccessToken,verifyRole(role),sendFirebaseNotification)
 
 expertRouter.put('/updateVideoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.updateVideoCall)
-expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBookin)
+expertRouter.get('/videoCall/:id',verifyAccessToken,verifyRole(role),videoCallController.findVideoCallByBooking)
 expertRouter.patch('/updateVideo/:id',verifyAccessToken,verifyRole(role),bookingController.updatemeetingstatus)
 expertRouter.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCallController.findMeetingDetailsById)
 expertRouter.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)

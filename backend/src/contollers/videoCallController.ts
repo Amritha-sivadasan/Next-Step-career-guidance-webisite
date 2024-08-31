@@ -36,7 +36,7 @@ class VideoCallController {
     }
    }
 
-   public findVideoCallByBookin= async(req:Request,res:Response):Promise<void>=>{
+   public findVideoCallByBooking= async(req:Request,res:Response):Promise<void>=>{
     try {
         const{id}=req.params 
   
@@ -62,7 +62,22 @@ class VideoCallController {
         .json({ success: false, message: "something went wrong on finding videocall details", error });
     }
    }
+
+
+   public  findAllDetails = async(req:Request,res:Response)=>{
+    try {
+        const response= await this.videoCallServive.fetchAllDetails()
+        res.status(200).json({message:'Success full find the meetign details',data:response,success:true})
+        
+    } catch (error) {
+        res
+        .status(500)
+        .json({ success: false, message: "something went wrong on finding videocall details", error });
+    }
+   }
 }
+
+
 
 
 export  default new VideoCallController()

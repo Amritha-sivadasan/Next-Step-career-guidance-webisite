@@ -115,5 +115,13 @@ export default class BookingRepository implements IBookingRepository {
     throw error
   }
 }
+    async fetchAllBookings(): Promise<IBooking[]> {
+      try {
+      const result= await Booking.find().populate('expertId')
+      return result
+      } catch (error) {
+        throw error
+      }
+    }
   
 }

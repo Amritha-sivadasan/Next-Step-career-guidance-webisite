@@ -5,4 +5,5 @@ export interface IVideoCallRepository {
     createvideoCall(videoCallDetails:Partial<IVideoCall>):Promise<IVideoCall>
     updatedetails(bookingId:string,data:Partial<IVideoCall>):Promise<IVideoCall|null>
     findAllById(id:string):Promise<IVideoCall[]>
+    findAllVideoCall():Promise<IVideoCall[]>
 }

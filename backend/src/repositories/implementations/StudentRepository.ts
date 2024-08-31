@@ -67,4 +67,13 @@ export default class StudentRepository implements IStudentRepository {
       throw error;
     }
   }
+
+  async fetchAllDetails(): Promise<IStudent[]> {
+    try {
+      const students = await Student.find().exec()
+      return students
+    } catch (error) {
+      throw error;
+    }
+  }
 }

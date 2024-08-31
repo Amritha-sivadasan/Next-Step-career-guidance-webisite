@@ -253,6 +253,25 @@ class AdminController {
       });
     }
   }
+
+  public fetchAllDetails= async(req:Request,res:Response):Promise<void>=>{
+    try {
+       const response = await this.adminService.fetchAllDetail()
+           
+      res.status(200).json({
+        success: true,
+        message: response,
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "something went wrong fetching all details",
+        success: false,
+      });
+    }
+  }
 }
+
+
 
 export default new AdminController();

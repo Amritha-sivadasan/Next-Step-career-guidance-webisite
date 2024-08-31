@@ -198,3 +198,19 @@ export const submitAnswer = async(id:string,answer:string)=>{
     return (error as Error).response?.data;
   }
 }
+
+
+export const fetchAllDetails = async()=>{
+  try {
+    const response = await adminAxiosInstance.get(
+      `${API_URL}/admin/fetchAllDetails`,
+      { withCredentials: true }
+
+    );
+
+    return response.data;
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}

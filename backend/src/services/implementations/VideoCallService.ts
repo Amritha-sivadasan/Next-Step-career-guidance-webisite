@@ -77,4 +77,13 @@ export default class VideoCallService implements IVideoCallService {
       throw error;
     }
   }
+
+  async fetchAllDetails(): Promise<IVideoCall[]> {
+    try {
+      const result= await this.videoCallRepository.findAllVideoCall()
+      return result
+    } catch (error) {
+      throw error;
+    }
+  }
 }

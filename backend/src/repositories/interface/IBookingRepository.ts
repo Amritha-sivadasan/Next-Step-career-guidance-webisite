@@ -13,5 +13,6 @@ export interface IBookingRepository{
     findAllBookingsByUserId(id: string,page:number,limit:number): Promise<IBooking[] | null>
     countDocuments(): Promise<number>
     updatemeetingStatus(id:string,status:string):Promise<void>
+    fetchAllBookings():Promise<IBooking[]>
    
 }
