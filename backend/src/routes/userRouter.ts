@@ -77,5 +77,6 @@ router.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCa
 router.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)
 router.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
 router.patch('/deleteReview/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.deleteReviewAndRating)
+router.get('/fetchAllReview',reviewAndRatingController.fetchAllReviewByStudent)
 
 export default router;

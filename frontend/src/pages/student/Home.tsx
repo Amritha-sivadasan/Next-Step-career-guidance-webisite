@@ -5,6 +5,7 @@ import FindYourPath from "../../components/student/landingPage/FindYourPath";
 import HowItWorks from "../../components/common/howdoes it work/HowItWork";
 import Testimonials from "../../components/common/expertlist/Testimonials";
 import { useEffect } from "react";
+import ReviewListForStudent from "../../components/student/reviews/ReviewListForStudent";
 
 const Home = () => {
   useEffect(() => {
@@ -20,6 +21,7 @@ const Home = () => {
         <HowItWorks />
       </div>
       <Testimonials />
+      <ReviewListForStudent/>
       <Faq />
 
     </div>

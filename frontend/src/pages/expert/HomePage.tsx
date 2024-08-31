@@ -4,6 +4,7 @@ import HowItWorks from "../../components/common/howdoes it work/HowItWork"
 import ExpertNavbar from "../../components/expert/header/ExpertNavBar"
 import ExpertBanner from "../../components/expert/landingpage/ExpertBanner"
 import TrustedService from "../../components/expert/landingpage/TrustedService"
+import RatingViewForExpert from "../../components/expert/review/RatingViewForExpert"
 
 const HomePage = () => {
   return (
@@ -13,6 +14,7 @@ const HomePage = () => {
       <TrustedService/>
       <HowItWorks />
       <Testimonials />
+      <RatingViewForExpert/>
       <Footer/>
     </div>
   )

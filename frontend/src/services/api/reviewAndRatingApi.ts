@@ -3,7 +3,6 @@ import { studentAxiosInstance } from "../instance/userInstance";
 import { IReviewAndRating } from "../../@types/reviewAndRating";
 import { adminAxiosInstance } from "../instance/adminInstance";
 
-
 const API_URL = process.env.VITE_API_URL;
 
 interface Error {
@@ -78,8 +77,7 @@ export const findAllReviewsByExpert = async (meetingId: string) => {
   }
 };
 
-
-export const deleteReviewByExpert= async(meetingId: string)=>{
+export const deleteReviewByExpert = async (meetingId: string) => {
   try {
     const response = await axiosInstance.patch(
       `${API_URL}/expert/deleteReview/${meetingId}`,
@@ -92,9 +90,9 @@ export const deleteReviewByExpert= async(meetingId: string)=>{
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
 
-export const deleteReviewByStudent= async(meetingId: string)=>{
+export const deleteReviewByStudent = async (meetingId: string) => {
   try {
     const response = await studentAxiosInstance.patch(
       `${API_URL}/student/deleteReview/${meetingId}`,
@@ -107,10 +105,9 @@ export const deleteReviewByStudent= async(meetingId: string)=>{
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
 
-
-export const fetchAllReviews = async()=>{
+export const fetchAllReviews = async () => {
   try {
     const response = await adminAxiosInstance.get(
       `${API_URL}/admin/fetchAllReview`,
@@ -120,8 +117,38 @@ export const fetchAllReviews = async()=>{
       }
     );
     return response.data;
-    
   } catch (error) {
     return (error as Error).response?.data;
   }
-}
+};
+
+export const fetchAllReviewByStudent = async () => {
+  try {
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/fetchAllReview`,
+
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};
+
+
+export const fetchAllReviewByExpert = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${API_URL}/expert/fetchAllReview`,
+
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+};

@@ -53,8 +53,6 @@ export const createSocketServer = (server: http.Server) => {
             : student._id.toString();
             
            
-
-
         if (!Object.keys(onlineUsers).includes(recipientId)) {
           
           const notificationExist = await notificationService.findOne(

@@ -48,4 +48,24 @@ export default class ReviewAndRatingService implements IReviewAndRatingService{
             throw error
         }
     }
+
+    async fetchReviewByExpert(): Promise<IReviewAndRating[]> {
+        try {
+
+            const result= await this.reviewAndReviewRepository.fetAllRevieByExpert()
+            return result
+            
+        } catch (error) {
+          throw error
+        }
+    }
+
+    async fetchReviewByStudent(): Promise<IReviewAndRating[]> {
+        try {
+            const result= await this.reviewAndReviewRepository.fetAllRevieByStudent()
+            return result
+        } catch (error) {
+            throw error
+        }
+    }
 }

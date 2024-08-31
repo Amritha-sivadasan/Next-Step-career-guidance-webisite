@@ -5,5 +5,7 @@ submitReviewAndRating(review:Partial<IReviewAndRating>):Promise<IReviewAndRating
 fetchReviewsByid(userId:string,meetingId:string):Promise<IReviewAndRating|null>
 deleteReview(userId:string, meetingId:string):Promise<IReviewAndRating|null>
 fetchAllReview():Promise<IReviewAndRating[]>
+fetAllRevieByStudent():Promise<IReviewAndRating[]>
+fetAllRevieByExpert():Promise<IReviewAndRating[]>
 
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
@@ -6,7 +6,27 @@ import { useAppSelector } from "../../../hooks/useTypeSelector";
 const ExpertNavbar: React.FC = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { isAuthenticated, expert } = useAppSelector((state) => state.expert);
+  const { isAuthenticated, expert,status } = useAppSelector((state) => state.expert);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+
+
+  useEffect(() => {
+    if (status === "loading") {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -73,32 +93,32 @@ const ExpertNavbar: React.FC = () => {
             </ul>
           </nav>
 
-          {isAuthenticated ? (
-            <>
-              <div className="flex items-center ">
-                <img
-                  src={
-                    expert?.profile_picture
-                      ? expert?.profile_picture
-                      : "/dummyprofile.jpg"
-                  }
-                  alt="User avatar"
-                  className="h-8 w-8 rounded-full"
-                />
-                {/* <span className="hidden sm:inline">{admin}</span> */}
-                <button className="font-bold  w-24" onClick={handleProfile}>
-                  {expert?.user_name}
-                </button>
-              </div>
-            </>
-          ) : (
-            <Link
-              to="/expert/login"
-              className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover: transition duration-300"
-            >
-              Login
-            </Link>
-          )}
+          
+          {isVisible ? (
+  isLoading ? (
+    <div className="w-24 h-8 bg-gray-200 animate-pulse rounded"></div>
+  ) : isAuthenticated ? (
+    <div className="flex items-center ">
+      <img
+        src={expert?.profile_picture || "/dummyprofile.jpg"}
+        alt="User avatar"
+        className="h-8 w-8 rounded-full"
+      />
+      <button className="font-bold w-24" onClick={handleProfile}>
+        {expert?.user_name}
+      </button>
+    </div>
+  ) : (
+    <Link
+      to="/login"
+      className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-[#1A3A6E] transition duration-300"
+    >
+      Login
+    </Link>
+  )
+) : (
+  <div className="w-24 h-8 bg-transparent"></div> 
+)}
         </div>
       </div>
 

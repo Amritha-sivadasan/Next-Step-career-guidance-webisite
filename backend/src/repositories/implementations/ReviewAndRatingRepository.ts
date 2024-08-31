@@ -51,16 +51,37 @@ export default class ReviewAndRatingRepository
     }
   }
 
- async fetchAllReview(): Promise<IReviewAndRating[]> {
-     try {
-
-    const response= await ReviewAndRating.find({is_delete:false}).populate('meetingId').populate('studentId').populate('expertId')
-    return response
-        
-     } catch (error) {
-        throw error;
-     }
- }
-
-  
+  async fetchAllReview(): Promise<IReviewAndRating[]> {
+    try {
+      const response = await ReviewAndRating.find({ is_delete: false })
+        .populate("meetingId")
+        .populate("studentId")
+        .populate("expertId");
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async fetAllRevieByStudent(): Promise<IReviewAndRating[]> {
+    try {
+      const result = await ReviewAndRating.find({
+        studentId: { $exists: true, $ne: null },
+        is_delete: false,
+      }).sort({rating:-1}).populate('studentId')
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async fetAllRevieByExpert(): Promise<IReviewAndRating[]> {
+    try {
+      const result = await ReviewAndRating.find({
+        expertId: { $exists: true, $ne: null },
+        is_delete: false,
+      }).sort({rating:-1}).populate('expertId')
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

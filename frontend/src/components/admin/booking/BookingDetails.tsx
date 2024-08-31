@@ -13,6 +13,8 @@ const BookingDetails = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5);
   const [loading, setLoading] = useState<boolean>(true);
+  const [filteredBookings, setFilteredBookings] = useState<IBooking[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const navigate = useNavigate();
   useEffect(() => {
     const fetchBookings = async () => {
@@ -23,6 +25,7 @@ const BookingDetails = () => {
         );
         if (response.data) {
           setBookingDetails(response.data.items);
+          setFilteredBookings(response.data.items);
           setTotalPages(response.data.pagination.totalPages);
         } else {
           toast.error(response.message || "Failed to fetch Bookings");
@@ -35,6 +38,22 @@ const BookingDetails = () => {
     };
     fetchBookings();
   }, [currentPage, itemsPerPage]);
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = bookingDetails.filter((detail) => {
+        const student = detail.studentId as IStudent;
+        const expert = detail.expertId as IExpert
+        return (
+          detail._id.includes(searchQuery) ||
+          student.user_name.toLowerCase().includes(searchQuery.toLowerCase())||
+          expert.user_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      setFilteredBookings(filtered);
+    } else {
+      setFilteredBookings(bookingDetails);
+    }
+  }, [searchQuery, bookingDetails]);
 
   const handleViewMore = (id: string) => {
     console.log("Viewing more details for booking ID:", id);
@@ -57,6 +76,15 @@ const BookingDetails = () => {
   return (
     <div className="p-4 bg-gray-100 min-h-screen w-10/12">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Booking Details</h1>
+      <div className="mb-4 w-6/12">
+        <input
+          type="search"
+          placeholder="Search by Booking ID or Student Name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-4 py-2 w-full border border-gray-300 rounded-lg shadow-sm"
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md table-fixed">
           <thead>
@@ -73,14 +101,14 @@ const BookingDetails = () => {
             </tr>
           </thead>
           <tbody>
-            {bookingDetails.map((detail, index) => {
+            {filteredBookings.map((detail, index) => {
               const student = detail.studentId as IStudent;
               const expert = detail.expertId as IExpert;
 
               return (
                 <tr key={detail._id} className="border-b">
-                  <td className="py-3 px-2 text-sm  ">{index + 1}</td>
-                  <td className="py-3 px-2 text-sm  w-1/6">{detail._id}</td>
+                  <td className="py-3 px-2 text-sm">{index + 1}</td>
+                  <td className="py-3 px-2 text-sm w-1/6">{detail._id}</td>
                   <td className="py-3 px-2 text-sm truncate">
                     {student.user_name}
                   </td>
@@ -90,7 +118,7 @@ const BookingDetails = () => {
                   <td className="py-3 px-2 text-sm truncate">
                     {expert.user_name}
                   </td>
-                  <td className="py-3 px-4  truncate  max-w-10 w-2/12">
+                  <td className="py-3 px-4 truncate max-w-10 w-2/12">
                     {detail.transactionId}
                   </td>
                   <td className="py-3 px-2 text-sm">{detail.paymentAmount}</td>

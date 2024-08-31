@@ -91,6 +91,39 @@ public findAllReview = async(req:Request,res:Response)=>{
 }
 
 
+public fetchAllReviewByStudent= async(req:Request,res:Response)=>{
+  try {
+    const response= await this.reviewAndRatingService.fetchReviewByStudent()
+    res.status(200).json({
+        success: true,
+        data: response,
+        message: "",
+      });
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong in fetching review",
+      success: false,
+      data: error,
+    });
+  }
+}
+
+public fetchAllReviewByExpert= async(req:Request,res:Response)=>{
+  try {
+    const response= await this.reviewAndRatingService.fetchReviewByExpert()
+    res.status(200).json({
+        success: true,
+        data: response,
+        message: "",
+      });
+  } catch (error) {
+    res.status(500).json({
+      message: "something went wrong in fetching review",
+      success: false,
+      data: error,
+    });
+  }
+}
 
 
 }

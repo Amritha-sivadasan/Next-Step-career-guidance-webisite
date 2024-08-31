@@ -1,12 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 
 const Navbar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { isAuthenticated, user } = useAppSelector((state) => state.student);
+  const { isAuthenticated, user, status } = useAppSelector(
+    (state) => state.student
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (status === "loading") {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -128,32 +148,31 @@ const Navbar: React.FC = () => {
             </ul>
           </nav>
 
-          {isAuthenticated ? (
-            <>
-              <div className="flex items-center ">
-                <img
-                  src={
-                    user?.profile_picture
-                      ? user?.profile_picture
-                      : "/dummyprofile.jpg"
-                  }
-                  alt="User avatar"
-                  className="h-8 w-8 rounded-full"
-                />
-                {/* <span className="hidden sm:inline">{admin}</span> */}
-                <button className="font-bold  w-24" onClick={handleProfile}>
-                  {user?.user_name}
-                </button>
-              </div>
-            </>
-          ) : (
-            <Link
-              to="/login"
-              className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover: transition duration-300"
-            >
-              Login
-            </Link>
-          )}
+          {isVisible ? (
+  isLoading ? (
+    <div className="w-24 h-8 bg-gray-200 animate-pulse rounded"></div>
+  ) : isAuthenticated ? (
+    <div className="flex items-center ">
+      <img
+        src={user?.profile_picture || "/dummyprofile.jpg"}
+        alt="User avatar"
+        className="h-8 w-8 rounded-full"
+      />
+      <button className="font-bold w-24" onClick={handleProfile}>
+        {user?.user_name}
+      </button>
+    </div>
+  ) : (
+    <Link
+      to="/login"
+      className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-[#1A3A6E] transition duration-300"
+    >
+      Login
+    </Link>
+  )
+) : (
+  <div className="w-24 h-8 bg-transparent"></div> 
+)}
         </div>
       </div>
 

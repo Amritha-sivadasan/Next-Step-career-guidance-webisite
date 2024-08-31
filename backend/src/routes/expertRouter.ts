@@ -67,5 +67,7 @@ expertRouter.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),v
 expertRouter.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRatingController.submitReviewAndRating)
 expertRouter.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
 expertRouter.patch('/deleteReview/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.deleteReviewAndRating)
+expertRouter.get('/fetchAllReview',reviewAndRatingController.fetchAllReviewByExpert)
+
 
 export default expertRouter;
