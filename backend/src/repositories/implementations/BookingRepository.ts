@@ -56,7 +56,7 @@ export default class BookingRepository implements IBookingRepository {
       bookingStatus: { $ne: "pending" },
     meetingStatus:'pending'
     })
-      .sort({ _id: -1 })
+      .sort({_id: -1 })
       .skip(skip)
       .limit(limit)
       .populate("studentId")

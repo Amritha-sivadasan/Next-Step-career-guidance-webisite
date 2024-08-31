@@ -11,7 +11,7 @@ const StudentSchema: Schema = new Schema(
     phoneNumber: { type: String,  match: /^[0-9]{10}$/ },
     education_background: { type: String, },
     user_type: { type: String,},
-    profile_picture: { type: String, default: "" },
+    profile_picture: { type: String, default: "/dummyprofile.jpg" },
     is_active: { type: Boolean, default: true },  
     role: { type: String, default: "student" },
     authentication_id: { type: String},

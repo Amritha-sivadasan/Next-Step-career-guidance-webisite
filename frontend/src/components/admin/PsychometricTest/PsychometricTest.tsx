@@ -7,6 +7,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 const PsychometricTest: React.FC = () => {
   const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
@@ -35,7 +36,7 @@ const PsychometricTest: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+  return  <LoadingPage />;
   }
 
   if (error) {

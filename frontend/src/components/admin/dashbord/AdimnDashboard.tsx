@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
 import { IExpert } from "../../../@types/expert";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 ChartJS.register(
   CategoryScale,
@@ -40,6 +41,7 @@ const AdminDashboard: React.FC = () => {
     labels: string[];
     data: number[];
   }>({ labels: [], data: [] });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetChData = async () => {
@@ -76,7 +78,7 @@ const AdminDashboard: React.FC = () => {
           categoryMap.set(category, 1);
         }
       });
-      // console.log("categoryMap", categoryMap);
+   
 
       const labels = Array.from(categoryMap.keys());
       const data = Array.from(categoryMap.values());
@@ -88,6 +90,7 @@ const AdminDashboard: React.FC = () => {
       });
     };
     fetChData();
+    setLoading(false)
   }, []);
 
   const monthlyPaymentsData = {
@@ -192,6 +195,14 @@ const AdminDashboard: React.FC = () => {
       },
     },
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen w-full">
+        <LoadingPage />
+      </div>
+    );
+  }
 
   return (
     <main className="flex-1 p-6 bg-gray-100">

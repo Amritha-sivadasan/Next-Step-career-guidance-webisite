@@ -110,7 +110,7 @@ const ExpertNavbar: React.FC = () => {
     </div>
   ) : (
     <Link
-      to="/login"
+      to="/expert/login"
       className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-[#1A3A6E] transition duration-300"
     >
       Login

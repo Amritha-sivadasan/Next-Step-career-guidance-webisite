@@ -132,7 +132,7 @@ function SubCategoryTable() {
             {subCategories.map((subCategory, index) => (
               <tr key={subCategory._id} className="border-b">
                 <td className="py-2 px-4 text-left text-xs sm:text-sm">
-                  {index + 1}
+                  {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
                 <td className="py-2 px-4 text-left text-xs sm:text-sm">
                   {subCategory.catName}

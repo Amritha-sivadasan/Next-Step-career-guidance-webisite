@@ -4,6 +4,7 @@ import { fetchAllFaq, submitAnswer } from "../../../services/api/adminApi";
 import { IFaq } from "../../../@types/faq";
 import { FaCheckCircle } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 interface IFormInput {
   [key: string]: string;
@@ -44,7 +45,7 @@ const Faq: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><LoadingPage/></div>;
   }
 
   if (error) {

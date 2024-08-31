@@ -28,6 +28,7 @@ import FaqPage from "../pages/admin/FaqPage";
 import ReviewAndRatingPage from "../pages/admin/ReviewAndRatingPage";
 import { onMessageListener, requestFCMToken } from "../config/firebase";
 import toast, { Toaster } from "react-hot-toast";
+import ReportPage from "../pages/admin/ReportPage";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -59,32 +60,26 @@ const AdminRouter = () => {
     notification: {
       title: string;
       body: string;
-     
     };
     data?: {
-      role:string
+      role: string;
     };
   }
- 
-    onMessageListener()
-      .then((payload: NotificationPayload) => {
-        if (payload.notification && payload.data?.role=='admin' ) {
-          toast(
-            <div>
-              <strong>{payload.notification.title}</strong>
-              <p>{payload.notification.body}</p>
-            </div>,
-            { position: 'top-right' }
-          );
-          console.log("Received foreground message:", payload);
-        }
-      })
-      .catch((err) => console.log("Error in receiving foreground message:", err));
 
-
-
-
-
+  onMessageListener()
+    .then((payload: NotificationPayload) => {
+      if (payload.notification && payload.data?.role == "admin") {
+        toast(
+          <div>
+            <strong>{payload.notification.title}</strong>
+            <p>{payload.notification.body}</p>
+          </div>,
+          { position: "top-right" }
+        );
+        console.log("Received foreground message:", payload);
+      }
+    })
+    .catch((err) => console.log("Error in receiving foreground message:", err));
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -106,7 +101,7 @@ const AdminRouter = () => {
               <>
                 <div className="flex flex-col w-full">
                   <Header />
-                  <Toaster/>
+                  <Toaster />
                   <div className="flex-1 flex bg-white ">
                     <Sidebar />
                     <Outlet />
@@ -150,6 +145,7 @@ const AdminRouter = () => {
             />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/review-rating" element={<ReviewAndRatingPage />} />
+            <Route path="/report" element={<ReportPage />} />
           </Route>
         </Route>
       </Routes>

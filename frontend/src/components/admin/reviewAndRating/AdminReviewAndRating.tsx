@@ -5,6 +5,7 @@ import StarRatings from "react-star-ratings";
 import { IStudent } from "../../../@types/user";
 import { IExpert } from "../../../@types/expert";
 import { IvidoeCall } from "../../../@types/videoCall";
+import LoadingPage from "../../common/Loading/LoadingPage";
 
 const AdminReviewsPage = () => {
   const [reviews, setReviews] = useState<IReviewAndRating[]>([]);
@@ -27,6 +28,10 @@ const AdminReviewsPage = () => {
 
     fetchReviews();
   }, []);
+
+  if (loading) {
+    return  <LoadingPage />;
+    }
 
   return (
     <div className="p-4 min-h-screen bg-white rounded-lg">
