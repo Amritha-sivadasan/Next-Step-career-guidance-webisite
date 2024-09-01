@@ -1,36 +1,38 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import Login from "../components/common/authentication/Login";
-import OtpPage from "../components/common/authentication/OtpPage";
-import ForgotPassword from "../components/common/authentication/ForgotPassword";
-import ResetPassword from "../components/common/authentication/ResetPassword";
-import AboutExpert from "../components/expert/about/AboutExpert";
-import ExpertSignup from "../components/expert/register/ExpertSignup";
-
+import { Suspense, lazy, useEffect } from "react";
 import useFetchExpertData from "../hooks/useFetchExpert";
 import {
   setExpert,
   setExpertAuthenticated,
 } from "../features/expert/expertAuthSlice";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import ExpertPrivateRoute from "./Privateroutes/ExpertPrivateRoute";
-import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
 import { useAppSelector } from "../hooks/useTypeSelector";
-import UpdadteWithOtp from "../components/common/authentication/UpdateWithOtpPage";
-import ProfilePage from "../pages/expert/Profilepage";
-import HomePage from "../pages/expert/HomePage";
-import AvailableSchedule from "../pages/expert/AvailableSchedule";
-
-import BookingDetailsPage from "../pages/expert/BookingDetailsPage";
-import PaymentHistory from "../pages/expert/PaymentHistory";
-import ExpertLayout from "../components/common/expertLayout/ExpertLayout";
-import ExpertChatListPage from "../pages/expert/ExpertChatListPage";
-import VideoCallPage from "../pages/expert/VideoCallPage";
-import MeetingPage from "../components/common/videocall/CreateUrl";
-import MeetingHistoryPage from "../pages/expert/MeetingHistoryPage";
 import { onMessageListener, requestFCMToken } from "../config/firebase";
 import  { Toaster } from "react-hot-toast";
 import { toast } from "react-toastify";
+import LoadingPage from "../components/common/Loading/LoadingPage";
+
+
+const Login =lazy(()=>import("../components/common/authentication/Login")) ;
+const OtpPage =lazy(()=>import("../components/common/authentication/OtpPage")) ;
+const ForgotPassword =lazy(()=>import( "../components/common/authentication/ForgotPassword"));
+const  ResetPassword =lazy(()=>import("../components/common/authentication/ResetPassword")) ;
+const AboutExpert =lazy(()=>import("../components/expert/about/AboutExpert")) ;
+const  ExpertSignup =lazy(()=>import("../components/expert/register/ExpertSignup")) ;
+const  ForgotPasswordOtpPage =lazy(()=>import("../components/common/authentication/ForgotPasswordOtp")) ;
+const  UpdadteWithOtp = lazy(()=>import("../components/common/authentication/UpdateWithOtpPage")) ;
+const  ProfilePage =lazy(()=>import("../pages/expert/Profilepage")) ;
+const  HomePage =lazy(()=>import("../pages/expert/HomePage")) ;
+const  AvailableSchedule = lazy(()=>import("../pages/expert/AvailableSchedule")) ;
+const  BookingDetailsPage =lazy(()=>import("../pages/expert/BookingDetailsPage")) ;
+const PaymentHistory =lazy(()=>import("../pages/expert/PaymentHistory")) ;
+const ExpertLayout =lazy(()=>import("../components/common/expertLayout/ExpertLayout")) ;
+const ExpertChatListPage =lazy(()=>import("../pages/expert/ExpertChatListPage")) ;
+const VideoCallPage =lazy(()=>import("../pages/expert/VideoCallPage")) ;
+const  MeetingPage =lazy(()=>import("../components/common/videocall/CreateUrl")) ;
+const MeetingHistoryPage =lazy(()=>import( "../pages/expert/MeetingHistoryPage"));
+
 
 
 
@@ -93,6 +95,7 @@ const ExpertRouter = () => {
 
 
   return (
+    <Suspense fallback={<LoadingPage />}>
     <Routes>
       <Route
         path="/login"
@@ -181,6 +184,7 @@ const ExpertRouter = () => {
         </Route>
       </Route>
     </Routes>
+    </Suspense>
   );
 };
 

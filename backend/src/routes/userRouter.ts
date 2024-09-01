@@ -58,7 +58,7 @@ router.put("/updatePayment/:id",verifyAccessToken,verifyRole(role),bookingContro
 router.get('/check-report-user/:userId',studentController.checkUserStatus)
 router.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
 router.put('/uploadPersonalInfo',verifyAccessToken,verifyRole(role),studentController.updateuserData)
-router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
+router.get('/all-payment',verifyAccessToken,verifyRole(role),bookingController.findAllPaymentByStudentId)
 router.get('/get-allBooking',verifyAccessToken,verifyRole(role),bookingController.findAllBookingByStudentId)
 router.get('/getAllpsychometric',verifyAccessToken,verifyRole(role),psychometricController.fetchAllQuestions)
 router.post('/submit-psychometric-test/:id',verifyAccessToken,verifyRole(role),psychometricController.submitAnswer)

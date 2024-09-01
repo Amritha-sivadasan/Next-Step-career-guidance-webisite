@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
@@ -7,15 +9,22 @@ export const formatDate = (dateString: string) => {
   return `${dayName}, ${day} ${monthName} ${year}`;
 };
 
-export const formatTime = (timestamp: string) => {
-  const date = new Date(timestamp);
-  const options: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-    timeZone: "Asia/Kolkata", 
-  };
+export const formatTime = (time: string) => {
 
+  const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
   
-  return date.toLocaleTimeString("en-IN", options);
+  if (timeRegex.test(time)) {
+  
+    const [hours, minutes] = time.split(':');
+    const timeToday = moment().hours(parseInt(hours)).minutes(parseInt(minutes)).seconds(0);
+    
+    return timeToday.format("hh:mm A");
+  } 
+  
+  const parsedTime = moment(time);
+  if (!parsedTime.isValid()) {
+    console.error("Invalid date:", time);
+    return "Invalid date";
+  }
+  return parsedTime.format("hh:mm A");
 };

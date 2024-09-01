@@ -132,7 +132,7 @@ const FindYourPath: React.FC = () => {
         <div className="flex justify-center mt-10">
           <button
             onClick={() => handleViewAllCategory(selectedCategory!)}
-            className="border text-xl border-gray-400  shadow-lg  p-3 rounded-lg bg-gray-50 w-48 md:w-64 text-[#0B2149] font-semibold transition-transform transform hover:scale-105"
+            className="border text-xl border-gray-300  shadow-lg  p-1 rounded-lg bg-gray-50 w-24 md:w-28 text-[#0B2149] font-semibold transition-transform transform hover:scale-105"
           >
             View All
           </button>

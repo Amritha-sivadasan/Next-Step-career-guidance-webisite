@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     (state) => state.student
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,14 +19,6 @@ const Navbar: React.FC = () => {
       setIsLoading(false);
     }
   }, [status]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -98,7 +90,6 @@ const Navbar: React.FC = () => {
                 <Link
                   to="/"
                   className="text-[#0B2149] font-thin hover:text-black "
-                  onClick={(e) => handleScroll(e, "")}
                 >
                   Home
                 </Link>
@@ -148,31 +139,27 @@ const Navbar: React.FC = () => {
             </ul>
           </nav>
 
-          {isVisible ? (
-  isLoading ? (
-    <div className="w-24 h-8 bg-gray-200 animate-pulse rounded"></div>
-  ) : isAuthenticated ? (
-    <div className="flex items-center ">
-      <img
-        src={user?.profile_picture || "/dummyprofile.jpg"}
-        alt="User avatar"
-        className="h-8 w-8 rounded-full"
-      />
-      <button className="font-bold w-24" onClick={handleProfile}>
-        {user?.user_name}
-      </button>
-    </div>
-  ) : (
-    <Link
-      to="/login"
-      className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-[#1A3A6E] transition duration-300"
-    >
-      Login
-    </Link>
-  )
-) : (
-  <div className="w-24 h-8 bg-transparent"></div> 
-)}
+          {isLoading ? (
+            <div className="w-24 h-8 bg-gray-200 animate-pulse rounded"></div>
+          ) : isAuthenticated ? (
+            <div className="flex items-center ">
+              <img
+                src={user?.profile_picture || "/dummyprofile.jpg"}
+                alt="User avatar"
+                className="h-8 w-8 rounded-full"
+              />
+              <button className="font-bold w-24" onClick={handleProfile}>
+                {user?.user_name}
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-[#0B2149] text-white px-4 py-2 rounded-lg hover:bg-[#1A3A6E] transition duration-300"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
 

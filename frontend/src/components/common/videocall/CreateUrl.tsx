@@ -49,7 +49,7 @@
         <div className="mb-6">
           <button
             onClick={createMeeting}
-            className="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600"
+            className="bg-blue-950 text-white py-2 px-6 rounded-md hover:bg-blue-900"
           >
             Generate Meeting Link
           </button>

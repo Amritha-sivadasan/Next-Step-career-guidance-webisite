@@ -76,6 +76,18 @@ const BookingDetailsView = () => {
               {booking?.slotId &&
                 formatTime((booking.slotId as ISlot).consultationEndTime)}
             </p>
+            <p className="text-gray-600 mb-8">
+              <span className={`font-semibold `}>Meeting Status:</span>{" "}
+              <span
+                className={`px-2 py-2 rounded-lg ${
+                  booking?.meetingStatus == "pending"
+                    ? "bg-orange-300"
+                    : "bg-green-600"
+                }`}
+              >
+                {booking?.meetingStatus}
+              </span>
+            </p>
           </div>
         </div>
       </div>

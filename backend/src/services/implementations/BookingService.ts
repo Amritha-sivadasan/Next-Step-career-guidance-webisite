@@ -179,6 +179,15 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
+
+  async getAllPaymentByStudentId(id: string,page:number, limit:number): Promise<IBooking[] | null> {
+    try {
+      const result = await this.bookingRepository.findAllPaymentByUserId(id,page,limit);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
   async getBookingById(id: string): Promise<IBooking | null> {
     try {
       const result = await this.bookingRepository.findById(id);

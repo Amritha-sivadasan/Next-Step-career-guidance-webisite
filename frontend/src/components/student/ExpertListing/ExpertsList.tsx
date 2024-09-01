@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
+import { formatDate, formatTime } from "../../../utils/generalFuncions";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
@@ -172,11 +173,11 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
                     >
                       {/* Display the date and time, aligned correctly */}
                       <span>
-                        {new Date(slot.consultationDate).toLocaleDateString()}
+                        {formatDate(slot.consultationDate) }
                       </span>
                       <span>
-                        {slot.consultationStartTime} -{" "}
-                        {slot.consultationEndTime}
+                        {formatTime( slot.consultationStartTime)} -{" "}
+                        {formatTime(slot.consultationEndTime) }
                       </span>
                     </button>
                   ))}

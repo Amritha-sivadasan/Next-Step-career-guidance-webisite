@@ -84,6 +84,20 @@ export default class BookingRepository implements IBookingRepository {
       .populate("slotId")
       .exec();
   }
+
+  async findAllPaymentByUserId(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<IBooking[] | null> {
+    const skip = (page - 1) * limit;
+    return Booking.find({ studentId: id,})
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("expertId")
+      .exec();
+  }
   async updateBookingPaymentStatus(
     transactionId: string,
     status: string

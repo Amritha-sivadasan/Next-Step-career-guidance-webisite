@@ -1,34 +1,35 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import AdminLogin from "../components/admin/login/AdminLogin";
-
-import Dashboard from "../components/admin/dashbord/AdimnDashboard";
-import AdmintPrivateRoute from "./Privateroutes/AdminPrivateRoute";
+import { Suspense, lazy, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import useFetchAdminData from "../hooks/useFetchAdmin";
-import { useEffect } from "react";
 import { setAdmin, setadminAuthenticated } from "../features/admin/adminSlice";
-import CategoryTable from "../components/admin/category/CategoryList";
-import AddnewCategory from "../components/admin/category/AddnewCategory";
-import EditCategory from "../components/admin/category/CategoryEdit";
-import SubCategoryTable from "../components/admin/subcategory/Subcategory";
-import EditSubCategory from "../components/admin/subcategory/SubCategoryEdit";
-import AddSubCategory from "../components/admin/subcategory/AddSubCategory";
-import ExpertDetailsView from "../components/admin/expertDetails/ExpertView";
+import AdmintPrivateRoute from "./Privateroutes/AdminPrivateRoute";
 import { useAppSelector } from "../hooks/useTypeSelector";
-import Experts from "../components/admin/expertDetails/ExpertDetails";
-import Header from "../components/admin/header/AdminHeader";
-import Sidebar from "../components/admin/sidebar/AdminSidebar";
-import BookingDetails from "../components/admin/booking/BookingDetails";
-import BookingView from "../components/admin/booking/BookingView";
-import StudentDetails from "../pages/admin/StudentDetails";
-import StudentSingleView from "../pages/admin/StudentSingleView";
-import PsychometricTestPage from "../pages/admin/PsychometricTestPage";
-import AddPsychometricTestPage from "../pages/admin/AddPsychometricTestPage";
-import FaqPage from "../pages/admin/FaqPage";
-import ReviewAndRatingPage from "../pages/admin/ReviewAndRatingPage";
 import { onMessageListener, requestFCMToken } from "../config/firebase";
 import toast, { Toaster } from "react-hot-toast";
-import ReportPage from "../pages/admin/ReportPage";
+import LoadingPage from "../components/common/Loading/LoadingPage";
+
+const  AdminLogin =lazy(()=>import("../components/admin/login/AdminLogin")) ;
+const Dashboard =lazy(()=>import("../components/admin/dashbord/AdimnDashboard")) ;
+const CategoryTable =lazy(()=>import("../components/admin/category/CategoryList")) ;
+const  AddnewCategory =lazy(()=>import("../components/admin/category/AddnewCategory")) ;
+const EditCategory =lazy(()=>import("../components/admin/category/CategoryEdit")) ;
+const SubCategoryTable =lazy(()=>import("../components/admin/subcategory/Subcategory")) ;
+const EditSubCategory =lazy(()=>import("../components/admin/subcategory/SubCategoryEdit")) ;
+const AddSubCategory =lazy(()=>import("../components/admin/subcategory/AddSubCategory")) ;
+const  ExpertDetailsView =lazy(()=>import("../components/admin/expertDetails/ExpertView")) ;
+const Experts = lazy(()=>import("../components/admin/expertDetails/ExpertDetails")) ;
+const Header =lazy(()=>import("../components/admin/header/AdminHeader")) ;
+const Sidebar =lazy(()=>import("../components/admin/sidebar/AdminSidebar")) ;
+const BookingDetails =lazy(()=>import("../components/admin/booking/BookingDetails")) ;
+const BookingView =lazy(()=>import("../components/admin/booking/BookingView")) ;
+const StudentDetails =lazy(()=>import("../pages/admin/StudentDetails")) ;
+const StudentSingleView =lazy(()=>import("../pages/admin/StudentSingleView")) ;
+const PsychometricTestPage =lazy(()=>import("../pages/admin/PsychometricTestPage")) ;
+const AddPsychometricTestPage =lazy(()=>import("../pages/admin/AddPsychometricTestPage")) ;
+const FaqPage =lazy(()=>import("../pages/admin/FaqPage")) ;
+const ReviewAndRatingPage =lazy(()=>import("../pages/admin/ReviewAndRatingPage")) ;
+const ReportPage =lazy(()=>import("../pages/admin/ReportPage")) ;
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ const AdminRouter = () => {
     .catch((err) => console.log("Error in receiving foreground message:", err));
 
   return (
+    <Suspense fallback={<LoadingPage />}>
     <div className="flex h-screen bg-gray-100">
       <Routes>
         <Route
@@ -150,6 +152,7 @@ const AdminRouter = () => {
         </Route>
       </Routes>
     </div>
+    </Suspense>
   );
 };
 

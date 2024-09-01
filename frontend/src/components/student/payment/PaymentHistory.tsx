@@ -18,6 +18,8 @@ const PaymentDetails = () => {
       if (response.data.length < itemsPerPage) {
         setHasMore(false);
       }
+      console.log('payment',response.data);
+      
       setPaymentDetails((prev) => [...prev, ...response.data]);
     } catch (error) {
       console.error("Failed to fetch payments:", error);

@@ -50,7 +50,7 @@ const ExpertMeetingHistory = () => {
         const response = await findAllvideoCallByExpert();
   
         if (response.success) {
-          const filterData=response.data.fileter((item:IvidoeCall) =>{
+          const filterData=response.data.filter((item:IvidoeCall) =>{
              const completebooking= item.bookingId as IBooking
              return completebooking.meetingStatus=='completed'
           })

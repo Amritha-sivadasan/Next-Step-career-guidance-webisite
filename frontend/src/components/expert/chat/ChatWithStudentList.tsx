@@ -66,12 +66,15 @@ const ChatWithStudentList = () => {
 
   useEffect(() => {
     const handleNotification = (notification: IChatNotification) => {
-      setNotifications((prev) => ({
-        ...prev,
-        [notification.chatId]: notification.count,
-      }));
-    };
+  
 
+      if(notification.userId==expert?._id){
+             setNotifications((prev) => ({
+               ...prev,
+               [notification.chatId]: notification.count,
+             }));
+           }
+    };
     socket.on("notification", handleNotification);
 
     return () => {

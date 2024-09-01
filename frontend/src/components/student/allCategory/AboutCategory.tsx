@@ -162,7 +162,7 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 ">
           {categories.map((category) => (
-            <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
+            <div key={category._id} className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
               <img
                 src={category.catImage} // Replace with your category image path
                 alt="Category 1"

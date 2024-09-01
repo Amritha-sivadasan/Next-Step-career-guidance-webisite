@@ -18,6 +18,8 @@ import {
 } from "../../../services/api/videoCallApi";
 import { IvidoeCall } from "../../../@types/videoCall";
 import { requestFCMToken } from "../../../config/firebase";
+import { formatDate, formatTime } from "../../../utils/generalFuncions";
+import ClipLoader from "react-spinners/ClipLoader";
 // import { generateToken, onMessageListener } from "../../../config/firebase";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
@@ -33,6 +35,7 @@ const BookingDetails = () => {
   const [urlInputs, setUrlInputs] = useState<Record<string, string>>({});
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [videoCallDetails, setVideoCallDetails] = useState<
     Record<string, IvidoeCall>
@@ -86,26 +89,8 @@ const BookingDetails = () => {
     fetchConfirmBooking(currentPage);
   }, [currentPage]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const day = date.getDate();
-    const monthName = date.toLocaleDateString("en-US", { month: "long" });
-    const year = date.getFullYear();
-    return `${dayName}, ${day} ${monthName} ${year}`;
-  };
 
-  const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(":");
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
+ 
 
   const handleViewMore = () => {
     if (hasMore) {
@@ -156,8 +141,9 @@ const BookingDetails = () => {
         studentId: studentId,
         url: url,
       };
-      await localStorage.setItem("bookingId", bookingId);
 
+      await localStorage.setItem("bookingId", bookingId);
+     setLoading(true);
       try {
         const response = await createVideoCall(videocallDetails);
         const newVideoCallDetails = response.data;
@@ -169,6 +155,7 @@ const BookingDetails = () => {
           ...prevInputs,
           [bookingId]: url,
         }));
+        setLoading(false); 
         toast.success("Video call URL created successfully.");
         setUrlInputs((prevInputs) => ({ ...prevInputs, [bookingId]: "" }));
         const title = "Next Step meeting Link";
@@ -177,6 +164,7 @@ const BookingDetails = () => {
         const result = await sendNotification(title, body, fcmToken!, role);
         console.log("result for notification ", result);
       } catch (error) {
+        setLoading(false); 
         console.error("Failed to create video call:", error);
         toast.error("Failed to create video call. Please try again.");
       }
@@ -272,7 +260,7 @@ const BookingDetails = () => {
                         </>
                       ) : (
                         <>
-                          <input
+                        {request.bookingStatus !=='cancelled' &&  <>  <input
                             type="text"
                             placeholder="Enter URL"
                             value={urlInputs[request._id] || ""}
@@ -293,10 +281,14 @@ const BookingDetails = () => {
                                     student._id
                                   )
                             }
+                            disabled={loading}
                             className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
                           >
-                            {isEditing ? "Update URL" : "Send URL"}
-                          </button>
+                            {loading ? (<ClipLoader size={20} color="#fff" />): isEditing ? "Update URL" : "Send URL"}
+                      
+                          </button></> }
+                     
+                        
                         </>
                       )}
                     </div>
@@ -383,6 +375,14 @@ const BookingDetails = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-semibold mb-4">Cancel Booking</h2>
+            <h3>
+              Please note:{" "}
+              <span className="text-red-700">
+                {" "}
+                By clicking 'Submit,' you will automatically initiate the refund
+                payment process.
+              </span>
+            </h3>
             <form onSubmit={handleCancelSubmit}>
               <div className="mb-4">
                 <label

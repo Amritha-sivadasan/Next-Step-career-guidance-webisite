@@ -37,6 +37,7 @@ const AdminDashboard: React.FC = () => {
   }>();
   const [totalAmount, setTotalAmount] = useState(0);
   const [monthltPayment, setmonthltPayment] = useState<number[]>([]);
+  const [completedSession, setCompletedSession] = useState<number>(0);
   const [categoryData, setCategoryData] = useState<{
     labels: string[];
     data: number[];
@@ -56,6 +57,16 @@ const AdminDashboard: React.FC = () => {
         return acc;
       }, 0);
       setTotalAmount(sum);
+
+      const completedMeetings: IBooking[] = response.data.bookings;
+
+      const val = completedMeetings.reduce((acc, curr) => {
+        if (curr.meetingStatus === "completed") {
+          acc += 1;
+        }
+        return acc;
+      }, 0);
+      setCompletedSession(val);
 
       const paymentBuMonth: number[] = new Array(12).fill(0);
       totalpayment.forEach((booking) => {
@@ -78,7 +89,6 @@ const AdminDashboard: React.FC = () => {
           categoryMap.set(category, 1);
         }
       });
-   
 
       const labels = Array.from(categoryMap.keys());
       const data = Array.from(categoryMap.values());
@@ -90,7 +100,7 @@ const AdminDashboard: React.FC = () => {
       });
     };
     fetChData();
-    setLoading(false)
+    setLoading(false);
   }, []);
 
   const monthlyPaymentsData = {
@@ -145,8 +155,8 @@ const AdminDashboard: React.FC = () => {
             0,
             chartArea.top
           );
-          gradient.addColorStop(0, "rgba(75, 192, 192, 0.6)"); 
-          gradient.addColorStop(1, "rgba(75, 192, 192, 0.2)"); 
+          gradient.addColorStop(0, "rgba(75, 192, 192, 0.6)");
+          gradient.addColorStop(1, "rgba(75, 192, 192, 0.2)");
           return gradient;
         },
         borderColor: "rgba(75, 192, 192, 1)",
@@ -214,7 +224,7 @@ const AdminDashboard: React.FC = () => {
         </div>
         <div className="bg-white p-4 shadow rounded-lg">
           <h2 className="text-gray-500">Completed Session</h2>
-          <p className="text-2xl font-semibold">{details?.meetings.length}</p>
+          <p className="text-2xl font-semibold">{completedSession}</p>
           <p className="text-green-500">1.3% Up from yesterday</p>
         </div>
         <div className="bg-white p-4 shadow rounded-lg">

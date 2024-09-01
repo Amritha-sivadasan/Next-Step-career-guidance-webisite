@@ -23,11 +23,15 @@ const ChatWithExpertList = () => {
 
   useEffect(() => {
     const handleNotification = (notification: IChatNotification) => {
-      setNotifications((prev) => ({
-        ...prev,
-        [notification.chatId]: notification.count,
-      }));
-    };
+      console.log('notification',notification)
+      if(notification.userId==user?._id){
+        setNotifications((prev) => ({
+          ...prev,
+          [notification.chatId]: notification.count,
+        }));
+      }
+
+      }
 
     socket.on("notification", handleNotification);
 

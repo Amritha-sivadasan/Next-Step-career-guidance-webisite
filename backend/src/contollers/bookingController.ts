@@ -107,6 +107,38 @@ class BookingController {
     }
   };
 
+  public findAllPaymentByStudentId = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<void> => {
+    const id = req.user?.userId;
+    try {
+      const page: number = parseInt(req.query.page as string, 10) || 1;
+      const limit: number = parseInt(req.query.limit as string, 10) || 10;
+      if (page <= 0 || limit <= 0) {
+        res.status(400).json({
+          message: "Invalid page or limit value",
+          success: false,
+        });
+        return;
+      }
+
+      const result = await this.bookingservice.getAllPaymentByStudentId(
+        id!,
+        page,
+        limit
+      );
+      res
+        .status(200)
+        .json({ success: true, message: "successfull ", data: result });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  finding Bookings",
+      });
+    }
+  };
+
   public updateBookingPaymentStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { status } = req.body;

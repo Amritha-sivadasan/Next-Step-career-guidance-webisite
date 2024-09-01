@@ -1,54 +1,38 @@
 import { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import Signup from "../components/student/register/Signup";
-import Login from "../components/common/authentication/Login";
-import OtpPage from "../components/common/authentication/OtpPage";
-import AboutUser from "../components/student/aboutStudent/AboutStudent";
-import ForgotPassword from "../components/common/authentication/ForgotPassword";
-import ResetPassword from "../components/common/authentication/ResetPassword";
 import StudentPrivateRoute from "./Privateroutes/StudentPrivateRoute";
 import { useDispatch } from "react-redux";
 import { setAuthenticated, setUser } from "../features/student/authSlice";
 import useFetchUserData from "../hooks/UseFetchUser";
 import { useAppSelector } from "../hooks/useTypeSelector";
-import ForgotPasswordOtpPage from "../components/common/authentication/ForgotPasswordOtp";
-
 import { onMessageListener, requestFCMToken } from "../config/firebase";
-
 import { Toaster } from "react-hot-toast";
-import MeetingHistoryPage from "../pages/student/MeetingHistoryPage";
 import { toast } from "react-toastify";
+import LoadingPage from "../components/common/Loading/LoadingPage";
 
-const StudentChatListPage = lazy(
-  () => import("../pages/student/StudentChatListPage")
-);
-const PsychometricTestPage = lazy(
-  () => import("../pages/student/PsychometricTestPage")
-);
-const PsychometricTestResultPage = lazy(
-  () => import("../pages/student/PsychometricTestResultPage")
-);
+
+const  Signup =lazy(()=>import("../components/student/register/Signup")) ;
+const  Login = lazy(()=>import("../components/common/authentication/Login")) ;
+const  OtpPage =lazy(()=>import("../components/common/authentication/OtpPage")) ;
+const  AboutUser =lazy(()=>import("../components/student/aboutStudent/AboutStudent")) ;
+const  ForgotPassword =lazy(()=>import("../components/common/authentication/ForgotPassword")) 
+const  ResetPassword =lazy(()=>import("../components/common/authentication/ResetPassword")) 
+const  ForgotPasswordOtpPage = lazy(()=>import("../components/common/authentication/ForgotPasswordOtp")) ;
+const  MeetingHistoryPage =lazy(()=>import("../pages/student/MeetingHistoryPage")) ;
+const StudentChatListPage = lazy(() => import("../pages/student/StudentChatListPage"));
+const PsychometricTestPage = lazy(() => import("../pages/student/PsychometricTestPage"));
+const PsychometricTestResultPage = lazy(() => import("../pages/student/PsychometricTestResultPage"));
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
-const CategoryDetailsPage = lazy(
-  () => import("../pages/student/CategoryDetailsPage")
-);
+const CategoryDetailsPage = lazy(() => import("../pages/student/CategoryDetailsPage"));
 const ExpertListing = lazy(() => import("../pages/student/ExpertListing"));
-const PaymentSuccessPage = lazy(
-  () => import("../pages/student/paymentSuccessPage")
-);
+const PaymentSuccessPage = lazy(() => import("../pages/student/paymentSuccessPage"));
 const ProfilePage = lazy(() => import("../pages/student/ProfilePage"));
 const UserSideBar = lazy(() => import("../components/student/sidebar/SideBar"));
-const StudentLayout = lazy(
-  () => import("../components/common/studentLayout/StudentLayout")
-);
+const StudentLayout = lazy(() => import("../components/common/studentLayout/StudentLayout"));
 const PaymentPage = lazy(() => import("../pages/student/PaymentPage"));
-const BookingDetailsPage = lazy(
-  () => import("../pages/student/BookingDetailsPage")
-);
-const LoadingPage = lazy(
-  () => import("../components/common/Loading/LoadingPage")
-);
+const BookingDetailsPage = lazy(() => import("../pages/student/BookingDetailsPage"));
+
 
 interface NotificationPayload {
   notification: {
