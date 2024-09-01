@@ -35,7 +35,7 @@ export default class StudentRepository implements IStudentRepository {
   }
   async findAll(page: number, limit: number): Promise<IStudent[]> {
     const skip = (page - 1) * limit;
-    return Student.find().skip(skip).limit(limit).exec();
+    return Student.find().sort({_id:-1}).skip(skip).limit(limit).exec();
   }
   async findOne(email: string): Promise<IStudent | null> {
     return Student.findOne({ email });

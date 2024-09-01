@@ -9,13 +9,16 @@ export const studentAxiosInstance = axios.create({
 });
 
 let cancelTokenSource: CancelTokenSource |null;
-//request interceptor
+
 studentAxiosInstance.interceptors.request.use(async (config) => {
-  // try {
+ 
   if (cancelTokenSource) {
     cancelTokenSource.cancel("Operation canceled due to a new request.");
   }
+  cancelTokenSource = axios.CancelToken.source();
+  config.cancelToken = cancelTokenSource.token;
 
+  
   const isUserAllowed = await checkIfUserIsBlocked();
   if (!isUserAllowed.data.is_active) {
     setAuthenticated(false);

@@ -2,6 +2,7 @@ import { axiosInstance } from "../instance/expertInstance";
 import { studentAxiosInstance } from "../instance/userInstance";
 import { IReviewAndRating } from "../../@types/reviewAndRating";
 import { adminAxiosInstance } from "../instance/adminInstance";
+import axios from "axios";
 
 const API_URL = process.env.VITE_API_URL;
 
@@ -124,29 +125,16 @@ export const fetchAllReviews = async () => {
 
 export const fetchAllReviewByStudent = async () => {
   try {
-    const response = await studentAxiosInstance.get(
-      `${API_URL}/student/fetchAllReview`,
-
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${API_URL}/student/fetchAllReview`);
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
 };
 
-
 export const fetchAllReviewByExpert = async () => {
   try {
-    const response = await axiosInstance.get(
-      `${API_URL}/expert/fetchAllReview`,
-
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${API_URL}/expert/fetchAllReview`);
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;

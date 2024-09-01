@@ -44,10 +44,14 @@ const StudentMeetingHistory = () => {
   const fetchAllMeetings = async () => {
     try {
       const meetingsResult = await findAllvideoCallStudent();
-      const meetings = meetingsResult.data;
-      setMeetingDetails(meetings);
+      const filterData = meetingsResult.data.filter((item:IvidoeCall)=>{
+        const bookingComplete= item.bookingId as IBooking
+         return bookingComplete.meetingStatus=='completed'
+      })
+      
+      setMeetingDetails(filterData);
 
-      const meetingIds = meetings.map((meeting: IvidoeCall) => meeting._id);
+      const meetingIds = filterData.map((meeting: IvidoeCall) => meeting._id);
 
       const reviewsPromises = meetingIds.map((meetingId: string) =>
         findAllReviewsByStudent(meetingId)

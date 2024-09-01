@@ -8,7 +8,7 @@ export const adminAxiosInstance = axios.create({
 
 const cancelTokenMap = new Map();
 
-//request interceptor
+
 adminAxiosInstance.interceptors.request.use(async (config) => {
   const token = localStorage.getItem("adminAccess");
   if (token) {

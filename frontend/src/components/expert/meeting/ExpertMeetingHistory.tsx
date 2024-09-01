@@ -48,10 +48,14 @@ const ExpertMeetingHistory = () => {
     const fetDetails = async () => {
       if (expert) {
         const response = await findAllvideoCallByExpert();
-        const meetings = response.data;
+  
         if (response.success) {
-          setMeetingDetails(response.data);
-          const meetingIds = meetings.map((meeting: IvidoeCall) => meeting._id);
+          const filterData=response.data.fileter((item:IvidoeCall) =>{
+             const completebooking= item.bookingId as IBooking
+             return completebooking.meetingStatus=='completed'
+          })
+          setMeetingDetails(filterData);
+          const meetingIds = filterData.map((meeting: IvidoeCall) => meeting._id);
 
           const reviewsPromises = meetingIds.map((meetingId: string) =>
             findAllReviewsByExpert(meetingId)

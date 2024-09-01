@@ -73,7 +73,7 @@ const AboutExpert: React.FC = () => {
         const data = response.payload.data as IExpert;
         dispatch(setExpert(data));
         const title = "Expert register";
-        const body = 'New Expert is  registered' ;
+        const body = "New Expert is  registered";
         const role = "admin";
         await sendNotification(title, body, fcmToken!, role);
         setTimeout(() => {
@@ -184,6 +184,10 @@ const AboutExpert: React.FC = () => {
                   validate: (value) => {
                     if (value < 0) return "Fee must be a positive number.";
                     return true;
+                  },
+                  pattern: {
+                    value: /^[0-9]{4}$/,
+                    message: "Fee must be number ",
                   },
                 })}
               />

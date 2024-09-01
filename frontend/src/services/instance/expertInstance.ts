@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { checkIfExpertIsBlocked } from "../api/ExpertApi";
 import { setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
 
@@ -8,8 +8,15 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-//request interceptor
+let cancelTokenSource: CancelTokenSource | null;
+
 axiosInstance.interceptors.request.use(async (config) => {
+  if (cancelTokenSource!) {
+    cancelTokenSource.cancel("Operation canceled due to a new request.");
+
+    cancelTokenSource = axios.CancelToken.source();
+    config.cancelToken = cancelTokenSource.token;
+  }
   const isUserAllowed = await checkIfExpertIsBlocked();
 
   if (!isUserAllowed.data.is_active) {
@@ -32,6 +39,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 //response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
+    cancelTokenSource = null;
     return response;
   },
   async (error) => {

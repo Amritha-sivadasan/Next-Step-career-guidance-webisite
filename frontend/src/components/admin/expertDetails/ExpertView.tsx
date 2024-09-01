@@ -63,7 +63,7 @@ const ExpertDetailsView: React.FC = () => {
       if (result.success) {
         toast.success("Expert verified successfully");
         const title = "Next Step Registration";
-        const body = 'Your Ceritificate is Validate' ;
+        const body = 'Your Ceritificate is verified' ;
         const role = "expert";
         await sendNotification(title, body, fcmToken!, role);
 

@@ -96,7 +96,7 @@ class AdminController {
         }
       });
     } catch (error) {
-      console.log("error during get all users");
+      console.log("error during get all Expert");
 
       res.status(500).json({
         message: "something went wrong on get all users ",

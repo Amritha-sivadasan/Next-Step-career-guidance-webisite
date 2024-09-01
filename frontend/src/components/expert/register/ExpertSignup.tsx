@@ -67,6 +67,7 @@ const ExpertSignup: React.FC = () => {
         navigate("/expert/otp-verify");
       }, 1000);
     } else {
+      setLoading(false);
       Errornotify(response.message);
     }
   };
