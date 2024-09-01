@@ -9,30 +9,55 @@ import { onMessageListener, requestFCMToken } from "../config/firebase";
 import { Toaster } from "react-hot-toast";
 import { toast } from "react-toastify";
 import LoadingPage from "../components/common/Loading/LoadingPage";
+import FAQChatBot from "../components/common/chatbot/ChatBot";
 
-
-const  Signup =lazy(()=>import("../components/student/register/Signup")) ;
-const  Login = lazy(()=>import("../components/common/authentication/Login")) ;
-const  OtpPage =lazy(()=>import("../components/common/authentication/OtpPage")) ;
-const  AboutUser =lazy(()=>import("../components/student/aboutStudent/AboutStudent")) ;
-const  ForgotPassword =lazy(()=>import("../components/common/authentication/ForgotPassword")) 
-const  ResetPassword =lazy(()=>import("../components/common/authentication/ResetPassword")) 
-const  ForgotPasswordOtpPage = lazy(()=>import("../components/common/authentication/ForgotPasswordOtp")) ;
-const  MeetingHistoryPage =lazy(()=>import("../pages/student/MeetingHistoryPage")) ;
-const StudentChatListPage = lazy(() => import("../pages/student/StudentChatListPage"));
-const PsychometricTestPage = lazy(() => import("../pages/student/PsychometricTestPage"));
-const PsychometricTestResultPage = lazy(() => import("../pages/student/PsychometricTestResultPage"));
+const Signup = lazy(() => import("../components/student/register/Signup"));
+const Login = lazy(() => import("../components/common/authentication/Login"));
+const OtpPage = lazy(() =>
+  import("../components/common/authentication/OtpPage")
+);
+const AboutUser = lazy(() =>
+  import("../components/student/aboutStudent/AboutStudent")
+);
+const ForgotPassword = lazy(() =>
+  import("../components/common/authentication/ForgotPassword")
+);
+const ResetPassword = lazy(() =>
+  import("../components/common/authentication/ResetPassword")
+);
+const ForgotPasswordOtpPage = lazy(() =>
+  import("../components/common/authentication/ForgotPasswordOtp")
+);
+const MeetingHistoryPage = lazy(() =>
+  import("../pages/student/MeetingHistoryPage")
+);
+const StudentChatListPage = lazy(() =>
+  import("../pages/student/StudentChatListPage")
+);
+const PsychometricTestPage = lazy(() =>
+  import("../pages/student/PsychometricTestPage")
+);
+const PsychometricTestResultPage = lazy(() =>
+  import("../pages/student/PsychometricTestResultPage")
+);
 const Home = lazy(() => import("../pages/student/Home"));
 const AllCategoryPage = lazy(() => import("../pages/student/CategoryPage"));
-const CategoryDetailsPage = lazy(() => import("../pages/student/CategoryDetailsPage"));
+const CategoryDetailsPage = lazy(() =>
+  import("../pages/student/CategoryDetailsPage")
+);
 const ExpertListing = lazy(() => import("../pages/student/ExpertListing"));
-const PaymentSuccessPage = lazy(() => import("../pages/student/paymentSuccessPage"));
+const PaymentSuccessPage = lazy(() =>
+  import("../pages/student/paymentSuccessPage")
+);
 const ProfilePage = lazy(() => import("../pages/student/ProfilePage"));
 const UserSideBar = lazy(() => import("../components/student/sidebar/SideBar"));
-const StudentLayout = lazy(() => import("../components/common/studentLayout/StudentLayout"));
+const StudentLayout = lazy(() =>
+  import("../components/common/studentLayout/StudentLayout")
+);
 const PaymentPage = lazy(() => import("../pages/student/PaymentPage"));
-const BookingDetailsPage = lazy(() => import("../pages/student/BookingDetailsPage"));
-
+const BookingDetailsPage = lazy(() =>
+  import("../pages/student/BookingDetailsPage")
+);
 
 interface NotificationPayload {
   notification: {
@@ -72,7 +97,7 @@ const StudentRouter = () => {
 
   onMessageListener()
     .then((payload: NotificationPayload) => {
-      if (payload.notification && payload.data?.role.trim()=='student') {
+      if (payload.notification && payload.data?.role.trim() == "student") {
         toast(
           <div>
             <strong>{payload.notification.title}</strong>
@@ -89,6 +114,10 @@ const StudentRouter = () => {
 
   return (
     <Suspense fallback={<LoadingPage />}>
+      <div className="z-40">
+        {" "}
+        <FAQChatBot />
+      </div>
       <Routes>
         <Route
           path="/signup"
