@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 import { sendOtpExpert } from "../../../services/api/ExpertApi";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../../../config/firebase";
@@ -120,7 +121,12 @@ const ExpertSignup: React.FC = () => {
       </header>
 
       <div className="flex flex-col md:flex-row w-full max-h-screen">
-        <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
+        <motion.div
+          className="flex-1 flex items-center justify-center p-4 bg-white relative"
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        >
           <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
             <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
               Sign up
@@ -243,15 +249,20 @@ const ExpertSignup: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
+        <motion.div
+          className="hidden md:flex-1 md:flex items-center justify-center p-4"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        >
           <img
             src="/experts.png"
             alt="Description of Image"
             className="w-full h-full object-cover"
           />
-        </div>
+        </motion.div>
       </div>
     </div>
   );

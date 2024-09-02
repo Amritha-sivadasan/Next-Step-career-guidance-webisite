@@ -6,15 +6,22 @@ export default {
       fontFamily: {
          sans: ["Lato", "Helvetica", "Arial", "sans-serif"],
       },
-      animation: {
-        'fallDown': 'fallDown 0.5s ease-out',
-      },
       keyframes: {
-        fallDown: {
-          '0%': { opacity: 0, transform: 'translateY(-100px)' },
-          '100%': { opacity: 1, transform: 'translateY(0)' },
+        fadeInUp: {
+          '0%': {
+            opacity: 0,
+            transform: 'translateY(20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
         },
       },
+      animation: {
+        fadeInUp: 'fadeInUp 0.5s ease-out forwards',
+      },
+    
     },
   },
   plugins: [],

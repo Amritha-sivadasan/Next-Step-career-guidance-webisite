@@ -56,7 +56,7 @@ const FAQChatBot: React.FC = () => {
       simulateTyping(faqData[matchedQuestion]);
     } else {
       simulateTyping(
-       "If you have any more questions, you can ask our agents. Below is an option to connect with them."
+        "If you have any more questions, you can ask our agents. Below is an option to connect with them."
       );
     }
   };
@@ -88,12 +88,12 @@ const FAQChatBot: React.FC = () => {
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-blue-900 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 flex items-center space-x-2"
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-3 rounded-full shadow-lg transition duration-300 flex items-center space-x-2"
         >
-          <span>Chat with Us</span>
+          {/* <span>Chat with Us</span> */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-10 w-10"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

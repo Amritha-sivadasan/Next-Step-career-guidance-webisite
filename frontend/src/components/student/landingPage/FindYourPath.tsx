@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useInView, motion } from "framer-motion";
 import {
   getAllCategory,
   getAllSubCategory,
@@ -13,6 +14,10 @@ const FindYourPath: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>();
   const [categories, setCategory] = useState<ICategory[]>([]);
   const [subcategories, setSubcategories] = useState<ISubCategory[]>([]);
+
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef);
+
   useEffect(() => {
     const fetchCategory = async () => {
       const response = await getAllCategory(1, 10);
@@ -84,11 +89,11 @@ const FindYourPath: React.FC = () => {
                 <li
                   key={category._id}
                   onClick={() => handleSelectCategory(category.catName)}
-                  className={`p-2  cursor-pointer rounded-lg flex-shrink-0 md:w-auto transition-all  duration-300 ${
+                  className={`p-2  cursor-pointer rounded-lg flex-shrink-0 md:w-auto transition-all   duration-300 ${
                     selectedCategory === category.catName
                       ? "text-blue-900 border-b-2 border-blue-900"
                       : "text-[#0B2149]"
-                  }`}
+                  }  hover:scale-105`}
                 >
                   {category.catName}
                 </li>
@@ -107,13 +112,31 @@ const FindYourPath: React.FC = () => {
       </div>
 
       {/* Subcategory Section */}
-      <div className="h-auto md:h-[70vh] bg-[#F0F8FF] p-6">
+      <motion.div
+        ref={sectionRef}
+        className="h-auto md:h-[70vh] bg-[#F0F8FF] p-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{
+          opacity: isInView ? 1 : 0,
+          scale: isInView ? 1 : 0.8,
+        }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12">
-          {subcategories.map((subcat) => (
-            <div
+          {subcategories.map((subcat, index) => (
+            <motion.div
               key={subcat._id}
               className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer transition-transform transform hover:scale-105"
               onClick={() => handleSubCategory(subcat._id)}
+              initial={{ opacity: 0, translateY: 50 }}
+              animate={{
+                opacity: 1,
+                translateY: 0,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.3, // Staggered animation for each item
+              }}
             >
               <h3 className="text-xl font-semibold mb-2">
                 {subcat.subCatName}
@@ -126,7 +149,7 @@ const FindYourPath: React.FC = () => {
                   className="max-w-full h-auto object-contain"
                 />
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
         <div className="flex justify-center mt-10">
@@ -137,7 +160,7 @@ const FindYourPath: React.FC = () => {
             View All
           </button>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

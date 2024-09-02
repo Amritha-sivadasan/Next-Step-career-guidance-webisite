@@ -23,6 +23,7 @@ import {
 import { IExpert } from "../../../@types/expert";
 import { registerExpertWithGoogle } from "../../../features/expert/middleware/ExpertRegisterThunk";
 import LoadingPage from "../Loading/LoadingPage";
+import { motion } from "framer-motion";
 
 interface LoginPageProps {
   userType: "student" | "expert";
@@ -171,7 +172,12 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   ///jsx----------------------------------///
   return (
     <div className="flex flex-col md:flex-row w-full h-screen">
-      <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
+      <motion.div
+        className="flex-1 flex items-center justify-center p-4 bg-white relative"
+        initial={{ opacity: 0, x: -100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, ease: "easeInOut" }}
+      >
         <Link
           to={userType == "student" ? "/" : "/expert"}
           className="absolute top-6 left-8 flex items-center"
@@ -268,15 +274,20 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
+      <motion.div
+        className="hidden md:flex-1 md:flex items-center justify-center p-4"
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, ease: "easeInOut" }}
+      >
         <img
           src={isExpert ? "/experts.png" : "/home-image.png"}
           alt="Description of Image"
           className="w-full h-full object-cover"
         />
-      </div>
+      </motion.div>
     </div>
   );
 };

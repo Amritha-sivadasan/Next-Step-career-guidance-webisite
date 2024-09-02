@@ -12,6 +12,7 @@ import { setUser } from "../../../features/student/authSlice";
 import { IStudent } from "../../../@types/user";
 import LoadingPage from "../../common/Loading/LoadingPage";
 import { validatePhoneNumber } from "../../../utils/validator/studentsingupvalidator";
+import { motion } from "framer-motion";
 
 // import { validatePassword, validatePhoneNumber } from "../../utils/validator/studentsingupvalidator";
 
@@ -116,7 +117,12 @@ const Signup: React.FC = () => {
         <h1 className="text-[#0B2149] ms-2 text-xl font-bold">NextStep</h1>
       </Link>
       <div className="flex flex-col md:flex-row w-full max-h-screen">
-        <div className="flex-1 flex items-center justify-center p-4 bg-white relative">
+        <motion.div
+          className="flex-1 flex items-center justify-center p-4 bg-white relative"
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        >
           <div className="w-8/12 max-w-md md:max-w-lg lg:max-w-xl">
             <h1 className="text-3xl text-[#0B2149] font-bold mb-6 text-center">
               Sign up
@@ -244,15 +250,20 @@ const Signup: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hidden md:flex-1 md:flex items-center justify-center p-4">
+        <motion.div
+          className="hidden md:flex-1 md:flex items-center justify-center p-4"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        >
           <img
             src="/home-image.png"
             alt="Description of Image"
             className="w-full h-full object-cover"
           />
-        </div>
+        </motion.div>
       </div>
     </div>
   );
