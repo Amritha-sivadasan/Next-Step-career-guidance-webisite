@@ -13,4 +13,5 @@ export interface IMessage extends Document{
     file?:string
     timestamp: Date,
     is_delete:Boolean
+    status:string
 }

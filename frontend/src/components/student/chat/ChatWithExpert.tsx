@@ -29,6 +29,15 @@ const ChatWithExpertList = () => {
           ...prev,
           [notification.chatId]: notification.count,
         }));
+        setChaDetails((prevChats) => {
+          return prevChats
+            .map((chat) => ({
+              ...chat,
+              hasNotification: chat._id === notification.chatId,
+            }))
+            .sort((a, b) => (b.hasNotification ? 1 : -1));
+        });
+      
       }
 
       }

@@ -7,6 +7,7 @@ import { IStudent } from "../entities/StudentEntity";
 import { IExpert } from "../entities/ExpertEntity";
 import { sendFirebaseNotification } from "../contollers/firebaseNotificationController";
 import NotificationService from "../utils/NotificationService";
+import MessageService from "../services/implementations/MessageService";
 // import { sendPushNotification } from "../utils/google-auth-token";
 
 interface OnlineUsers {
@@ -18,6 +19,7 @@ const onlineUsers: OnlineUsers = {};
 export const createSocketServer = (server: http.Server) => {
   const chatSerive = new ChatService();
   const notificationService = new ChatNotificationService();
+  const  messageService= new MessageService()
   const io = new Server(server, {
     cors: {
       origin: process.env.CLIENT_URL,
@@ -31,7 +33,8 @@ export const createSocketServer = (server: http.Server) => {
     socket.on("joinChat", async ({ chatId, userId }) => {
       socket.join(chatId);
       onlineUsers[userId] = socket.id;
-      console.log("online user", onlineUsers);
+     const result= await messageService.updateMessageStatus(chatId,userId)
+      io.to(chatId).emit('seenMessage',userId,result)
       if (chatId) {
         const notification = await notificationService.findOne(userId, chatId);
         if (notification) {
@@ -39,10 +42,16 @@ export const createSocketServer = (server: http.Server) => {
         }
       }
     });
+   
+      
+  
 
     socket.on("sendMessage", async ({ chatId, message }) => {
+     
+
       io.to(chatId).emit("receiveMessage", message);
       const chat = await chatSerive.fetchChatById(chatId);
+    
       if (chat) {
         const student = chat.studentId as IStudent;
         const expert = chat.expertId as IExpert;
@@ -74,6 +83,9 @@ export const createSocketServer = (server: http.Server) => {
       
           io.emit("notification", notification);
          
+        }else{
+          const result=  await messageService.updateMessageStatus(chatId,message.senderId)
+          io.to(chatId).emit('seenMessage',message.senderId,result)
         }
       }
     });

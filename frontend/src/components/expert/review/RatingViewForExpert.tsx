@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IReviewAndRating } from "../../../@types/reviewAndRating";
 import { fetchAllReviewByExpert } from "../../../services/api/reviewAndRatingApi";
 import { IExpert } from "../../../@types/expert";
 import StarRatings from "react-star-ratings";
+import {motion, useInView} from 'framer-motion'
 
 const RatingViewForExpert = () => {
   const [reviewDetails, setReviewDetails] = useState<IReviewAndRating[]>([]);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef);
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -19,7 +22,14 @@ const RatingViewForExpert = () => {
   }, []);
 
   return (
-    <div className="py-16 mb-10 bg-gray-100">
+    <motion.div className="py-16 mb-10 bg-gray-100"     ref={sectionRef}
+
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{
+      opacity: isInView ? 1 : 0,
+      scale: isInView ? 1 : 0.8,
+    }}
+    transition={{ duration: 0.8, ease: "easeOut" }}>
       <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-4">
         What Our Experts Say
       </h2>
@@ -64,7 +74,7 @@ const RatingViewForExpert = () => {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

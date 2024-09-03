@@ -78,6 +78,7 @@ export const sendMessageByExpert = async (message: FormData) => {
 
 export const getMessageByChatIdByStudent = async (id: string) => {
   try {
+    console.log('chatId',id)
     const response = await studentAxiosInstance.get(
       `${API_URL}/student/fetchChatById/${id}`,
       {

@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IReviewAndRating } from "../../../@types/reviewAndRating";
 import { fetchAllReviewByStudent } from "../../../services/api/reviewAndRatingApi";
 import { IStudent } from "../../../@types/user";
 import StarRatings from "react-star-ratings";
+import { motion, useInView } from "framer-motion";
 
 const ReviewListForStudent = () => {
   const [reviewDetails, setReviewDetails] = useState<IReviewAndRating[]>([]);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef);
 
   useEffect(() => {
     const fetchReview = async () => {
       const response = await fetchAllReviewByStudent();
       if (response.success) {
-        setReviewDetails(response.data.slice(0,3));
+        setReviewDetails(response.data.slice(0, 3));
       }
     };
 
@@ -19,7 +22,16 @@ const ReviewListForStudent = () => {
   }, []);
 
   return (
-    <div className="py-16 mb-10 bg-gray-100">
+    <motion.div
+    ref={sectionRef}
+      className="py-16 mb-10 bg-gray-100"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{
+        opacity: isInView ? 1 : 0,
+        scale: isInView ? 1 : 0.8,
+      }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-4">
         What Our Students Say
       </h2>
@@ -64,7 +76,7 @@ const ReviewListForStudent = () => {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -14,6 +14,7 @@ export default class ChatService implements IChatService{
     async findAllChatById(id: string): Promise<IChat[]> {
         try {
           const result = await this.chatRepository.fetchChatById(id)
+         
           return result  
         } catch (error) {
             throw error
@@ -23,6 +24,7 @@ export default class ChatService implements IChatService{
     async fetchChatById(id: string): Promise<IChat|null> {
         try {
             const result = await this.chatRepository.fetOneChatByid(id)
+            
             return result  
           } catch (error) {
               throw error

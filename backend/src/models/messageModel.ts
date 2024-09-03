@@ -18,6 +18,11 @@ const MessageSchema: Schema = new Schema(
       default: Date.now,
     },
     is_delete: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: ['sent','seen'],
+      default: 'sent',
+    }
   },
   { timestamps: true }
 );

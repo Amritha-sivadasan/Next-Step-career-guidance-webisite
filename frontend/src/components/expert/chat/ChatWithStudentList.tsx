@@ -73,6 +73,14 @@ const ChatWithStudentList = () => {
                ...prev,
                [notification.chatId]: notification.count,
              }));
+             setChatDetails((prevChats) => {
+              return prevChats
+                .map((chat) => ({
+                  ...chat,
+                  hasNotification: chat._id === notification.chatId,
+                }))
+                .sort((a, b) => (b.hasNotification ? 1 : -1));
+            });
            }
     };
     socket.on("notification", handleNotification);

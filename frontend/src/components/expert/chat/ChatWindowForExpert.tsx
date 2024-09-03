@@ -19,10 +19,15 @@ import moment from "moment";
 import { motion } from "framer-motion";
 import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { MdDoneAll } from "react-icons/md";
 
 const ChatWindowExpert: React.FC = () => {
-  const { chatId, setLatestMessage, setChatId, setNotificationCount } =
-    useExpertChat();
+  const {
+    chatId,
+    setLatestMessage,
+    setChatId,
+    setNotificationCount,
+  } = useExpertChat();
   const { expert } = useAppSelector((state) => state.expert);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -93,6 +98,26 @@ const ChatWindowExpert: React.FC = () => {
         )
       );
     };
+    const handleSeenMessage =(Id:string,result:IMessage[])=>{
+      if(Id !==userId){
+        setMessages(prevMessages =>
+          prevMessages.map((message) => {
+      
+            const updatedMessage = result.find(
+              (msg) => msg._id.toString() === message._id.toString()
+            );
+            
+          
+            if (updatedMessage) {
+              return { ...message, status: updatedMessage.status };
+            }
+            
+            
+            return message;
+          }))
+      }
+   
+    }
 
     socket.on("connect", () => {
       console.log("Connected to Socket.IO server with id:", socket.id);
@@ -100,12 +125,15 @@ const ChatWindowExpert: React.FC = () => {
 
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messageDeleted", handleDeleteMessage);
+    socket.on('seenMessage',(userId,result)=>handleSeenMessage(userId,result))
 
     if (chatId) {
       socket.emit("joinChat", { chatId, userId });
+     
     }
 
     return () => {
+      socket.off('seenMessage',handleSeenMessage)
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
       socket.emit("leaveChat", { chatId, userId });
@@ -162,11 +190,6 @@ const ChatWindowExpert: React.FC = () => {
       setSelectedFile(null);
       setLastMessage(response.data._id);
       setImagePreviewUrl("");
-
-      // const recipientToken = await getToken(messaging);
-      // if (recipientToken) {
-      //   await sendPushNotification(recipientToken, newMessage);
-      // }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -378,10 +401,22 @@ const ChatWindowExpert: React.FC = () => {
                           </>
                         )}
                       </div>
-                      <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
-                        {moment(message.timestamp).fromNow()}
-                      </span>
-
+                      <div className="flex">
+                        <span className="flex justify-end items-end mt-5 text-xs text-gray-500">
+                          {moment(message.timestamp).fromNow()}
+                        </span>
+                        <span>
+                          {message.senderId === userId && (
+                            <>
+                              {message.status === "seen" ? (
+                                <MdDoneAll color="green" />
+                              ) : (
+                                <MdDoneAll />
+                              )}
+                            </>
+                          )}
+                        </span>
+                      </div>
                       {/* Delete Button only for current user's messages */}
                       {message.senderId === userId && !message.is_delete && (
                         <button

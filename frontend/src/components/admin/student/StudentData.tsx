@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import LoadingPage from "../../common/Loading/LoadingPage";
 import { useNavigate } from "react-router-dom";
@@ -54,29 +54,85 @@ const StudentData = () => {
     loadStudent();
   }, [currentPage, itemsPerPage]);
 
-  const handleViewButton = (studentId: string) => {
-    navigate(`/admin/studentView/${studentId}`);
-  };
+  const handleViewButton = useCallback( (studentId: string) => {
+      navigate(`/admin/studentView/${studentId}`);
+    },
+    [navigate]
+  );
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
-  const handleBlockUnblock = async (studentId: string) => {
-    const response = await handleBlockAndUnblockStudent(studentId);
-    if (response.success) {
-      const updatedResponse: StduentResponse = await fetchAllEStudent(
-        currentPage,
-        itemsPerPage
-      );
-      toast.success(response.message);
-      setStudents(updatedResponse.data.items);
-      setTotalPages(updatedResponse.data.pagination.totalPages);
-    } else {
-      toast.error(response.message);
-    }
-  };
+  const handleBlockUnblock = useCallback(
+    async (studentId: string) => {
+      const response = await handleBlockAndUnblockStudent(studentId);
+      if (response.success) {
+        const updatedResponse: StduentResponse = await fetchAllEStudent(
+          currentPage,
+          itemsPerPage
+        );
+        toast.success(response.message);
+        setStudents(updatedResponse.data.items);
+        setTotalPages(updatedResponse.data.pagination.totalPages);
+      } else {
+        toast.error(response.message);
+      }
+    },
+    [currentPage, itemsPerPage]
+  );
+
+  const memoizedRow = useMemo(
+    () =>
+      students.map((student, index) => (
+        <tr key={student._id}>
+          <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+            {index + 1}
+          </td>
+          <td className="py-2 px-4 border-b text-center">
+            {typeof student.profile_picture === "string" && (
+              <img
+                src={student.profile_picture ? student.profile_picture : "/"}
+                alt="Profile"
+                className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
+              />
+            )}
+          </td>
+          <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+            {student.user_name}
+          </td>
+          <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+            {student.education_level}
+          </td>
+          <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+            {student.email}
+          </td>
+          <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
+            {student.education_background}
+          </td>
+          <td className="py-2 px-4 border-b text-center">
+            <button
+              className={`px-3 py-1  text-white rounded-full ${
+                student.is_active ? "bg-red-800" : "bg-yellow-500"
+              }`}
+              onClick={() => handleBlockUnblock(student._id)}
+            >
+              {student.is_active ? "Block" : "Unblock"}
+            </button>
+          </td>
+          <td className="py-2 px-4 border-b text-center">
+            <button
+              className="bg-gray-200 px-4 py-1 rounded text-xs sm:text-sm md:text-center"
+              onClick={() => handleViewButton(student._id)}
+            >
+              View
+            </button>
+          </td>
+        </tr>
+      )),
+    [students, handleBlockUnblock, handleViewButton]
+  );
 
   if (loading) {
     return (
@@ -123,58 +179,7 @@ const StudentData = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {students.map((student, index) => (
-                <tr key={student._id}>
-                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
-                    {index + 1}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center">
-                    {typeof student.profile_picture === "string" && (
-                      <img
-                        src={
-                          student.profile_picture
-                            ? student.profile_picture
-                            : "/"
-                        }
-                        alt="Profile"
-                        className="h-8 w-8 sm:h-10 sm:w-10 rounded-full mx-auto"
-                      />
-                    )}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
-                    {student.user_name}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
-                    {student.education_level}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
-                    {student.email}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center text-xs sm:text-sm md:text-center">
-                    {student.education_background}
-                  </td>
-                  <td className="py-2 px-4 border-b text-center">
-                    <button
-                      className={`px-3 py-1  text-white rounded-full ${
-                        student.is_active ? "bg-red-800" : "bg-yellow-500"
-                      }`}
-                      onClick={() => handleBlockUnblock(student._id)}
-                    >
-                      {student.is_active ? "Block" : "Unblock"}
-                    </button>
-                  </td>
-                  <td className="py-2 px-4 border-b text-center">
-                    <button
-                      className="bg-gray-200 px-4 py-1 rounded text-xs sm:text-sm md:text-center"
-                      onClick={() => handleViewButton(student._id)}
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <tbody>{memoizedRow}</tbody>
           </table>
 
           <div className="flex justify-between items-center mt-4">

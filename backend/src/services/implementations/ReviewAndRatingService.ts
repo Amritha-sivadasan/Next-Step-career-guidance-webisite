@@ -53,7 +53,10 @@ export default class ReviewAndRatingService implements IReviewAndRatingService{
         try {
 
             const result= await this.reviewAndReviewRepository.fetAllRevieByExpert()
-            return result
+            let sum= result.reduce((acc,curr)=>acc+curr.rating,0)
+            let average=Math.floor(sum/result.length) 
+            const arr=result.filter((item)=>item.rating==average)
+           return arr.slice(0,3)
             
         } catch (error) {
           throw error
@@ -63,7 +66,10 @@ export default class ReviewAndRatingService implements IReviewAndRatingService{
     async fetchReviewByStudent(): Promise<IReviewAndRating[]> {
         try {
             const result= await this.reviewAndReviewRepository.fetAllRevieByStudent()
-            return result
+            let sum= result.reduce((acc,curr)=>acc+curr.rating,0)
+             let average=Math.floor(sum/result.length) 
+             const arr=result.filter((item)=>item.rating==average)
+            return arr.slice(0,3)
         } catch (error) {
             throw error
         }

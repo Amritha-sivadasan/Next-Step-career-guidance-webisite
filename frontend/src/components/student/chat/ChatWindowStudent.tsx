@@ -13,18 +13,22 @@ import { IExpert } from "../../../@types/expert";
 import { FiTrash2 } from "react-icons/fi";
 import moment from "moment";
 import ConfirmationModal from "../../common/modal/ConfirmationModal";
-import { MdOutlineDoNotDisturb } from "react-icons/md";
+import { MdDoneAll, MdOutlineDoNotDisturb } from "react-icons/md";
 
 import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { toast } from "react-toastify";
+
 // import {  sendNotificationUser } from "../../../services/api/videoCallApi";
 
 const ChatWindow: React.FC = () => {
-  const { chatId, setLatestMessage, setChatId, setNotificationCount } =
-    useStudentChat();
+  const {
+    chatId,
+    setLatestMessage,
+    setChatId,
+    setNotificationCount,
+  } = useStudentChat();
   const { user } = useAppSelector((state) => state.student);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -36,7 +40,7 @@ const ChatWindow: React.FC = () => {
     null
   );
   const [lastMessage, setLastMessage] = useState<string>("");
-  const [isChatActive, setIsChatActive] = useState(false);
+
   const [recordingUrl, setRecordingUrl] = useState("");
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
@@ -47,23 +51,6 @@ const ChatWindow: React.FC = () => {
   const isAutoScroll = useRef(true);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  // const [fcmToken, setFcmToken] = useState<string | null>(null);
-
-
- 
-
-  // useEffect(() => {
-  //   const fetchFcmToken = async () => {
-  //     try {
-  //       const token = await requestFCMToken();
-  //       setFcmToken(token!);
-  //       console.log("token:->", token);
-  //     } catch (error) {
-  //       console.log("error during fetch fcm token", error);
-  //     }
-  //   };
-  //   fetchFcmToken();
-  // }, []);
 
   useEffect(() => {
     if (!user || !chatId) return;
@@ -72,14 +59,21 @@ const ChatWindow: React.FC = () => {
         if (!chatId) return;
 
         const response = await getMessageByChatIdByStudent(chatId?.toString());
-      const notification ={
-        chatId,
-        count:0
-      }
-      setNotificationCount(notification);
-        setMessages(response.data.messages);
-        setExprt(response.data.expertId);
-        setLastMessage(response.data.latestMessage);
+        console.log("response", response);
+
+        const notification = {
+          chatId,
+          count: 0,
+        };
+        if (response && response.data) {
+          console.log("res", response.data.messages);
+          setMessages(response.data.messages);
+          setExprt(response.data.expertId);
+          setLastMessage(response.data.latestMessage);
+          setNotificationCount(notification);
+        } else {
+          console.log("res", response);
+        }
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -97,20 +91,25 @@ const ChatWindow: React.FC = () => {
           };
           setLatestMessage(latest);
         }
+      }
+    };
+    const handleSeenMessage = (Id: string, result: IMessage[]) => {
+      console.log("trigger this function");
 
-        if (!isChatActive) {
-      //     const title = "Next Step meeting Link";
-      //   const body = "Your meeeting link is share to  email ";
-      //   const role = "student";
-      //  await sendNotificationUser(title, body, fcmToken!, role);
-      console.log('chat id is not here');
-      
-      toast('New Message Received')
-      
-        }else{
-          console.log('chat id here');
-          
-        }
+      if (Id !== userId) {
+        setMessages((prevMessages) =>
+          prevMessages.map((message) => {
+            const updatedMessage = result.find(
+              (msg) => msg._id.toString() === message._id.toString()
+            );
+
+            if (updatedMessage) {
+              return { ...message, status: updatedMessage.status };
+            }
+
+            return message;
+          })
+        );
       }
     };
 
@@ -126,6 +125,9 @@ const ChatWindow: React.FC = () => {
     };
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("messageDeleted", handleDeleteMessage);
+    socket.on("seenMessage", (userId, result) =>
+      handleSeenMessage(userId, result)
+    );
 
     socket.emit("joinChat", { chatId, userId });
 
@@ -133,24 +135,16 @@ const ChatWindow: React.FC = () => {
       socket.emit("leaveChat", { chatId, userId });
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("messageDeleted", handleDeleteMessage);
+      socket.off("seenMessage", handleSeenMessage);
     };
   }, [
     user,
     chatId,
-    isChatActive,
     lastMessage,
     setNotificationCount,
     setLatestMessage,
     userId,
   ]);
-
-  useEffect(() => {
-    if (chatId) {
-      setIsChatActive(true);
-    } else {
-      setIsChatActive(false);
-    }
-  }, [chatId]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -201,8 +195,6 @@ const ChatWindow: React.FC = () => {
       setSelectedFile(null);
       setLatestMessage(latest);
       setImagePreviewUrl("");
-
-   
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -409,9 +401,22 @@ const ChatWindow: React.FC = () => {
                           </>
                         )}
                       </p>
-                      <span className="ms-2 flex justify-end items-end mt-5 text-xs text-gray-500">
-                        {moment(message.timestamp).fromNow()}
-                      </span>
+                      <div className="flex">
+                        <span className="ms-2 flex justify-end items-end mt-5 text-xs text-gray-500">
+                          {moment(message.timestamp).fromNow()}
+                        </span>
+                        <span>
+                          {message.senderId === userId && (
+                            <>
+                              {message.status == "seen" ? (
+                                <MdDoneAll color="green" />
+                              ) : (
+                                <MdDoneAll />
+                              )}
+                            </>
+                          )}
+                        </span>
+                      </div>
 
                       {message.senderId === userId && !message.is_delete && (
                         <button

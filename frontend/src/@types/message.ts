@@ -15,6 +15,7 @@ export interface IMessage {
   file?:string|null
   timestamp: Date;
   is_delete: boolean;
+  status:string
 }
 
 export interface IChat {

@@ -23,7 +23,7 @@ class ChatController {
       console.log("error in finding Chat");
       res
         .status(500)
-        .json({ success: false, message: "cannot find any Chat", error });
+        .json({ success: false, message: "cannot find any Chat", data:null, error });
     }
   };
 

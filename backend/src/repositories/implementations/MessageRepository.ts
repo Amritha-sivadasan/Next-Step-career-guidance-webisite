@@ -29,10 +29,23 @@ export default class MessageRepository implements IMessageRepository{
     async getMessageById(id: string): Promise<IMessage|null> {
         try {
             return await Message.findById(id)
-           
+    
+        } catch (error) {
+            throw error 
+        }
+    }
+    async updateMessageStatus(chatId: string, userId: string): Promise<IMessage[]> {
+        try {
+        await Message.updateMany(
+                { chatId, senderId: { $ne: userId }, status: 'sent' },
+                { $set: { status: 'seen' } }
+              ).exec()
+              return Message.find({ chatId, senderId: { $ne: userId }, status: 'seen' }).exec();
+             
             
         } catch (error) {
             throw error 
         }
     }
+    
 }
