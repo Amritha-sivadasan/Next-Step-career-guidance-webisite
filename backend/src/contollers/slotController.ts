@@ -18,11 +18,21 @@ class SlotController {
         message: "Slot created Successfully",
       });
     } catch (error) {
-      res.status(500).json({
-        message: "Unable to create slots",
-        success: false,
-        data: error,
-      });
+      if (error instanceof Error && error.message.includes("New slot must end at least one hour before the next slot starts")) {
+    
+        res.status(400).json({
+            message: error.message,
+            success: false,
+            data: null,
+        });
+    } else {
+    
+        res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            data: null,
+        });
+    }
     }
   };
 

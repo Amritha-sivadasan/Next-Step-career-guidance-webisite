@@ -10,33 +10,67 @@ import {
 import { ISlot } from "../../../@types/slot";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { formatDate, formatTime } from "../../../utils/generalFuncions";
 
 interface IFormInput {
   date: string;
   timeFrom: string;
   timeTo: string;
 }
+const parseDateTime = (dateStr:string, timeStr:string) => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return new Date(year, month - 1, day, hours, minutes);
+};
 
 const SchedulePage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [slots, setSlots] = useState<ISlot[]>([]);
+  const [minDate, setMinDate] = useState("");
+  const [maxDate, setMaxDate] = useState("");
   const { expert } = useAppSelector((state) => state.expert);
 
   useEffect(() => {
     const fetchAllSlots = async () => {
       if (expert) {
         const response = await getAllSlots(expert._id);
-        setSlots(response.data);
+        const slotbyorder = response.data;
+        slotbyorder.sort((a:ISlot, b:ISlot) => {
+          const dateA = parseDateTime(
+            a.consultationDate,
+            a.consultationStartTime
+          );
+          const dateB = parseDateTime(
+            b.consultationDate,
+            b.consultationStartTime
+          );
+
+          if (dateA < dateB) return -1;
+          if (dateA > dateB) return 1;
+          return 0;
+        });
+        setSlots(slotbyorder);
       }
     };
     fetchAllSlots();
   }, [expert]);
+
+  useEffect(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const firstDayOfWeek = new Date(today.setDate(today.getDate() - dayOfWeek));
+    const lastDayOfWeek = new Date(today.setDate(firstDayOfWeek.getDate() + 6));
+    setMinDate(firstDayOfWeek.toISOString().split("T")[0]);
+    setMaxDate(lastDayOfWeek.toISOString().split("T")[0]);
+  }, []);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm<IFormInput>({
     defaultValues: {
       date: new Date().toISOString().split("T")[0],
@@ -45,6 +79,18 @@ const SchedulePage: React.FC = () => {
     },
   });
 
+  const startTime = watch("timeFrom");
+
+  useEffect(() => {
+    if (startTime) {
+      const [hours, minutes] = startTime.split(":").map(Number);
+      const endTime = new Date();
+      endTime.setHours(hours + 1);
+      endTime.setMinutes(minutes);
+      const formattedEndTime = endTime.toTimeString().slice(0, 5);
+      setValue("timeTo", formattedEndTime);
+    }
+  }, [startTime, setValue]);
   const showModal = () => setIsModalVisible(true);
   const handleClose = () => {
     setIsModalVisible(false);
@@ -62,7 +108,7 @@ const SchedulePage: React.FC = () => {
       today.setHours(0, 0, 0, 0);
       if (selectedDate < today) {
         toast.warn("Date cannot be in the past");
-        return ;
+        return;
       }
 
       const newSlot: ISlot = {
@@ -75,11 +121,16 @@ const SchedulePage: React.FC = () => {
 
       try {
         const response = await addNewSlot(newSlot);
-        setSlots((prevSlots) => [...prevSlots, response.data]);
-        setIsModalVisible(false);
-        reset();
+
+        if (response.success) {
+          setSlots((prevSlots) => [...prevSlots, response.data]);
+          setIsModalVisible(false);
+          reset();
+        } else {
+          toast.warn(response.message || "Failed to create slot");
+        }
       } catch (error) {
-        console.error("Error adding slot:", error);
+        console.log("error in add slot ", error);
       }
     }
   };
@@ -111,27 +162,6 @@ const SchedulePage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-    const day = date.getDate();
-    const monthName = date.toLocaleDateString("en-US", { month: "long" });
-    const year = date.getFullYear();
-    return `${dayName}, ${day} ${monthName} ${year}`;
-  };
-
-  const formatTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(":");
-    const date = new Date();
-    date.setHours(parseInt(hours, 10));
-    date.setMinutes(parseInt(minutes, 10));
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
-
   return (
     <div className="flex flex-col items-center p-6">
       <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-lg">
@@ -160,30 +190,31 @@ const SchedulePage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {slots && slots.map((slot, index) => (
-                <tr key={slot._id}>
-                  <td className="p-3 border-b">{index + 1}</td>
-                  <td className="p-3 border-b">
-                    {formatDate(slot.consultationDate)}
-                  </td>
-                  <td className="p-3 border-b">
-                    {`${formatTime(slot.consultationStartTime)} - ${formatTime(
-                      slot.consultationEndTime
-                    )}`}
-                  </td>
-                  <td className="p-2 border-b text-green-600">
-                    {slot.slotStatus}
-                  </td>
-                  <td className="p-3 border-b">
-                    <button
-                      onClick={() => slot._id && handleSlotDelete(slot._id)}
-                      className="border rounded-lg p-1 w-16 bg-red-800 text-white"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {slots &&
+                slots.map((slot, index) => (
+                  <tr key={slot._id}>
+                    <td className="p-3 border-b">{index + 1}</td>
+                    <td className="p-3 border-b">
+                      {formatDate(slot.consultationDate)}
+                    </td>
+                    <td className="p-3 border-b">
+                      {`${formatTime(
+                        slot.consultationStartTime
+                      )} - ${formatTime(slot.consultationEndTime)}`}
+                    </td>
+                    <td className="p-2 border-b text-green-600">
+                      {slot.slotStatus}
+                    </td>
+                    <td className="p-3 border-b">
+                      <button
+                        onClick={() => slot._id && handleSlotDelete(slot._id)}
+                        className="border rounded-lg p-1 w-16 bg-red-800 text-white"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -205,6 +236,8 @@ const SchedulePage: React.FC = () => {
             <input
               type="date"
               id="date"
+              min={minDate}
+              max={maxDate}
               className="border p-2 w-full rounded-md"
               {...register("date", {
                 required: "Date is required",
@@ -212,7 +245,7 @@ const SchedulePage: React.FC = () => {
                   if (value.trim() === "") {
                     return "Date cannot be only spaces";
                   }
-                 
+
                   return true;
                 },
               })}
@@ -248,6 +281,7 @@ const SchedulePage: React.FC = () => {
               Time To
             </label>
             <input
+              readOnly
               type="time"
               id="time-to"
               className="border p-2 w-full rounded-md"

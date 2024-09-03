@@ -51,14 +51,14 @@ export const getAllSlotsByStudent = async (expertId: string) => {
         withCredentials: true,
       }
     );
-  
+
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
   }
 };
 
-export const deleteSlot= async (id:string)=>{
+export const deleteSlot = async (id: string) => {
   try {
     const response = await axiosInstance.delete(
       `${API_URL}/expert/deleteSlot/${id}`,
@@ -66,13 +66,9 @@ export const deleteSlot= async (id:string)=>{
         withCredentials: true,
       }
     );
-  
+
     return response.data;
-    
-    
   } catch (error) {
     return (error as Error).response?.data;
   }
-
-}
-
+};

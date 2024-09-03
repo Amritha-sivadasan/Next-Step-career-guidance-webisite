@@ -20,10 +20,23 @@ export default class SlotRepository implements ISlotRepository {
     await  Slot.findByIdAndUpdate(id,{$set:{slotStatus:slotStatus}})
     } catch (error) {
       console.log('error',error)
+      throw error
     }
    
     
 }
+
+async alreadyExist(date: string): Promise<ISlots[] > {
+  try {
+    const result= await Slot.find({consultationDate:date})
+    return result
+    
+    
+  } catch (error) {
+    throw error
+  }
+}
+
 async delteSlot(id: string): Promise<boolean> {
   const data= await Slot.findByIdAndDelete(id)
   if(data){
