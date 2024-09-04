@@ -1,8 +1,9 @@
 import React, { createContext, useState, ReactNode } from "react";
+import { IMessage } from "../@types/message";
 
 interface LatestMessage {
   studentId: string;
-  lastMessage: string;
+  lastMessage: IMessage;
 }
 interface Notification {
   chatId: string;

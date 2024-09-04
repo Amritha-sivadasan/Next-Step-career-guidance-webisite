@@ -38,7 +38,7 @@ const UserSideBar: React.FC = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  console.log("Current Path:", location.pathname); // Debugging line
+
 
   return (
     <div className="relative md:w-1/3 lg:w-1/4 p-4 border-gray-300">

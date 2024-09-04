@@ -78,23 +78,29 @@ const ChatWindowExpert: React.FC = () => {
         if (resultMessage.text) {
           const latest = {
             studentId: resultMessage.senderId,
-            lastMessage: resultMessage.text,
+            lastMessage: resultMessage,
           };
           setLatestMessage(latest);
+          setLastMessage(resultMessage._id)
         }
        
       }
     };
-
-    const handleDeleteMessage = (messageId: string) => {
-      if (messageId == lastMessage) {
-        setLastMessage("Deleted message");
+    const handleDeleteMessage = (message: IMessage) => {
+      if(message.senderId!==userId){
+        if (message._id == lastMessage) {
+          const deleteLatestMessage={
+           studentId:message.senderId,
+           lastMessage:message
+          }
+          setLatestMessage(deleteLatestMessage);
+        }
+        setMessages((prevMessages) =>
+          prevMessages.map((existmessage) =>
+            existmessage._id == message._id ? { ...existmessage, is_delete: true } : existmessage
+          )
+        );
       }
-      setMessages((prevMessages) =>
-        prevMessages.map((message) =>
-          message._id == messageId ? { ...message, is_delete: true } : message
-        )
-      );
     };
     const handleSeenMessage =(Id:string,result:IMessage[])=>{
       if(Id !==userId){
@@ -179,18 +185,19 @@ const ChatWindowExpert: React.FC = () => {
       if (response.success) {
         const message = response.data;
         socket.emit("sendMessage", { chatId, message });
-      }
+     
       const chat = response.data.chatId as IChat;
       const latest = {
         studentId: chat.studentId as string,
-        lastMessage: newMessage,
+        lastMessage: message,
       };
+
       setNewMessage("");
       setLatestMessage(latest);
       setAudioBlob(null);
       setSelectedFile(null);
       setLastMessage(response.data._id);
-
+ }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -202,12 +209,11 @@ const ChatWindowExpert: React.FC = () => {
   };
 
   const deleteMessage = async (messageId: string) => {
+    
     try {
-      if (messageId == lastMessage) {
-        setLastMessage("Deleted message");
-      }
-      await deleteMessageByExpert(messageId);
       socket.emit("deleteMessage", { chatId, messageId });
+     
+      
       setMessages((prevMessages) => {
         const updatedMessages = prevMessages.map((message) =>
           message._id == messageId ? { ...message, is_delete: true } : message
@@ -226,6 +232,16 @@ const ChatWindowExpert: React.FC = () => {
         }
         return updatedMessages;
       });
+
+      const response=  await deleteMessageByExpert(messageId);
+      if(messageId == lastMessage){
+        const setLastDeletedMessage={
+         studentId:(response.data.chatId as IChat).studentId as string,
+         lastMessage:response.data
+        }
+        setLatestMessage(setLastDeletedMessage)
+   
+      }
     } catch (error) {
       console.error("Error deleting message:", error);
     }

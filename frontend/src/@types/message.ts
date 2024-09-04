@@ -2,7 +2,7 @@ import { IBooking } from "./booking";
 import { IExpert } from "./expert";
 import { IStudent } from "./user";
 
-interface IAudio {
+export interface IAudio {
   url: string; 
   duration?: number;
 }

@@ -9,12 +9,19 @@ import { IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import socket from "../../../config/socket";
 import { IChatNotification } from "../../../@types/notification";
+import { IoImageOutline } from "react-icons/io5";
+import { IoIosMic } from "react-icons/io";
 
 const ChatWithExpertList = () => {
   const { user } = useAppSelector((state) => state.student);
   const [ChatDetials, setChaDetails] = useState<IChat[]>([]);
-  const { chatId, setChatId, latestMessage, notificationCount } =
-    useStudentChat();
+  const {
+    chatId,
+    setChatId,
+    latestMessage,
+    setLatestMessage,
+    notificationCount,
+  } = useStudentChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -22,37 +29,69 @@ const ChatWithExpertList = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const handleNotification = (notification: IChatNotification) => {
-      console.log('notification',notification)
-      if(notification.userId==user?._id){
+    const handleNotification = (
+      notification: IChatNotification,
+      message: IMessage
+    ) => {
+      if (notification.userId == user?._id) {
         setNotifications((prev) => ({
           ...prev,
           [notification.chatId]: notification.count,
         }));
+        const messagefromNotification = {
+          expertId: (message.chatId as IChat).expertId as string,
+          lastMessage: message,
+        };
+        setLatestMessage(messagefromNotification);
         setChaDetails((prevChats) => {
-          return prevChats
-            .map((chat) => ({
-              ...chat,
-              hasNotification: chat._id === notification.chatId,
-            }))
-            .sort((a, b) => (b.hasNotification ? 1 : -1));
-        });
-      
-      }
+          const updatedChats = prevChats.filter(
+            (chat) => chat._id !== notification.chatId
+          );
 
+          const chatToUpdate = prevChats.find(
+            (chat) => chat._id === notification.chatId
+          );
+
+          if (!chatToUpdate) {
+            return prevChats;
+          }
+
+          const updatedChat = {
+            ...chatToUpdate,
+            latestMessage: message,
+          };
+
+          return [updatedChat, ...updatedChats];
+        });
       }
+    };
+
+    const handleDeleteMessage = (message: IMessage) => {
+      const chat = ChatDetials.find((item) => item._id == message.chatId);
+
+      if (chat && (chat.latestMessage as IMessage)._id == message._id) {
+       const deleteMessage={
+        expertId:message.senderId,
+            lastMessage: message,
+       }
+        setLatestMessage(deleteMessage);
+      }
+    };
 
     socket.on("notification", handleNotification);
+    socket.on("messageDeleted", handleDeleteMessage);
 
     return () => {
       socket.off("notification", handleNotification);
+      socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [socket]);
+  }, [ChatDetials, setLatestMessage, user?._id]);
 
   const fetchAllBooking = async () => {
     try {
       const result = await getChatByStudnetId();
       setChaDetails(result.data);
+
       await fetchNotifications(result.data);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
@@ -162,15 +201,63 @@ const ChatWithExpertList = () => {
                   {latestMessage && latestMessage.expertId == expert._id ? (
                     <>
                       {latestMessage.expertId == expert._id &&
-                        latestMessage.lastMessage}
+                      latestMessage.lastMessage.is_delete ? (
+                        "Deleted Message"
+                      ) : latestMessage.lastMessage.text ? (
+                        latestMessage.lastMessage.text
+                      ) : latestMessage.lastMessage.audio ? (
+                        <p className="flex gap-1">
+                          <span className="mt-2">
+                            {" "}
+                            <IoIosMic size={16} />
+                          </span>
+                          <span className="mt-1 text-base">
+                            {latestMessage.lastMessage.audio.duration}
+                          </span>
+                        </p>
+                      ) : latestMessage.lastMessage.file ? (
+                        <p className="flex gap-1">
+                          {" "}
+                          <span className="mt-2">
+                            <IoImageOutline size={16} />{" "}
+                          </span>
+                          <span className="mt-1 text-base">Image</span>
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </>
                   ) : (
                     <>
-                      {lastMessage
-                        ? lastMessage.is_delete
-                          ? "Deleted message"
-                          : lastMessage.text
-                        : ""}
+                      {lastMessage ? (
+                        lastMessage.is_delete ? (
+                          "Deleted message"
+                        ) : lastMessage.text ? (
+                          lastMessage.text
+                        ) : lastMessage.audio ? (
+                          <p className="flex gap-1">
+                            <span className="mt-2">
+                              {" "}
+                              <IoIosMic size={16} />
+                            </span>{" "}
+                            <span className="mt-1 text-base">
+                              {lastMessage.audio.duration}
+                            </span>
+                          </p>
+                        ) : lastMessage.file ? (
+                          <p className="flex gap-1">
+                            {" "}
+                            <span className="mt-2">
+                              <IoImageOutline size={16} />{" "}
+                            </span>
+                            <span className="mt-1 text-base">Image</span>
+                          </p>
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        ""
+                      )}
                     </>
                   )}
                 </span>

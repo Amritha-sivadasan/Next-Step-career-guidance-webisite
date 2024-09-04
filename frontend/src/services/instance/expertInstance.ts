@@ -11,7 +11,7 @@ export const axiosInstance = axios.create({
 let cancelTokenSource: CancelTokenSource | null;
 
 axiosInstance.interceptors.request.use(async (config) => {
-  if (cancelTokenSource!) {
+  if (cancelTokenSource) {
     cancelTokenSource.cancel("Operation canceled due to a new request.");
 
     cancelTokenSource = axios.CancelToken.source();
@@ -36,7 +36,7 @@ axiosInstance.interceptors.request.use(async (config) => {
   return config;
 });
 
-//response interceptor
+
 axiosInstance.interceptors.response.use(
   (response) => {
     cancelTokenSource = null;
@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // console.log(error.response.status, "----------", originalRequest, "--------", refreshToken);
+  
 
     if (error.response.data.error === "User is blocked") {
       alert("You are blocked by admin...");
@@ -54,12 +54,12 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.response.status === 401 && !originalRequest._retry) {
-      // console.log("from user axios.........");
+
 
       originalRequest._retry = true;
       try {
         const newAccessToken = await getNewAccessToken();
-        // console.log(newAccessToken, "new access token from user axios");
+
 
         localStorage.setItem("expertAccess", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

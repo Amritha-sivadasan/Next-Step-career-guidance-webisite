@@ -9,14 +9,20 @@ import { IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import socket from "../../../config/socket";
 import { IChatNotification } from "../../../@types/notification";
-
+import { IoImageOutline } from "react-icons/io5";
+import { IoIosMic } from "react-icons/io";
 
 const ChatWithStudentList = () => {
   const { expert } = useAppSelector((state) => state.expert);
   const [chatDetails, setChatDetails] = useState<IChat[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { chatId, setChatId, latestMessage, notificationCount } =
-    useExpertChat();
+  const {
+    chatId,
+    setChatId,
+    latestMessage,
+    setLatestMessage,
+    notificationCount,
+  } = useExpertChat();
   const [notifications, setNotifications] = useState<{
     [chatId: string]: number;
   }>({});
@@ -66,30 +72,63 @@ const ChatWithStudentList = () => {
   }, []);
 
   useEffect(() => {
-    const handleNotification = (notification: IChatNotification) => {
-  
+    const handleNotification = (
+      notification: IChatNotification,
+      message: IMessage
+    ) => {
+      if (notification.userId == expert?._id) {
+        setNotifications((prev) => ({
+          ...prev,
+          [notification.chatId]: notification.count,
+        }));
+        const messagefromNotification = {
+          studentId: (message.chatId as IChat).studentId as string,
+          lastMessage: message,
+        };
+        setLatestMessage(messagefromNotification);
+        setChatDetails((prevChats) => {
+          const updatedChats = prevChats.filter(
+            (chat) => chat._id !== notification.chatId
+          );
 
-      if(notification.userId==expert?._id){
-             setNotifications((prev) => ({
-               ...prev,
-               [notification.chatId]: notification.count,
-             }));
-             setChatDetails((prevChats) => {
-              return prevChats
-                .map((chat) => ({
-                  ...chat,
-                  hasNotification: chat._id === notification.chatId,
-                }))
-                .sort((a, b) => (b.hasNotification ? 1 : -1));
-            });
-           }
+          const chatToUpdate = prevChats.find(
+            (chat) => chat._id === notification.chatId
+          );
+
+          if (!chatToUpdate) {
+            return prevChats;
+          }
+
+          const updatedChat = {
+            ...chatToUpdate,
+            latestMessage: message,
+          };
+
+          return [updatedChat, ...updatedChats];
+        });
+      }
     };
+
+    const handleDeleteMessage = (message: IMessage) => {
+      const chat = chatDetails.find((item) => item._id == message.chatId);
+
+      if (chat && (chat.latestMessage as IMessage)._id == message._id) {
+       const deleteMessage={
+        studentId:message.senderId,
+            lastMessage: message,
+       }
+        setLatestMessage(deleteMessage);
+      }
+    };
+
     socket.on("notification", handleNotification);
+    socket.on("messageDeleted", handleDeleteMessage);
 
     return () => {
       socket.off("notification", handleNotification);
+      socket.off("messageDeleted", handleDeleteMessage);
     };
-  }, [socket]);
+  }, [chatDetails, expert?._id, setLatestMessage]);
 
   useEffect(() => {
     const sortedChats = chatDetails
@@ -122,7 +161,7 @@ const ChatWithStudentList = () => {
           const lastMessage = chat.latestMessage as IMessage;
           const count = notifications[chat._id] || 0;
 
-          return (
+          return ( 
             <li
               key={student._id}
               className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
@@ -158,16 +197,46 @@ const ChatWithStudentList = () => {
                 <span className="text-sm text-gray-500 mt-1">
                   {latestMessage && latestMessage.studentId == student._id ? (
                     <>
-                      {latestMessage.studentId == student._id &&
-                        latestMessage.lastMessage}
+                      {latestMessage.studentId == student._id &&  latestMessage.lastMessage.is_delete?'Deleted Message':
+                      latestMessage.lastMessage.text ? (
+                        latestMessage.lastMessage.text
+                      ) : latestMessage.lastMessage.audio ? (
+                        <p className="flex gap-1"><span className="mt-2"> <IoIosMic size={16} /></span>  <span className="mt-1 text-base">{ latestMessage.lastMessage.audio.duration}</span></p>
+                      ) : latestMessage.lastMessage.file ? (
+                        <p className="flex gap-1">
+                          {" "}
+                          <span className="mt-2">
+                            <IoImageOutline size={16} />{" "}
+                          </span>
+                          <span className="mt-1 text-base">Image</span>
+                        </p>
+                      ) : (
+                        ""
+                      )}
                     </>
                   ) : (
                     <>
-                      {lastMessage
-                        ? lastMessage.is_delete
-                          ? "Deleted message"
-                          : lastMessage.text
-                        : ""}
+                      {lastMessage ? (
+                        lastMessage.is_delete ? (
+                          "Deleted message"
+                        ) : lastMessage.text ? (
+                          lastMessage.text
+                        ) : lastMessage.audio ? (
+                          <p className="flex gap-1"><span className="mt-2"> <IoIosMic size={16} /></span>  <span className="mt-1 text-base">{lastMessage.audio.duration}</span></p>
+                        ) : lastMessage.file ? (
+                          <p className="flex gap-1">
+                            {" "}
+                            <span className="mt-2">
+                              <IoImageOutline size={16} />{" "}
+                            </span>
+                            <span className="mt-1 text-base">Image</span>
+                          </p>
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        ""
+                      )}
                     </>
                   )}
                 </span>

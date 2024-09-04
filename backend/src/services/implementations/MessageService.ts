@@ -58,9 +58,10 @@ export default class MessageService implements IMessageService {
     }
   }
 
-  async deleteMessage(id: string): Promise<void> {
+  async deleteMessage(id: string): Promise<IMessage|null> {
     try {
-      await this.messageRepository.deleteMessage(id);
+    const result=  await this.messageRepository.deleteMessage(id);
+    return result
     } catch (error) {
       throw error;
     }
@@ -86,6 +87,17 @@ export default class MessageService implements IMessageService {
 
      } catch (error) {
        throw error
+     }
+   }
+
+
+   async findById(id: string): Promise<IMessage|null> {
+     try {
+      const response= await this.messageRepository.findById(id)
+      return response
+      
+     } catch (error) {
+      throw error
      }
    }
 }

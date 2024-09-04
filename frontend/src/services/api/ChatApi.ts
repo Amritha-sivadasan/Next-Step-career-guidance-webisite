@@ -69,7 +69,7 @@ export const sendMessageByExpert = async (message: FormData) => {
         withCredentials: true,
       }
     );
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     return (error as Error).response?.data;
@@ -78,7 +78,7 @@ export const sendMessageByExpert = async (message: FormData) => {
 
 export const getMessageByChatIdByStudent = async (id: string) => {
   try {
-    console.log('chatId',id)
+
     const response = await studentAxiosInstance.get(
       `${API_URL}/student/fetchChatById/${id}`,
       {
@@ -137,23 +137,7 @@ export const deleteMessageByExpert = async (id: string) => {
   }
 };
 
-// export const addNotification = async (
-//   notification: Partial<IChatNotification>
-// ) => {
-//   try {
-//     const response = await studentAxiosInstance.post(
-//       `${API_URL}/student/add-notification`,
-//       notification,
-//       {
-//         withCredentials: true,
-//       }
-//     );
 
-//     return response.data;
-//   } catch (error) {
-//     return (error as Error).response?.data;
-//   }
-// };
 
 export const getNotificationsByChatId = async (
   chatId: string,

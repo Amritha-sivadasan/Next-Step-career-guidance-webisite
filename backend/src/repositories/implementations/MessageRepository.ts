@@ -17,9 +17,10 @@ export default class MessageRepository implements IMessageRepository{
             throw error
         }
     }
-    async deleteMessage(messageId: string): Promise<void> {
+    async deleteMessage(messageId: string): Promise<IMessage|null> {
         try {
-        const res= await Message.findByIdAndUpdate(messageId,{is_delete:true})
+        const response= await Message.findByIdAndUpdate(messageId,{is_delete:true},{new:true}).populate('chatId').exec()
+        return response
             
         } catch (error) {
             throw error 
@@ -43,6 +44,16 @@ export default class MessageRepository implements IMessageRepository{
               return Message.find({ chatId, senderId: { $ne: userId }, status: 'seen' }).exec();
              
             
+        } catch (error) {
+            throw error 
+        }
+    }
+
+    async findById(id: string): Promise<IMessage|null> {
+        try {
+        const response= await Message.findById(id)
+        return response
+
         } catch (error) {
             throw error 
         }

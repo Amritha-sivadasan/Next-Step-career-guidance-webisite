@@ -79,8 +79,9 @@ export const createSocketServer = (server: http.Server) => {
               count: 1,
             });
           }
+         
       
-          io.emit("notification", notification);
+          io.emit("notification", notification,message);
          
         }else{
           const  resultMessage=  await messageService.updateMessageStatusUserOnline(message._id)
@@ -99,8 +100,28 @@ export const createSocketServer = (server: http.Server) => {
       }
     });
 
-    socket.on("deleteMessage", ({ chatId, messageId }) => {
-      io.to(chatId).emit("messageDeleted", messageId);
+    socket.on("deleteMessage", async({ chatId, messageId }) => {
+      const chat = await chatSerive.fetchChatById(chatId);
+      const message= await messageService.findById(messageId)
+      if (chat && message) {
+        const student = chat.studentId as IStudent;
+        const expert = chat.expertId as IExpert;
+
+        const recipientId =
+          student._id.toString() === message.senderId.toString()
+            ? expert._id.toString()
+            : student._id.toString();
+
+            if (!Object.keys(onlineUsers).includes(recipientId)) {
+
+              io.emit('messageDeleted',message)
+            }else{
+
+              io.to(chatId).emit("messageDeleted", message);
+            }
+
+            
+           }
     });
 
     socket.on("disconnect", () => {
