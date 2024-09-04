@@ -74,4 +74,18 @@ export default class MessageService implements IMessageService {
       throw error;
     }
   }
+
+   async updateMessageStatusUserOnline(messageId: string): Promise<IMessage> {
+     try {
+       const response= await this.messageRepository.updateMessageUserOnline(messageId)
+       if(!response){
+        throw new Error('Message Not found')
+       }  
+
+        return  response
+
+     } catch (error) {
+       throw error
+     }
+   }
 }

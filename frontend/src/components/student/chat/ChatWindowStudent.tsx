@@ -20,6 +20,7 @@ import { FaImage } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
+
 // import {  sendNotificationUser } from "../../../services/api/videoCallApi";
 
 const ChatWindow: React.FC = () => {
@@ -81,13 +82,13 @@ const ChatWindow: React.FC = () => {
 
     fetchMessages();
 
-    const handleReceiveMessage = async (message: IMessage) => {
-      if (message.senderId !== userId) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-        if (message.text) {
+    const handleReceiveMessage = async (resultMessage: IMessage) => {
+      if (resultMessage.senderId !== userId) {
+        setMessages((prevMessages) => [...prevMessages, resultMessage]);
+        if (resultMessage.text) {
           const latest = {
-            expertId: message.senderId,
-            lastMessage: message.text,
+            expertId: resultMessage.senderId,
+            lastMessage: resultMessage.text,
           };
           setLatestMessage(latest);
         }
@@ -257,9 +258,11 @@ const ChatWindow: React.FC = () => {
       }
     }
   };
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange =async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.size < 5000000) {
+     
+      setSelectedFile(file);
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {

@@ -47,5 +47,16 @@ export default class MessageRepository implements IMessageRepository{
             throw error 
         }
     }
+     
     
+    async updateMessageUserOnline(messageId: string): Promise<IMessage|null> {
+        try {
+        const result = await Message.findByIdAndUpdate(messageId,{$set:{status:'seen'}}, { new: true } ).exec()
+
+        return result
+            
+        } catch (error) {
+            throw error 
+        }
+    }
 }

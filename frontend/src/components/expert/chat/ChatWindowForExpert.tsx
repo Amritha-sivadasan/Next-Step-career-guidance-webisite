@@ -72,19 +72,17 @@ const ChatWindowExpert: React.FC = () => {
     };
     fetchMessage();
 
-    const handleReceiveMessage = (message: IMessage) => {
-      if (message.senderId !== userId) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-        if (message.text) {
+    const handleReceiveMessage = (resultMessage: IMessage) => {
+      if (resultMessage.senderId !== userId) {
+        setMessages((prevMessages) => [...prevMessages, resultMessage]);
+        if (resultMessage.text) {
           const latest = {
-            studentId: message.senderId,
-            lastMessage: message.text,
+            studentId: resultMessage.senderId,
+            lastMessage: resultMessage.text,
           };
           setLatestMessage(latest);
         }
-        // if (!isChatActive) {
-        //   setNotificationCount((prev: number) => prev + 1);
-        // }
+       
       }
     };
 
@@ -158,7 +156,9 @@ const ChatWindowExpert: React.FC = () => {
 
   const sendMessage = async () => {
     if (newMessage && newMessage.trim() == "") return;
-    setRecordingUrl("");
+   
+   setRecordingUrl("");
+   setImagePreviewUrl("");
     const formData = new FormData();
     formData.append("text", newMessage);
     formData.append("senderId", userId || "");
@@ -167,10 +167,11 @@ const ChatWindowExpert: React.FC = () => {
     if (audioBlob) {
       formData.append("audio", audioBlob, "audio.wav");
     }
-
     if (selectedFile) {
       formData.append("file", selectedFile);
     }
+
+
 
     try {
       const response = await sendMessageByExpert(formData);
@@ -189,7 +190,7 @@ const ChatWindowExpert: React.FC = () => {
       setAudioBlob(null);
       setSelectedFile(null);
       setLastMessage(response.data._id);
-      setImagePreviewUrl("");
+
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -251,9 +252,10 @@ const ChatWindowExpert: React.FC = () => {
       }
     }
   };
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.size < 5000000) {
+    
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {

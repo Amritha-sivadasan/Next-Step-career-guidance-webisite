@@ -48,8 +48,7 @@ export const createSocketServer = (server: http.Server) => {
 
     socket.on("sendMessage", async ({ chatId, message }) => {
      
-
-      io.to(chatId).emit("receiveMessage", message);
+      
       const chat = await chatSerive.fetchChatById(chatId);
     
       if (chat) {
@@ -84,8 +83,11 @@ export const createSocketServer = (server: http.Server) => {
           io.emit("notification", notification);
          
         }else{
-          const result=  await messageService.updateMessageStatus(chatId,message.senderId)
-          io.to(chatId).emit('seenMessage',message.senderId,result)
+          const  resultMessage=  await messageService.updateMessageStatusUserOnline(message._id)
+          io.to(chatId).emit("receiveMessage", 
+            resultMessage
+          );
+       
         }
       }
     });
