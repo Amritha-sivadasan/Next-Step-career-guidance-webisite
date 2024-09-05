@@ -5,7 +5,7 @@ import {
   getChatByStudnetId,
   getNotificationsByChatId,
 } from "../../../services/api/ChatApi";
-import { IChat, IMessage } from "../../../@types/message";
+import { IAudio, IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import socket from "../../../config/socket";
 import { IChatNotification } from "../../../@types/notification";
@@ -212,7 +212,7 @@ const ChatWithExpertList = () => {
                             <IoIosMic size={16} />
                           </span>
                           <span className="mt-1 text-base">
-                            {latestMessage.lastMessage.audio.duration}
+                            {(latestMessage.lastMessage.audio as IAudio).duration}
                           </span>
                         </p>
                       ) : latestMessage.lastMessage.file ? (
@@ -241,7 +241,7 @@ const ChatWithExpertList = () => {
                               <IoIosMic size={16} />
                             </span>{" "}
                             <span className="mt-1 text-base">
-                              {lastMessage.audio.duration}
+                              {(lastMessage.audio as IAudio).duration}
                             </span>
                           </p>
                         ) : lastMessage.file ? (

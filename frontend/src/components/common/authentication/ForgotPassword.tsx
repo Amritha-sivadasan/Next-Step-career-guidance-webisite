@@ -26,33 +26,59 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
 
   const onSubmit = async (data: FormData) => {
     if (userType == "student") {
-      setLoading(true);
-      const response = await forgotPassword(data.email);
-
-      if (response.success) {
-        toast.success("Otp send successfully");
-        sessionStorage.setItem("userEmail", JSON.stringify(response.data));
-        setTimeout(() => {
+      try {
+        setLoading(true);
+        const response = await forgotPassword(data.email);
+        console.log("response for forgot otp", response);
+  
+        if (response.success) {
+          toast.success("Otp send successfully");
+          sessionStorage.setItem("userEmail", JSON.stringify(response.data));
+          sessionStorage.setItem("forgotUserAccess", JSON.stringify(response.forgotUserAccess));
+  
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/fortgot-password-otp");
+          }, 1000);
+        } else {
+          toast.error(response.message);
           setLoading(false);
-          navigate("/fortgot-password-otp");
-        }, 1000);
-      } else {
-        toast.error(response.message);
-        setLoading(false);
+        }
+        
+      } catch (error) {
+        console.log('error',error);
+        
+      }finally{
+        setLoading(false)
       }
+   
     } else if (userType === "expert") {
       setLoading(true);
-      const response = await forgotPasswordExpertOtp(data.email);
-      if (response.success) {
-        toast.success("Otp send successfully");
-        sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
-        setTimeout(() => {
-          setLoading(false);
-          navigate("/expert/fortgot-password-otp");
-        });
-      } else {
-        toast.error(response.message);
+
+      try {
+        const response = await forgotPasswordExpertOtp(data.email);
+        console.log('response for expert',response);
+        
+        if (response.success) {
+          toast.success("Otp send successfully");
+          sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
+          sessionStorage.setItem("forgotExpertAccess", JSON.stringify(response.forgotExpertAccess));
+  
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/expert/fortgot-password-otp");
+          });
+        } else {
+          toast.error(response.message);
+        }
+        
+      } catch (error) {
+        console.log('error');
+        
+      }finally{
+        setLoading(false);
       }
+     
     }
   };
 

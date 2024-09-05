@@ -6,6 +6,8 @@ import hashPassword from "../../utils/bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
+import { IOtpService } from "../interface/IOtpService";
+import OtpService from "./OtpService";
 
 
 function excludePassword(expert: any): IStudent {
@@ -16,8 +18,10 @@ function excludePassword(expert: any): IStudent {
 
 export default class StudentService implements IStudentService {
   private studentRepository: IStudentRepository;
+  private otpservice:IOtpService
   constructor() {
     this.studentRepository = new StudentRepository();
+    this.otpservice=new OtpService()
   }
 
   async getAllStudents(page:number,limit:number): Promise<{items: IStudent[];
@@ -212,5 +216,29 @@ export default class StudentService implements IStudentService {
         throw error
       }
     }
+  
+async verifyForgotPasswordEmail(email: string): Promise<{ student: IStudent; accessToken: string}> {
+  try {
+    const student = await this.studentRepository.findOne(email);
+      if(!student){
+        throw new Error('User is not Exist')
+      } 
+     const context =
+        "otp is created for NextStep application forgot password ";
+  
+     await this.otpservice.generateOtp(email,context)
+  
+        const studentObj = student.toObject();
+        delete studentObj.password;
+        const userId = student._id.toString();
+        const accessToken = generateAccessToken(userId, "student");
+
+        return {student :studentObj,accessToken}
+      
+     
+  } catch (error) {
+    throw error
+  }
+}
   
 }

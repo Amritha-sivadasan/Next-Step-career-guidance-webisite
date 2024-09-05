@@ -116,28 +116,25 @@ class StudentController {
   ): Promise<void> => {
     const { email } = req.body;
     try {
-      let exitStudent = await this.studentService.exitStudent(email);
-      if (!exitStudent) {
-        res.status(404).json({
-          success: false,
-          message: "User not found try another valid email ",
-        });
-        return;
-      }
-      const context =
-        "otp is created for NextStep application forgot password ";
-      await this.otpService.generateOtp(email, context);
+      let {accessToken} = await this.studentService.verifyForgotPasswordEmail(email);;
       res.status(200).json({
         success: true,
         message: "OTP generated and sent successfully",
         data: email,
+        forgotUserAccess:accessToken
+        
       });
-    } catch (error) {
-      res.status(500).json({
-        message: "error occur on forgot password",
-        error,
-        success: false,
-      });
+    } catch (error:any) {
+      if (error.message === "User is not Exist") {
+        res.status(403).json({ message: error.message, success: false });
+      }  else {
+        res
+          .status(500)
+          .json({
+            message: "An internal server error occurred",
+            success: false,
+          });
+      }
     }
   };
 

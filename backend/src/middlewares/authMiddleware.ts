@@ -43,6 +43,8 @@ export const verifyRefreshToken = (tokenName: string) => {
   };
 };
 
+
+
 export const verifyRole = (requiredRole: string) => {
   return (req: CustomRequest, res: Response, next: NextFunction) => {
     if (!req.user || req.user.role !== requiredRole) {

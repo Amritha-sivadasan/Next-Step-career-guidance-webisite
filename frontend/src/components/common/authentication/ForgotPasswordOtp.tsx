@@ -47,35 +47,48 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
     setLoading(true);
     if (userType == "student") {
-      const storageData = sessionStorage.getItem("userEmail");
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
-        const verifyOtpResult = await dispatch(
-          VerifyOtp({ email, otp: data.otp })
-        ).unwrap();
+      try {
+        const storageData = sessionStorage.getItem("userEmail");
+        if (storageData) {
+          const parsedData = JSON.parse(storageData);
+          const email: string = parsedData;
+          const verifyOtpResult = await dispatch(
+            VerifyOtp({ email, otp: data.otp })
+          ).unwrap();
 
-        if (verifyOtpResult.success) {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/reset-password");
-          }, 1000);
+          if (verifyOtpResult.success) {
+            setTimeout(() => {
+              setLoading(false);
+              navigate("/reset-password");
+            }, 1000);
+          }
+          setLoading(false);
         }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoading(false);
       }
     } else if (userType == "expert") {
-      const storageData = sessionStorage.getItem("expertEmail");
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        const email: string = parsedData;
-        const verifyOtpResult = await dispatch(
-          VerifyOtpExpert({ email, otp: data.otp })
-        ).unwrap();
-        if (verifyOtpResult.success) {
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/expert/reset-password");
-          });
+      try {
+        const storageData = sessionStorage.getItem("expertEmail");
+        if (storageData) {
+          const parsedData = JSON.parse(storageData);
+          const email: string = parsedData;
+          const verifyOtpResult = await dispatch(
+            VerifyOtpExpert({ email, otp: data.otp })
+          ).unwrap();
+          if (verifyOtpResult.success) {
+            setTimeout(() => {
+              setLoading(false);
+              navigate("/expert/reset-password");
+            });
+          }
         }
+      } catch (error) {
+        console.log("error in exper otp ");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -83,7 +96,6 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const resendOtp = () => {
     if (userType == "student") {
       const storageData = sessionStorage.getItem("userEmail");
-      console.log("storagedata", storageData);
 
       if (storageData) {
         const parsedData = JSON.parse(storageData);

@@ -13,9 +13,10 @@ interface Error {
 }
 
 interface ForgotPasswordResponse {
-  success: string;
+  success: boolean;
   message: string;
   data: string;
+  forgotExpertAccess:string
 }
 
 export async function checkIfExpertIsBlocked() {
@@ -143,21 +144,30 @@ export const forgotPasswordExpertOtp = async (
       success: response.data.success,
       message: response.data.message,
       data: response.data.data,
+      forgotExpertAccess :response.data.forgotExpertAccess
     };
   } catch (error) {
     return {
-      success: "false",
+      success: false,
       message: (error as Error).response?.data?.message || "An error occurred",
       data: "",
+      forgotExpertAccess :""
     };
   }
 };
 
 export const resetPassswordExpert = async (email: string, password: string) => {
   try {
+    const storageData = sessionStorage.getItem("forgotExpertAccess");
+    const parsedData = JSON.parse(storageData!);
+    const accessToken : string = parsedData;
     const response = await axios.post(`${API_URL}/expert/reset-password`, {
       email,
       password,
+    },{
+      headers:{
+         Authorization: `Bearer ${accessToken}`
+      }
     });
     return response;
   } catch (error) {

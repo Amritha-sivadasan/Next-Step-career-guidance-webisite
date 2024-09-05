@@ -35,7 +35,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ userType }) => {
         const parsedData = JSON.parse(storageData);
         const email: string = parsedData;
         const response = await resetPasssword(email, data.newPassword);
-        if (response.data.success) {
+        if (response&& response.success) {
           toast.success("Reset password successfully");
           setTimeout(() => {
             setLoading(false);

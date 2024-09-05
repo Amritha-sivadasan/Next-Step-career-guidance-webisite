@@ -123,33 +123,26 @@ class ExpertController {
   ): Promise<void> => {
     const { email } = req.body;
     try {
-      let existExpert = await this.expertService.existsExpert(email);
-      if (!existExpert) {
+ 
+      let {accessToken} = await this.expertService.verifyForgotPasswordEmail(email);;
+      res.status(200).json({
+        success: true,
+        message: "OTP generated and sent successfully",
+        data: email,
+        forgotExpertAccess:accessToken
+        
+      });
+    } catch (error:any) {
+      if (error.message === "User is not Exist") {
+        res.status(403).json({ message: error.message, success: false });
+      }  else {
         res
-          .status(404)
+          .status(500)
           .json({
-            succes: false,
-            messsage: "User not found try another valid email ",
-          });
-      } else {
-        const context = "otp is created for NextStep application ";
-        await this.otpService.generateOtp(email, context);
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "OTP generated and sent successfully",
-            data: email,
+            message: "An internal server error occurred",
+            success: false,
           });
       }
-    } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "error occur on forgot password",
-          error,
-          success: false,
-        });
     }
   };
 

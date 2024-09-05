@@ -17,4 +17,5 @@ export interface IStudentService {
     updateStudentData(id:string,student: Partial<IStudent>,file?: Express.Multer.File):Promise<IStudent | null>
      hadleBlockStudent(id:string): Promise<IStudent|null>
      checkUserStatus(id:string):Promise<IStudent|null>
+    verifyForgotPasswordEmail(email:string):Promise<{ student: IStudent; accessToken: string}>
   }

@@ -139,11 +139,19 @@ export const forgotPassword = async (email: string) => {
 
 export const resetPasssword = async (email: string, password: string) => {
   try {
+    const storageData = sessionStorage.getItem("forgotUserAccess");
+    const parsedData = JSON.parse(storageData!);
+    const accessToken : string = parsedData;
+
     const response = await axios.post(`${API_URL}/student/reset-password`, {
       email,
       password,
+    },{
+      headers:{
+         Authorization: `Bearer ${accessToken}`
+      }
     });
-    return response;
+    return response.data
   } catch (error) {
     console.error("Error occurred during update user ", error);
     return (error as Error).response?.data;

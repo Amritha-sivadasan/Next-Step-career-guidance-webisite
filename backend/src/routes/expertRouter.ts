@@ -32,7 +32,7 @@ expertRouter.post("/register", expertController.createExpert);
 expertRouter.post("/refresh-token",verifyRefreshToken(token),verifyRole(role),refreshTokens(token));
 expertRouter.post("/login", expertController.loginExpert);
 expertRouter.post("/forgot-password", expertController.forgotPassword);
-expertRouter.post("/reset-password", expertController.resetPassword);
+expertRouter.post("/reset-password",verifyAccessToken,verifyRole(role), expertController.resetPassword);
 
 expertRouter.post("/google-login", expertGoogleAuth);
 expertRouter.put("/about/:id",verifyAccessToken,verifyRole(role),upload.fields([{ name: "profilePicture", maxCount: 1 },{ name: "credential", maxCount: 1 },]),expertController.updateExpert);

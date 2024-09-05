@@ -5,7 +5,7 @@ import {
   getChatByExpertId,
   getNotificationsByExpert,
 } from "../../../services/api/ChatApi";
-import { IChat, IMessage } from "../../../@types/message";
+import { IAudio, IChat, IMessage } from "../../../@types/message";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
 import socket from "../../../config/socket";
 import { IChatNotification } from "../../../@types/notification";
@@ -113,10 +113,10 @@ const ChatWithStudentList = () => {
       const chat = chatDetails.find((item) => item._id == message.chatId);
 
       if (chat && (chat.latestMessage as IMessage)._id == message._id) {
-       const deleteMessage={
-        studentId:message.senderId,
-            lastMessage: message,
-       }
+        const deleteMessage = {
+          studentId: message.senderId,
+          lastMessage: message,
+        };
         setLatestMessage(deleteMessage);
       }
     };
@@ -161,7 +161,7 @@ const ChatWithStudentList = () => {
           const lastMessage = chat.latestMessage as IMessage;
           const count = notifications[chat._id] || 0;
 
-          return ( 
+          return (
             <li
               key={student._id}
               className="flex items-center p-3 mb-2 bg-white rounded shadow cursor-pointer hover:bg-gray-200"
@@ -197,11 +197,21 @@ const ChatWithStudentList = () => {
                 <span className="text-sm text-gray-500 mt-1">
                   {latestMessage && latestMessage.studentId == student._id ? (
                     <>
-                      {latestMessage.studentId == student._id &&  latestMessage.lastMessage.is_delete?'Deleted Message':
-                      latestMessage.lastMessage.text ? (
+                      {latestMessage.studentId == student._id &&
+                      latestMessage.lastMessage.is_delete ? (
+                        "Deleted Message"
+                      ) : latestMessage.lastMessage.text ? (
                         latestMessage.lastMessage.text
                       ) : latestMessage.lastMessage.audio ? (
-                        <p className="flex gap-1"><span className="mt-2"> <IoIosMic size={16} /></span>  <span className="mt-1 text-base">{ latestMessage.lastMessage.audio.duration}</span></p>
+                        <p className="flex gap-1">
+                          <span className="mt-2">
+                            {" "}
+                            <IoIosMic size={16} />
+                          </span>{" "}
+                          <span className="mt-1 text-base">
+                            {(latestMessage.lastMessage.audio as IAudio).duration}
+                          </span>
+                        </p>
                       ) : latestMessage.lastMessage.file ? (
                         <p className="flex gap-1">
                           {" "}
@@ -222,7 +232,15 @@ const ChatWithStudentList = () => {
                         ) : lastMessage.text ? (
                           lastMessage.text
                         ) : lastMessage.audio ? (
-                          <p className="flex gap-1"><span className="mt-2"> <IoIosMic size={16} /></span>  <span className="mt-1 text-base">{lastMessage.audio.duration}</span></p>
+                          <p className="flex gap-1">
+                            <span className="mt-2">
+                              {" "}
+                              <IoIosMic size={16} />
+                            </span>{" "}
+                            <span className="mt-1 text-base">
+                              {(lastMessage.audio as IAudio).duration}
+                            </span>
+                          </p>
                         ) : lastMessage.file ? (
                           <p className="flex gap-1">
                             {" "}

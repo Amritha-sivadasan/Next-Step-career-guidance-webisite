@@ -36,7 +36,7 @@ router.post("/otp-send", otpController.createOtp);
 router.post("/verify-otp", otpController.verifyOtp);
 router.post("/resend-otp", otpController.createOtp);
 router.post("/forgot-password", studentController.forgotPassword);
-router.post("/reset-password", studentController.resetPassword);
+router.post("/reset-password",verifyAccessToken,verifyRole(role), studentController.resetPassword);
 
 router.get("/",verifyAccessToken,verifyRole(role),studentController.fetchUserById);
 

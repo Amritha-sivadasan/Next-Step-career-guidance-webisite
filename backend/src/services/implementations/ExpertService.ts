@@ -7,6 +7,8 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import bcrypt from "bcryptjs";
 import cloudinary from "../../config/cloudinaryConfig";
 import { SendMail } from "../../utils/sendOtp";
+import { IOtpService } from "../interface/IOtpService";
+import OtpService from "./OtpService";
 
 // Helper function to transform Mongoose documents to plain objects and exclude the password
 function excludePassword(expert: any): IExpert {
@@ -17,9 +19,11 @@ function excludePassword(expert: any): IExpert {
 
 export default class ExpertService implements IExpertService {
   private expertRepository: IExpertRepository;
+  private otpservice:IOtpService
 
   constructor() {
     this.expertRepository = new ExpertRepository();
+    this.otpservice=new OtpService()
   }
 
   async getAllExperts(
@@ -214,6 +218,29 @@ export default class ExpertService implements IExpertService {
       return data;
     } catch (error) {
       throw error;
+    }
+  }
+  async verifyForgotPasswordEmail(email: string): Promise<{ expert: IExpert; accessToken: string}> {
+    try {
+      const expert = await this.expertRepository.findOne(email);
+        if(!expert){
+          throw new Error('User is not Exist')
+        } 
+       const context =
+          "otp is created for NextStep application forgot password ";
+    
+       await this.otpservice.generateOtp(email,context)
+    
+          const ExpertObj = expert.toObject();
+          delete ExpertObj.password;
+          const userId = expert._id.toString();
+          const accessToken = generateAccessToken(userId, "expert");
+  
+          return {expert :ExpertObj,accessToken}
+        
+       
+    } catch (error) {
+      throw error
     }
   }
 
