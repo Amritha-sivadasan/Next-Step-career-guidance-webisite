@@ -70,10 +70,10 @@ const ChatWithExpertList = () => {
       const chat = ChatDetials.find((item) => item._id == message.chatId);
 
       if (chat && (chat.latestMessage as IMessage)._id == message._id) {
-       const deleteMessage={
-        expertId:message.senderId,
-            lastMessage: message,
-       }
+        const deleteMessage = {
+          expertId: message.senderId,
+          lastMessage: message,
+        };
         setLatestMessage(deleteMessage);
       }
     };

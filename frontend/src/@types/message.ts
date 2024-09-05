@@ -11,7 +11,7 @@ export interface IMessage {
   chatId: string|IChat;
   senderId: string;
   text?: string;
-  audio?: IAudio;
+  audio?: IAudio|Blob ;
   file?:string|null
   timestamp: Date;
   is_delete: boolean;

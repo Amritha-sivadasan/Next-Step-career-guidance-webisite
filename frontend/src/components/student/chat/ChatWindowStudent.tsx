@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useStudentChat } from "../../../hooks/useStudentChat";
 import socket from "../../../config/socket";
 import { useAppSelector } from "../../../hooks/useTypeSelector";
-import { IChat, IMessage } from "../../../@types/message";
+import { IAudio, IChat, IMessage } from "../../../@types/message";
 import { motion } from "framer-motion";
 import {
   getMessageByChatIdByStudent,
@@ -19,6 +19,7 @@ import { AiOutlineAudio, AiOutlineSend } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
 
 const ChatWindow: React.FC = () => {
   const {
@@ -84,7 +85,7 @@ const ChatWindow: React.FC = () => {
             lastMessage: resultMessage,
           };
           setLatestMessage(latest);
-          setLastMessage(resultMessage._id)
+          setLastMessage(resultMessage._id);
         }
       }
     };
@@ -162,6 +163,7 @@ const ChatWindow: React.FC = () => {
     if (newMessage && newMessage.trim() == "") return;
 
     setRecordingUrl("");
+    setImagePreviewUrl("");
     const formData = new FormData();
     formData.append("text", newMessage);
     formData.append("senderId", userId || "");
@@ -174,7 +176,20 @@ const ChatWindow: React.FC = () => {
     if (selectedFile) {
       formData.append("file", selectedFile);
     }
-
+    const dummyMessage: IMessage = {
+      _id: "",
+      chatId: chatId!,
+      senderId: userId!,
+      text: newMessage,
+      audio: audioBlob
+        ? { url: URL.createObjectURL(audioBlob), type: "audio/wav" }
+        : undefined,
+      file: selectedFile ? URL.createObjectURL(selectedFile) : null,
+      timestamp: new Date(),
+      is_delete: false,
+      status: "loading",
+    };
+    setMessages((prev) => [...prev, dummyMessage]);
     try {
       const response = await sendMessageByStudent(formData);
       if (response.success) {
@@ -189,13 +204,14 @@ const ChatWindow: React.FC = () => {
         setLatestMessage(latest);
       }
 
-      setMessages((prev) => [...prev, response.data]);
+      setMessages((prev) =>
+        prev.map((msg) => (msg._id === "" ? { ...response.data } : msg))
+      );
       setNewMessage("");
 
       setAudioBlob(null);
       setSelectedFile(null);
-     setLastMessage(response.data._id)
-      setImagePreviewUrl("");
+      setLastMessage(response.data._id);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -209,8 +225,7 @@ const ChatWindow: React.FC = () => {
   const deleteMessage = async (messageId: string) => {
     try {
       socket.emit("deleteMessage", { chatId, messageId });
-     
-  
+
       setMessages((prevMessages) => {
         const updatedMessages = prevMessages.map((message) =>
           message._id == messageId ? { ...message, is_delete: true } : message
@@ -229,18 +244,15 @@ const ChatWindow: React.FC = () => {
         }
         return updatedMessages;
       });
-   const response= await deleteMessageByStudent(messageId);
+      const response = await deleteMessageByStudent(messageId);
 
-   
-   if(messageId == lastMessage){
-     const setLastDeletedMessage={
-      expertId:(response.data.chatId as IChat).expertId as string,
-      lastMessage:response.data
-     }
-     setLatestMessage(setLastDeletedMessage)
-
-   }
-     
+      if (messageId == lastMessage) {
+        const setLastDeletedMessage = {
+          expertId: (response.data.chatId as IChat).expertId as string,
+          lastMessage: response.data,
+        };
+        setLatestMessage(setLastDeletedMessage);
+      }
     } catch (error) {
       console.error("Error deleting message:", error);
     }
@@ -399,49 +411,60 @@ const ChatWindow: React.FC = () => {
                             {message.audio && (
                               <audio controls>
                                 <source
-                                  src={message.audio.url}
+                                  src={(message.audio as IAudio).url}
                                   type="audio/wav"
                                 />
                                 Your browser does not support the audio element.
                               </audio>
                             )}
                             {message.file && (
-                              <img
-                                src={message.file}
-                                alt={message.file}
-                                className="w-32 h-32"
-                              />
+                              <>
+                                {message.status == "loading" && (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-gray-300 bg-opacity-70">
+                                    <ClipLoader color="#3498db" size={32} />
+                                  </div>
+                                )}
+                                <img
+                                  src={message.file}
+                                  alt="uploaded file"
+                                  className="w-32 h-32"
+                                />
+                              </>
                             )}
                           </>
                         )}
                       </p>
-                      <div className="flex">
-                        <span className="ms-2 flex justify-end items-end mt-5 text-xs text-gray-500">
+                      <div className="flex justify-end place-items-end gap-1">
+                        <span className="ms-2 flex  text-xs text-gray-500">
                           {moment(message.timestamp).fromNow()}
                         </span>
                         <span>
-                          {message.senderId === userId && (
-                            <>
-                              {message.status == "seen" ? (
-                                <MdDoneAll color="green" />
-                              ) : (
-                                <MdDoneAll />
-                              )}
-                            </>
-                          )}
+                          {message.senderId === userId &&
+                            !message.is_delete &&
+                            message.status !== "loading" && (
+                              <>
+                                {message.status == "seen" ? (
+                                  <MdDoneAll color="green" />
+                                ) : (
+                                  <MdDoneAll />
+                                )}
+                              </>
+                            )}
                         </span>
                       </div>
 
-                      {message.senderId === userId && !message.is_delete && (
-                        <button
-                          className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() =>
-                            openDeleteConfirmationModal(message._id)
-                          }
-                        >
-                          <FiTrash2 />
-                        </button>
-                      )}
+                      {message.senderId === userId &&
+                        !message.is_delete &&
+                        message.status !== "loading" && (
+                          <button
+                            className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() =>
+                              openDeleteConfirmationModal(message._id)
+                            }
+                          >
+                            <FiTrash2 />
+                          </button>
+                        )}
                     </div>
                   </div>
                 ))}
