@@ -70,7 +70,7 @@ router.post('/sendfirbaseNotification',verifyAccessToken,verifyRole(role),sendFi
 router.get('/fetAllChat',verifyAccessToken,verifyRole(role),ChatController.fetchChatById)
 router.get('/fetchChatById/:id',verifyAccessToken,verifyRole(role),ChatController.fetchChatByChatId)
 router.post('/saveQuestion',verifyAccessToken,verifyRole(role),faqController.saveQuestion)
-router.get('/fetchQustion',verifyAccessToken,verifyRole(role),faqController.fetchAllQuestion)
+router.get('/fetchQustion',faqController.fetchAllQuestion)
 router.delete('/deleteMessage/:id',verifyAccessToken,verifyRole(role),messageController.deleteMessage)
 router.get('/getNotification',verifyAccessToken,verifyRole(role),notificationController.findNotificationById)
 router.get('/get-all-meeting-history',verifyAccessToken,verifyRole(role),videoCallController.findMeetingDetailsById)

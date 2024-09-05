@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getMessaging, getToken, Messaging, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,7 +22,7 @@ interface NotificationPayload {
     body: string;
   
   };
-  data?: {
+  data: {
     role:string
   };
 }
@@ -30,14 +30,22 @@ interface NotificationPayload {
 const vapidKey =
   "BHh7MINkknxbCGDzFTm6zWQSPicOx1CTX0XMVXq3I1-M10MsK4xwu_Av0-afQtEEJd03Hrnb5iZMX99EeyTMt0Y";
 
-export const onMessageListener = ():Promise<NotificationPayload>  =>
-  new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
+  export const onMessageListener = (messaging: Messaging, callback: (payload: NotificationPayload) => void) => {
+    return onMessage(messaging, (payload) => {
       if (payload.notification) {
-        resolve(payload as unknown as NotificationPayload);
-      } 
+        const notificationPayload: NotificationPayload = {
+          notification: {
+            title: payload.notification.title || '',
+            body: payload.notification.body || '',
+          },
+          data: {
+            role: payload?.data?.role ||''
+          },
+        };
+        callback(notificationPayload);
+      }
     });
-  });
+  };
 
 export const requestFCMToken = async () => {
   return Notification.requestPermission().then((permission) => {

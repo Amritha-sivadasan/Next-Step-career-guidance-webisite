@@ -89,9 +89,6 @@ const BookingDetails = () => {
     fetchConfirmBooking(currentPage);
   }, [currentPage]);
 
-
- 
-
   const handleViewMore = () => {
     if (hasMore) {
       setCurrentPage((prevPage) => prevPage + 1);
@@ -143,7 +140,7 @@ const BookingDetails = () => {
       };
 
       await localStorage.setItem("bookingId", bookingId);
-     setLoading(true);
+      setLoading(true);
       try {
         const response = await createVideoCall(videocallDetails);
         const newVideoCallDetails = response.data;
@@ -155,7 +152,7 @@ const BookingDetails = () => {
           ...prevInputs,
           [bookingId]: url,
         }));
-        setLoading(false); 
+        setLoading(false);
         toast.success("Video call URL created successfully.");
         setUrlInputs((prevInputs) => ({ ...prevInputs, [bookingId]: "" }));
         const title = "Next Step meeting Link";
@@ -164,7 +161,7 @@ const BookingDetails = () => {
         const result = await sendNotification(title, body, fcmToken!, role);
         console.log("result for notification ", result);
       } catch (error) {
-        setLoading(false); 
+        setLoading(false);
         console.error("Failed to create video call:", error);
         toast.error("Failed to create video call. Please try again.");
       }
@@ -177,6 +174,11 @@ const BookingDetails = () => {
       const update = {
         url: url,
       };
+      const existUrl = videoCallDetails[id];
+      if (existUrl.url == url) {
+        setIsEditing(null);
+        return;
+      }
 
       try {
         const response = await updateVideoCall(id, update);
@@ -185,7 +187,11 @@ const BookingDetails = () => {
           ...prevDetails,
           [id]: newVideoCallDetails,
         }));
-
+        const title = "Next Step meeting Link";
+        const body = "Your meeeting link is share to  email ";
+        const role = "student";
+        const result = await sendNotification(title, body, fcmToken!, role);
+        console.log("result for notification ", result);
         toast.success("Video call URL updated successfully.");
         setIsEditing(null);
       } catch (error) {
@@ -260,35 +266,43 @@ const BookingDetails = () => {
                         </>
                       ) : (
                         <>
-                        {request.bookingStatus !=='cancelled' &&  <>  <input
-                            type="text"
-                            placeholder="Enter URL"
-                            value={urlInputs[request._id] || ""}
-                            onChange={(e) =>
-                              setUrlInputs((prevInputs) => ({
-                                ...prevInputs,
-                                [request._id]: e.target.value,
-                              }))
-                            }
-                            className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <button
-                            onClick={() =>
-                              isEditing
-                                ? handleUpdateVideoCall(request._id)
-                                : handleCreateVideoCall(
-                                    request._id,
-                                    student._id
-                                  )
-                            }
-                            disabled={loading}
-                            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
-                          >
-                            {loading ? (<ClipLoader size={20} color="#fff" />): isEditing ? "Update URL" : "Send URL"}
-                      
-                          </button></> }
-                     
-                        
+                          {request.bookingStatus !== "cancelled" && (
+                            <>
+                              {" "}
+                              <input
+                                type="text"
+                                placeholder="Enter URL"
+                                value={urlInputs[request._id] || ""}
+                                onChange={(e) =>
+                                  setUrlInputs((prevInputs) => ({
+                                    ...prevInputs,
+                                    [request._id]: e.target.value,
+                                  }))
+                                }
+                                className="flex-1 border border-gray-300 rounded-lg p-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                              <button
+                                onClick={() =>
+                                  isEditing
+                                    ? handleUpdateVideoCall(request._id)
+                                    : handleCreateVideoCall(
+                                        request._id,
+                                        student._id
+                                      )
+                                }
+                                disabled={loading}
+                                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
+                              >
+                                {loading ? (
+                                  <ClipLoader size={20} color="#fff" />
+                                ) : isEditing ? (
+                                  "Update URL"
+                                ) : (
+                                  "Send URL"
+                                )}
+                              </button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>

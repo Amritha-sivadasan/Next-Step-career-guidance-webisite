@@ -25,10 +25,14 @@ const Faq: React.FC = () => {
   };
 
   const handleQuestion = async () => {
+    if(!user){
+      toast.error('You need to login')
+    }
      if(newquestion.trim()==''){
        toast.error('Please enter question')
        return
      }
+
 
     const newQuestion = {
       studentId: user?._id,

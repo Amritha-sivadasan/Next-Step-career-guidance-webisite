@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Send, X } from "lucide-react";
+import { IoMdArrowDropdownCircle,IoMdArrowDropupCircle  } from "react-icons/io";
 
 type ChatMessage = {
   sender: "user" | "bot";
@@ -11,6 +12,7 @@ const FAQChatBot: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const faqData: { [key: string]: string } = {
@@ -41,6 +43,7 @@ const FAQChatBot: React.FC = () => {
   }, [chatHistory]);
 
   const handleQuestionClick = (question: keyof typeof faqData) => {
+    setIsDropdownOpen(!isDropdownOpen);
     addMessage("user", String(question));
     simulateTyping(faqData[question]);
   };
@@ -166,19 +169,34 @@ const FAQChatBot: React.FC = () => {
                 <Send size={20} />
               </button>
             </div>
-            <div className="mt-4 space-y-2">
+            <div className="mt-4">
               <p className="text-sm text-gray-600">Suggested questions:</p>
-              {Object.keys(faqData).map((question) => (
+              <div className="flex flex-row ">
                 <button
-                  key={question}
-                  onClick={() =>
-                    handleQuestionClick(question as keyof typeof faqData)
-                  }
-                  className="block text-left text-sm text-blue-600 hover:text-blue-800"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex "
                 >
-                  {question}
+                  Select Question
+                  <span className="mt-1">
+                   {isDropdownOpen ? <IoMdArrowDropupCircle/> :<IoMdArrowDropdownCircle /> }  
+                  </span>
                 </button>
-              ))}
+              </div>
+              {isDropdownOpen && (
+                <div className="mt-2 space-y-2">
+                  {Object.keys(faqData).map((question) => (
+                    <button
+                      key={question}
+                      onClick={() =>
+                        handleQuestionClick(question as keyof typeof faqData)
+                      }
+                      className="block text-left text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

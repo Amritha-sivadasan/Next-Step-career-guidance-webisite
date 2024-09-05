@@ -11,6 +11,7 @@ class NotificationService {
     };
     try {
       const response = await admin.messaging().send(message);
+   
       return response;
     } catch (error) {
       console.log('error firebase admin error',error)

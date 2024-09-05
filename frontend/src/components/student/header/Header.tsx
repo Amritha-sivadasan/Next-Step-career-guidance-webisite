@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
     const start = window.scrollY;
     const targetPosition = targetElement
       ? targetElement.getBoundingClientRect().top + start
-      : 0; // Scroll to the top if no targetId is provided
+      : 0; 
     const distance = targetPosition - start;
     const startTime = performance.now();
 

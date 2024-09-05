@@ -37,8 +37,9 @@ const ExpertProfile: React.FC = () => {
   );
 
   const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadingCredential, setUploadingCredential] =
-    useState<boolean>(false);
+  const [uploadingCredential, setUploadingCredential] = useState<boolean>(
+    false
+  );
   useEffect(() => {
     if (expert) {
       setFormData({ ...expert });
@@ -161,7 +162,7 @@ const ExpertProfile: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 mx-auto w-full max-w-4xl flex justify-center">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 mx-auto w-full max-w-4xl flex justify-center ">
       {expert ? (
         <div className="container mx-auto bg-white p-6 rounded-lg ">
           <div className="relative bg-[#F2F2F2] border h-40 rounded-lg mb-8 shadow-md">
@@ -174,7 +175,7 @@ const ExpertProfile: React.FC = () => {
               <img
                 src={previewImage}
                 alt="Profile"
-                className="w-32 h-32 object-cover rounded-full border-2 border-white shadow-lg cursor-pointer"
+                className="w-32 h-32 mt-8 mr-11 md:mr-0 md:mt-0 object-cover rounded-full border-2 border-white shadow-lg cursor-pointer"
                 onClick={handleImageClick}
               />
               <input

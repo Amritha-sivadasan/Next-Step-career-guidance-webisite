@@ -313,7 +313,7 @@ export const sendQustion  =async(data: Partial<IFaq>)=>{
 
 export const fetchQusion = async()=>{
 try {
-  const response = await studentAxiosInstance.get(
+  const response = await axios.get(
     `${API_URL}/student/fetchQustion`,
     {
       withCredentials: true,

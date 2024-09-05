@@ -342,7 +342,7 @@ const ChatWindow: React.FC = () => {
   return (
     <div
       className={`flex-1 flex flex-col   ${
-        !chatId ? "sm:hidden  md:block" : ""
+        !chatId ? "hidden sm:hidden lg:block  md:block" : ""
       }`}
     >
       <div className="md:hidden lg:hidden mb-3 cursor-pointer  ">

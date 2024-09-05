@@ -28,6 +28,44 @@ const ExpertNavbar: React.FC = () => {
   }, []);
 
 
+  const smoothScrollTo = (targetId: string, duration: number) => {
+    const targetElement = targetId ? document.getElementById(targetId) : null;
+    const start = window.scrollY;
+    const targetPosition = targetElement
+      ? targetElement.getBoundingClientRect().top + start
+      : 0; // Scroll to the top if no targetId is provided
+    const distance = targetPosition - start;
+    const startTime = performance.now();
+
+    const scroll = (currentTime: number) => {
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      window.scrollTo(0, start + distance * easeInOutQuad(progress));
+      if (timeElapsed < duration) {
+        requestAnimationFrame(scroll);
+      }
+    };
+
+    const easeInOutQuad = (t: number) => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    requestAnimationFrame(scroll);
+  };
+
+  const handleScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    e.preventDefault();
+    if (targetId === "") {
+      smoothScrollTo("", 1200);
+    } else {
+      smoothScrollTo(targetId, 1200);
+    }
+  };
+
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -66,9 +104,10 @@ const ExpertNavbar: React.FC = () => {
               </li>
 
               <li className="transition-transform duration-200 hover:scale-105">
-                <a
-                  href="#"
+              <a
+                  href="#how_work"
                   className="text-[#0B2149] font-thin hover:text-black"
+                  onClick={(e) => handleScroll(e, "how_work")}
                 >
                   How it Works
                 </a>
@@ -147,7 +186,7 @@ const ExpertNavbar: React.FC = () => {
 
             <li>
               <Link
-                to="/how-it-works"
+                to="#how-it-works"
                 className="text-[#0B2149] font-thin hover:text-blue-800"
                 onClick={toggleSidebar}
               >
@@ -184,7 +223,7 @@ const ExpertNavbar: React.FC = () => {
                 </Link>
               ) : (
                 <Link
-                  to="/login"
+                  to="/expert/login"
                   className="text-[#0B2149] font-thin hover:text-blue-800"
                   onClick={toggleSidebar}
                 >

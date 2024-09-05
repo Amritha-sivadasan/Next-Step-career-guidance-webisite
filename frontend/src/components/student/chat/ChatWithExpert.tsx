@@ -148,7 +148,7 @@ const ChatWithExpertList = () => {
   return (
     <div
       className={`w-full md:w-2/6   bg-gray-100 p-4 h-full md:h-auto overflow-auto ${
-        chatId ? "sm:hidden md:block" : ""
+        chatId ? "sm:hidden hidden lg:block md:block" : ""
       }`}
     >
       <input
@@ -212,7 +212,10 @@ const ChatWithExpertList = () => {
                             <IoIosMic size={16} />
                           </span>
                           <span className="mt-1 text-base">
-                            {(latestMessage.lastMessage.audio as IAudio).duration}
+                            {
+                              (latestMessage.lastMessage.audio as IAudio)
+                                .duration
+                            }
                           </span>
                         </p>
                       ) : latestMessage.lastMessage.file ? (

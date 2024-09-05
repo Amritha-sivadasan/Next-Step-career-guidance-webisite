@@ -8,6 +8,7 @@ import { useAppSelector } from "../hooks/useTypeSelector";
 import { onMessageListener, requestFCMToken } from "../config/firebase";
 import toast, { Toaster } from "react-hot-toast";
 import LoadingPage from "../components/common/Loading/LoadingPage";
+import { getMessaging } from "firebase/messaging";
 
 const  AdminLogin =lazy(()=>import("../components/admin/login/AdminLogin")) ;
 const Dashboard =lazy(()=>import("../components/admin/dashbord/AdimnDashboard")) ;
@@ -66,21 +67,35 @@ const AdminRouter = () => {
       role: string;
     };
   }
+  useEffect(() => {
+    const messaging = getMessaging(); 
 
-  onMessageListener()
-    .then((payload: NotificationPayload) => {
-      if (payload.notification && payload.data?.role == "admin") {
+    
+    const handleMessage = (payload: NotificationPayload) => {
+      if (payload.notification && payload.data?.role.trim() === "admin") {
         toast(
           <div>
             <strong>{payload.notification.title}</strong>
             <p>{payload.notification.body}</p>
           </div>,
-          { position: "top-right" }
+          {
+            position: "top-right",
+          }
         );
         console.log("Received foreground message:", payload);
       }
-    })
-    .catch((err) => console.log("Error in receiving foreground message:", err));
+    };
+
+
+    const unsubscribe = onMessageListener(messaging, handleMessage);
+
+   
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe(); 
+      }
+    };
+  }, []);
 
   return (
     <Suspense fallback={<LoadingPage />}>

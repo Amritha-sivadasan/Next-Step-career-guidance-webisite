@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { toast } from "react-toastify";
 import LoadingPage from "../components/common/Loading/LoadingPage";
 import FAQChatBot from "../components/common/chatbot/ChatBot";
+import { getMessaging } from "firebase/messaging";
 
 const Signup = lazy(() => import("../components/student/register/Signup"));
 const Login = lazy(() => import("../components/common/authentication/Login"));
@@ -95,9 +96,13 @@ const StudentRouter = () => {
     fetchFcmToken();
   }, []);
 
-  onMessageListener()
-    .then((payload: NotificationPayload) => {
-      if (payload.notification && payload.data?.role.trim() == "student") {
+
+  useEffect(() => {
+    const messaging = getMessaging(); 
+
+  
+    const handleMessage = (payload: NotificationPayload) => {
+      if (payload.notification && payload.data?.role.trim() === "student") {
         toast(
           <div>
             <strong>{payload.notification.title}</strong>
@@ -109,8 +114,18 @@ const StudentRouter = () => {
         );
         console.log("Received foreground message:", payload);
       }
-    })
-    .catch((err) => console.log("Error in receiving foreground message:", err));
+    };
+
+
+    const unsubscribe = onMessageListener(messaging, handleMessage);
+
+   
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe(); 
+      }
+    };
+  }, []);
 
   return (
     <Suspense fallback={<LoadingPage />}>

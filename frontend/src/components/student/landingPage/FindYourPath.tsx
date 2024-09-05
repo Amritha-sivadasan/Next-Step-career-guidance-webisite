@@ -93,7 +93,7 @@ const FindYourPath: React.FC = () => {
                     selectedCategory === category.catName
                       ? "text-blue-900 border-b-2 border-blue-900"
                       : "text-[#0B2149]"
-                  }  hover:scale-105`}
+                  }  hover:scale-95`}
                 >
                   {category.catName}
                 </li>
