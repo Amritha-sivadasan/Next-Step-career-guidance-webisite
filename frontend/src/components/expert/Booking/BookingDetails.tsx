@@ -179,6 +179,7 @@ const BookingDetails = () => {
         setIsEditing(null);
         return;
       }
+      await localStorage.setItem("bookingId", id);
 
       try {
         const response = await updateVideoCall(id, update);

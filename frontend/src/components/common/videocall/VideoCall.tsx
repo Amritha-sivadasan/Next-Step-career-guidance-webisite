@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import socket from "../../../config/socket"; // Update with your actual path
+import socket from "../../../config/socket"; 
 import {
   FaVideo,
   FaMicrophone,
@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { updatemeetingStatus } from "../../../services/api/bookingApi";
 
+
 const VideoCall: React.FC = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
   const [myId, setMyId] = useState<string>("");
@@ -18,7 +19,7 @@ const VideoCall: React.FC = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [callStarted, setCallStarted] = useState<boolean>(false);
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
-  const [, setCallDuration] = useState<string>("00:00");
+  const [callDuration, setCallDuration] = useState<string>("00:00");
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -226,58 +227,61 @@ const VideoCall: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-gray-100">
-      <div className="p-6 bg-gray-100 flex-shrink-0">
-        <h2 className="text-xl font-semibold mb-4">Your ID: {myId}</h2>
-        <div className="mb-4 flex space-x-2">
-          {!callStarted && (
-            <button
-              onClick={startCall}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-            >
-              Start Call
-            </button>
-          )}
+    <div className="flex flex-col h-screen w-screen bg-gray-900">
+    <div className="p-4 bg-gray-800 flex-shrink-0 shadow-md">
+      <h2 className="text-2xl font-semibold text-white mb-4">Your ID: {myId}</h2>
+      <div className="flex space-x-4">
+        {!callStarted && (
           <button
-            onClick={toggleCamera}
-            className="bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-600"
+            onClick={startCall}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {isCameraOn ? <FaVideo /> : <FaVideoSlash />}
+            Start Call
           </button>
-          <button
-            onClick={toggleMic}
-            className="bg-yellow-500 text-white p-2 rounded-md shadow-md hover:bg-yellow-600"
-          >
-            {isMicOn ? <FaMicrophone /> : <FaMicrophoneSlash />}
-          </button>
-          <button
-            onClick={leaveCall}
-            className="bg-red-500 text-white p-2 rounded-md shadow-md hover:bg-red-600"
-          >
-            <FaPhoneAlt />
-          </button>
-        </div>
+        )}
+        <button
+          onClick={toggleCamera}
+          className={`p-2 rounded-lg shadow-lg ${isCameraOn ? 'bg-green-500' : 'bg-red-500'} text-white hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-green-500`}
+        >
+          {isCameraOn ? <FaVideo /> : <FaVideoSlash />}
+        </button>
+        <button
+          onClick={toggleMic}
+          className={`p-2 rounded-lg shadow-lg ${isMicOn ? 'bg-yellow-500' : 'bg-gray-500'} text-white hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-yellow-500`}
+        >
+          {isMicOn ? <FaMicrophone /> : <FaMicrophoneSlash />}
+        </button>
+        <button
+          onClick={leaveCall}
+          className="bg-red-500 text-white p-2 rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          <FaPhoneAlt />
+        </button>
       </div>
-      <div className="flex flex-grow">
-        <div className="relative flex flex-col items-center flex-shrink-0 w-1/3 p-2">
-          <p className="mb-2 font-medium">Your video</p>
-          <video
-            ref={localVideoRef}
-            autoPlay
-            muted
-            className="w-full h-auto border border-gray-300 rounded-md"
-          />
+      {callStarted && (
+        <div className="mt-4 text-white text-lg">
+          Call Duration: {callDuration}
         </div>
-        <div className="relative flex flex-col items-center flex-grow p-2">
-          <p className="mb-2 font-medium">Remote video</p>
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            className="w-full h-full border border-gray-300 rounded-md"
-          />
-        </div>
+      )}
+    </div>
+    <div className="flex flex-1">
+      <div className="flex-1 p-4">
+        <video
+          ref={localVideoRef}
+          autoPlay
+          muted
+          className="w-full h-full object-cover rounded-lg shadow-lg"
+        />
+      </div>
+      <div className="flex-1 p-4">
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          className="w-full h-full object-cover rounded-lg shadow-lg"
+        />
       </div>
     </div>
+  </div>
   );
 };
 
