@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { IBooking } from "../../../@types/booking";
 import { fetchAllBookingByAdmin } from "../../../services/api/adminApi";
 import { IStudent } from "../../../@types/user";
