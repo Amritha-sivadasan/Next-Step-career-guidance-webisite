@@ -27,6 +27,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'))
 
+app.get('/',(req,res)=>{
+  res.send('helloooooooooo')
+})
+
 app.use("/api/student", studentRouter);
 app.use("/api/expert", expertRouter);
 app.use("/api/admin", adminRoute);
