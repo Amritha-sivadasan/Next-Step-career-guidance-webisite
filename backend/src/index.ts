@@ -9,6 +9,7 @@ import adminRoute from "./routes/adminRoute";
 import http from "http";
 import { Server } from "socket.io";
 import { createSocketServer } from "./socket/socketHandler";
+import morgan from 'morgan'
 
 dotenv.config();
 const app: Express = express();
@@ -17,13 +18,14 @@ connect();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     exposedHeaders: ["Set-Cookie"],
   })
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan('dev'))
 
 app.use("/api/student", studentRouter);
 app.use("/api/expert", expertRouter);

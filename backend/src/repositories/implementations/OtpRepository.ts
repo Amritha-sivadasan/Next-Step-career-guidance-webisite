@@ -2,12 +2,13 @@ import { IOtpRepository } from "../interface/IOtpRepository";
 import { IOtp } from "../../entities/OtpEntity";
 import { Otp } from "../../models/otpSchema";
 
+
 export default class OtpRepository implements IOtpRepository {
   async create(otp: IOtp, email: String): Promise<void> {
     await Otp.updateOne({ email }, otp, { upsert: true }).exec();
   }
 
-  async fetchOtp(email: string): Promise<(IOtp & Document) | null> {
+  async fetchOtp(email: string): Promise<(IOtp ) | null> {
     return Otp.findOne({ email });
   }
 
