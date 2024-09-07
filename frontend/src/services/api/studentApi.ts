@@ -3,7 +3,8 @@ import { IStudent } from "../../@types/user";
 import { studentAxiosInstance } from "../instance/userInstance";
 import { IFaq } from "../../@types/faq";
 
-const API_URL = process.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
+console.log("API_URL:", API_URL)
 
 interface Error {
   response?: {
@@ -115,6 +116,7 @@ export const fetchUserData = async () => {
 
 export const loginStudent = async (email: string, password: string) => {
   try {
+    
     const response = await axios.post(
       `${API_URL}/student/login`,
       { email, password },
