@@ -16,5 +16,5 @@ export default class OtpRepository implements IOtpRepository {
     await Otp.deleteOne({ email }).exec();
 
   }
- 
+ //fjhdskfjhsk
 }
