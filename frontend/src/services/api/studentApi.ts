@@ -69,6 +69,7 @@ export const userRegister = async (userData: IStudent) => {
   }
 };
 
+
 export const verifyOtp = async (email: string, otp: string) => {
   try {
     const response: AxiosResponse = await axios.post(
