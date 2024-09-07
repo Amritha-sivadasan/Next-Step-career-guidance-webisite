@@ -2,7 +2,7 @@ import { IvidoeCall } from "../../@types/videoCall";
 import { axiosInstance } from "../instance/expertInstance";
 import { studentAxiosInstance } from "../instance/userInstance";
 
-const API_URL = process.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL
 
 interface Error {
   response?: {
