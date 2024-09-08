@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
+import ClipLoader from "react-spinners/ClipLoader";
 import {
   LoginResponse,
   loginUser,
@@ -36,6 +37,8 @@ interface LoginFormInput {
 //component start--------------------------------------//
 const Login: React.FC<LoginPageProps> = ({ userType }) => {
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
+
   const isExpert = userType === "expert";
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
@@ -46,10 +49,12 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
   } = useForm<LoginFormInput>();
 
   const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
+    setDataLoading(true);
     if (userType === "student") {
       const result = await dispatch(loginUser(data));
       const loginResponse = result.payload as LoginResponse;
       if (loginResponse.success && loginResponse.data) {
+        setDataLoading(false);
         setLoading(true);
         const userData = loginResponse.data;
         dispatch(setUser(userData));
@@ -69,6 +74,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
           }, 1000);
         }
       } else {
+        setDataLoading(false);
         console.log("Login failed or user data is missing");
       }
     } else if (userType === "expert") {
@@ -76,6 +82,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
       console.log("result", result.payload);
       const loginResponse = result.payload as LoginResponseExpert;
       if (loginResponse.success && loginResponse.data) {
+        setDataLoading(false);
         const expert = loginResponse.data;
         dispatch(setExpert(expert));
         dispatch(setExpertAuthenticated(true));
@@ -88,6 +95,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
         }, 1000);
       } else {
         setLoading(false);
+        setDataLoading(false);
         console.log("Login failed or expert data is missing ");
       }
     }
@@ -216,7 +224,7 @@ const Login: React.FC<LoginPageProps> = ({ userType }) => {
               type="submit"
               className="bg-[#0B2149] text-white p-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#0a1b2c] hover:shadow-lg transition-transform transform hover:scale-105 duration-300"
             >
-              Log In
+              {dataLoading ? <ClipLoader color="white"/> : "Log In"}
             </button>
             <div className="flex justify-end ">
               {isExpert ? (
