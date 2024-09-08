@@ -9,6 +9,7 @@ import { onMessageListener, requestFCMToken } from "../config/firebase";
 import toast, { Toaster } from "react-hot-toast";
 import LoadingPage from "../components/common/Loading/LoadingPage";
 import { getMessaging } from "firebase/messaging";
+import NotFound from "../components/common/not-found/Not-foundPage";
 
 const  AdminLogin =lazy(()=>import("../components/admin/login/AdminLogin")) ;
 const Dashboard =lazy(()=>import("../components/admin/dashbord/AdimnDashboard")) ;
@@ -165,6 +166,7 @@ const AdminRouter = () => {
             <Route path="/report" element={<ReportPage />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
     </Suspense>

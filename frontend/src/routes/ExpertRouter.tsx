@@ -13,6 +13,7 @@ import  { Toaster } from "react-hot-toast";
 import { toast } from "react-toastify";
 import LoadingPage from "../components/common/Loading/LoadingPage";
 import { getMessaging } from "firebase/messaging";
+import NotFound from "../components/common/not-found/Not-foundPage";
 
 
 const Login =lazy(()=>import("../components/common/authentication/Login")) ;
@@ -199,6 +200,7 @@ const ExpertRouter = () => {
           <Route path='/meeting-history' element ={<MeetingHistoryPage/>}/>
         </Route>
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
     </Suspense>
   );

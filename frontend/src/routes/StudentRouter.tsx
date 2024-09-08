@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import LoadingPage from "../components/common/Loading/LoadingPage";
 import FAQChatBot from "../components/common/chatbot/ChatBot";
 import { getMessaging } from "firebase/messaging";
+import NotFound from "../components/common/not-found/Not-foundPage";
 
 const Signup = lazy(() => import("../components/student/register/Signup"));
 const Login = lazy(() => import("../components/common/authentication/Login"));
@@ -268,6 +269,7 @@ const StudentRouter = () => {
             </Route>
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

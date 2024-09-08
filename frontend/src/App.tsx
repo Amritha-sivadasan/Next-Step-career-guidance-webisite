@@ -4,8 +4,8 @@ import ExpertRouter from "./routes/ExpertRouter";
 import AdminRouter from "./routes/AdminRouter";
 import VideoCallPage from "./pages/expert/VideoCallPage";
 
+
 function App() {
-  
   return (
     <>
       <Routes>
@@ -13,6 +13,7 @@ function App() {
         <Route path="/expert/*" element={<ExpertRouter />} />
         <Route path="/admin/*" element={<AdminRouter />} />
         <Route path="/meeting-start/:meetingId" element={<VideoCallPage />} />
+        
       </Routes>
     </>
   );
