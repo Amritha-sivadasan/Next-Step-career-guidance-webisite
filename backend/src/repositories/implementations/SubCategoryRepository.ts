@@ -8,7 +8,7 @@ export default class SubCategoryRepository implements ISubCategeryRepository {
   async findAll(page:number,limit:number): Promise<ISubCategory[]> {
     try {
       const skip = (page - 1) * limit;
-      return SubCategory.find({is_delete:false}).skip(skip).limit(limit).exec()
+      return SubCategory.find({is_delete:false}).sort({_id:-1}).skip(skip).limit(limit).exec()
     } catch (error) {
       throw error;
     }

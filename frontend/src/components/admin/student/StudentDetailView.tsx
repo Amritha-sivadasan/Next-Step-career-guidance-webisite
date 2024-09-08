@@ -83,7 +83,7 @@ const StudentDetailView: React.FC<StudentProbs> = ({ student }) => {
           </div>
         </div>
       ) : (
-        <p className="text-center">Expert not found</p>
+        <p className="text-center">Student Data not found</p>
       )}
     </div>
   );
