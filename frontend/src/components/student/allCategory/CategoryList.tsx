@@ -15,7 +15,6 @@ const CareerOptionsPage: React.FC<CareerOptionsPageProps> = ({
   const [nextIndex, setNextIndex] = useState<number>(0);
 
   useEffect(() => {
-
     setDisplayedItems(subcategory.slice(0, ITEMS_PER_PAGE));
     setNextIndex(ITEMS_PER_PAGE);
   }, [subcategory]);
@@ -25,9 +24,6 @@ const CareerOptionsPage: React.FC<CareerOptionsPageProps> = ({
     setDisplayedItems(subcategory.slice(0, newIndex));
     setNextIndex(newIndex);
   };
-
-
-
 
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -57,7 +53,7 @@ const CareerOptionsPage: React.FC<CareerOptionsPageProps> = ({
 export default CareerOptionsPage;
 
 interface CareerOptionCardProps {
-  id:string;
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -69,13 +65,15 @@ const CareerOptionCard: React.FC<CareerOptionCardProps> = ({
   description,
   image,
 }) => {
-  const navigate= useNavigate()
-  const handleSubcategory=(id:string)=>{
-    navigate(`/categoryDetails/${id}`)
- 
-  }
+  const navigate = useNavigate();
+  const handleSubcategory = (id: string) => {
+    navigate(`/categoryDetails/${id}`);
+  };
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 m-4 w-80 border cursor-pointer  transition-transform transform hover:scale-105" onClick={()=>handleSubcategory(id)}>
+    <div
+      className="bg-white rounded-lg shadow-xl p-6 m-4 w-80 border cursor-pointer  transition-transform transform hover:scale-105"
+      onClick={() => handleSubcategory(id)}
+    >
       <img
         src={image}
         alt={title}

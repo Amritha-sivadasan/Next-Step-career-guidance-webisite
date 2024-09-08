@@ -15,8 +15,11 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
   useEffect(() => {
     const fetchCategory = async () => {
       const response = await getAllCategory(1, 3);
-      console.log("response", response);
-      setCategory(response.data.items);
+      const shuffleCategory = response.data.items.sort(
+        () => 0.5 - Math.random()
+      );
+      const randomCategories = shuffleCategory.slice(0, 3);
+      setCategory(randomCategories);
     };
     fetchCategory();
   }, []);
@@ -27,10 +30,12 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
   const handleTest = () => {
     if (user?.psychometric_result) {
       navigate("/test-result");
-    }else{
-
+    } else {
       navigate("/psychometric-test");
     }
+  };
+  const handleSubcategory = (catName: string) => {
+    navigate(`/allcategory/${catName}`);
   };
 
   return (
@@ -160,18 +165,22 @@ const AboutCategory: React.FC<SubcategoryProps> = ({ subCategory }) => {
         <h2 className="text-2xl font-bold text-center mb-14">
           You May Also Be Interested In
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 shadow-lg ">
           {categories.map((category) => (
-            <div key={category._id} className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border">
+            <div
+              key={category._id}
+              className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center border cursor-pointer transform transition-transform hover:scale-105"
+              onClick={() => handleSubcategory(category.catName)}
+            >
               <img
-                src={category.catImage} // Replace with your category image path
+                src={category.catImage}
                 alt="Category 1"
                 className="w-52 h-32 object-cover rounded-lg mb-4"
               />
               <h3 className="text-xl font-semibold mb-2">
                 {category.catName}{" "}
               </h3>
-              <p className="text-gray-600">Brief description of Category 1.</p>
+              <p className="text-gray-600">{category.description}</p>
             </div>
           ))}
         </div>
