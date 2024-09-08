@@ -44,12 +44,14 @@ const StudentMeetingHistory = () => {
   const fetchAllMeetings = async () => {
     try {
       const meetingsResult = await findAllvideoCallStudent();
-      const filterData = meetingsResult.data.filter((item:IvidoeCall)=>{
-        const bookingComplete= item.bookingId as IBooking
-         return bookingComplete.meetingStatus=='completed'
-      })
-      
+      const filterData = meetingsResult.data.filter((item: IvidoeCall) => {
+        const bookingComplete = item.bookingId as IBooking;
+
+        return bookingComplete.meetingStatus == "completed";
+      });
+
       setMeetingDetails(filterData);
+      console.log("filterData", filterData);
 
       const meetingIds = filterData.map((meeting: IvidoeCall) => meeting._id);
 
@@ -63,7 +65,9 @@ const StudentMeetingHistory = () => {
         (acc: Record<string, IReviewAndRating>, reviewResult) => {
           const { data } = reviewResult;
 
-          acc[data.meetingId] = data;
+          if (data !== null) {
+            acc[data.meetingId] = data;
+          }
           return acc;
         },
         {}
@@ -142,7 +146,7 @@ const StudentMeetingHistory = () => {
           ...prev,
           [meetingId]: response.data,
         }));
-    
+
         Swal.fire("Deleted!", "The review has been deleted.", "success");
       }
     } catch (error) {
@@ -164,7 +168,7 @@ const StudentMeetingHistory = () => {
         {meetingDetails.length === 0 ? (
           <p className="text-gray-600 text-center">No bookings here</p>
         ) : (
-          meetingDetails.map((meeting) => {
+          meetingDetails.map((meeting: IvidoeCall) => {
             const Expert = meeting.expertId as IExpert;
             const booking = meeting.bookingId as IBooking;
             const slot = booking.slotId as ISlot;
@@ -243,12 +247,12 @@ const StudentMeetingHistory = () => {
                 </div>
 
                 <div
-                  className={`flex flex-col mt-4 p-4 bg-white shadow-md rounded-lg ${
-                    reviewDetails[meeting._id!]?.is_delete && "hidden"
-                  }`}
+                  className={`flex flex-col mt-4 p-4 bg-white shadow-md rounded-lg  ${
+                    reviewDetails[meeting._id!]?.is_delete}`}
                 >
-                  {reviewDetails[meeting._id!] &&
-                  !reviewDetails[meeting._id!].is_delete ? (
+                  {
+                  reviewDetails[meeting._id!] &&
+                  !reviewDetails[meetingId!].is_delete ? (
                     <div className="border p-4 rounded-lg bg-gray-100">
                       <div className="flex justify-between">
                         <p className="font-semibold text-lg">Your Review:</p>
@@ -269,6 +273,7 @@ const StudentMeetingHistory = () => {
                       />
                     </div>
                   ) : (
+                   
                     !reviewDetails[meeting._id!]?.is_delete && (
                       <>
                         <textarea

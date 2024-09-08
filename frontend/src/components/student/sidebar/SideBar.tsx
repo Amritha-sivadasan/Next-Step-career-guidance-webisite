@@ -38,13 +38,11 @@ const UserSideBar: React.FC = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-
-
   return (
-    <div className="relative md:w-1/3 lg:w-1/4 p-4 border-gray-300">
+    <div className="relative  md:w-1/3 lg:w-1/4 p-4 border-gray-300">
       <button
         onClick={toggleDropdown}
-        className="block md:hidden absolute top-4 left-4 p-2 mb-4 text-white rounded-lg shadow-lg border border-gray-200 bg-white z-50"
+        className="block md:hidden absolute lg:hidden  top-4 left-4 p-2 mb-4 text-white rounded-lg shadow-lg border border-gray-200 bg-white "
       >
         <FaBars color="black" />
       </button>

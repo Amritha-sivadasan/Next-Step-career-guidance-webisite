@@ -97,11 +97,9 @@ const StudentRouter = () => {
     fetchFcmToken();
   }, []);
 
-
   useEffect(() => {
-    const messaging = getMessaging(); 
+    const messaging = getMessaging();
 
-  
     const handleMessage = (payload: NotificationPayload) => {
       if (payload.notification && payload.data?.role.trim() === "student") {
         toast(
@@ -117,13 +115,11 @@ const StudentRouter = () => {
       }
     };
 
-
     const unsubscribe = onMessageListener(messaging, handleMessage);
 
-   
     return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe(); 
+      if (typeof unsubscribe === "function") {
+        unsubscribe();
       }
     };
   }, []);
@@ -247,7 +243,7 @@ const StudentRouter = () => {
               element={
                 <>
                   {" "}
-                  <div className="flex  flex-grow mt-9">
+                  <div className="flex flex-col  md:flex-row lg:flex-row  flex-grow mt-9">
                     {" "}
                     <UserSideBar /> <Outlet />{" "}
                   </div>{" "}

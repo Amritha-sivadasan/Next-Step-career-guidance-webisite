@@ -11,7 +11,7 @@ import { setUser } from "../../../features/student/authSlice";
 
 const PsychometricTest = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(15); 
+  const [timeRemaining, setTimeRemaining] = useState(15);
   const [questions, setQuestions] = useState<IPsychometricQuestion[]>([]);
   const [answers, setAnswers] = useState<Array<string | null>>([]);
   const { user } = useAppSelector((state) => state.student);
@@ -48,13 +48,11 @@ const PsychometricTest = () => {
   };
 
   const handleNextQuestion = () => {
-
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setTimeRemaining(15)
-      } else {
-        handleSubmit();
-      
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setTimeRemaining(15);
+    } else {
+      handleSubmit();
     }
   };
 
@@ -71,7 +69,7 @@ const PsychometricTest = () => {
   const isAnswerSelected = answers[currentQuestionIndex] !== null;
 
   return (
-    <div className="mx-auto p-6 bg-gradient-to-r bg-blue-950 rounded-lg shadow-md max-w-screen-lg mt-11 mb-12 h-[90vh]">
+    <div className="mx-auto  p-6 bg-gradient-to-r bg-blue-950 rounded-lg shadow-md max-w-screen-lg mt-11 mb-12 h-[90vh]">
       <h1 className="text-4xl font-bold text-center mb-8 text-white">
         Psychometric Test
       </h1>

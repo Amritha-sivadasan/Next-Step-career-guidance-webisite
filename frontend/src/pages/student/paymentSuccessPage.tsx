@@ -25,7 +25,7 @@ const PaymentSuccessPage = () => {
     }
   }, [sessionId]);
   return (
-    <div>
+    <div >
     
       <PaymentSuccess />
       

@@ -7,6 +7,7 @@ import {
   getAllSubCategory,
 } from "../../../services/api/studentApi";
 import { ICategory, ISubCategory } from "../../../@types/dashboard";
+import Skeleton from "../../common/Loading/Skeleton";
 
 const FindYourPath: React.FC = () => {
   const scrollRef = useRef<HTMLUListElement>(null);
@@ -14,6 +15,7 @@ const FindYourPath: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>();
   const [categories, setCategory] = useState<ICategory[]>([]);
   const [subcategories, setSubcategories] = useState<ISubCategory[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef);
@@ -29,6 +31,7 @@ const FindYourPath: React.FC = () => {
         const result = await getAllSubCategory(response.data.items[0].catName);
 
         setSubcategories(result.data.slice(0, 3));
+        setLoading(false);
       };
       fetSubcategory();
     };
@@ -123,34 +126,48 @@ const FindYourPath: React.FC = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 h-auto md:h-[45vh] mt-8 w-11/12 md:w-10/12">
-          {subcategories.map((subcat, index) => (
-            <motion.div
-              key={subcat._id}
-              className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer transition-transform transform hover:scale-105"
-              onClick={() => handleSubCategory(subcat._id)}
-              initial={{ opacity: 0, translateY: 50 }}
-              animate={{
-                opacity: 1,
-                translateY: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.3, // Staggered animation for each item
-              }}
-            >
-              <h3 className="text-xl font-semibold mb-2">
-                {subcat.subCatName}
-              </h3>
-              <p className="text-center text-gray-700">{subcat.description}</p>
-              <div className="w-full flex justify-center overflow-hidden rounded-lg">
-                <img
-                  src={subcat.subCatImage}
-                  alt="subcatimage"
-                  className="max-w-full h-auto object-contain"
-                />
-              </div>
-            </motion.div>
-          ))}
+          {loading
+            ? Array(3)
+                .fill(null)
+                .map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    width="100%"
+                    height="45vh"
+                    borderRadius="8px"
+                  />
+                ))
+            : subcategories.map((subcat, index) => (
+                <motion.div
+                  key={subcat._id}
+                  className="bg-white h-[45vh] p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer transition-transform transform hover:scale-105"
+                  onClick={() => handleSubCategory(subcat._id)}
+                  initial={{ opacity: 0, translateY: 50 }}
+                  animate={{
+                    opacity: 1,
+                    translateY: 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.3, // Staggered animation for each item
+                  }}
+                >
+                  <h3 className="text-xl font-semibold mb-2">
+                    {subcat.subCatName}
+                  </h3>
+                  <p className="text-center text-gray-700">
+                    {subcat.description}
+                  </p>
+                  <div className="w-full flex justify-center overflow-hidden rounded-lg">
+                    <img
+                      src={subcat.subCatImage}
+                      alt="subcatimage"
+                      className="max-w-full h-auto object-contain"
+                      
+                    />
+                  </div>
+                </motion.div>
+              ))}
         </div>
         <div className="flex justify-center mt-10">
           <button

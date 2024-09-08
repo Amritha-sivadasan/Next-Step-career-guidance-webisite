@@ -18,8 +18,8 @@ const PaymentDetails = () => {
       if (response.data.length < itemsPerPage) {
         setHasMore(false);
       }
-      console.log('payment',response.data);
-      
+      console.log("payment", response.data);
+
       setPaymentDetails((prev) => [...prev, ...response.data]);
     } catch (error) {
       console.error("Failed to fetch payments:", error);
@@ -46,20 +46,20 @@ const PaymentDetails = () => {
       <div className="flex justify-center mb-6 sm:mb-10">
         <img src="/pay.png" alt="details" className="w-full sm:w-3/4" />
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+      <div className="c">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-x-auto">
           <thead className="bg-gray-100 border-b ">
             <tr>
               <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-5 w-1/12">
                 No
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-10 w-2/6">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-10 w-2/6 hidden lg:table-cell sm:table-cell ">
                 Transaction ID
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate  sm:table-cell">
                 Date
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate  sm:table-cell">
                 Expert Name
               </th>
               <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden lg:table-cell">
@@ -78,10 +78,10 @@ const PaymentDetails = () => {
                   <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 max-w-5 truncate">
                     {index + 1}
                   </td>
-                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate max-w-10">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate max-w-10 hidden lg:table-cell md:table-cell sm:table-cell">
                     {payment.transactionId}
                   </td>
-                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate hidden sm:table-cell">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  sm:table-cell">
                     {moment(payment.createdAt).format("DD/MM/YYYY")}
                   </td>
                   <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  md:table-cell">
