@@ -408,15 +408,20 @@ const ChatWindow: React.FC = () => {
                         ) : (
                           <>
                             {message.text}
-                            {message.audio && (
-                              <audio controls>
+                            <div className="flex ">
+                          {message.audio && (
+                            <>
+                              <audio controls className="w-48 sm:w-64 md:w-72 lg:w-80">
                                 <source
                                   src={(message.audio as IAudio).url}
                                   type="audio/wav"
                                 />
                                 Your browser does not support the audio element.
                               </audio>
-                            )}
+                            </>
+                          )}
+                        </div>
+          
                             {message.file && (
                               <>
                                 {message.status == "loading" && (

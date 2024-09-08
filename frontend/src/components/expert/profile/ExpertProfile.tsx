@@ -162,7 +162,7 @@ const ExpertProfile: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 mx-auto w-full max-w-4xl flex justify-center ">
+    <div className="min-h-screen  p-4 md:p-6 lg:p-8 mx-auto w-full max-w-4xl flex justify-center ">
       {expert ? (
         <div className="container mx-auto bg-white p-6 rounded-lg ">
           <div className="relative bg-[#F2F2F2] border h-40 rounded-lg mb-8 shadow-md">

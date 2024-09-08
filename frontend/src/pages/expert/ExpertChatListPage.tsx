@@ -5,7 +5,7 @@ import { ExpertProvider } from "../../context/ExpertChatContext";
 const ExpertChatListPage = () => {
   return (
     <ExpertProvider>
-      <div className=" flex h-[93vh] font-sans border p-3 rounded-lg bg-white">
+      <div className=" flex h-[93vh] font-sans border p-3 rounded-lg bg-white  w-full ">
         <ChatWithStudentList />
         <ChatWindowExpert />
       </div>

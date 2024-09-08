@@ -82,15 +82,14 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row mt-2 bg-white">
-      {/* Hamburger Menu Button for Small Screens */}
-      <button className="md:hidden p-4" onClick={toggleSidebar}>
+    <div className="flex flex-col   md:flex-row  ">
+      <button className="md:hidden p-4 " onClick={toggleSidebar}>
         <FaBars size={24} />
       </button>
 
       {/* Sidebar */}
       <div
-        className={`fixed z-40 p-4 md:static md:z-auto transform transition-transform ${
+        className={`fixed z-40 p-4  md:static md:z-auto transform transition-transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 w-64 md:w-80 bg-white shadow-lg h-full md:h-screen overflow-y-auto`}
       >

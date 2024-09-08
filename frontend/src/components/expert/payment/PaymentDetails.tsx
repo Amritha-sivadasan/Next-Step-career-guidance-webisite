@@ -35,19 +35,19 @@ const PaymentDetails = () => {
         <table className="min-w-full bg-white border border-gray-300 rounded-lg">
           <thead className="bg-gray-100 border-b">
             <tr>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-5 w-1/12">
+              <th className="py-2  sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-8 w-1/12">
                 No
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-10 w-2/6">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 max-w-10 w-2/6 hidden md:table-cell sm:table-cell lg:table-cell">
                 Transaction ID
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
+              <th className=" py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate ">
                 Date
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden sm:table-cell">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate  sm:table-cell">
                 Student Name
               </th>
-              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate hidden lg:table-cell">
+              <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/4 truncate  ">
                 Amount
               </th>
               <th className="py-2 sm:py-3 px-2 sm:px-4 text-left text-gray-600 w-1/6 truncate">
@@ -64,20 +64,20 @@ const PaymentDetails = () => {
                   <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 max-w-5 truncate ">
                     {index + 1}
                   </td>
-                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate max-w-10">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate max-w-10 hidden md:table-cell sm:table-cell lg:table-cell">
                     {payment.transactionId}
                   </td>
-                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate hidden sm:table-cell ">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  ">
                     {formatDate(payment.createdAt)}
                   </td>
                   <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  md:table-cell">
                     {student.user_name}
                   </td>
-                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate hidden lg:table-cell">
+                  <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-800 truncate  lg:table-cell">
                     ₹{payment.paymentAmount}
                   </td>
                   <td className="py-2 sm:py-3 px-2 sm:px-4">
-                  <span
+                    <span
                       className={`px-2 sm:px-3 py-1 text-xs sm:text-xs font-medium rounded-full ${
                         payment.paymentStatus === "completed"
                           ? "bg-green-500 text-white"

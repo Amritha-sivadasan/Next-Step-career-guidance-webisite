@@ -32,9 +32,9 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Resources and Contact Us Sections */}
-          <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-8 sm:space-y-0 sm:col-span-2">
+          <div className="flex flex-row  sm:space-x-8 space-y-8 sm:space-y-0 sm:col-span-2">
             {/* Resources Section */}
-            <div className="flex-1">
+            <div className="flex-1 mt-9 md:mt-0 lg:mt-0 sm:mt-0">
               <h3 className="text-lg font-semibold mb-4">Resources</h3>
               <ul className="space-y-2 text-sm">
                 <li>
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Contact Information Section */}
-            <div className="flex-1">
+            <div className="flex-1  ">
               <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
               <p className="text-sm mb-2">123 Main Street, City, Country</p>
               <p className="text-sm mb-2">
