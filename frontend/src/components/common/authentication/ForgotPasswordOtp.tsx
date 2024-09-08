@@ -58,8 +58,8 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
 
           if (verifyOtpResult.success) {
             setTimeout(() => {
-              setLoading(false);
               navigate("/reset-password");
+              setLoading(false);
             }, 1000);
           }
           setLoading(false);
@@ -80,8 +80,8 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
           ).unwrap();
           if (verifyOtpResult.success) {
             setTimeout(() => {
-              setLoading(false);
               navigate("/expert/reset-password");
+              setLoading(false);
             });
           }
         }

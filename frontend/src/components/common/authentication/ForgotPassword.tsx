@@ -37,8 +37,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
           sessionStorage.setItem("forgotUserAccess", JSON.stringify(response.forgotUserAccess));
   
           setTimeout(() => {
-            setLoading(false);
             navigate("/fortgot-password-otp");
+            setLoading(false);
           }, 1000);
         } else {
           toast.error(response.message);
@@ -65,8 +65,8 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
           sessionStorage.setItem("forgotExpertAccess", JSON.stringify(response.forgotExpertAccess));
   
           setTimeout(() => {
-            setLoading(false);
             navigate("/expert/fortgot-password-otp");
+            setLoading(false);
           });
         } else {
           toast.error(response.message);
