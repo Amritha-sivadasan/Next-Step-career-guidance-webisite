@@ -2,7 +2,7 @@ import axios, { CancelTokenSource } from "axios";
 import { checkIfUserIsBlocked } from "../api/studentApi";
 import { setAuthenticated } from "../../features/student/authSlice";
 
-const API_URL = process.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 export const studentAxiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,

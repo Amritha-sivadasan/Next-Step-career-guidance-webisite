@@ -2,7 +2,7 @@ import axios, { CancelTokenSource } from "axios";
 import { checkIfExpertIsBlocked } from "../api/ExpertApi";
 import { setExpertAuthenticated } from "../../features/expert/expertAuthSlice";
 
-const API_URL = process.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 export const axiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,

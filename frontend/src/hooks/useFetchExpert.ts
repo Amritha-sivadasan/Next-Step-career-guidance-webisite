@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { axiosInstance } from "../services/instance/expertInstance"; 
 import { IExpert } from "../@types/expert";
 
-const API_URL = process.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const useFetchExpertData = () => {
   const [expert, setExpert] = useState<IExpert | null>(null);

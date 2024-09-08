@@ -22,7 +22,7 @@ import { formatDate, formatTime } from "../../../utils/generalFuncions";
 import ClipLoader from "react-spinners/ClipLoader";
 // import { generateToken, onMessageListener } from "../../../config/firebase";
 
-const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
 const BookingDetails = () => {
   const { expert } = useAppSelector((state) => state.expert);

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { formatDate, formatTime } from "../../../utils/generalFuncions";
 
-const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY!);
 
 interface ExpertsListProps {
   expets: IExpert[];
