@@ -30,12 +30,15 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
         setLoading(true);
         const response = await forgotPassword(data.email);
         console.log("response for forgot otp", response);
-  
+
         if (response.success) {
           toast.success("Otp send successfully");
           sessionStorage.setItem("userEmail", JSON.stringify(response.data));
-          sessionStorage.setItem("forgotUserAccess", JSON.stringify(response.forgotUserAccess));
-  
+          sessionStorage.setItem(
+            "forgotUserAccess",
+            JSON.stringify(response.forgotUserAccess)
+          );
+
           setTimeout(() => {
             navigate("/fortgot-password-otp");
             setLoading(false);
@@ -44,26 +47,25 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
           toast.error(response.message);
           setLoading(false);
         }
-        
       } catch (error) {
-        console.log('error',error);
-        
-      }finally{
-        setLoading(false)
+        console.log("error", error);
+        setLoading(false);
       }
-   
     } else if (userType === "expert") {
       setLoading(true);
 
       try {
         const response = await forgotPasswordExpertOtp(data.email);
-        console.log('response for expert',response);
-        
+        console.log("response for expert", response);
+
         if (response.success) {
           toast.success("Otp send successfully");
           sessionStorage.setItem("expertEmail", JSON.stringify(response.data));
-          sessionStorage.setItem("forgotExpertAccess", JSON.stringify(response.forgotExpertAccess));
-  
+          sessionStorage.setItem(
+            "forgotExpertAccess",
+            JSON.stringify(response.forgotExpertAccess)
+          );
+
           setTimeout(() => {
             navigate("/expert/fortgot-password-otp");
             setLoading(false);
@@ -71,14 +73,10 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userType }) => {
         } else {
           toast.error(response.message);
         }
-        
       } catch (error) {
-        console.log('error');
-        
-      }finally{
+        console.log("error");
         setLoading(false);
       }
-     
     }
   };
 

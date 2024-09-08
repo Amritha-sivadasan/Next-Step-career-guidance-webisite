@@ -66,9 +66,8 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         }
       } catch (error) {
         console.log("error", error);
-      } finally {
         setLoading(false);
-      }
+      } 
     } else if (userType == "expert") {
       try {
         const storageData = sessionStorage.getItem("expertEmail");
@@ -87,7 +86,6 @@ const ForgotPasswordOtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         }
       } catch (error) {
         console.log("error in exper otp ");
-      } finally {
         setLoading(false);
       }
     }
