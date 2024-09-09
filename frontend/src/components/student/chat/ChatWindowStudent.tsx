@@ -559,7 +559,7 @@ const ChatWindow: React.FC = () => {
                     transition={{ duration: 1, repeat: Infinity }}
                   >
                     <AiOutlineAudio size={24} />
-                    <div className="absolute border-2 border-red-500 rounded-full w-6 h-6 animate-pulse"></div>
+                 
                   </motion.div>
                 ) : (
                   <>

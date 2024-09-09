@@ -374,102 +374,109 @@ const ChatWindowExpert: React.FC = () => {
             onScroll={handleScroll}
           >
             {Object.keys(groupedMessages).map((date) => (
-            <div key={date}>
-            <div className="text-gray-500 text-center my-4">
-              {moment(date).format("MMMM D, YYYY")}
-            </div>
-            {groupedMessages[date].map((message) => (
-              <div
-                key={message._id}
-                className={`group flex ${
-                  message.senderId === userId ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`relative flex p-2 rounded-lg shadow mb-1 ${
-                    message.senderId !== userId
-                      ? "bg-green-200 text-right"
-                      : "bg-gray-200 text-left"
-                  }`}
-                >
-                  <div>
-                    {message.is_delete ? (
-                      <>
-                        <span className="flex text-gray-500 gap-1">
-                          <span className="mt-1">
-                            <MdOutlineDoNotDisturb size={18} />
-                          </span>
-                          This message was deleted
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {message.text}
-                        <div className="flex ">
-                          {message.audio && (
-                            <>
-                              <audio controls className="w-48 sm:w-64 md:w-72 lg:w-80">
-                                <source
-                                  src={(message.audio as IAudio).url}
-                                  type="audio/wav"
-                                />
-                                Your browser does not support the audio element.
-                              </audio>
-                            </>
-                          )}
-                        </div>
-          
-                        {message.file && (
+              <div key={date}>
+                <div className="text-gray-500 text-center my-4">
+                  {moment(date).format("MMMM D, YYYY")}
+                </div>
+                {groupedMessages[date].map((message) => (
+                  <div
+                    key={message._id}
+                    className={`group flex ${
+                      message.senderId === userId
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`relative flex p-2 rounded-lg shadow mb-1 ${
+                        message.senderId !== userId
+                          ? "bg-green-200 text-right"
+                          : "bg-gray-200 text-left"
+                      }`}
+                    >
+                      <div>
+                        {message.is_delete ? (
                           <>
-                            {message.status == "loading" && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-gray-300 bg-opacity-70">
-                                <ClipLoader color="#3498db" size={32} />
-                              </div>
+                            <span className="flex text-gray-500 gap-1">
+                              <span className="mt-1">
+                                <MdOutlineDoNotDisturb size={18} />
+                              </span>
+                              This message was deleted
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            {message.text}
+                            <div className="flex ">
+                              {message.audio && (
+                                <>
+                                  <audio
+                                    controls
+                                    className="w-48 sm:w-64 md:w-72 lg:w-80"
+                                  >
+                                    <source
+                                      src={(message.audio as IAudio).url}
+                                      type="audio/wav"
+                                    />
+                                    Your browser does not support the audio
+                                    element.
+                                  </audio>
+                                </>
+                              )}
+                            </div>
+
+                            {message.file && (
+                              <>
+                                {message.status == "loading" && (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-gray-300 bg-opacity-70">
+                                    <ClipLoader color="#3498db" size={32} />
+                                  </div>
+                                )}
+                                <img
+                                  src={message.file}
+                                  alt="uploaded file"
+                                  className="w-32 h-32"
+                                />
+                              </>
                             )}
-                            <img
-                              src={message.file}
-                              alt="uploaded file"
-                              className="w-32 h-32"
-                            />
                           </>
                         )}
-                      </>
-                    )}
-                  </div>
-                  <div className="flex justify-end place-items-end gap-1">
-                    <span className="ms-2 flex text-xs text-gray-500">
-                      {moment(message.timestamp).fromNow()}
-                    </span>
-                    <span>
+                      </div>
+                      <div className="flex justify-end place-items-end gap-1">
+                        <span className="ms-2 flex text-xs text-gray-500">
+                          {moment(message.timestamp).fromNow()}
+                        </span>
+                        <span>
+                          {message.senderId === userId &&
+                            !message.is_delete &&
+                            message.status !== "loading" && (
+                              <>
+                                {message.status == "seen" ? (
+                                  <MdDoneAll color="green" />
+                                ) : (
+                                  <MdDoneAll />
+                                )}
+                              </>
+                            )}
+                        </span>
+                      </div>
+                      {/* Delete Button only for current user's messages */}
                       {message.senderId === userId &&
                         !message.is_delete &&
                         message.status !== "loading" && (
-                          <>
-                            {message.status == "seen" ? (
-                              <MdDoneAll color="green" />
-                            ) : (
-                              <MdDoneAll />
-                            )}
-                          </>
+                          <button
+                            className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() =>
+                              openDeleteConfirmationModal(message._id)
+                            }
+                          >
+                            <FiTrash2 />
+                          </button>
                         )}
-                    </span>
+                    </div>
                   </div>
-                  {/* Delete Button only for current user's messages */}
-                  {message.senderId === userId &&
-                    !message.is_delete &&
-                    message.status !== "loading" && (
-                      <button
-                        className="absolute top-0 right-0 mt-1 mr-1 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => openDeleteConfirmationModal(message._id)}
-                      >
-                        <FiTrash2 />
-                      </button>
-                    )}
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-          
             ))}
             <div ref={messagesEndRef} />
             <ConfirmationModal
@@ -555,7 +562,7 @@ const ChatWindowExpert: React.FC = () => {
                     transition={{ duration: 1, repeat: Infinity }}
                   >
                     <AiOutlineAudio size={24} />
-                    <div className="absolute border-2 border-red-500 rounded-full w-6 h-6 animate-pulse"></div>
+                  
                   </motion.div>
                 ) : (
                   <>
