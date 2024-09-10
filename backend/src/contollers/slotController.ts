@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ISlotService } from "../services/interface/ISlotService";
 import SlotService from "../services/implementations/SlotService";
+import { CustomRequest } from "../entities/jwtEntity";
 
 class SlotController {
   private slotService: ISlotService;
@@ -9,16 +10,17 @@ class SlotController {
     this.slotService = new SlotService();
   }
 
-  public CreateSlot = async (req: Request, res: Response): Promise<void> => {
+  public CreateSlot = async (req: CustomRequest, res: Response): Promise<void> => {
     try {
-      const result = await this.slotService.createSlots(req.body);
+      const userId=req.user?.userId
+      const result = await this.slotService.createSlots(userId!,req.body);
       res.status(200).json({
         success: true,
         data: result,
         message: "Slot created Successfully",
       });
     } catch (error) {
-      if (error instanceof Error && error.message.includes("New slot must end at least one hour before the next slot starts")) {
+      if (error instanceof Error && error.message.includes("New slot must start at least one hour after the end of the existing slot.")) {
     
         res.status(400).json({
             message: error.message,

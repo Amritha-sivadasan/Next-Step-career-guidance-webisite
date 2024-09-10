@@ -7,5 +7,5 @@ export interface ISlotRepository{
     findByExpertId(id:string):Promise<ISlots[]|null>
     updateStatus(id:string,slotStatus:string):Promise<void>
     delteSlot(id:string):Promise<boolean>
-   alreadyExist(date:string):Promise<ISlots[]>
+    alreadyExist(id:string,date:string):Promise<ISlots[]>
 }

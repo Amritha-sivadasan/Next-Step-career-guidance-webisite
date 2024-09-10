@@ -22,41 +22,46 @@ export default class SlotService implements ISlotService {
     }
   }
 
-  async createSlots(slot: ISlots): Promise<ISlots> {
+  async createSlots(id: string, slot: ISlots): Promise<ISlots> {
     try {
       const existingSlots = await this.slotRepository.alreadyExist(
+        id,
         slot.consultationDate
       );
+    
 
-      function parseString(timeString: string) {
+      function parseTime(timeString: string): Date {
         const [hours, minutes] = timeString.split(":").map(Number);
         const date = new Date();
-        date.setHours(hours);
-        date.setMinutes(minutes);
-        date.setSeconds(0);
-        date.setMilliseconds(0);
+        date.setHours(hours, minutes, 0, 0);
         return date;
       }
-      const newSlot = parseString(slot.consultationStartTime);
 
-      for (let existSlot of existingSlots) {
-        const startingTime = parseString(existSlot.consultationStartTime);
-        const timeDifferenceHours =
-          Math.abs(newSlot.getTime() - startingTime.getTime()) / (1000 * 60 * 60);
-        if (timeDifferenceHours < 1) {
+      const minGap = 1 * 60 * 60 * 1000;
+
+      const newSlotStart = parseTime(slot.consultationStartTime);
+
+      for (const existingSlot of existingSlots) {
+        const existingSlotEnd = parseTime(existingSlot.consultationStartTime);
+
+        const gap = newSlotStart.getTime() - existingSlotEnd.getTime();
+
+        if (gap < minGap) {
           throw new Error(
-            "New slot must end at least one hour before the next slot starts. "
+            "New slot must start at least one hour after the end of the existing slot."
           );
         }
       }
 
+      // Create the new slot if validation passes
       const result = await this.slotRepository.create(slot);
       return result;
     } catch (error) {
-    
+      // Handle or rethrow the error as needed
       throw error;
     }
   }
+
   async update(id: string, status: string): Promise<void> {
     try {
       const data = await this.slotRepository.updateStatus(id, status);

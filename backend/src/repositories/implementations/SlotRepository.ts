@@ -26,9 +26,9 @@ export default class SlotRepository implements ISlotRepository {
     
 }
 
-async alreadyExist(date: string): Promise<ISlots[] > {
+async alreadyExist(id:string, date: string): Promise<ISlots[] > {
   try {
-    const result= await Slot.find({consultationDate:date})
+    const result= await Slot.find({expertId: id,consultationDate:date})
     return result
     
     
