@@ -99,7 +99,7 @@ const SchedulePage: React.FC = () => {
 
   const handleAddSlot = async (data: IFormInput) => {
     if (expert) {
-      if (data.timeFrom > data.timeTo) {
+      if (data.timeFrom > data.timeFrom) {
         toast.warn("Please add Valid Time");
         return;
       }
