@@ -64,7 +64,7 @@ export default class BookingRepository implements IBookingRepository {
       .populate("slotId")
       .exec();
 
-      console.log(result)
+    
       return result
   }
 
