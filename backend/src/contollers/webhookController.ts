@@ -18,6 +18,7 @@ const slotService: ISlotService = new SlotService();
 
 export default async (req: Request, res: Response) => {
   const sig = req.headers["stripe-signature"] as string;
+  console.log("Raw Request Body:", req.body.toString());
 
   let event;
   try {
