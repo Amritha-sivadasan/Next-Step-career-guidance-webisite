@@ -41,6 +41,7 @@ class SlotController {
   public getAllSlotByExpert = async (req: Request, res: Response) => {
     try {
       const { expertId } = req.params;
+      console.log("expertId",expertId)
       const result = await this.slotService.getSlotsById(expertId);
       res
         .status(200)
