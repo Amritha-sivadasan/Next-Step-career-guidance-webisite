@@ -51,11 +51,11 @@ export default class BookingRepository implements IBookingRepository {
   ): Promise<IBooking[] | null> {
     const skip = (page - 1) * limit;
 
-    return Booking.find({
+    const result=await Booking.find({
       expertId: id,
-      bookingStatus: { $ne: "pending" },
+      bookingStatus: {$ne: "pending" },
       meetingStatus: "pending",
-      // paymentStatus:'completed'
+      paymentStatus:{$in:["completed", "refund"]}
     })
       .sort({ _id: -1 })
       .skip(skip)
@@ -63,6 +63,9 @@ export default class BookingRepository implements IBookingRepository {
       .populate("studentId")
       .populate("slotId")
       .exec();
+
+      console.log(result)
+      return result
   }
 
   async findAllBookings(id: string): Promise<IBooking[] | null> {
@@ -80,7 +83,8 @@ export default class BookingRepository implements IBookingRepository {
     return Booking.find({
       studentId: id,
       meetingStatus: "pending",
-      paymentStatus: "completed",
+      paymentStatus:{$in:["completed", "refund"]},
+      bookingStatus: { $ne: "pending" },
     })
       .sort({ _id: -1 })
       .skip(skip)

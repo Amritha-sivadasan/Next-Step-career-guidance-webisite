@@ -34,10 +34,24 @@ export default async (req: Request, res: Response) => {
       const studentId=sessionCompleted.metadata?.studentId as string
       const expertId=sessionCompleted.metadata?.expertId as string
        const slotId= sessionCompleted.metadata?.slotId as string
- 
-      await bookingService.updateBookingPaymentStatus(bookingId!, "completed");
-      await chatService.createChatForBooking(studentId,expertId,bookingId)
-      await slotService.update(slotId,"confirmed")
+       const reason =sessionCompleted.metadata?.reason
+
+       const exitbooking= await bookingService.getBookingById(bookingId)
+      
+      if(exitbooking?.bookingStatus =="pending"){
+        await bookingService.updateBookingStatus(bookingId,"confirmed")
+        await bookingService.updateBookingPaymentStatus(bookingId!, "completed");
+        await chatService.createChatForBooking(studentId,expertId,bookingId)
+        await slotService.update(slotId,"confirmed")
+      }
+      if(exitbooking?.bookingStatus=="confirmed"){
+        await bookingService.updateBookingStatus(bookingId,"cancelled",reason)
+        await bookingService.updateBookingPaymentStatus(bookingId!, "refund");
+        console.log('booking refund')
+      }
+      
+      
+   
     
 
       break;

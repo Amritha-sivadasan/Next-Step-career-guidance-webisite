@@ -7,6 +7,7 @@ import { SendMail } from "../../utils/sendOtp";
 import { IStudent } from "../../entities/StudentEntity";
 import SlotRepository from "../../repositories/implementations/SlotRepository";
 import { ISlotRepository } from "../../repositories/interface/ISlotRepository";
+import { IExpert } from "../../entities/ExpertEntity";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -70,7 +71,7 @@ export default class BookingService implements IBookingService {
           const slotId = newBooking.slotId as string;
           await this.slotRepository.updateStatus(slotId, "available");
         }
-      }, 10000);
+      }, 300000);
 
       return {
         sessionId: session.id,
@@ -99,7 +100,7 @@ export default class BookingService implements IBookingService {
               currency: "inr",
               product_data: {
                 name: "Consultation Slot cancel",
-                description: ` Cancel Booking slot with expert ${bookingDetails.expertId}`,
+                description: ` Cancel Booking slot with expert ${(bookingDetails.expertId as IExpert ).user_name}`,
               },
               unit_amount: bookingDetails.paymentAmount! * 100,
             },
@@ -111,14 +112,15 @@ export default class BookingService implements IBookingService {
         cancel_url: `${process.env.FRONTEND_URL}/expert/payment-cancel`,
         metadata: {
           bookingId: bookingDetails._id.toString(),
+          reason :reason
         },
       });
 
-      await this.updateBookingStatus(id, "cancelled", reason);
-      await this.updateBookingPaymentStatus(
-        bookingDetails.transactionId,
-        "refund"
-      );
+      // await this.updateBookingStatus(id, "cancelled", reason);
+      // await this.updateBookingPaymentStatus(
+      //   bookingDetails.transactionId,
+      //   "refund"
+      // );
 
       return {
         sessionId: session.id,
