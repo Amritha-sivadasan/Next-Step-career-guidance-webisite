@@ -14,8 +14,9 @@ export default class SlotService implements ISlotService {
   }
   async getSlotsById(id: string): Promise<ISlots[] | null> {
     try {
+      console.log('id',id)
       const result = await this.slotRepository.findByExpertId(id);
-
+      console.log("result", result);
       return result;
     } catch (error) {
       throw error;
@@ -28,7 +29,6 @@ export default class SlotService implements ISlotService {
         id,
         slot.consultationDate
       );
-    
 
       function parseTime(timeString: string): Date {
         const [hours, minutes] = timeString.split(":").map(Number);

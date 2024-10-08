@@ -12,7 +12,9 @@ export default class SlotRepository implements ISlotRepository {
       return Slot.findById(id)
   }
   async findByExpertId(expertId: string): Promise<ISlots[] | null> {
-      return Slot.find({expertId,slotStatus:"available"})
+      const result= Slot.find({expertId,slotStatus:"available"})
+      console.log("data fron the slot",result)
+      return result 
   }
      
   async updateStatus(id:string,slotStatus: string): Promise<void> {
