@@ -7,14 +7,17 @@ import studentRouter from "./routes/userRouter";
 import expertRouter from "./routes/expertRouter";
 import adminRoute from "./routes/adminRoute";
 import http from "http";
-import { Server } from "socket.io";
 import { createSocketServer } from "./socket/socketHandler";
 import morgan from 'morgan'
+
+import webhookrouter from "./routes/webhookRoute";
 
 dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 5000;
 connect();
+
+
 
 app.use(
   cors({
@@ -23,17 +26,20 @@ app.use(
     exposedHeaders: ["Set-Cookie"],
   })
 );
+
+app.use('/webhook', express.raw({ type: 'application/json' }), webhookrouter);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'))
 
-app.get('/',(req,res)=>{
-  res.send('helloooooooooo')
-})
+
 
 app.use("/student", studentRouter);
 app.use("/expert", expertRouter);
 app.use("/admin", adminRoute);
+
+
 
 const server = http.createServer(app);
 

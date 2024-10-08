@@ -15,5 +15,6 @@ export interface IBookingRepository{
     countDocuments(): Promise<number>
     updatemeetingStatus(id:string,status:string):Promise<void>
     fetchAllBookings():Promise<IBooking[]>
+    checkPaymentStatus(id:string):Promise<IBooking|null>
    
 }

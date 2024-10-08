@@ -25,7 +25,9 @@ class ChatController {
         .status(500)
         .json({ success: false, message: "cannot find any Chat", data:null, error });
     }
-  };
+  }
+
+ 
 
   public fetchChatByChatId = async (
     req: CustomRequest,

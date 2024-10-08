@@ -5,31 +5,29 @@ import { IBookingService } from "../interface/IBookingService";
 import Stripe from "stripe";
 import { SendMail } from "../../utils/sendOtp";
 import { IStudent } from "../../entities/StudentEntity";
-import { IChatRepository } from "../../repositories/interface/IChatRepository";
-import ChatRepository from "../../repositories/implementations/ChatRepository";
-
+import SlotRepository from "../../repositories/implementations/SlotRepository";
+import { ISlotRepository } from "../../repositories/interface/ISlotRepository";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 export default class BookingService implements IBookingService {
   private bookingRepository: IBookingRepository;
-  private chatRepository :IChatRepository
- 
+  private slotRepository: ISlotRepository;
+
   constructor() {
     this.bookingRepository = new BookingRepository();
-    this.chatRepository= new ChatRepository()
- 
+    this.slotRepository = new SlotRepository();
   }
 
   async create(
     bookingData: Partial<IBooking>
   ): Promise<{ sessionId: string; updatedBooking: IBooking | null }> {
     try {
-      const updateBookingData={
+      const updateBookingData = {
         ...bookingData,
-        bookingStatus:"confirmed"
-      }
+        bookingStatus: "pending",
+      };
       const newBooking = await this.bookingRepository.create(updateBookingData);
 
       const session = await stripe.checkout.sessions.create({
@@ -52,6 +50,9 @@ export default class BookingService implements IBookingService {
         cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
         metadata: {
           bookingId: newBooking._id.toString(),
+          studentId: newBooking.studentId.toString(),
+          expertId: newBooking.expertId.toString(),
+          slotId: newBooking.slotId.toString(),
         },
       });
 
@@ -60,40 +61,36 @@ export default class BookingService implements IBookingService {
           newBooking._id.toString(),
           session.id
         );
-        const newChat={
-          studentId:bookingData.studentId,
-          expertId:bookingData.expertId,
-          bookingId:newBooking._id
+
+      setTimeout(async () => {
+        const paymentStatus = await this.bookingRepository.checkPaymentStatus(
+          newBooking._id.toString()
+        );
+        if (paymentStatus?.paymentStatus === "pending") {
+          const slotId = newBooking.slotId as string;
+          await this.slotRepository.updateStatus(slotId, "available");
         }
-      
-         const studentId = newBooking.studentId.toString()
-          const expertId =newBooking.expertId.toString()
-          const existChat= await this.chatRepository.checkUserExist(studentId,expertId)
-          if(!existChat){
-
-            await this.chatRepository.createChat(newChat)
-          }
-
-        
-
+      }, 10000);
 
       return {
         sessionId: session.id,
         updatedBooking,
       };
     } catch (error) {
-      console.error("Error creating booking and Stripe session:", error);
-      throw new Error("Failed to create booking and Stripe session");
+      throw error;
     }
   }
 
-  async refundPayment(id: string,reason:string): Promise<{sessionId:string}> {
+  async refundPayment(
+    id: string,
+    reason: string
+  ): Promise<{ sessionId: string }> {
     try {
       const bookingDetails = await this.bookingRepository.findById(id);
       if (!bookingDetails) {
         throw new Error("Booking details not found");
       }
-  
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
@@ -117,37 +114,39 @@ export default class BookingService implements IBookingService {
         },
       });
 
-    
-      await this.updateBookingStatus(id,'cancelled',reason)
-      await this.updateBookingPaymentStatus(bookingDetails.transactionId,"refund")
-     
-    
-    
+      await this.updateBookingStatus(id, "cancelled", reason);
+      await this.updateBookingPaymentStatus(
+        bookingDetails.transactionId,
+        "refund"
+      );
+
       return {
         sessionId: session.id,
-      
       };
-
     } catch (error) {
       console.error("Error creating booking and Stripe session:", error);
       throw new Error("Failed to refund payment");
     }
   }
 
-  async getAllBooking(page:number,limit:number): Promise<{items:IBooking [];
+  async getAllBooking(
+    page: number,
+    limit: number
+  ): Promise<{
+    items: IBooking[];
     totalCount: number;
     totalPages: number;
-    currentPage: number;}> {
+    currentPage: number;
+  }> {
     try {
-      const result = await this.bookingRepository.findAll(page,limit);
+      const result = await this.bookingRepository.findAll(page, limit);
       const totalCount = await this.bookingRepository.countDocuments();
       return {
         items: result,
         totalCount,
         totalPages: Math.ceil(totalCount / limit),
         currentPage: page,
-      }
-    
+      };
     } catch (error) {
       throw error;
     }
@@ -171,23 +170,40 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async getAllBookingByStudentId(id: string,page:number, limit:number): Promise<IBooking[] | null> {
+  async getAllBookingByStudentId(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findAllBookingsByUserId(id,page,limit);
+      const result = await this.bookingRepository.findAllBookingsByUserId(
+        id,
+        page,
+        limit
+      );
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-  async getAllPaymentByStudentId(id: string,page:number, limit:number): Promise<IBooking[] | null> {
+  async getAllPaymentByStudentId(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findAllPaymentByUserId(id,page,limit);
+      const result = await this.bookingRepository.findAllPaymentByUserId(
+        id,
+        page,
+        limit
+      );
       return result;
     } catch (error) {
       throw error;
     }
   }
+
   async getBookingById(id: string): Promise<IBooking | null> {
     try {
       const result = await this.bookingRepository.findById(id);
@@ -196,6 +212,7 @@ export default class BookingService implements IBookingService {
       throw error;
     }
   }
+
   async getBookingBystudentId(id: string): Promise<IBooking[] | null> {
     try {
       const result = await this.bookingRepository.findAllById(id);
@@ -205,7 +222,11 @@ export default class BookingService implements IBookingService {
     }
   }
 
-  async updateBookingStatus(id: string, status: string,reason?:string): Promise<void> {
+  async updateBookingStatus(
+    id: string,
+    status: string,
+    reason?: string
+  ): Promise<void> {
     try {
       const response = await this.bookingRepository.updateBookingStatus(
         id,
@@ -216,12 +237,8 @@ export default class BookingService implements IBookingService {
 
       const email = studentId?.email;
       const subject = "Booking Status updated please check";
-      const Reason= reason||""
-      SendMail(
-        subject,
-        email,
-        Reason
-      );
+      const Reason = reason || "";
+      SendMail(subject, email, Reason);
     } catch (error) {
       throw error;
     }
@@ -229,14 +246,23 @@ export default class BookingService implements IBookingService {
 
   async updateBookingPaymentStatus(id: string, status: string): Promise<void> {
     try {
-      await this.bookingRepository.updateBookingPaymentStatus(id, status);
+      const updateresult =
+        await this.bookingRepository.updateBookingPaymentStatus(id, status);
     } catch (error) {
       throw error;
     }
   }
-  async getConfirmBooking(id: string,page:number,limit:number): Promise<IBooking[] | null> {
+  async getConfirmBooking(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<IBooking[] | null> {
     try {
-      const result = await this.bookingRepository.findConfirmBooking(id,page,limit);
+      const result = await this.bookingRepository.findConfirmBooking(
+        id,
+        page,
+        limit
+      );
       return result;
     } catch (error) {
       throw error;
@@ -245,12 +271,13 @@ export default class BookingService implements IBookingService {
 
   async updatemeetingstatus(id: string, status: string): Promise<void> {
     try {
-      const result = await this.bookingRepository.updatemeetingStatus(id,status);
+      const result = await this.bookingRepository.updatemeetingStatus(
+        id,
+        status
+      );
       return result;
-      
     } catch (error) {
-      throw error
+      throw error;
     }
   }
-  
 }

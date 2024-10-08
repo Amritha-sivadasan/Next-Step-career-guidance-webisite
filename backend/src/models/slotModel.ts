@@ -6,7 +6,7 @@ const SlotSchema: Schema = new Schema({
   consultationStartTime: { type: String, required: true },
   consultationEndTime: { type: String, required: true },
   consultationDate: { type: String, required: true },
-  slotStatus: { type: String, required: true },
+  slotStatus: { type: String,  default:'available', enum: [ 'available', 'pending', 'cancelled','confirmed' ]  },
 },{timestamps:true});
 
 export const Slot = model<ISlots & Document>("Slot", SlotSchema);

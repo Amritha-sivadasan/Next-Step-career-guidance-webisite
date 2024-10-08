@@ -5,9 +5,10 @@ import { ISlots } from "./SlotEntity";
 
 export interface IBooking extends Document {
   _id: ObjectId;
+  bookingId:string,
   studentId: ObjectId|IStudent;
   expertId: ObjectId|IExpert;
-  slotId:ObjectId|ISlots ,
+  slotId:ObjectId|ISlots |string,
   bookingStatus: string;
   subCatName: string;
   paymentAmount: number;

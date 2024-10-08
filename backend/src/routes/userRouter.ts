@@ -1,4 +1,5 @@
 import { Router } from "express";
+import express from "express"
 import studentController from "../contollers/studentController";
 import otpController from "../contollers/otpController";
 import validateStudentRegister from "../validator/studentRegisterValidator";
@@ -25,6 +26,7 @@ import notificationController from "../contollers/notificationController";
 import videoCallController from "../contollers/videoCallController";
 import reviewAndRatingController from "../contollers/reviewAndRatingController";
 import { sendFirebaseNotification } from "../contollers/firebaseNotificationController";
+import webhookController from "../contollers/webhookController";
 
 const role = process.env.STUDENT_ROLE as string;
 const token = process.env.STUDENT_TOKEN as string;
@@ -54,6 +56,8 @@ router.get("/experts/:subCatName", expertController.findExpertBySubCategory);
 router.get("/experts",expertController.fetchAllExperts);
 router.get("/getAllSlot/:expertId",verifyAccessToken,verifyRole(role),slotController.getAllSlotByExpert);
 router.post("/bookSlot",verifyAccessToken,verifyRole(role),bookingController.createBooking);
+
+
 router.put("/updatePayment/:id",verifyAccessToken,verifyRole(role),bookingController.updateBookingPaymentStatus);
 router.get('/check-report-user/:userId',studentController.checkUserStatus)
 router.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single('profile_picture'),studentController.updateuserImage )
@@ -78,5 +82,6 @@ router.post('/submit-review-rate',verifyAccessToken,verifyRole(role),reviewAndRa
 router.get('/fetchReviewAndRating/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.fetchReviewDetailsById)
 router.patch('/deleteReview/:meetingId',verifyAccessToken,verifyRole(role),reviewAndRatingController.deleteReviewAndRating)
 router.get('/fetchAllReview',reviewAndRatingController.fetchAllReviewByStudent)
+router.get('/checkPaymetpayment/:bookingId',verifyAccessToken,verifyRole(role),bookingController.fingPaymentStatusbyBookingId)
 
 export default router;

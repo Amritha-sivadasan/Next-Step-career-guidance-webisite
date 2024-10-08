@@ -4,7 +4,7 @@ import { IBooking } from "../entities/BookingEntity";
 const BookingSchema: Schema = new Schema({
     studentId: { type: Schema.Types.ObjectId, required: true ,ref: 'Student'},
     expertId: { type: Schema.Types.ObjectId, required: true ,ref: 'Expert'},
-    bookingStatus: { type: String, default:'pending', enum: [ 'pending', 'confirmed', 'cancelled' ] },
+    bookingStatus: { type: String, default:'pending', enum: [ 'pending', 'confirmed', 'cancelled',"failed" ] },
     subCatName: { type: String  },
     paymentAmount: { type: Number },
     paymentStatus: { type: String, default:'pending', enum: [ 'completed', 'pending', 'cancelled','refund' ] },

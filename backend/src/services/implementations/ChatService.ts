@@ -30,4 +30,25 @@ export default class ChatService implements IChatService{
               throw error
           }
     }
+
+    async createChatForBooking(studentId: string, expertId: string,bookingId:string) {
+        try {
+            const existChat = await this.chatRepository.checkUserExist(
+                studentId,
+                expertId
+              );
+              if (!existChat) {
+                const newChat = {
+                    bookingId,
+                    studentId,
+                    expertId,
+                  };
+            
+                await this.chatRepository.createChat(newChat);
+              }
+            
+        } catch (error) {
+            throw error
+        }
+    }
 }

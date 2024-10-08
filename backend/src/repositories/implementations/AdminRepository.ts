@@ -10,4 +10,5 @@ export  default class AdminRepository implements IAdminRepository{
     async findById(id: string): Promise<IAdmin | null> {
       return Admin.findById(id)
     }
+   
 }

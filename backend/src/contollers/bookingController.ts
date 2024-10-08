@@ -39,6 +39,7 @@ class BookingController {
     }
   };
 
+
   public findAllExpertBooking = async (
     req: CustomRequest,
     res: Response
@@ -158,7 +159,6 @@ class BookingController {
     }
   };
 
-
   public findAllConfirmBooking = async (
     req: CustomRequest,
     res: Response
@@ -194,8 +194,8 @@ class BookingController {
   public refundPayment = async (req: CustomRequest, res: Response) => {
     try {
       const { id } = req.params;
-      const {reason}=req.body
-      const response = await this.bookingservice.refundPayment(id,reason);
+      const { reason } = req.body;
+      const response = await this.bookingservice.refundPayment(id, reason);
       res
         .status(200)
         .json({ message: "Refund success", data: response, success: true });
@@ -243,24 +243,26 @@ class BookingController {
     }
   };
 
-  public updatemeetingstatus= async(req:Request,res:Response)=>{
+  public updatemeetingstatus = async (req: Request, res: Response) => {
     try {
-      const {id}= req.params
-      const {status}=req.body
-      const response= await this.bookingservice.updatemeetingstatus(id!,status)
+      const { id } = req.params;
+      const { status } = req.body;
+      const response = await this.bookingservice.updatemeetingstatus(
+        id!,
+        status
+      );
       res.status(200).json({
         success: true,
         message: "",
         data: response,
       });
-      
     } catch (error) {
       res.status(500).json({
         success: false,
         message: "Error during the update meeting status",
       });
     }
-  }
+  };
 
   public findBookingByIdForAdmin = async (
     req: Request,
@@ -282,7 +284,25 @@ class BookingController {
     }
   };
 
-
+  public fingPaymentStatusbyBookingId = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { bookingId } = req.params;
+      const response = await this.bookingservice.getBookingById(bookingId);
+      res.status(200).json({
+        success: true,
+        message: "",
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong  finding All Bookings",
+      });
+    }
+  };
 }
 
 export default new BookingController();

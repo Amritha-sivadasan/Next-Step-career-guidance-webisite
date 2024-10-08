@@ -6,9 +6,9 @@ import { IMessage } from "./MessageEntity";
 
 export interface IChat extends Document {
   _id: ObjectId;
-  studentId:ObjectId |IStudent,
-  expertId:ObjectId|IExpert,
+  studentId:ObjectId |IStudent|string,
+  expertId:ObjectId|IExpert|string,
   messages: ObjectId[],
   latestMessage:ObjectId|IMessage,
-  bookingId:ObjectId|IBooking
+  bookingId:ObjectId|IBooking|string
 }
