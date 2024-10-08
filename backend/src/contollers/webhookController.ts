@@ -19,20 +19,15 @@ const slotService:ISlotService= new SlotService()
 
 
 export default async (req: Request, res: Response) => {
-  console.log('STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY);
-console.log('STRIPE_WEBHOOK_SECRET:', process.env.STRIPE_WEBHOOK_SECRET);
-
-console.log('Headers:', req.headers);
-console.log('Raw request body:', req.body.toString());
-
 
   const sig = req.headers["stripe-signature"] as string 
-
+     console.log('sig',sig)
   let event;
   try {
     event = stripe.webhooks.constructEvent(req.body, sig,  process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (error: any) {
-    console.log("error in webhook", error.message);
+    console.log("Error in webhook:", error);
+    console.log("error in webhook message", error.message);
     res.status(400).send(`Webhook Error: ${error.message}`);
     return;
   }
