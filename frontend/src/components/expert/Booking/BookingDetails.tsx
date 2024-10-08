@@ -36,6 +36,7 @@ const BookingDetails = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const [videoCallDetails, setVideoCallDetails] = useState<
     Record<string, IvidoeCall>
@@ -102,6 +103,7 @@ const BookingDetails = () => {
 
   const handleCancelSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPaymentLoading(true);
     if (currentBookingId && cancelReason) {
       try {
         const stripe = await stripePromise;
@@ -122,6 +124,8 @@ const BookingDetails = () => {
       } catch (error) {
         console.error("Failed to cancel booking:", error);
         toast.error("Failed to cancel booking. Please try again.");
+      } finally {
+        setPaymentLoading(false);
       }
     }
   };
@@ -379,9 +383,10 @@ const BookingDetails = () => {
         <div className="text-center mt-4">
           <button
             onClick={handleViewMore}
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out"
+            className={`px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-blue-800 transition duration-300 ease-in-out ${currentPage <
+              4 && "hidden"}`}
           >
-            View More
+            {currentPage > 4 ? "View More" : "No more items"}
           </button>
         </div>
       )}
@@ -398,7 +403,7 @@ const BookingDetails = () => {
                 payment process.
               </span>
             </h3>
-            <form onSubmit={handleCancelSubmit}>
+            <form>
               <div className="mb-4">
                 <label
                   htmlFor="cancelReason"
@@ -425,9 +430,10 @@ const BookingDetails = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
+                  onClick={handleCancelSubmit}
+                  className="px-4 py-2 bg-gradient-to-r w-20 from-red-500 to-red-700 text-white text-sm font-semibold rounded-lg shadow-md hover:from-red-600 hover:to-red-800 transition duration-300 ease-in-out"
                 >
-                  Submit
+                  {paymentLoading ? <ClipLoader size={20} /> : "Submit"}
                 </button>
               </div>
             </form>

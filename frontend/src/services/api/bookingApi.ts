@@ -70,6 +70,22 @@ export const getAllBookingByExpertId = async () => {
   }
 };
 
+export const checkPaymentStatus= async(
+bookingId:string
+)=>{
+  try {
+    const response = await studentAxiosInstance.get(
+      `${API_URL}/student/checkPaymetpayment/${bookingId}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+    
+  } catch (error) {
+    return (error as Error).response?.data;
+  }
+}
 
 export const getAllPaymentByExpertId = async () => {
   try {

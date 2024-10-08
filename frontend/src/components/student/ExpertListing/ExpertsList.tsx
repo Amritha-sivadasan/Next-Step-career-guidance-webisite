@@ -71,15 +71,19 @@ const ExpertsList: React.FC<ExpertsListProps> = ({ expets }) => {
           paymentMethod
         );
 
+      
         const result = await stripe?.redirectToCheckout({
           sessionId: response.data.sessionId,
         });
+       
 
         if (result?.error) {
+          console.log('error in stripe ',result.error)
           toast.error(
             result.error.message ||
               "An error occurred while redirecting to Stripe"
           );
+      
         }
       } catch (error) {
         console.error("Booking failed:", error);

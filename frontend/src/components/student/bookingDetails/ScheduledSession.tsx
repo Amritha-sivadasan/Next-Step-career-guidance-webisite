@@ -127,7 +127,8 @@ const ScheduledSession = () => {
         <div className="flex justify-center mt-4">
           <button
             onClick={handleViewMore}
-            className="px-4 py-2 bg-blue-950 text-white rounded-lg shadow hover:bg-blue-900"
+            className={`px-4 py-2 bg-blue-950 text-white rounded-lg shadow hover:bg-blue-900 ${currentPage <
+              4 && "hidden"}`}
           >
             View More
           </button>

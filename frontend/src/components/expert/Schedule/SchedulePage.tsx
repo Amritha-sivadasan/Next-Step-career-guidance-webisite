@@ -17,7 +17,7 @@ interface IFormInput {
   timeFrom: string;
   timeTo: string;
 }
-const parseDateTime = (dateStr:string, timeStr:string) => {
+const parseDateTime = (dateStr: string, timeStr: string) => {
   const [year, month, day] = dateStr.split("-").map(Number);
   const [hours, minutes] = timeStr.split(":").map(Number);
   return new Date(year, month - 1, day, hours, minutes);
@@ -35,7 +35,7 @@ const SchedulePage: React.FC = () => {
       if (expert) {
         const response = await getAllSlots(expert._id);
         const slotbyorder = response.data;
-        slotbyorder.sort((a:ISlot, b:ISlot) => {
+        slotbyorder.sort((a: ISlot, b: ISlot) => {
           const dateA = parseDateTime(
             a.consultationDate,
             a.consultationStartTime
@@ -116,7 +116,7 @@ const SchedulePage: React.FC = () => {
         consultationDate: data.date,
         consultationStartTime: data.timeFrom,
         consultationEndTime: data.timeTo,
-        slotStatus: "Available",
+        slotStatus: "available",
       };
 
       try {

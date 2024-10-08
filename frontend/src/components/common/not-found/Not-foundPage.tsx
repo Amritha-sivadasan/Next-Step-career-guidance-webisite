@@ -1,5 +1,11 @@
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
+  const naviagate= useNavigate()
+
+  const handleHomepage= ()=>{
+     naviagate('/')
+  }
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
         <div className="text-center">
@@ -19,7 +25,7 @@ const NotFound = () => {
           </h1>
           <h2 className="text-2xl font-semibold text-gray-600 mt-4">404 ERROR PAGE</h2>
           <p className="text-gray-500 mt-2">uh-oh! Nothing here...</p>
-          <button className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition duration-300">
+          <button onClick={handleHomepage} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition duration-300">
             GO BACK HOME
           </button>
         </div>
