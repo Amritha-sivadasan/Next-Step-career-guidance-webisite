@@ -2,7 +2,7 @@ import { ISlot } from "../../@types/slot";
 import { axiosInstance } from "../instance/expertInstance";
 import { studentAxiosInstance } from "../instance/userInstance";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Error {
   response?: {
@@ -36,6 +36,8 @@ export const getAllSlots = async (expertId: string) => {
         withCredentials: true,
       }
     );
+
+    console.log("response for all slot ", response);
 
     return response.data;
   } catch (error) {
