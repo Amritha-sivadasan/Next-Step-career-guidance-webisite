@@ -17,7 +17,7 @@ const app: Express = express();
 const port = process.env.PORT || 5000;
 connect();
 
-
+app.use('/webhook', express.raw({ type: 'application/json' }), webhookrouter);
 
 app.use(
   cors({
@@ -27,7 +27,7 @@ app.use(
   })
 );
 
-app.use('/webhook', express.raw({ type: 'application/json' }), webhookrouter);
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
