@@ -14,9 +14,9 @@ export default class SlotService implements ISlotService {
   }
   async getSlotsById(id: string): Promise<ISlots[] | null> {
     try {
-      console.log('id',id)
+
       const result = await this.slotRepository.findByExpertId(id);
-      console.log("result", result);
+     
       return result;
     } catch (error) {
       throw error;
