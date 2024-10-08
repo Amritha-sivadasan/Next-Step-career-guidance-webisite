@@ -8,7 +8,7 @@ import { ISlotService } from "../services/interface/ISlotService";
 import SlotService from "../services/implementations/SlotService";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-const endpointSecret = process.env.WEBHOOK_LOCAL_SECRET as string|| process.env.STRIPE_WEBHOOK_SECRET as string
+const endpointSecret =process.env.STRIPE_WEBHOOK_SECRET as string|| process.env.WEBHOOK_LOCAL_SECRET as string 
 
 const bookingService: IBookingService = new BookingService();
 const chatService :IChatService= new ChatService()
