@@ -23,7 +23,7 @@ export default async (req: Request, res: Response) => {
 console.log('STRIPE_WEBHOOK_SECRET:', process.env.STRIPE_WEBHOOK_SECRET);
 
 console.log('Headers:', req.headers);
-console.log('Raw request body:', req.body);
+console.log('Raw request body:', req.body.toString());
 
 
   const sig = req.headers["stripe-signature"] as string | string[] | Buffer;
