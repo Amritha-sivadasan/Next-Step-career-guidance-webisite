@@ -8,7 +8,7 @@ import { ISlotService } from "../services/interface/ISlotService";
 import SlotService from "../services/implementations/SlotService";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-const endpointSecret = process.env.WEBHOOK_LOCAL_SECRET as string ||process.env.STRIPE_WEBHOOK_SECRET as string
+const endpointSecret = process.env.WEBHOOK_LOCAL_SECRET as string || process.env.STRIPE_WEBHOOK_SECRET as string
 
 
 
@@ -26,11 +26,11 @@ console.log('Headers:', req.headers);
 console.log('Raw request body:', req.body.toString());
 
 
-  const sig = req.headers["stripe-signature"] as string | string[] | Buffer;
+  const sig = req.headers["stripe-signature"] as string 
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.body, sig,  process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (error: any) {
     console.log("error in webhook", error.message);
     res.status(400).send(`Webhook Error: ${error.message}`);
