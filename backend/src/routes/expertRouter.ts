@@ -43,7 +43,10 @@ expertRouter.get('/check-report-user/:expertId',expertController.checkExpertStat
 
 
 expertRouter.post("/addSlot",verifyAccessToken,verifyRole(role),slotController.CreateSlot);
-expertRouter.get("/getAllSlot/:expertId",verifyAccessToken,verifyRole(role),slotController.getAllSlotByExpert);
+expertRouter.get("/getAllSlot/:expertId", (req,res,next)=>{
+  console.log('req',req)
+  next()
+},verifyAccessToken,verifyRole(role),slotController.getAllSlotByExpert);
 
 expertRouter.put('/uploadImage',verifyAccessToken,verifyRole(role),upload.single('profile_picture'),expertController.updateExpretImage)
 expertRouter.delete("/deleteSlot/:id",verifyAccessToken,verifyRole(role),slotController.deleteSlots);
