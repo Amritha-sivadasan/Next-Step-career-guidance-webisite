@@ -8,25 +8,25 @@ import { ISlotService } from "../services/interface/ISlotService";
 import SlotService from "../services/implementations/SlotService";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-const endpointSecret = process.env.WEBHOOK_LOCAL_SECRET as string || process.env.STRIPE_WEBHOOK_SECRET as string
-
-
-
+const endpointSecret =
+  (process.env.WEBHOOK_LOCAL_SECRET as string) ||
+  (process.env.STRIPE_WEBHOOK_SECRET as string);
 
 const bookingService: IBookingService = new BookingService();
-const chatService :IChatService= new ChatService()
-const slotService:ISlotService= new SlotService()
-
+const chatService: IChatService = new ChatService();
+const slotService: ISlotService = new SlotService();
 
 export default async (req: Request, res: Response) => {
+  const sig = req.headers["stripe-signature"] as string;
 
-  const sig = req.headers["stripe-signature"] as string 
-    
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body,sig,process.env.STRIPE_WEBHOOK_SECRET!);
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
   } catch (error: any) {
-    
     console.log("error in webhook message", error.message);
     res.status(400).send(`Webhook Error: ${error.message}`);
     return;
@@ -35,29 +35,32 @@ export default async (req: Request, res: Response) => {
   switch (event.type) {
     case "checkout.session.completed":
       const sessionCompleted = event.data.object as Stripe.Checkout.Session;
-      const bookingId = sessionCompleted.metadata?.bookingId as string
-      const studentId=sessionCompleted.metadata?.studentId as string
-      const expertId=sessionCompleted.metadata?.expertId as string
-       const slotId= sessionCompleted.metadata?.slotId as string
-       const reason =sessionCompleted.metadata?.reason
+      const bookingId = sessionCompleted.metadata?.bookingId as string;
+      const studentId = sessionCompleted.metadata?.studentId as string;
+      const expertId = sessionCompleted.metadata?.expertId as string;
+      const slotId = sessionCompleted.metadata?.slotId as string;
+      const reason = sessionCompleted.metadata?.reason;
 
-       const exitbooking= await bookingService.getBookingById(bookingId)
-      
-      if(exitbooking?.bookingStatus =="pending"){
-        await bookingService.updateBookingStatus(bookingId,"confirmed")
-        await bookingService.updateBookingPaymentStatus(bookingId!, "completed");
-        await chatService.createChatForBooking(studentId,expertId,bookingId)
-        await slotService.update(slotId,"confirmed")
+      const exitbooking = await bookingService.getBookingById(bookingId);
+
+      if (exitbooking?.bookingStatus == "pending") {
+        await bookingService.updateBookingStatus(bookingId, "confirmed");
+        await bookingService.updateBookingPaymentStatus(
+          bookingId!,
+          "completed"
+        );
+        await chatService.createChatForBooking(studentId, expertId, bookingId);
+        await slotService.update(slotId, "confirmed");
       }
-      if(exitbooking?.bookingStatus=="confirmed"){
-        await bookingService.updateBookingStatus(bookingId,"cancelled",reason)
+      if (exitbooking?.bookingStatus == "confirmed") {
+        await bookingService.updateBookingStatus(
+          bookingId,
+          "cancelled",
+          reason
+        );
         await bookingService.updateBookingPaymentStatus(bookingId!, "refund");
-        console.log('booking refund')
+        console.log("booking refund");
       }
-      
-      
-   
-    
 
       break;
     case "payment_intent.succeeded":
