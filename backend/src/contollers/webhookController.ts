@@ -10,6 +10,10 @@ import SlotService from "../services/implementations/SlotService";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const endpointSecret =process.env.STRIPE_WEBHOOK_SECRET as string|| process.env.WEBHOOK_LOCAL_SECRET as string 
 
+console.log('STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY);
+console.log('STRIPE_WEBHOOK_SECRET:', process.env.STRIPE_WEBHOOK_SECRET);
+
+
 const bookingService: IBookingService = new BookingService();
 const chatService :IChatService= new ChatService()
 const slotService:ISlotService= new SlotService()
