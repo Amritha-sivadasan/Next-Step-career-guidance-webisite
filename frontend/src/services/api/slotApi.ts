@@ -37,7 +37,7 @@ export const getAllSlots = async (expertId: string) => {
       }
     );
 
-    console.log("response for all slot ", response.data);
+   
 
     return response.data;
   } catch (error) {

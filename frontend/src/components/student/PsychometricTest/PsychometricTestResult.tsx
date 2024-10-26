@@ -29,6 +29,8 @@ const colors = [
   "rgba(75, 192, 192, 0.5)",
   "rgba(153, 102, 255, 0.5)",
   "rgba(255, 159, 64, 0.5)",
+  "rgba(98, 182, 87, 0.5)",
+   "rgba(255, 140, 173, 0.5)"
 ];
 
 const borderColors = [
@@ -38,6 +40,8 @@ const borderColors = [
   "rgba(75, 192, 192, 1)",
   "rgba(153, 102, 255, 1)",
   "rgba(255, 159, 64, 1)",
+  "rgba(98, 182, 87, 1)", 
+  "rgba(255, 140, 173, 1)", 
 ];
 
 const PsychometricTestResult: React.FC = () => {
