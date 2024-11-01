@@ -12,6 +12,7 @@ import { registerExpertWithGoogle } from "../../../features/expert/middleware/Ex
 import { setExpert } from "../../../features/expert/expertAuthSlice";
 import { IExpert } from "../../../@types/expert";
 import LoadingPage from "../../common/Loading/LoadingPage";
+import { validatePhoneNumber } from "../../../utils/validator/studentsingupvalidator";
 
 interface SignupFormInputs {
   user_name: string;
@@ -174,7 +175,7 @@ const ExpertSignup: React.FC = () => {
                 type="text"
                 {...register("phoneNumber", {
                   required: "Phone number is required",
-                  // validate: validatePhoneNumber,
+                  validate: validatePhoneNumber,
                 })}
                 className="border border-gray-300 p-2 text-sm rounded-lg bg-[#F0F8FF]"
                 placeholder="Phone number"

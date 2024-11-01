@@ -56,6 +56,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
 
   const onSubmit: SubmitHandler<OtpFormInputs> = async (data) => {
     if (userType == "student") {
+      
       const storageData = sessionStorage.getItem("userdata");
       if (storageData) {
         const parsedData = JSON.parse(storageData);
@@ -64,68 +65,86 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         const verifyOtpResult = await dispatch(
           VerifyOtp({ email, otp: data.otp })
         ).unwrap();
-
-        if (verifyOtpResult.success) {
+        try {
           setLoading(true);
-          const registerStudentResult = await dispatch(
-            registerStudent(parsedData)
-          ).unwrap();
-          if (registerStudentResult.success) {
-            const userData = registerStudentResult.data as IStudent;
-            if (userData && userData._id) {
-              dispatch(setUser(userData));
-              dispatch(setAuthenticated(true));
-              sessionStorage.removeItem("userdata");
-              localStorage.setItem("userId", userData._id);
-              localStorage.setItem(
-                "userAccess",
-                registerStudentResult.accessToken
-              );
-              localStorage.setItem("userAuth", "true");
-              setLoading(false);
-              navigate("/about-student");
-            } else {
-              console.error("User data is missing or malformed.");
-              setLoading(false);
+          if (verifyOtpResult.success) {
+            
+            const registerStudentResult = await dispatch(
+              registerStudent(parsedData)
+            ).unwrap();
+            if (registerStudentResult.success) {
+              const userData = registerStudentResult.data as IStudent;
+              if (userData && userData._id) {
+                dispatch(setUser(userData));
+                dispatch(setAuthenticated(true));
+                sessionStorage.removeItem("userdata");
+                localStorage.setItem("userId", userData._id);
+                localStorage.setItem(
+                  "userAccess",
+                  registerStudentResult.accessToken
+                );
+                localStorage.setItem("userAuth", "true");
+                setLoading(false);
+                navigate("/about-student");
+              } else {
+                console.error("User data is missing or malformed.");
+                setLoading(false);
+              }
             }
           }
+          
+        } catch (error) {
+          console.error("User data is missing or malformed.");
+                setLoading(false);
+        }finally{
+          setLoading(false);
         }
+      
       }
     } else if (userType == "expert") {
-      const storageData = sessionStorage.getItem("expertdata");
-      if (storageData) {
-        const parsedData = JSON.parse(storageData);
-        const email: string = parsedData.email;
-        const verifyOtpResult = await dispatch(
-          VerifyOtpExpert({ email, otp: data.otp })
-        ).unwrap();
-        if (verifyOtpResult.success) {
-          setLoading(true);
-          const registerExpertResult = await dispatch(
-            registerExpert(parsedData)
+      setLoading(true);
+      try {
+        const storageData = sessionStorage.getItem("expertdata");
+        if (storageData) {
+          const parsedData = JSON.parse(storageData);
+          const email: string = parsedData.email;
+          const verifyOtpResult = await dispatch(
+            VerifyOtpExpert({ email, otp: data.otp })
           ).unwrap();
-          if (registerExpertResult.success) {
-            const expetData = registerExpertResult.data as IExpert;
-            console.log("expertdata", expetData);
-
-            if (expetData && expetData._id) {
-              dispatch(setExpert(expetData));
-              dispatch(setExpertAuthenticated(true));
-              sessionStorage.removeItem("expertdata");
-              localStorage.setItem("expertId", expetData._id);
-              localStorage.setItem(
-                "expertAccess",
-                registerExpertResult.accessToken
-              );
-              localStorage.setItem("expertAuth", "true");
-              setLoading(false);
-              navigate("/expert/about-expert");
-            } else {
-              console.log("Expert data is missing or malformed.");
+          if (verifyOtpResult.success) {
+         
+            const registerExpertResult = await dispatch(
+              registerExpert(parsedData)
+            ).unwrap();
+            if (registerExpertResult.success) {
+              const expetData = registerExpertResult.data as IExpert;
+              console.log("expertdata", expetData);
+  
+              if (expetData && expetData._id) {
+                dispatch(setExpert(expetData));
+                dispatch(setExpertAuthenticated(true));
+                sessionStorage.removeItem("expertdata");
+                localStorage.setItem("expertId", expetData._id);
+                localStorage.setItem(
+                  "expertAccess",
+                  registerExpertResult.accessToken
+                );
+                localStorage.setItem("expertAuth", "true");
+                setLoading(false);
+                navigate("/expert/about-expert");
+              } else {
+                console.log("Expert data is missing or malformed.");
+              }
             }
           }
         }
+      } catch (error) {
+        console.log("Expert data is missing or malformed.");
+        setLoading(false)
+      }finally{
+        setLoading(false)
       }
+     
     }
   };
 
