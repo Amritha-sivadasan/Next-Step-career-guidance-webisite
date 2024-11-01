@@ -30,7 +30,7 @@ interface OtpFormInputs {
 
 const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
   const [otp, setOtp] = useState("");
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -159,7 +159,7 @@ const OtpPage: React.FC<OtpPageProps> = ({ userType }) => {
         const parsedData = JSON.parse(storageData);
         const email: string = parsedData.email;
         sendOtp(email);
-        setTimer(10);
+        setTimer(30);
         setCanResend(false);
       }
     } else {

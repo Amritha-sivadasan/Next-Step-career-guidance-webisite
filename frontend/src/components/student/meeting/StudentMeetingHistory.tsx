@@ -44,10 +44,15 @@ const StudentMeetingHistory = () => {
   const fetchAllMeetings = async () => {
     try {
       const meetingsResult = await findAllvideoCallStudent();
-      const filterData = meetingsResult.data.filter((item: IvidoeCall) => {
-        const bookingComplete = item.bookingId as IBooking;
 
-        return bookingComplete.meetingStatus == "completed";
+      const filterData = meetingsResult.data.filter((item: IvidoeCall) => {
+        console.log('item',item)
+        const bookingComplete = item.bookingId as IBooking;
+        console.log("booking compele", bookingComplete);
+       if(bookingComplete){
+
+         return bookingComplete.meetingStatus == "completed";
+       }
       });
 
       setMeetingDetails(filterData);
@@ -248,10 +253,10 @@ const StudentMeetingHistory = () => {
 
                 <div
                   className={`flex flex-col mt-4 p-4 bg-white shadow-md rounded-lg  ${
-                    reviewDetails[meeting._id!]?.is_delete}`}
+                    reviewDetails[meeting._id!]?.is_delete
+                  }`}
                 >
-                  {
-                  reviewDetails[meeting._id!] &&
+                  {reviewDetails[meeting._id!] &&
                   !reviewDetails[meetingId!].is_delete ? (
                     <div className="border p-4 rounded-lg bg-gray-100">
                       <div className="flex justify-between">
@@ -273,7 +278,6 @@ const StudentMeetingHistory = () => {
                       />
                     </div>
                   ) : (
-                   
                     !reviewDetails[meeting._id!]?.is_delete && (
                       <>
                         <textarea
