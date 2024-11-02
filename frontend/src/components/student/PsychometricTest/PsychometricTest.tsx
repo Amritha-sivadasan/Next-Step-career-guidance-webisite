@@ -18,6 +18,13 @@ const PsychometricTest = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  useEffect(()=>{
+    if(!user){
+
+      navigate('/login')
+    }
+  },[navigate, user])
+
   useEffect(() => {
     if (timeRemaining > 0) {
       const timerId = setInterval(() => {
